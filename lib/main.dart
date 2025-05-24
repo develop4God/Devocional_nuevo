@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:math';
 import 'package:http/http.dart' as http;
+import 'package:auto_size_text/auto_size_text.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Devocionales',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData(primarySwatch: Colors.deepPurple),
       home: const DevocionalesPage(),
     );
   }
@@ -79,13 +80,12 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:
-            Colors.deepPurple, // Cambia el color del fondo del AppBar
-        centerTitle: true, // Centra el título
+        backgroundColor: Colors.deepPurple,
+        centerTitle: true,
         title: const Text(
           'Mi relación íntima con Dios',
           style: TextStyle(
-            color: Colors.white, // Cambia el color del texto
+            color: Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
@@ -100,68 +100,90 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             final d = snapshot.data!;
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    d.versiculo,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'Análisis:',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(d.reflexion),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'Para meditar:',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  ...d.paraMeditar.map(
-                    (m) => Column(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "• ${m['cita']}",
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        AutoSizeText(
+                          d.versiculo,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                          maxLines: 3,
                         ),
-                        Text(m['texto']),
+                        const SizedBox(height: 12),
+                        const AutoSizeText(
+                          'Análisis:',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
                         const SizedBox(height: 4),
+                        AutoSizeText(
+                          d.reflexion,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        const SizedBox(height: 12),
+                        const AutoSizeText(
+                          'Para meditar:',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        ...d.paraMeditar.map(
+                          (m) => Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AutoSizeText(
+                                "• ${m['cita']}",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              AutoSizeText(
+                                m['texto'],
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                              const SizedBox(height: 4),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        const AutoSizeText(
+                          'Oración',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        AutoSizeText(
+                          d.oracion,
+                          style: const TextStyle(
+                            fontStyle: FontStyle.italic,
+                            fontSize: 16,
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'Oración',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    d.oracion,
-                    style: const TextStyle(fontStyle: FontStyle.italic),
-                  ),
-                ],
-              ),
+                );
+              },
             );
           }
         },
