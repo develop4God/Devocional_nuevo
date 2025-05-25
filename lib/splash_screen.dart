@@ -3,18 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// Importa DevocionalProvider y DevocionalesPage desde main.dart
-// Si en el futuro mueves DevocionalProvider y DevocionalesPage a sus propios archivos,
-// deberás actualizar esta importación. Por ejemplo:
-// import 'providers/devocional_provider.dart';
-// import 'screens/devocionales_page.dart';
-import './main.dart'; // Asume que main.dart está en el mismo directorio (lib)
+// Importaciones para tu proyecto 'devocional_nuevo'
+import 'package:devocional_nuevo/pages/devocionales_page.dart';
+import 'package:devocional_nuevo/providers/devocional_provider.dart';
 
-/// SplashScreen: Pantalla de carga inicial de la aplicación.
-///
-/// Esta pantalla se muestra mientras se cargan los datos necesarios
-/// (configuraciones y devocionales) antes de dirigir al usuario
-/// a la página principal de devocionales.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -22,60 +14,114 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+
   @override
   void initState() {
     super.initState();
-    // Inicia la carga de datos de la aplicación cuando el widget se inicializa.
-    _initializeAppData();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeIn,
+      ),
+    );
+
+    _controller.forward();
+    _initializeApp();
   }
 
-  /// Carga los datos iniciales de la aplicación.
-  ///
-  /// Obtiene la instancia de [DevocionalProvider] y llama a su método
-  /// [initializeData] para cargar las configuraciones guardadas y los
-  /// devocionales desde la red.
-  /// Una vez completada la carga, navega a [DevocionalesPage].
-  Future<void> _initializeAppData() async {
-    // Accede a DevocionalProvider sin escuchar cambios,
-    // ya que solo se necesita para llamar a un método.
+  Future<void> _initializeApp() async {
+    await Future.delayed(const Duration(
+        milliseconds: 3000)); // Espera 3 segundo para que el logo aparezca
+
     final devocionalProvider =
         Provider.of<DevocionalProvider>(context, listen: false);
-
-    // Carga las configuraciones y los devocionales.
     await devocionalProvider.initializeData();
 
-    // Comprueba si el widget todavía está montado (visible y activo)
-    // antes de intentar una navegación para evitar errores.
+    await Future.delayed(
+        const Duration(milliseconds: 500)); // Espera un poco más
+
     if (mounted) {
-      // Reemplaza la pantalla actual (SplashScreen) con DevocionalesPage
-      // para que el usuario no pueda volver atrás al splash.
+      // <<< CAMBIO CLAVE AQUÍ: Usamos PageRouteBuilder para la transición personalizada
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const DevocionalesPage()),
+        PageRouteBuilder(
+          transitionDuration:
+              const Duration(milliseconds: 600), // Duración de la transición
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              const DevocionalesPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            // Animación de deslizamiento de derecha a izquierda
+            const begin = Offset(1.0, 0.0); // Comienza desde la derecha
+            const end = Offset.zero; // Termina en su posición normal
+            const curve = Curves
+                .easeOutCubic; // Curva de aceleración/desaceleración suave
+
+            var tween =
+                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            );
+          },
+        ),
       );
     }
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // UI del SplashScreen.
-    return const Scaffold(
-      backgroundColor: Colors.deepPurple, // Color de fondo del splash
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(
-                color: Colors.white), // Indicador de progreso circular
-            SizedBox(height: 20),
-            Text(
-              'Cargando devocionales...',
-              style: TextStyle(color: Colors.white, fontSize: 18),
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFFEFEBE9),
+              Color(0xFFD7CCC8),
+            ],
+          ),
+        ),
+        child: Center(
+          child: FadeTransition(
+            opacity: _fadeAnimation,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/LogoVectorDevocional V1.0 500x500.png', // <<< ¡CAMBIA ESTA RUTA Y NOMBRE DE ARCHIVO!
+                  width: 500,
+                  height: 500,
+                  fit: BoxFit.contain,
+                ),
+                const SizedBox(height: 30),
+                const Text(
+                  'Preparando tu espacio con Dios...',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 186, 119, 156),
+                  ),
+                ),
+              ],
             ),
-            // Aquí podrías añadir un logo si lo deseas:
-            // Image.asset('assets/logo.png', width: 150, height: 150),
-          ],
+          ),
         ),
       ),
     );
