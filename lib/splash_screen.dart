@@ -105,9 +105,9 @@ class _SplashScreenState extends State<SplashScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  'assets/images/LogoVectorDevocional V1.0 500x500.png', // <<< ¡CAMBIA ESTA RUTA Y NOMBRE DE ARCHIVO!
-                  width: 500,
-                  height: 500,
+                  'assets/images/splash_background_360x640.png', // <<< ¡CAMBIA ESTA RUTA Y NOMBRE DE ARCHIVO!
+                  width: 360,
+                  height: 640,
                   fit: BoxFit.contain,
                 ),
                 const SizedBox(height: 30),
@@ -116,7 +116,7 @@ class _SplashScreenState extends State<SplashScreen>
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 186, 119, 156),
+                    color: Color.fromARGB(255, 255, 255, 255),
                   ),
                 ),
               ],

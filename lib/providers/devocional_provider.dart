@@ -1,202 +1,194 @@
 // lib/providers/devocional_provider.dart
 
-import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'dart:math';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-// Importa tus propios modelos y constantes
 import 'package:devocional_nuevo/models/devocional_model.dart';
-import 'package:devocional_nuevo/utils/constants.dart';
+import 'package:devocional_nuevo/utils/constants.dart'; // Asegúrate de que esta ruta sea correcta
 
-// --- DevocionalProvider (Gestión de Estado) ---
-/// ChangeNotifier para gestionar el estado de los devocionales.
-///
-/// Maneja la lista de devocionales, el índice actual, los favoritos,
-/// los devocionales vistos, el estado de carga y los mensajes de error.
-class DevocionalProvider extends ChangeNotifier {
+class DevocionalProvider with ChangeNotifier {
   List<Devocional> _devocionales = [];
-  int _currentIndex = 0;
-  Set<int> _seenIndices = {};
-  Set<int> _favorites = {};
-  bool _showInvitationDialog =
-      true; // Controla si el diálogo de invitación debe mostrarse
-  bool _isLoading = true; // Indica si los datos se están cargando
-  String? _errorMessage; // Mensaje de error si la carga falla
+  bool _isLoading = false;
+  String? _errorMessage;
+  DateTime _selectedDate =
+      DateTime.now(); // La fecha que se está mostrando actualmente
+  List<Devocional> _favoriteDevocionales =
+      []; // Lista de devocionales favoritos
+  bool _showInvitationDialog = true; // Para el diálogo de invitación
 
-  // Getters para acceder al estado de forma segura.
+  // Getters
   List<Devocional> get devocionales => _devocionales;
-  int get currentIndex => _currentIndex;
-  Devocional? get currentDevocional =>
-      _devocionales.isNotEmpty ? _devocionales[_currentIndex] : null;
-  Set<int> get seenIndices => _seenIndices;
-  Set<int> get favorites => _favorites;
-  bool get showInvitationDialog => _showInvitationDialog;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
+  DateTime get selectedDate => _selectedDate;
+  List<Devocional> get favoriteDevocionales => _favoriteDevocionales;
+  bool get showInvitationDialog => _showInvitationDialog;
 
-  // Constructor: La inicialización de datos se maneja externamente (ej. en SplashScreen).
+  // Getter para obtener el devocional del día seleccionado
+  Devocional? get currentDevocional {
+    // Buscar el devocional para la fecha seleccionada
+    // Se normaliza _selectedDate para comparar solo día, mes, año
+    DateTime normalizedSelectedDate =
+        DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day);
+
+    Devocional? foundDevocional = _devocionales.firstWhere(
+      (d) => isSameDay(d.date, normalizedSelectedDate),
+      orElse: () => Devocional(
+        // Si no se encuentra un devocional, crea uno "vacío" con un mensaje
+        id: 'no-data-${normalizedSelectedDate.toIso8601String()}', // ID especial para indicar que no hay datos
+        versiculo: 'Devocional no disponible',
+        reflexion:
+            'Por favor, intente con otra fecha o verifique su conexión a internet.',
+        paraMeditar: [],
+        oracion:
+            'No se encontró un devocional para el día ${normalizedSelectedDate.day}/${normalizedSelectedDate.month}/${normalizedSelectedDate.year}.',
+        date: normalizedSelectedDate,
+      ),
+    );
+    return foundDevocional;
+  }
+
+  // Constructor para cargar los datos al inicio
   DevocionalProvider() {
-    // La carga se inicia en el SplashScreen, no aquí directamente
-    // pero mantenemos los métodos para ser llamados.
+    // Aquí se inicializan los datos al crear el Provider.
+    // Usamos initializeData para cargar tanto devocionales como favoritos.
+    initializeData();
   }
 
-  /// Inicializa los datos de la aplicación: carga configuraciones y devocionales.
+  // Función auxiliar para comprobar si dos fechas son el mismo día (ignorando la hora)
+  bool isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
+  }
+
+  // Función para inicializar datos (llama a _fetchDevocionales y _loadFavorites)
   Future<void> initializeData() async {
-    await _loadSettings();
-    await fetchDevocionales();
-    // No es necesario notificar listeners aquí si fetchDevocionales ya lo hace al final.
-  }
-
-  /// Carga las configuraciones guardadas desde SharedPreferences.
-  Future<void> _loadSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    _seenIndices = (prefs.getStringList(PREF_SEEN_INDICES) ?? [])
-        .map((e) => int.parse(e))
-        .toSet();
-    _favorites = (prefs.getStringList(PREF_FAVORITES) ?? [])
-        .map((e) => int.parse(e))
-        .toSet();
-    _showInvitationDialog =
-        !(prefs.getBool(PREF_DONT_SHOW_INVITATION) ?? false);
-    _currentIndex = prefs.getInt(PREF_CURRENT_INDEX) ?? 0;
-  }
-
-  /// Guarda las configuraciones actuales en SharedPreferences.
-  Future<void> _saveSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(
-      PREF_SEEN_INDICES,
-      _seenIndices.map((e) => e.toString()).toList(),
-    );
-    await prefs.setStringList(
-      PREF_FAVORITES,
-      _favorites.map((e) => e.toString()).toList(),
-    );
-    await prefs.setBool(PREF_DONT_SHOW_INVITATION, !_showInvitationDialog);
-    await prefs.setInt(PREF_CURRENT_INDEX, _currentIndex);
-  }
-
-  /// Obtiene los devocionales desde la URL JSON.
-  Future<void> fetchDevocionales() async {
     _isLoading = true;
-    _errorMessage = null;
-    notifyListeners(); // Notifica que la carga ha comenzado.
+    _errorMessage = null; // Limpiar cualquier error previo
+    notifyListeners(); // Inicia el estado de carga
 
-    final url = Uri.parse(DEVOCIONALES_JSON_URL);
+    await _fetchDevocionales();
+    await _loadFavorites();
+    await _loadInvitationDialogPreference(); // Cargar la preferencia del diálogo
+
+    _isLoading = false;
+    notifyListeners(); // Termina el estado de carga (con éxito o con error)
+  }
+
+  // Cargar devocionales desde la API
+  Future<void> _fetchDevocionales() async {
     try {
-      final response = await http.get(url);
+      // Asegúrate de que Constants.apiUrl apunte a tu JSON de devocionales
+      final response = await http.get(Uri.parse(Constants.apiUrl));
+
       if (response.statusCode == 200) {
-        final List<dynamic> jsonData = json.decode(response.body);
-        _devocionales =
-            jsonData.map((item) => Devocional.fromJson(item)).toList();
-        // Asegura que el _currentIndex sea válido después de cargar nuevos devocionales.
-        if (_currentIndex >= _devocionales.length && _devocionales.isNotEmpty) {
-          _currentIndex = 0;
-        } else if (_devocionales.isEmpty) {
-          _currentIndex = 0; // O manejar un estado de "no hay devocionales"
-        }
+        List<dynamic> data = json.decode(utf8.decode(response
+            .bodyBytes)); // Decodificar UTF-8 para caracteres especiales
+        _devocionales = data.map((json) => Devocional.fromJson(json)).toList();
+        _devocionales
+            .sort((a, b) => a.date.compareTo(b.date)); // Ordenar por fecha
       } else {
         _errorMessage = 'Error al cargar devocionales: ${response.statusCode}';
       }
     } catch (e) {
-      _errorMessage = 'Error de conexión. Verifica tu acceso a internet.';
-      // Podrías loggear el error original `e` para depuración.
-      // print('Error de conexión: $e');
-    } finally {
-      _isLoading = false;
-      notifyListeners(); // Notifica que la carga ha terminado (con éxito o error).
+      _errorMessage = 'Error de conexión: $e';
     }
+    // No notificar aquí; initializeData() lo hará al final
   }
 
-  /// Selecciona el siguiente devocional.
-  ///
-  /// Intenta seleccionar un devocional no visto. Si todos han sido vistos,
-  /// selecciona uno aleatoriamente.
+  // Setear una nueva fecha seleccionada y cargar el devocional para esa fecha
+  void setSelectedDate(DateTime newDate) {
+    _selectedDate = DateTime(newDate.year, newDate.month,
+        newDate.day); // Normalizar a solo día, mes, año
+    notifyListeners();
+  }
+
+  // Navegar al devocional del día anterior
+  void goToPreviousDay() {
+    setSelectedDate(_selectedDate.subtract(const Duration(days: 1)));
+  }
+
+  // Navegar al devocional del día siguiente
+  void goToNextDay() {
+    setSelectedDate(_selectedDate.add(const Duration(days: 1)));
+  }
+
+  // Este método (nextDevocional) se mantiene principalmente para el flujo del diálogo de invitación
+  // que avanza al "siguiente día", aunque la navegación principal ahora es por fecha.
   void nextDevocional() {
-    if (_devocionales.isEmpty) return;
+    goToNextDay();
+  }
 
-    int nextIndex = _currentIndex;
-    final total = _devocionales.length;
+  // --- Lógica de Favoritos ---
 
-    // Si todos los devocionales han sido vistos, o si solo hay uno.
-    if (_seenIndices.length >= total && total > 0) {
-      // Opcional: podrías limpiar _seenIndices aquí si quieres que el ciclo de "no vistos" comience de nuevo.
-      // _seenIndices.clear();
-      nextIndex = Random().nextInt(total); // Simplemente elige uno al azar
-    } else if (total > 1) {
-      // Solo busca uno no visto si hay más de uno.
-      int attempts = 0;
-      // Bucle para encontrar un índice no visto.
-      // Se limita el número de intentos para evitar bucles infinitos en casos extraños.
-      do {
-        nextIndex = Random().nextInt(total);
-        attempts++;
-        // Si se han hecho demasiados intentos (más que el total de devocionales),
-        // o si encontramos un índice no visto, rompemos el bucle.
-        // Esto previene que se quede atascado si _seenIndices está casi lleno.
-        if (attempts > total * 2) {
-          // Un umbral de intentos un poco mayor que el total
-          // Como fallback, simplemente tomamos el siguiente índice secuencialmente
-          // o volvemos al inicio si estamos al final.
-          nextIndex = (_currentIndex + 1) % total;
-          if (_seenIndices.contains(nextIndex) && _seenIndices.length < total) {
-            // Si el secuencial también está visto y aún no hemos visto todos,
-            // buscamos el primero no visto de forma más exhaustiva (o aceptamos un aleatorio).
-            // Esta parte podría refinarse, pero por ahora el aleatorio inicial es el principal.
-            nextIndex = Random().nextInt(total); // Reintenta un aleatorio final
-          }
-          break;
-        }
-      } while (_seenIndices.contains(nextIndex));
+  // Cargar favoritos desde SharedPreferences
+  Future<void> _loadFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? favoritesJson = prefs.getString('favorites');
+    if (favoritesJson != null) {
+      try {
+        final List<dynamic> jsonList = json.decode(favoritesJson);
+        _favoriteDevocionales =
+            jsonList.map((e) => Devocional.fromJson(e)).toList();
+      } catch (e) {
+        // En caso de que el JSON de favoritos esté corrupto
+        print('Error al cargar favoritos: $e');
+        _favoriteDevocionales = []; // Reiniciar la lista de favoritos
+      }
+      // No notificar aquí; initializeData() lo hará
+    }
+  }
+
+  // Guardar favoritos en SharedPreferences
+  Future<void> _saveFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    // Convertir la lista de objetos Devocional a una lista de mapas JSON y luego a String
+    final String jsonString =
+        json.encode(_favoriteDevocionales.map((e) => e.toJson()).toList());
+    await prefs.setString('favorites', jsonString);
+  }
+
+  // Verificar si un devocional es favorito
+  bool isFavorite(Devocional devocional) {
+    // Compara por ID o por una combinación de atributos si el ID no es único
+    // Aquí, asumimos que el 'id' del devocional es único.
+    return _favoriteDevocionales.any((fav) => fav.id == devocional.id);
+  }
+
+  // Añadir o quitar de favoritos
+  void toggleFavorite(Devocional devocional) {
+    // Asegurarse de no intentar añadir el devocional "no disponible" a favoritos
+    if (devocional.id.startsWith('no-data')) {
+      // Opcional: mostrar un mensaje al usuario o loguear
+      // print('No se puede añadir un devocional no disponible a favoritos.');
+      return;
+    }
+
+    if (isFavorite(devocional)) {
+      _favoriteDevocionales.removeWhere((fav) => fav.id == devocional.id);
     } else {
-      // Si solo hay un devocional o ninguno.
-      nextIndex = 0; // O _currentIndex, ya que no hay a dónde más ir.
+      _favoriteDevocionales.add(devocional);
     }
-
-    _currentIndex = nextIndex;
-    _seenIndices.add(nextIndex); // Marca el nuevo devocional como visto
-    _saveSettings(); // Guarda el estado
-    notifyListeners(); // Notifica a los widgets que escuchan
+    _saveFavorites(); // Guardar el cambio inmediatamente
+    notifyListeners(); // Notificar a los widgets para que se actualicen
   }
 
-  /// Establece el devocional actual por su índice.
-  void setCurrentDevocionalByIndex(int index) {
-    if (index >= 0 && index < _devocionales.length) {
-      _currentIndex = index;
-      _seenIndices
-          .add(index); // Marcar como visto también al seleccionar directamente
-      _saveSettings();
-      notifyListeners();
-    }
+  // --- Lógica del Diálogo de Invitación ---
+
+  Future<void> _loadInvitationDialogPreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    // Leer el valor guardado. Si no existe, se usa true por defecto.
+    _showInvitationDialog = prefs.getBool('showInvitationDialog') ?? true;
+    // No notificar aquí; initializeData() lo hará
   }
 
-  /// Alterna el estado de favorito del devocional actual.
-  void toggleFavorite() {
-    if (_devocionales.isEmpty) return;
-    if (_favorites.contains(_currentIndex)) {
-      _favorites.remove(_currentIndex);
-    } else {
-      _favorites.add(_currentIndex);
-    }
-    _saveSettings();
-    notifyListeners();
-  }
-
-  /// Remueve un devocional de la lista de favoritos por su índice.
-  void removeFavorite(int index) {
-    if (_favorites.contains(index)) {
-      _favorites.remove(index);
-      _saveSettings();
-      notifyListeners();
-    }
-  }
-
-  /// Establece la visibilidad del diálogo de invitación.
-  void setInvitationDialogVisibility(bool show) {
-    _showInvitationDialog = show;
-    _saveSettings();
-    notifyListeners();
+  Future<void> setInvitationDialogVisibility(bool shouldShow) async {
+    _showInvitationDialog = shouldShow;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('showInvitationDialog', shouldShow);
+    notifyListeners(); // Notifica para que la UI se actualice si es necesario
   }
 }

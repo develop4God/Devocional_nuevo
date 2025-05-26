@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart'; // Para formatear la fecha
+import 'package:devocional_nuevo/models/devocional_model.dart'; // Asegúrate de importar tu modelo
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
 
 class FavoritesPage extends StatelessWidget {
@@ -9,69 +11,143 @@ class FavoritesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final devocionalProvider = Provider.of<DevocionalProvider>(context);
-
-    // Obtener los devocionales favoritos
-    final List<int> favoriteIndices = devocionalProvider.favorites.toList();
-    final List<Devocional> favoriteDevocionales = favoriteIndices
-        .map((index) => devocionalProvider
-            .devocales[index]) // Asumiendo que devocales es la lista completa
-        .whereType<
-            Devocional>() // Filtrar por si hay nulos (aunque currentDevocional lo maneja)
-        .toList();
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Devocionales Favoritos'),
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
+        title: const Text('Mis Favoritos'),
+        centerTitle: true,
       ),
-      body: favoriteDevocionales.isEmpty
-          ? const Center(
-              child: Text(
-                'Aún no tienes devocionales favoritos. \n¡Agrega algunos desde la pantalla principal!',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-            )
-          : ListView.builder(
-              itemCount: favoriteDevocionales.length,
-              itemBuilder: (context, index) {
-                final devocional = favoriteDevocionales[index];
-                return Card(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: ListTile(
-                    title: Text(devocional.versiculo,
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
-                    subtitle: Text(devocional.reflexion,
-                        maxLines: 2, overflow: TextOverflow.ellipsis),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.favorite, color: Colors.red),
-                      onPressed: () {
-                        // Al quitar de favoritos, usamos el índice original del devocional
-                        // en la lista general de devocionales, no el índice en la lista de favoritos.
-                        final originalIndex =
-                            devocionalProvider.devocales.indexOf(devocional);
-                        if (originalIndex != -1) {
-                          devocionalProvider.removeFavorite(originalIndex);
-                        }
-                      },
+      body: Consumer<DevocionalProvider>(
+        builder: (context, devocionalProvider, child) {
+          // Acceder directamente a la lista de devocionales favoritos del provider
+          final List<Devocional> favoriteDevocionales =
+              devocionalProvider.favoriteDevocionales;
+
+          if (favoriteDevocionales.isEmpty) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.favorite_border,
+                      size: 80,
+                      color: Colors.grey[400],
                     ),
-                    onTap: () {
-                      // Navegar de vuelta a la página principal y mostrar este devocional
-                      final originalIndex =
-                          devocionalProvider.devocales.indexOf(devocional);
-                      if (originalIndex != -1) {
-                        devocionalProvider
-                            .setCurrentDevocionalByIndex(originalIndex);
-                        Navigator.pop(context); // Cierra la página de favoritos
-                      }
-                    },
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Aún no tienes devocionales favoritos.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Marca el corazón en un devocional para guardarlo aquí.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          return ListView.builder(
+            itemCount: favoriteDevocionales.length,
+            itemBuilder: (context, index) {
+              final devocional = favoriteDevocionales[index];
+              return Card(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                child: InkWell(
+                  // Hace que toda la tarjeta sea clickable
+                  onTap: () {
+                    // Cuando se toca un favorito, navegar a la DevocionalesPage
+                    // y establecer esa fecha como la fecha seleccionada.
+                    devocionalProvider.setSelectedDate(devocional.date);
+                    Navigator.pop(
+                        context); // Cierra FavoritesPage y regresa a DevocionalesPage
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          // Muestra la fecha del devocional favorito
+                          DateFormat('dd MMMM Geißler', 'es').format(devocional
+                              .date), // Agregué 'yyyy' para mostrar el año
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          devocional
+                              .versiculo, // Muestra el versículo como título
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.deepPurple,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          devocional
+                              .reflexion, // Muestra un extracto de la reflexión
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black87,
+                          ),
+                          maxLines: 3, // Muestra solo las primeras 3 líneas
+                          overflow: TextOverflow
+                              .ellipsis, // Añade puntos suspensivos si se recorta
+                        ),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons
+                                  .favorite, // Siempre lleno, ya que estamos en la lista de favoritos
+                              color: Colors.red,
+                              size: 28,
+                            ),
+                            tooltip: 'Quitar de favoritos',
+                            onPressed: () {
+                              // Usamos toggleFavorite que se encarga de añadir/quitar
+                              devocionalProvider.toggleFavorite(devocional);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(
+                                        '"${devocional.versiculo}" eliminado de favoritos.')),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
