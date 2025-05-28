@@ -4,7 +4,7 @@
 // Es una buena práctica definir URLs y claves de SharedPreferences como constantes dentro de una clase.
 class Constants {
   static const String apiUrl =
-      'https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/DevocionalesNTV_finalV1.0.json';
+      'https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/prueba%20api.json';
 
   // Las siguientes constantes no son necesarias en el nuevo modelo basado en fechas y objetos
   // pero las mantengo aquí si las usas en otras partes de tu código por ahora.

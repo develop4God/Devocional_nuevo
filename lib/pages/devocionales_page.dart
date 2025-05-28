@@ -75,7 +75,7 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
                   },
                 ),
                 const Expanded(
-                    child: Text('Ya la hice 🙏, No mostrar nuevamente')),
+                    child: Text('Ya la hice 🙏,No mostrar nuevamente')),
               ],
             ),
             Align(

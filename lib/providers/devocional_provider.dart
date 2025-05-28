@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:devocional_nuevo/models/devocional_model.dart';
-import 'package:devocional_nuevo/utils/constants.dart'; // Asegúrate de que esta ruta sea correcta
+import 'package:devocional_nuevo/utils/constants.dart';
 
 class DevocionalProvider with ChangeNotifier {
   List<Devocional> _devocionales = [];
@@ -28,133 +28,169 @@ class DevocionalProvider with ChangeNotifier {
 
   // Getter para obtener el devocional del día seleccionado
   Devocional? get currentDevocional {
-    // Buscar el devocional para la fecha seleccionada
-    // Se normaliza _selectedDate para comparar solo día, mes, año
-    DateTime normalizedSelectedDate =
+    final normalizedSelectedDate =
         DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day);
-
-    Devocional? foundDevocional = _devocionales.firstWhere(
-      (d) => isSameDay(d.date, normalizedSelectedDate),
-      orElse: () => Devocional(
-        // Si no se encuentra un devocional, crea uno "vacío" con un mensaje
-        id: 'no-data-${normalizedSelectedDate.toIso8601String()}', // ID especial para indicar que no hay datos
-        versiculo: 'Devocional no disponible',
-        reflexion:
-            'Por favor, intente con otra fecha o verifique su conexión a internet.',
-        paraMeditar: [],
-        oracion:
-            'No se encontró un devocional para el día ${normalizedSelectedDate.day}/${normalizedSelectedDate.month}/${normalizedSelectedDate.year}.',
-        date: normalizedSelectedDate,
-      ),
-    );
-    return foundDevocional;
+    // Buscar el devocional para la fecha seleccionada
+    try {
+      return _devocionales.firstWhere(
+        (devocional) =>
+            devocional.date.year == normalizedSelectedDate.year &&
+            devocional.date.month == normalizedSelectedDate.month &&
+            devocional.date.day == normalizedSelectedDate.day,
+      );
+    } catch (e) {
+      // Si no se encuentra un devocional para la fecha, retorna un devocional "no disponible"
+      print(
+          "No se encontró devocional para la fecha $normalizedSelectedDate. Error: $e");
+      return _createNoDataDevocional(normalizedSelectedDate);
+    }
   }
 
-  // Constructor para cargar los datos al inicio
+  // Constructor: Cargar los datos y favoritos al iniciar el provider
   DevocionalProvider() {
-    // Aquí se inicializan los datos al crear el Provider.
-    // Usamos initializeData para cargar tanto devocionales como favoritos.
     initializeData();
   }
 
-  // Función auxiliar para comprobar si dos fechas son el mismo día (ignorando la hora)
-  bool isSameDay(DateTime date1, DateTime date2) {
-    return date1.year == date2.year &&
-        date1.month == date2.month &&
-        date1.day == date2.day;
-  }
-
-  // Función para inicializar datos (llama a _fetchDevocionales y _loadFavorites)
   Future<void> initializeData() async {
-    _isLoading = true;
-    _errorMessage = null; // Limpiar cualquier error previo
-    notifyListeners(); // Inicia el estado de carga
-
-    await _fetchDevocionales();
     await _loadFavorites();
-    await _loadInvitationDialogPreference(); // Cargar la preferencia del diálogo
-
-    _isLoading = false;
-    notifyListeners(); // Termina el estado de carga (con éxito o con error)
-  }
-
-  // Cargar devocionales desde la API
-  Future<void> _fetchDevocionales() async {
-    try {
-      // Asegúrate de que Constants.apiUrl apunte a tu JSON de devocionales
-      final response = await http.get(Uri.parse(Constants.apiUrl));
-
-      if (response.statusCode == 200) {
-        List<dynamic> data = json.decode(utf8.decode(response
-            .bodyBytes)); // Decodificar UTF-8 para caracteres especiales
-        _devocionales = data.map((json) => Devocional.fromJson(json)).toList();
-        _devocionales
-            .sort((a, b) => a.date.compareTo(b.date)); // Ordenar por fecha
-      } else {
-        _errorMessage = 'Error al cargar devocionales: ${response.statusCode}';
-      }
-    } catch (e) {
-      _errorMessage = 'Error de conexión: $e';
-    }
-    // No notificar aquí; initializeData() lo hará al final
-  }
-
-  // Setear una nueva fecha seleccionada y cargar el devocional para esa fecha
-  void setSelectedDate(DateTime newDate) {
-    _selectedDate = DateTime(newDate.year, newDate.month,
-        newDate.day); // Normalizar a solo día, mes, año
+    await _loadInvitationDialogPreference();
+    await _fetchDevocionales();
     notifyListeners();
   }
 
-  // Navegar al devocional del día anterior
+  // --- Lógica de navegación de fechas ---
+
   void goToPreviousDay() {
-    setSelectedDate(_selectedDate.subtract(const Duration(days: 1)));
+    _selectedDate = _selectedDate.subtract(const Duration(days: 1));
+    notifyListeners();
   }
 
-  // Navegar al devocional del día siguiente
   void goToNextDay() {
-    setSelectedDate(_selectedDate.add(const Duration(days: 1)));
+    _selectedDate = _selectedDate.add(const Duration(days: 1));
+    notifyListeners();
   }
 
-  // Este método (nextDevocional) se mantiene principalmente para el flujo del diálogo de invitación
-  // que avanza al "siguiente día", aunque la navegación principal ahora es por fecha.
-  void nextDevocional() {
-    goToNextDay();
+  void goToToday() {
+    _selectedDate = DateTime.now();
+    notifyListeners();
+  }
+
+  void setSelectedDate(DateTime newDate) {
+    _selectedDate = DateTime(
+        newDate.year, newDate.month, newDate.day); // Normaliza la fecha
+    notifyListeners();
+  }
+
+  // --- Lógica de la API ---
+
+  // Método para obtener los devocionales de la API
+  Future<void> _fetchDevocionales() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final response = await http.get(Uri.parse(Constants.apiUrl));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+
+        // --- CAMBIO CLAVE AQUÍ: Acceder a la estructura anidada del JSON ---
+        // Se espera que los devocionales estén en responseData['data']['es']['NTV']
+        final List<dynamic>? devocionalesJsonList =
+            responseData['data']?['es']?['NTV'];
+
+        if (devocionalesJsonList != null) {
+          _devocionales = devocionalesJsonList
+              .map((json) => Devocional.fromJson(json))
+              .toList();
+          // Asegúrate de que los devocionales estén ordenados por fecha
+          _devocionales.sort((a, b) => a.date.compareTo(b.date));
+          print('Devocionales cargados: ${_devocionales.length}');
+        } else {
+          _errorMessage =
+              'No se encontraron devocionales en la estructura esperada (data.es.NTV) o la lista está vacía.';
+          print(_errorMessage);
+          _devocionales = [
+            _createNoDataDevocional(DateTime.now())
+          ]; // Devocional de fallback
+        }
+      } else {
+        _errorMessage = 'Error al cargar devocionales: ${response.statusCode}.';
+        print(_errorMessage);
+        _devocionales = [
+          _createNoDataDevocional(DateTime.now())
+        ]; // Devocional de fallback
+      }
+    } catch (e) {
+      _errorMessage = 'Error de red o parseo: $e';
+      print(_errorMessage);
+      _devocionales = [
+        _createNoDataDevocional(DateTime.now())
+      ]; // Devocional de fallback
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // Devocional de fallback para cuando no hay datos
+  Devocional _createNoDataDevocional(DateTime date) {
+    final formattedDate = '${date.day}/${date.month}/${date.year}';
+    return Devocional(
+      id: 'no-data-${date.toIso8601String()}',
+      versiculo: 'No hay devocional disponible para el día ${formattedDate}.',
+      reflexion:
+          'Por favor, verifica tu conexión a internet o intenta más tarde. Estamos trabajando para tener el contenido disponible.',
+      paraMeditar: [
+        {
+          'cita': 'Salmos 119:105',
+          'texto':
+              'Tu palabra es una lámpara a mis pies; es una luz en mi sendero.'
+        },
+        {
+          'cita': 'Mateo 4:4',
+          'texto':
+              'No solo de pan vivirá el hombre, sino de toda palabra que sale de la boca de Dios.'
+        }
+      ],
+      oracion:
+          'Amado Padre, te pedimos que nos guíes y nos reveles tu verdad a través de tu Palabra. Amén.',
+      date: date,
+      version: 'NTV', // Ajusta según la versión por defecto que uses
+      language: 'es', // Ajusta según el idioma por defecto que uses
+      tags: ['Sin datos', 'Recordatorio'],
+    );
   }
 
   // --- Lógica de Favoritos ---
 
-  // Cargar favoritos desde SharedPreferences
-  Future<void> _loadFavorites() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? favoritesJson = prefs.getString('favorites');
-    if (favoritesJson != null) {
-      try {
-        final List<dynamic> jsonList = json.decode(favoritesJson);
-        _favoriteDevocionales =
-            jsonList.map((e) => Devocional.fromJson(e)).toList();
-      } catch (e) {
-        // En caso de que el JSON de favoritos esté corrupto
-        print('Error al cargar favoritos: $e');
-        _favoriteDevocionales = []; // Reiniciar la lista de favoritos
-      }
-      // No notificar aquí; initializeData() lo hará
-    }
-  }
-
   // Guardar favoritos en SharedPreferences
   Future<void> _saveFavorites() async {
     final prefs = await SharedPreferences.getInstance();
-    // Convertir la lista de objetos Devocional a una lista de mapas JSON y luego a String
-    final String jsonString =
-        json.encode(_favoriteDevocionales.map((e) => e.toJson()).toList());
-    await prefs.setString('favorites', jsonString);
+    // Convertir la lista de objetos Devocional a una lista de mapas JSON
+    final String encodedFavorites =
+        json.encode(_favoriteDevocionales.map((dev) => dev.toJson()).toList());
+    await prefs.setString('favorites', encodedFavorites);
+  }
+
+  // Cargar favoritos de SharedPreferences
+  Future<void> _loadFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? encodedFavorites = prefs.getString('favorites');
+    if (encodedFavorites != null) {
+      final List<dynamic> decodedList = json.decode(encodedFavorites);
+      _favoriteDevocionales =
+          decodedList.map((json) => Devocional.fromJson(json)).toList();
+    } else {
+      _favoriteDevocionales = [];
+    }
+    // No notificar aquí; initializeData() lo hará al final
   }
 
   // Verificar si un devocional es favorito
   bool isFavorite(Devocional devocional) {
-    // Compara por ID o por una combinación de atributos si el ID no es único
-    // Aquí, asumimos que el 'id' del devocional es único.
+    // Para verificar si es favorito, se recomienda usar el 'id' del devocional que es único.
     return _favoriteDevocionales.any((fav) => fav.id == devocional.id);
   }
 
@@ -189,6 +225,6 @@ class DevocionalProvider with ChangeNotifier {
     _showInvitationDialog = shouldShow;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('showInvitationDialog', shouldShow);
-    notifyListeners(); // Notifica para que la UI se actualice si es necesario
+    notifyListeners();
   }
 }

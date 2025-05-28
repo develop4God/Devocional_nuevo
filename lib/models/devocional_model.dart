@@ -12,6 +12,12 @@ class Devocional {
   final List<Map<String, String>> paraMeditar;
   final String oracion;
   final DateTime date;
+  // Nuevos campos que se han detectado en el JSON.
+  // Los hacemos nulos (String?, List<String>?) para que no sean obligatorios
+  // en caso de que no siempre estén presentes en todos los devocionales.
+  final String? version;
+  final String? language;
+  final List<String>? tags;
 
   Devocional({
     required this.id,
@@ -20,6 +26,9 @@ class Devocional {
     required this.paraMeditar,
     required this.oracion,
     required this.date,
+    this.version,
+    this.language,
+    this.tags,
   });
 
   /// Constructor factory para crear una instancia de [Devocional] desde un JSON.
@@ -27,45 +36,30 @@ class Devocional {
   /// Proporciona valores por defecto si algún campo es nulo en el JSON.
   factory Devocional.fromJson(Map<String, dynamic> json) {
     DateTime parsedDate;
-    final String? dateString = json['date']
-        as String?; // <--- CUIDADO AQUÍ: Lee como String? (puede ser nulo)
+    final String? dateString = json['date'] as String?;
 
     if (dateString != null && dateString.isNotEmpty) {
-      // <--- Verifica si la cadena de fecha no es nula ni vacía
       try {
-        // Intenta primero con el formato ISO 8601 (yyyy-MM-dd) que es común
         parsedDate = DateTime.parse(dateString);
       } catch (e) {
-        // Si falla, intenta con el formato "dd-MM-yyyy" que quizás estés usando
-        try {
-          List<String> parts =
-              dateString.split('-'); // Ahora dateString ya no es nulo
-          if (parts.length == 3) {
-            parsedDate = DateTime(
-                int.parse(parts[2]), int.parse(parts[1]), int.parse(parts[0]));
-          } else {
-            print(
-                'Advertencia: Formato de fecha desconocido para "$dateString". Usando fecha actual.');
-            parsedDate = DateTime.now(); // Fallback
-          }
-        } catch (innerE) {
-          print('Error final al parsear fecha: $innerE. Usando fecha actual.');
-          parsedDate = DateTime.now(); // Fallback final
-        }
+        print(
+            'Error al parsear la fecha "$dateString": $e. Usando fecha actual.');
+        parsedDate = DateTime.now(); // Fallback si hay un formato inesperado
       }
     } else {
-      // Si dateString es null o vacío, usa la fecha actual como fallback
       print(
           'Advertencia: El campo "date" es nulo o vacío en el JSON. Usando fecha actual.');
       parsedDate = DateTime.now();
     }
 
+    // El campo 'versiculo' ahora incluye la referencia (ej. "Filipenses 4:7:").
+    // Para no cambiar la lógica actual de tu UI, lo mantenemos tal cual.
+    // Si en el futuro quieres separar la referencia del texto, esta es la parte a modificar.
+    String rawVersiculo = json['versiculo'] ?? '';
+
     return Devocional(
-      id: json['id'] as String? ??
-          UniqueKey()
-              .hashCode
-              .toString(), // Usa UniqueKey si el ID puede ser nulo en JSON
-      versiculo: json['versiculo'] ?? '',
+      id: json['id'] as String? ?? UniqueKey().hashCode.toString(),
+      versiculo: rawVersiculo, // Se usa el valor directo del JSON
       reflexion: json['reflexion'] ?? '',
       paraMeditar: (json['para_meditar'] as List<dynamic>?)
               ?.map((item) => {
@@ -76,6 +70,12 @@ class Devocional {
           [],
       oracion: json['oracion'] ?? '',
       date: parsedDate,
+      // Mapeo de los nuevos campos
+      version: json['version'] as String?,
+      language: json['language'] as String?,
+      tags: (json['tags'] as List<dynamic>?)
+          ?.map((tag) => tag as String)
+          .toList(),
     );
   }
 
@@ -89,7 +89,12 @@ class Devocional {
       'oracion': oracion,
       'date': date
           .toIso8601String()
-          .substring(0, 10), // Guardar solo la fecha en formato YYYY-MM-DD
+          .split('T')
+          .first, // Guarda solo la fecha (yyyy-MM-dd)
+      // Incluir los nuevos campos en toJson
+      'version': version,
+      'language': language,
+      'tags': tags,
     };
   }
 }

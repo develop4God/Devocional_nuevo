@@ -11,7 +11,8 @@ import 'package:devocional_nuevo/splash_screen.dart'; // Asegúrate de que esta 
 
 void main() async {
   // <--- CAMBIO: main() ahora es async
-  WidgetsFlutterBinding.ensureInitialized(); // <--- CAMBIO: Asegura que los bindings de Flutter estén listos
+  WidgetsFlutterBinding
+      .ensureInitialized(); // <--- CAMBIO: Asegura que los bindings de Flutter estén listos
 
   // <--- CAMBIO: Inicializa los datos de localización para español
   // Esto debe hacerse ANTES de que cualquier widget que use DateFormat sea construido.
