@@ -10,12 +10,8 @@ import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:devocional_nuevo/splash_screen.dart'; // Asegúrate de que esta ruta sea correcta
 
 void main() async {
-  // <--- CAMBIO: main() ahora es async
-  WidgetsFlutterBinding
-      .ensureInitialized(); // <--- CAMBIO: Asegura que los bindings de Flutter estén listos
+  WidgetsFlutterBinding.ensureInitialized();
 
-  // <--- CAMBIO: Inicializa los datos de localización para español
-  // Esto debe hacerse ANTES de que cualquier widget que use DateFormat sea construido.
   await initializeDateFormatting('es', null);
 
   runApp(const MyApp());
@@ -30,6 +26,7 @@ class MyApp extends StatelessWidget {
       create: (context) => DevocionalProvider(),
       child: MaterialApp(
         title: 'Devocionales',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.deepPurple,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -40,8 +37,24 @@ class MyApp extends StatelessWidget {
           ),
           visualDensity: VisualDensity.adaptivePlatformDensity,
           useMaterial3: true,
+          // --- Define el estilo para el texto del splash screen aquí ---
+          textTheme: const TextTheme(
+            displaySmall: TextStyle(
+              // Usamos displaySmall para un texto de título grande
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(255, 255, 255, 255), // Blanco
+              shadows: [
+                Shadow(
+                  offset: Offset(2.0, 2.0), // Sombra más fuerte
+                  blurRadius: 5.0, // Más desenfoque
+                  color: Color.fromARGB(200, 0, 0, 0), // Sombra negra más opaca
+                ),
+              ],
+            ),
+            // Puedes añadir más estilos de texto aquí para un tema consistente
+          ),
         ),
-        // <--- CAMBIO: Añade los delegados y locales soportados para la internacionalización
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
@@ -51,9 +64,7 @@ class MyApp extends StatelessWidget {
           Locale('en', ''), // Soporte para inglés
           Locale('es', ''), // Soporte para español
         ],
-
-        home: const SplashScreen(),
-        debugShowCheckedModeBanner: false,
+        home: const SplashScreen(), // El SplashScreen es la primera pantalla
       ),
     );
   }

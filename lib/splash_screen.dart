@@ -1,11 +1,8 @@
 // lib/splash_screen.dart
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-// Importaciones para tu proyecto 'devocional_nuevo'
-import 'package:devocional_nuevo/pages/devocionales_page.dart';
-import 'package:devocional_nuevo/providers/devocional_provider.dart';
+import 'package:devocional_nuevo/app_initializer.dart'; // Importa el nuevo AppInitializer
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -25,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(
-          milliseconds: 1500), // Duración de la animación para el fondo/texto
+          milliseconds: 1500), // Duración de la animación del fade
     );
 
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -35,30 +32,27 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
 
-    _controller.forward(); // Inicia la animación
-    _initializeApp();
+    _controller.forward(); // Inicia la animación visual
+    _navigateToNextScreen(); // Llama al método para manejar la navegación
   }
 
-  Future<void> _initializeApp() async {
-    // Puedes ajustar este tiempo de espera.
-    await Future.delayed(const Duration(milliseconds: 2000));
-
-    final devocionalProvider =
-        Provider.of<DevocionalProvider>(context, listen: false);
-    await devocionalProvider.initializeData();
-
-    await Future.delayed(const Duration(
-        milliseconds: 500)); // Espera un poco más antes de la transición
+  Future<void> _navigateToNextScreen() async {
+    // Espera un tiempo mínimo para que la animación del splash se aprecie.
+    // Este tiempo es independiente de la carga de datos.
+    await Future.delayed(
+        const Duration(milliseconds: 5000)); // Usando tu duración de 5 segundos
 
     if (mounted) {
+      // Navega al AppInitializer, que se encargará de cargar los datos y luego ir a DevocionalesPage.
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
-          transitionDuration:
-              const Duration(milliseconds: 600), // Duración de la transición
+          transitionDuration: const Duration(
+              milliseconds: 600), // Duración de la transición de página
           pageBuilder: (context, animation, secondaryAnimation) =>
-              const DevocionalesPage(),
+              const AppInitializer(), // ¡Navega a AppInitializer!
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            // Animación de deslizamiento de página (tu código existente)
             const begin = Offset(1.0, 0.0);
             const end = Offset.zero;
             const curve = Curves.easeOutCubic;
@@ -84,57 +78,54 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    // Intenta obtener el estilo del tema definido en main.dart
+    final splashTextStyle = Theme.of(context).textTheme.displaySmall;
+
     return Scaffold(
       body: Stack(
-        // 'StackFit.expand' asegura que el Stack y su contenido cubran toda la pantalla.
-        fit: StackFit.expand,
+        fit: StackFit.expand, // Asegura que el Stack ocupe toda la pantalla
         children: [
-          // 1. Capa de la imagen de fondo (cubriendo toda la pantalla)
-          // La imagen de fondo aparecerá con la animación de fade.
+          // 1. Capa de la imagen de fondo
           FadeTransition(
             opacity: _fadeAnimation,
             child: Image.asset(
-              'assets/images/splash_background.png', // <<< Tu imagen de fondo principal
-              fit: BoxFit
-                  .cover, // ¡CRUCIAL! Esto hace que la imagen cubra todo el espacio disponible.
-              alignment: Alignment.center, // Centra la imagen si hay recortes.
+              'assets/images/splash_background.png', // Asegúrate de que esta ruta sea correcta
+              fit: BoxFit.cover, // Cubre todo el espacio
+              alignment: Alignment.center,
             ),
           ),
 
-          // 2. Capa del texto "Preparando tu espacio con Dios..." superpuesto.
-          // El texto también aparecerá con la animación de fade del _fadeAnimation.
+          // EL BLOQUE DEL GRADIENTE OSCURO HA SIDO ELIMINADO AQUÍ
+
+          // 2. Capa del texto superpuesto
           Center(
             child: FadeTransition(
               opacity: _fadeAnimation,
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment
-                    .center, // Centra verticalmente los elementos
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Aquí no hay Image.asset del logo, si no lo quieres mostrar.
-                  // Si tu splash_background.png ya tiene el logo integrado, esto está bien.
-
-                  // Puedes añadir un SizedBox si quieres más espacio encima del texto
-                  // const SizedBox(height: 100), // Ejemplo: Ajusta este valor si necesitas mover el texto más abajo
+                  // SizedBox para empujar el texto hacia abajo
+                  SizedBox(
+                      height:
+                          150), // Puedes ajustar este valor según sea necesario
 
                   Text(
                     'Preparando tu espacio con Dios...',
-                    textAlign:
-                        TextAlign.center, // Centra el texto si es multilínea
-                    style: TextStyle(
-                      fontSize: 22, // Tamaño de fuente original
-                      fontWeight: FontWeight.bold,
-                      color:
-                          Color.fromARGB(255, 255, 255, 255), // Color del texto
-                      // Sombras para mejorar la visibilidad sobre el fondo
-                      shadows: [
-                        Shadow(
-                          offset: Offset(1.0, 1.0),
-                          blurRadius: 3.0,
-                          color: Color.fromARGB(
-                              150, 0, 0, 0), // Sombra negra semi-transparente
+                    textAlign: TextAlign.center,
+                    // Usa el estilo del tema si existe, de lo contrario, usa el estilo hardcodeado como fallback.
+                    style: splashTextStyle ??
+                        const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                          shadows: [
+                            Shadow(
+                              offset: Offset(2.0, 2.0),
+                              blurRadius: 5.0,
+                              color: Color.fromARGB(200, 0, 0, 0),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
                   ),
                 ],
               ),
