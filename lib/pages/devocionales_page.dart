@@ -203,9 +203,9 @@ Compartido desde: Mi Relación Íntima con Dios App
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons
-                .favorite), // Icono de corazón (lleno) para indicar "ir a favoritos"
-            tooltip: 'Ver favoritos',
+            icon: const Icon(Icons.bookmark), // CAMBIO AQUÍ: Icono de marcador
+            tooltip:
+                'Ver favoritos guardados', // CAMBIO AQUÍ: Tooltip actualizado
             onPressed: () {
               Navigator.push(
                 context,
@@ -480,8 +480,8 @@ Compartido desde: Mi Relación Íntima con Dios App
                       tooltip: isFavorite
                           ? 'Quitar de favoritos'
                           : 'Agregar a favoritos',
-                      onPressed: () => devocionalProvider
-                          .toggleFavorite(d), // Usa el devocional actual
+                      onPressed: () => devocionalProvider.toggleFavorite(
+                          d, context), // **Pasa el context aquí** [cite: 1]
                       icon: Icon(
                           isFavorite ? Icons.favorite : Icons.favorite_border),
                     ),
@@ -516,3 +516,4 @@ Compartido desde: Mi Relación Íntima con Dios App
     );
   }
 }
+// Este código define la página principal de devocionales, donde se muestra el devocional del día, se permite navegar entre días, compartir el devocional y agregarlo a favoritos.

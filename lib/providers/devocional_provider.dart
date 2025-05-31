@@ -195,18 +195,40 @@ class DevocionalProvider with ChangeNotifier {
   }
 
   // Añadir o quitar de favoritos
-  void toggleFavorite(Devocional devocional) {
+  void toggleFavorite(Devocional devocional, BuildContext context) {
+    // SE AÑADE BuildContext context
     // Asegurarse de no intentar añadir el devocional "no disponible" a favoritos
     if (devocional.id.startsWith('no-data')) {
       // Opcional: mostrar un mensaje al usuario o loguear
       // print('No se puede añadir un devocional no disponible a favoritos.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        // Mensaje para devocional no disponible
+        const SnackBar(
+          content: Text('Este devocional no se puede guardar como favorito.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
       return;
     }
 
     if (isFavorite(devocional)) {
       _favoriteDevocionales.removeWhere((fav) => fav.id == devocional.id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        // Mensaje al remover
+        const SnackBar(
+          content: Text('Devocional removido de favoritos'),
+          duration: Duration(seconds: 2),
+        ),
+      );
     } else {
       _favoriteDevocionales.add(devocional);
+      ScaffoldMessenger.of(context).showSnackBar(
+        // Mensaje al guardar
+        const SnackBar(
+          content: Text('Devocional guardado como favorito'),
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
     _saveFavorites(); // Guardar el cambio inmediatamente
     notifyListeners(); // Notificar a los widgets para que se actualicen

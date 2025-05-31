@@ -15,7 +15,7 @@ class FavoritesPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
-        title: const Text('Mis Favoritos'),
+        title: const Text('Mis favoritos guardados'),
         centerTitle: true,
       ),
       body: Consumer<DevocionalProvider>(
@@ -85,33 +85,20 @@ class FavoritesPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          // Muestra la fecha del devocional favorito
-                          DateFormat('dd MMMM Geißler', 'es').format(devocional
-                              .date), // Agregué 'yyyy' para mostrar el año
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          devocional
-                              .versiculo, // Muestra el versículo como título
+                          DateFormat('dd MMMM yyyy', 'es')
+                              .format(devocional.date),
                           style: const TextStyle(
-                            fontSize: 18,
                             fontWeight: FontWeight.bold,
+                            fontSize: 16,
                             color: Colors.deepPurple,
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          devocional
-                              .reflexion, // Muestra un extracto de la reflexión
+                          devocional.versiculo,
                           style: const TextStyle(
-                            fontSize: 14,
+                            fontStyle: FontStyle.italic,
+                            fontSize: 15,
                             color: Colors.black87,
                           ),
                           maxLines: 3, // Muestra solo las primeras 3 líneas
@@ -130,11 +117,12 @@ class FavoritesPage extends StatelessWidget {
                             tooltip: 'Quitar de favoritos',
                             onPressed: () {
                               // Usamos toggleFavorite que se encarga de añadir/quitar
-                              devocionalProvider.toggleFavorite(devocional);
+                              devocionalProvider.toggleFavorite(devocional,
+                                  context); // **CAMBIO AQUÍ: Se añade el context**
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                     content: Text(
-                                        '"${devocional.versiculo}" eliminado de favoritos.')),
+                                        '\"${devocional.versiculo}\" eliminado de favoritos.')),
                               );
                             },
                           ),
