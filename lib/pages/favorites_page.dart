@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart'; // Para formatear la fecha
 import 'package:devocional_nuevo/models/devocional_model.dart'; // Asegúrate de importar tu modelo
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
+import 'package:devocional_nuevo/pages/devocionales_page.dart'; // Importar DevocionalesPage
 
 class FavoritesPage extends StatelessWidget {
   const FavoritesPage({super.key});
@@ -36,22 +37,22 @@ class FavoritesPage extends StatelessWidget {
                       size: 80,
                       color: Colors.grey[400],
                     ),
-                    const SizedBox(height: 20),
-                    const Text(
+                    const SizedBox(height: 16),
+                    Text(
                       'Aún no tienes devocionales favoritos.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 18,
-                        color: Colors.grey,
+                        color: Colors.grey[600],
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Marca el corazón en un devocional para guardarlo aquí.',
+                    const SizedBox(height: 8),
+                    Text(
+                      'Marca el ícono del corazón en un devocional para guardarlo aquí.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
+                        fontSize: 14,
+                        color: Colors.grey[500],
                       ),
                     ),
                   ],
@@ -63,62 +64,70 @@ class FavoritesPage extends StatelessWidget {
           return ListView.builder(
             itemCount: favoriteDevocionales.length,
             itemBuilder: (context, index) {
-              final devocional = favoriteDevocionales[index];
+              final Devocional devocional = favoriteDevocionales[index];
               return Card(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 elevation: 4,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
+                    borderRadius: BorderRadius.circular(12)),
                 child: InkWell(
-                  // Hace que toda la tarjeta sea clickable
+                  // Al tocar la tarjeta, navega a la página del devocional específico
                   onTap: () {
-                    // Cuando se toca un favorito, navegar a la DevocionalesPage
-                    // y establecer esa fecha como la fecha seleccionada.
-                    devocionalProvider.setSelectedDate(devocional.date);
-                    Navigator.pop(
-                        context); // Cierra FavoritesPage y regresa a DevocionalesPage
+                    // << CORREGIDO: Pasamos el initialDevocionalId a DevocionalesPage
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DevocionalesPage(
+                          initialDevocionalId: devocional.id,
+                        ),
+                      ),
+                    );
                   },
+                  borderRadius: BorderRadius.circular(12),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Stack(
                       children: [
-                        Text(
-                          DateFormat('dd MMMM yyyy', 'es')
-                              .format(devocional.date),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Colors.deepPurple,
-                          ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              DateFormat('EEEE, d MMMM yyyy', 'es')
+                                  .format(devocional.date),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall!
+                                  .copyWith(
+                                      color: Colors.deepPurple,
+                                      fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              devocional.versiculo,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(fontWeight: FontWeight.w600),
+                              maxLines: 2,
+                              overflow: TextOverflow
+                                  .ellipsis, // Añade puntos suspensivos si se recorta
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          devocional.versiculo,
-                          style: const TextStyle(
-                            fontStyle: FontStyle.italic,
-                            fontSize: 15,
-                            color: Colors.black87,
-                          ),
-                          maxLines: 3, // Muestra solo las primeras 3 líneas
-                          overflow: TextOverflow
-                              .ellipsis, // Añade puntos suspensivos si se recorta
-                        ),
+                        // Botón para quitar de favoritos (alineado a la derecha)
                         Align(
-                          alignment: Alignment.bottomRight,
+                          alignment: Alignment
+                              .topRight, // Cambiado de bottomRight a topRight para no solapar texto
                           child: IconButton(
                             icon: const Icon(
-                              Icons
-                                  .favorite, // Siempre lleno, ya que estamos en la lista de favoritos
+                              Icons.favorite,
                               color: Colors.red,
                               size: 28,
                             ),
                             tooltip: 'Quitar de favoritos',
                             onPressed: () {
-                              // Usamos toggleFavorite que se encarga de añadir/quitar
-                              devocionalProvider.toggleFavorite(devocional,
-                                  context); // **CAMBIO AQUÍ: Se añade el context**
+                              devocionalProvider.toggleFavorite(
+                                  devocional, context);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                     content: Text(

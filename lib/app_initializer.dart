@@ -18,15 +18,25 @@ class _AppInitializerState extends State<AppInitializer> {
   @override
   void initState() {
     super.initState();
-    _initializeAppData(); // Inicia la carga de datos al crearse el widget
+    // Se utiliza addPostFrameCallback para asegurar que la inicialización
+    // se realice después de que el primer frame del widget haya sido construido,
+    // evitando el error de setState/notifyListeners durante la fase de build.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeAppData();
+    });
   }
 
   Future<void> _initializeAppData() async {
+    // Asegurarse de que el contexto sea válido antes de usar Provider.of
+    if (!mounted) return;
+
     final devocionalProvider =
         Provider.of<DevocionalProvider>(context, listen: false);
     await devocionalProvider.initializeData(); // Carga los datos del devocional
 
     // Una vez que los datos están cargados, navega a la página principal.
+    // Se verifica 'mounted' nuevamente antes de navegar para evitar errores
+    // si el widget ya no está en el árbol de widgets.
     if (mounted) {
       Navigator.pushReplacement(
         context,

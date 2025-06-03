@@ -7,16 +7,19 @@ import 'package:share_plus/share_plus.dart';
 import 'dart:io' show File;
 import 'package:path_provider/path_provider.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:intl/intl.dart'; // Para formatear la fecha
+import 'package:intl/intl.dart'; // Para formatear la fecha, ya no está comentado
 
 // Importa tus propios modelos y providers
 import 'package:devocional_nuevo/models/devocional_model.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
-import 'package:devocional_nuevo/pages/favorites_page.dart'; // <-- Importa la nueva página de favoritos
+import 'package:devocional_nuevo/pages/favorites_page.dart'; // Importa la página de favoritos
 
 // --- DevocionalesPage (Página principal de devocionales) ---
 class DevocionalesPage extends StatefulWidget {
-  const DevocionalesPage({super.key});
+  // Ahora puede recibir un devocional ID para mostrarlo directamente
+  final String? initialDevocionalId;
+
+  const DevocionalesPage({super.key, this.initialDevocionalId});
 
   @override
   State<DevocionalesPage> createState() => _DevocionalesPageState();
@@ -24,168 +27,129 @@ class DevocionalesPage extends StatefulWidget {
 
 class _DevocionalesPageState extends State<DevocionalesPage> {
   final ScreenshotController screenshotController = ScreenshotController();
+  // Índice para controlar el devocional actual en la lista filtrada
+  int _currentDevocionalIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final devocionalProvider =
+          Provider.of<DevocionalProvider>(context, listen: false);
+
+      // Solo inicializa si no está cargando y si la lista de devocionales está vacía.
+      // La carga inicial y la configuración de preferencias se maneja en initializeData().
+      if (!devocionalProvider.isLoading &&
+          devocionalProvider.devocionales.isEmpty) {
+        devocionalProvider.initializeData();
+      }
+
+      // Si se proporcionó un ID de devocional inicial (desde favoritos, por ejemplo)
+      // y los devocionales ya están cargados, intenta encontrarlo.
+      // Si no están cargados, el listener (Consumer) se encargará cuando lo estén.
+      if (widget.initialDevocionalId != null &&
+          devocionalProvider.devocionales.isNotEmpty) {
+        final index = devocionalProvider.devocionales.indexWhere(
+          // << CORREGIDO: devocales -> devocionales
+          (d) => d.id == widget.initialDevocionalId,
+        );
+        if (index != -1) {
+          setState(() {
+            _currentDevocionalIndex = index;
+          });
+        }
+      }
+    });
+  }
 
   /// Muestra el diálogo de invitación.
   void _showInvitation(BuildContext context) {
     final devocionalProvider =
         Provider.of<DevocionalProvider>(context, listen: false);
-    bool doNotShowAgainChecked = !devocionalProvider.showInvitationDialog;
+    bool doNotShowAgainChecked = false; // Estado inicial del checkbox
 
     showDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
-          title: const Text(
-            "¡Oración de fe, para vida eterna!",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          content: const SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "Repite esta oración en voz alta, con fe y creyendo con todo el corazón:\n",
-                  textAlign: TextAlign.justify,
-                ),
-                Text(
-                  "Jesucristo, creo que moriste en la cruz por mi, te pido perdón y me arrepiento de corazón por mis pecados. Te pido seas mi Salvador y el señor de vida. Líbrame de la muerte eterna y escribe mi nombre en el libro de la vida.\nEn el poderoso nombre de Jesús, amén.\n",
-                  textAlign: TextAlign.justify,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
-                ),
-                Text(
-                  "Si hiciste esta oración y lo crees:\nSerás salvo tu y tu casa (Hch 16:31)\nVivirás eternamente (Jn 11:25-26)\nNunca más tendrás sed (Jn 4:14)\nEstarás con Cristo en los cielos (Ap 19:9)\nHay gozo en los cielos cuando un pecador se arrepiente (Luc 15:10)\nEscrito está y Dios es fiel (Dt 7:9)\n\nDesde ya tienes salvación y vida nueva en Jesucristo.",
-                  textAlign: TextAlign.justify,
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            Row(
-              children: [
-                Checkbox(
-                  value: doNotShowAgainChecked,
-                  onChanged: (val) {
-                    setDialogState(() {
-                      doNotShowAgainChecked = val ?? false;
-                    });
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          // Usa StatefulBuilder para que el estado del checkbox se actualice
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text('¡Hola!'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const Text(
+                      'Te invitamos a nuestro grupo de WhatsApp para crecer juntos en la fe.'),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: doNotShowAgainChecked,
+                        onChanged: (bool? newValue) {
+                          setState(() {
+                            doNotShowAgainChecked = newValue ?? false;
+                          });
+                        },
+                      ),
+                      const Text('No mostrar de nuevo'),
+                    ],
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Ahora no'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    if (doNotShowAgainChecked) {
+                      devocionalProvider.setInvitationDialogVisibility(false);
+                    }
                   },
                 ),
-                const Expanded(
-                    child: Text('Ya la hice 🙏,No mostrar nuevamente')),
+                TextButton(
+                  child: const Text('Unirme'),
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    if (doNotShowAgainChecked) {
+                      devocionalProvider.setInvitationDialogVisibility(false);
+                    }
+                    // Implementa la lógica para unirse al grupo de WhatsApp
+                    // Por ejemplo, usando url_launcher para abrir un enlace
+                    // Puedes obtener el enlace de WhatsApp de Constants.whatsappLink si lo añades allí
+                    // launchUrl(Uri.parse('https://chat.whatsapp.com/TU_INVITACION'));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Abriendo enlace de WhatsApp...'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                ),
               ],
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: TextButton(
-                onPressed: () {
-                  devocionalProvider
-                      .setInvitationDialogVisibility(!doNotShowAgainChecked);
-                  Navigator.of(context).pop();
-                  devocionalProvider.goToNextDay(); // Usar goToNextDay
-                },
-                child: const Text("Siguiente devocional",
-                    style: TextStyle(color: Colors.deepPurple)),
-              ),
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child:
-                    const Text("Cancelar", style: TextStyle(color: Colors.red)),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// Comparte el devocional actual como texto.
-  Future<void> _shareAsText(Devocional d) async {
-    final shareText = '''
-${d.versiculo}
-
-Reflexión:
-${d.reflexion}
-
-Para meditar:
-${d.paraMeditar.map((m) => "• ${m['cita']}\n${m['texto']}").join('\n\n')}
-
-Oración:
-${d.oracion}
-
-Compartido desde: Mi Relación Íntima con Dios App
-''';
-    await Share.share(shareText, subject: 'Devocional: ${d.versiculo}');
-  }
-
-  /// Captura el contenido del devocional como una imagen y lo comparte.
-  Future<void> _shareAsImage(Devocional d) async {
-    try {
-      final imageBytes = await screenshotController.capture();
-      if (imageBytes == null) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('No se pudo capturar la imagen.')),
-          );
-        }
-        return;
-      }
-
-      final directory = (await getTemporaryDirectory()).path;
-      final imgPath =
-          '$directory/devocional_share_${DateTime.now().millisecondsSinceEpoch}.png';
-      final imgFile = File(imgPath);
-      await imgFile.writeAsBytes(imageBytes);
-
-      await Share.shareXFiles([XFile(imgPath)],
-          subject: 'Devocional: ${d.versiculo}');
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al compartir imagen: $e')),
-        );
-      }
-    }
-  }
-
-  // Función para mostrar el selector de fecha (DatePicker)
-  Future<void> _selectDate(
-      BuildContext context, DevocionalProvider provider) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: provider.selectedDate,
-      firstDate: DateTime(2000), // Fecha mínima
-      lastDate: DateTime.now().add(const Duration(
-          days: 365 * 10)), // Fecha máxima (ej. 10 años en el futuro)
-      builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Colors.deepPurple,
-              onPrimary: Colors.white,
-              onSurface: Colors.black,
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.deepPurple,
-              ),
-            ),
-          ),
-          child: child!,
+            );
+          },
         );
       },
     );
+  }
 
-    if (pickedDate != null && pickedDate != provider.selectedDate) {
-      provider.setSelectedDate(pickedDate);
+  /// Comparte el devocional como texto.
+  Future<void> _shareAsText(Devocional devocional) async {
+    final text =
+        "Devocional del día:\n\nVersículo: ${devocional.versiculo}\n\nReflexión: ${devocional.reflexion}\n\nPara Meditar:\n${devocional.paraMeditar.map((p) => '${p.cita}: ${p.texto}').join('\n')}\n\nOración: ${devocional.oracion}\n\nVersión: ${devocional.version ?? 'N/A'}\nIdioma: ${devocional.language ?? 'N/A'}\nFecha: ${DateFormat('dd/MM/yyyy').format(devocional.date)}";
+    await Share.share(text);
+  }
+
+  /// Comparte el devocional como imagen (captura de pantalla).
+  Future<void> _shareAsImage(Devocional devocional) async {
+    final image = await screenshotController.capture();
+    if (image != null) {
+      final directory = await getApplicationDocumentsDirectory();
+      final imagePath = await File('${directory.path}/devocional.png').create();
+      await imagePath.writeAsBytes(image);
+      await Share.shareXFiles([XFile(imagePath.path)],
+          text: 'Devocional del día');
     }
   }
 
@@ -193,25 +157,138 @@ Compartido desde: Mi Relación Íntima con Dios App
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Mi relación íntima con Dios',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
+        backgroundColor: Colors.deepPurple,
+        foregroundColor: Colors.white,
+        title: Consumer<DevocionalProvider>(
+          builder: (context, devocionalProvider, child) {
+            final List<Devocional> devocionales =
+                devocionalProvider.devocionales;
+            if (devocionales.isEmpty) {
+              return const Text('Cargando devocionales...');
+            }
+            // << CORREGIDO: Usar la fecha del devocional actual
+            return Text(DateFormat('EEEE, d MMMM', 'es').format(devocionales
+                    .isEmpty
+                ? DateTime.now() // Si no hay devocionales, usa la fecha actual
+                : devocionales[_currentDevocionalIndex].date));
+          },
         ),
+        centerTitle: true,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.bookmark), // CAMBIO AQUÍ: Icono de marcador
-            tooltip:
-                'Ver favoritos guardados', // CAMBIO AQUÍ: Tooltip actualizado
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        const FavoritesPage()), // <-- NAVEGAR A FAVORITESPAGE
+          Consumer<DevocionalProvider>(
+            builder: (context, devocionalProvider, child) {
+              final List<Devocional> devocionales =
+                  devocionalProvider.devocionales;
+              return Row(
+                children: [
+                  // Selector de Idioma
+                  DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: devocionalProvider.selectedLanguage,
+                      icon: const Icon(Icons.language, color: Colors.white),
+                      dropdownColor: Colors.deepPurple[700],
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          devocionalProvider.setSelectedLanguage(newValue);
+                          // Resetear el índice a 0 al cambiar de idioma
+                          setState(() {
+                            _currentDevocionalIndex = 0;
+                          });
+                        }
+                      },
+                      items: <String>[
+                        'es',
+                        'en'
+                      ] // Añade aquí los idiomas soportados
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value.toUpperCase(),
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  // Selector de Versión
+                  DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: devocionalProvider.selectedVersion,
+                      icon: const Icon(Icons.menu_book, color: Colors.white),
+                      dropdownColor: Colors.deepPurple[700],
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          devocionalProvider.setSelectedVersion(newValue);
+                          // Resetear el índice a 0 al cambiar de versión
+                          setState(() {
+                            _currentDevocionalIndex = 0;
+                          });
+                        }
+                      },
+                      items: <String>[
+                        'RVR1960',
+                        'NVI'
+                      ] // Asegúrate de que estas coincidan con tu JSON
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  // Botón de calendario (DatePicker)
+                  IconButton(
+                    icon: const Icon(Icons.calendar_today),
+                    onPressed: () async {
+                      final DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate: devocionales.isEmpty
+                            ? DateTime.now()
+                            : devocionales[_currentDevocionalIndex]
+                                .date, // << CORREGIDO: usar fecha del devocional actual
+                        firstDate:
+                            DateTime(2020), // Rango de fechas para el picker
+                        lastDate: DateTime(2030),
+                      );
+                      if (picked != null) {
+                        // Buscar el devocional para la fecha seleccionada
+                        final int index = devocionales.indexWhere(
+                          (d) =>
+                              d.date.year == picked.year &&
+                              d.date.month == picked.month &&
+                              d.date.day == picked.day,
+                        );
+                        if (index != -1) {
+                          setState(() {
+                            _currentDevocionalIndex = index;
+                          });
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text(
+                                    'No hay devocional disponible para esta fecha')),
+                          );
+                        }
+                      }
+                    },
+                  ),
+                  // Botón para ir a favoritos
+                  IconButton(
+                    icon: const Icon(Icons.favorite),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const FavoritesPage()),
+                      );
+                    },
+                  ),
+                ],
               );
             },
           ),
@@ -219,22 +296,31 @@ Compartido desde: Mi Relación Íntima con Dios App
       ),
       body: Consumer<DevocionalProvider>(
         builder: (context, devocionalProvider, child) {
+          final List<Devocional> devocionales = devocionalProvider.devocionales;
+
           if (devocionalProvider.isLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (devocionalProvider.errorMessage != null) {
+          }
+
+          if (devocionalProvider.errorMessage != null && devocionales.isEmpty) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(devocionalProvider.errorMessage!,
-                        textAlign: TextAlign.center),
+                    const Icon(Icons.error_outline,
+                        color: Colors.red, size: 50),
+                    const SizedBox(height: 10),
+                    Text(
+                      devocionalProvider.errorMessage!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.red, fontSize: 16),
+                    ),
                     const SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () => devocionalProvider
-                          .initializeData(), // Reintentar cargar todo
-                      child: const Text('Reintentar'),
+                      onPressed: () => devocionalProvider.initializeData(),
+                      child: const Text('Reintentar Carga'),
                     ),
                   ],
                 ),
@@ -242,270 +328,192 @@ Compartido desde: Mi Relación Íntima con Dios App
             );
           }
 
-          final d = devocionalProvider.currentDevocional;
+          if (devocionales.isEmpty) {
+            return const Center(
+              child: Text(
+                'No hay devocionales disponibles para el idioma/versión seleccionados.',
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
 
-          // Nuevo: Verificar si el devocional actual es el "no disponible" (placeholder)
-          if (d == null || d.id.startsWith('no-data')) {
-            return Center(
-              child: Padding(
+          // Asegurarse de que el índice no esté fuera de rango
+          if (_currentDevocionalIndex >= devocionales.length) {
+            _currentDevocionalIndex = devocionales.length - 1;
+            if (_currentDevocionalIndex < 0)
+              _currentDevocionalIndex = 0; // Asegurar que no sea negativo
+          }
+
+          final Devocional currentDevocional =
+              devocionales[_currentDevocionalIndex];
+          final bool isFavorite =
+              devocionalProvider.isFavorite(currentDevocional);
+
+          return Screenshot(
+            controller: screenshotController,
+            child: Container(
+              color: Theme.of(context)
+                  .scaffoldBackgroundColor, // Fondo para la captura
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'No hay devocional disponible para esta fecha.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
+                    // Versículo
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.deepPurple[100],
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.deepPurple.shade300),
+                      ),
+                      child: AutoSizeText(
+                        currentDevocional.versiculo,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.deepPurple.shade800,
+                            ),
+                        maxLines: 5,
                       ),
                     ),
                     const SizedBox(height: 20),
-                    ElevatedButton.icon(
-                      onPressed: () => _selectDate(context, devocionalProvider),
-                      icon: const Icon(Icons.calendar_today),
-                      label: const Text('Elegir otra fecha'),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.deepPurple,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
+
+                    // Reflexión
+                    Text(
+                      'Reflexión:',
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.deepPurple),
                     ),
                     const SizedBox(height: 10),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        devocionalProvider.setSelectedDate(DateTime.now());
-                      },
-                      icon: const Icon(Icons.today),
-                      label: const Text('Ir al día de hoy'),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.deepPurple,
-                        backgroundColor: Colors.white,
-                        side: const BorderSide(color: Colors.deepPurple),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
+                    Text(
+                      currentDevocional.reflexion,
+                      style: const TextStyle(fontSize: 16),
                     ),
-                  ],
-                ),
-              ),
-            );
-          }
+                    const SizedBox(height: 20),
 
-          return LayoutBuilder(
-            builder: (context, constraints) {
-              return ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Screenshot(
-                    controller: screenshotController,
-                    child: Container(
-                      color: Theme.of(context)
-                          .scaffoldBackgroundColor, // Asegura que el fondo sea capturado
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 16.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.arrow_back_ios),
-                                    onPressed:
-                                        devocionalProvider.goToPreviousDay,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => _selectDate(
-                                        context, devocionalProvider),
-                                    child: Text(
-                                      // CAMBIO AQUÍ: Eliminar 'Geißler' del formato
-                                      DateFormat('dd MMMM',
-                                              'es') // Antes era 'dd MMMM Geißler'
-                                          .format(
-                                              devocionalProvider.selectedDate),
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.deepPurple,
-                                      ),
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.arrow_forward_ios),
-                                    onPressed: devocionalProvider.goToNextDay,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Center(
-                              child: AutoSizeText(
-                                d.versiculo,
-                                style: TextStyle(
+                    // Sección "Para Meditar"
+                    Text(
+                      'Para Meditar:',
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.deepPurple),
+                    ),
+                    const SizedBox(height: 10),
+                    // << CORREGIDO: Acceso directo a item.cita y item.texto
+                    ...currentDevocional.paraMeditar.map((item) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text:
+                                    '${item.cita}: ', // Ahora item es de tipo ParaMeditar
+                                style: const TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                  color: Colors.deepPurple.shade700,
-                                ),
-                                textAlign: TextAlign.center,
-                                maxLines: 3,
-                                minFontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              'Reflexión:',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17,
-                                color: Colors.deepPurple.shade600,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            AutoSizeText(
-                              d.reflexion,
-                              style: const TextStyle(fontSize: 16, height: 1.4),
-                              textAlign: TextAlign.justify,
-                              minFontSize: 14,
-                            ),
-                            const SizedBox(height: 20),
-                            if (d.paraMeditar.isNotEmpty) ...[
-                              Text(
-                                'Para meditar:',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 17,
-                                  color: Colors.deepPurple.shade600,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              ...d.paraMeditar.map((m) {
-                                final cita = m['cita'] ?? '';
-                                final texto = m['texto'] ?? '';
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 16),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      AutoSizeText(
-                                        cita,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: Colors.deepPurple.shade700,
-                                          fontStyle: FontStyle.italic,
-                                        ),
-                                        maxLines: 2,
-                                        minFontSize: 14,
-                                      ),
-                                      const SizedBox(height: 6),
-                                      AutoSizeText(
-                                        texto,
-                                        style: const TextStyle(
-                                            fontSize: 16, height: 1.4),
-                                        textAlign: TextAlign.justify,
-                                        minFontSize: 14,
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }),
-                              const SizedBox(height: 4),
-                            ],
-                            Text(
-                              'Oración:',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17,
-                                color: Colors.deepPurple.shade600,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            AutoSizeText(
-                              d.oracion,
-                              style: const TextStyle(
                                   fontSize: 16,
-                                  height: 1.4,
-                                  fontStyle: FontStyle.italic),
-                              textAlign: TextAlign.justify,
-                              minFontSize: 14,
-                            ),
-                            const SizedBox(height: 24),
-                          ],
+                                  color: Colors.deepPurple,
+                                ),
+                              ),
+                              TextSpan(
+                                text: item
+                                    .texto, // Ahora item es de tipo ParaMeditar
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ],
+                          ),
                         ),
+                      );
+                    }).toList(),
+                    const SizedBox(height: 20),
+
+                    // Oración
+                    Text(
+                      'Oración:',
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.deepPurple),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      currentDevocional.oracion,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Información de Versión y Tags (si existen)
+                    if (currentDevocional.version != null ||
+                        currentDevocional.language != null ||
+                        currentDevocional.tags != null)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Detalles:',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.deepPurple),
+                          ),
+                          const SizedBox(height: 10),
+                          if (currentDevocional.version != null)
+                            Text('Versión: ${currentDevocional.version}',
+                                style: const TextStyle(fontSize: 14)),
+                          if (currentDevocional.language != null)
+                            Text('Idioma: ${currentDevocional.language}',
+                                style: const TextStyle(fontSize: 14)),
+                          if (currentDevocional.tags != null &&
+                              currentDevocional.tags!.isNotEmpty)
+                            Text('Temas: ${currentDevocional.tags!.join(', ')}',
+                                style: const TextStyle(fontSize: 14)),
+                          const SizedBox(height: 20),
+                        ],
                       ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          );
-        },
-      ),
-      bottomNavigationBar: Consumer<DevocionalProvider>(
-        builder: (context, devocionalProvider, child) {
-          final d = devocionalProvider.currentDevocional;
-          // No mostrar la barra si no hay un devocional válido cargado (o es el placeholder)
-          if (d == null ||
-              devocionalProvider.isLoading ||
-              d.id.startsWith('no-data')) {
-            return const SizedBox
-                .shrink(); // O un contenedor vacío para ocultarlo
-          }
 
-          bool isFavorite = devocionalProvider.isFavorite(d);
-
-          return BottomAppBar(
-            color: Colors.deepPurple,
-            child: IconTheme(
-              data: const IconThemeData(color: Colors.white),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    IconButton(
-                      tooltip: isFavorite
-                          ? 'Quitar de favoritos'
-                          : 'Agregar a favoritos',
-                      onPressed: () => devocionalProvider.toggleFavorite(
-                          d, context), // **Pasa el context aquí** [cite: 1]
-                      icon: Icon(
-                          isFavorite ? Icons.favorite : Icons.favorite_border),
+                    // Botones de acción
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        // Botón Favoritos
+                        IconButton(
+                          tooltip: isFavorite
+                              ? 'Quitar de favoritos'
+                              : 'Guardar como favorito',
+                          onPressed: () => devocionalProvider.toggleFavorite(
+                              currentDevocional, context),
+                          icon: Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color: Colors.red,
+                            size: 30,
+                          ),
+                        ),
+                        // Botón Compartir como Texto
+                        IconButton(
+                          tooltip: 'Compartir como texto',
+                          onPressed: () => _shareAsText(currentDevocional),
+                          icon: const Icon(Icons.share, size: 30),
+                        ),
+                        // Botón Compartir como Imagen
+                        IconButton(
+                          tooltip: 'Compartir como imagen (screenshot)',
+                          onPressed: () => _shareAsImage(currentDevocional),
+                          icon: const Icon(Icons.image, size: 30),
+                        ),
+                        // Botón de compartir en grupo (WhatsApp, etc.)
+                        IconButton(
+                          tooltip: 'Unirme al grupo',
+                          // << CORREGIDO: Cambiado Icons.whatsapp a Icons.group
+                          onPressed: () => _showInvitation(context),
+                          icon: const Icon(Icons.group, size: 30),
+                        ),
+                      ],
                     ),
-                    IconButton(
-                      tooltip: 'Compartir como texto',
-                      onPressed: () => _shareAsText(d),
-                      icon: const Icon(Icons.share),
-                    ),
-                    IconButton(
-                      tooltip: 'Compartir como imagen (screenshot)',
-                      onPressed: () => _shareAsImage(d),
-                      icon: const Icon(Icons.image),
-                    ),
-                    IconButton(
-                      tooltip: 'Siguiente devocional',
-                      onPressed: () {
-                        if (devocionalProvider.showInvitationDialog) {
-                          _showInvitation(context);
-                        } else {
-                          devocionalProvider.goToNextDay(); // Usar goToNextDay
-                        }
-                      },
-                      icon: const Icon(Icons.arrow_forward),
-                    ),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
@@ -513,7 +521,62 @@ Compartido desde: Mi Relación Íntima con Dios App
           );
         },
       ),
+      // --- BARRAS DE NAVEGACIÓN INFERIOR (DevocionalesPage) ---
+      bottomNavigationBar: Consumer<DevocionalProvider>(
+        builder: (context, devocionalProvider, child) {
+          final List<Devocional> devocionales = devocionalProvider.devocionales;
+          return BottomAppBar(
+            color: Colors.deepPurple,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                IconButton(
+                  tooltip: 'Devocional anterior',
+                  onPressed: _currentDevocionalIndex > 0
+                      ? () {
+                          setState(() {
+                            _currentDevocionalIndex--;
+                          });
+                        }
+                      : null, // Deshabilitar si es el primero
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: _currentDevocionalIndex > 0
+                        ? Colors.white
+                        : Colors.white.withOpacity(0.5),
+                    size: 30,
+                  ),
+                ),
+                IconButton(
+                  tooltip: 'Devocional siguiente',
+                  onPressed: _currentDevocionalIndex < devocionales.length - 1
+                      ? () {
+                          setState(() {
+                            _currentDevocionalIndex++;
+                          });
+                          // Si se llega al último devocional y el diálogo de invitación está activado
+                          if (_currentDevocionalIndex ==
+                                  devocionales.length - 1 &&
+                              devocionalProvider.showInvitationDialog) {
+                            _showInvitation(context);
+                          }
+                        }
+                      : null, // Deshabilitar si es el último
+                  icon: Icon(
+                    Icons.arrow_forward,
+                    color: _currentDevocionalIndex < devocionales.length - 1
+                        ? Colors.white
+                        : Colors.white.withOpacity(0.5),
+                    size: 30,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
-// Este código define la página principal de devocionales, donde se muestra el devocional del día, se permite navegar entre días, compartir el devocional y agregarlo a favoritos.
+
+// << CORREGIDO: Eliminada la clase NavigationService al final del archivo
