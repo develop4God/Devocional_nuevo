@@ -7,7 +7,7 @@ import 'package:share_plus/share_plus.dart';
 import 'dart:io' show File;
 import 'package:path_provider/path_provider.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:intl/intl.dart'; // Para formatear la fecha, ya no está comentado
+import 'package:intl/intl.dart'; // Para formatear la fecha
 
 // Importa tus propios modelos y providers
 import 'package:devocional_nuevo/models/devocional_model.dart';
@@ -50,7 +50,6 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
       if (widget.initialDevocionalId != null &&
           devocionalProvider.devocionales.isNotEmpty) {
         final index = devocionalProvider.devocionales.indexWhere(
-          // << CORREGIDO: devocales -> devocionales
           (d) => d.id == widget.initialDevocionalId,
         );
         if (index != -1) {
@@ -62,75 +61,74 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
     });
   }
 
-  /// Muestra el diálogo de invitación.
+  /// Muestra el diálogo de la Oración de Fe.
   void _showInvitation(BuildContext context) {
     final devocionalProvider =
         Provider.of<DevocionalProvider>(context, listen: false);
-    bool doNotShowAgainChecked = false; // Estado inicial del checkbox
+    bool doNotShowAgainChecked = !devocionalProvider.showInvitationDialog;
 
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          // Usa StatefulBuilder para que el estado del checkbox se actualice
-          builder: (context, setState) {
-            return AlertDialog(
-              title: const Text('¡Hola!'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  const Text(
-                      'Te invitamos a nuestro grupo de WhatsApp para crecer juntos en la fe.'),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: doNotShowAgainChecked,
-                        onChanged: (bool? newValue) {
-                          setState(() {
-                            doNotShowAgainChecked = newValue ?? false;
-                          });
-                        },
-                      ),
-                      const Text('No mostrar de nuevo'),
-                    ],
-                  ),
-                ],
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('Ahora no'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    if (doNotShowAgainChecked) {
-                      devocionalProvider.setInvitationDialogVisibility(false);
-                    }
-                  },
+      barrierDismissible: false,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text(
+            "¡Oración de fe, para vida eterna!",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: const SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Repite esta oración en voz alta, con fe y creyendo con todo el corazón:\n",
+                  textAlign: TextAlign.justify,
                 ),
-                TextButton(
-                  child: const Text('Unirme'),
-                  onPressed: () async {
-                    Navigator.of(context).pop();
-                    if (doNotShowAgainChecked) {
-                      devocionalProvider.setInvitationDialogVisibility(false);
-                    }
-                    // Implementa la lógica para unirse al grupo de WhatsApp
-                    // Por ejemplo, usando url_launcher para abrir un enlace
-                    // Puedes obtener el enlace de WhatsApp de Constants.whatsappLink si lo añades allí
-                    // launchUrl(Uri.parse('https://chat.whatsapp.com/TU_INVITACION'));
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Abriendo enlace de WhatsApp...'),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                  },
+                Text(
+                  "Jesucristo, creo que moriste en la cruz por mi, te pido perdón y me arrepiento de corazón por mis pecados. Te pido seas mi Salvador y el señor de vida. Líbrame de la muerte eterna y escribe mi nombre en el libro de la vida.\nEn el poderoso nombre de Jesús, amén.\n",
+                  textAlign: TextAlign.justify,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                ),
+                Text(
+                  "Si hiciste esta oración y lo crees:\nSerás salvo tu y tu casa (Hch 16:31)\nVivirás eternamente (Jn 11:25-26)\nNunca más tendrás sed (Jn 4:14)\nEstarás con Cristo en los cielos (Ap 19:9)\nHay gozo en los cielos cuando un pecador se arrepiente (Luc 15:10)\nEscrito está y Dios es fiel (Dt 7:9)\n\nDesde ya tienes salvación y vida nueva en Jesucristo.",
+                  textAlign: TextAlign.justify,
                 ),
               ],
-            );
-          },
-        );
-      },
+            ),
+          ),
+          actions: [
+            Row(
+              children: [
+                Checkbox(
+                  value: doNotShowAgainChecked,
+                  onChanged: (val) {
+                    setDialogState(() {
+                      doNotShowAgainChecked = val ?? false;
+                    });
+                  },
+                ),
+                const Expanded(
+                    child: Text('Ya la hice 🙏,No mostrar nuevamente')),
+              ],
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: TextButton(
+                onPressed: () {
+                  devocionalProvider
+                      .setInvitationDialogVisibility(!doNotShowAgainChecked);
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Entendido",
+                    style: TextStyle(color: Colors.deepPurple)),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -166,11 +164,10 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
             if (devocionales.isEmpty) {
               return const Text('Cargando devocionales...');
             }
-            // << CORREGIDO: Usar la fecha del devocional actual
-            return Text(DateFormat('EEEE, d MMMM', 'es').format(devocionales
-                    .isEmpty
-                ? DateTime.now() // Si no hay devocionales, usa la fecha actual
-                : devocionales[_currentDevocionalIndex].date));
+            return Text(DateFormat('EEEE, d MMMM', 'es').format(
+                devocionales.isEmpty
+                    ? DateTime.now()
+                    : devocionales[_currentDevocionalIndex].date));
           },
         ),
         centerTitle: true,
@@ -190,7 +187,6 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
                       onChanged: (String? newValue) {
                         if (newValue != null) {
                           devocionalProvider.setSelectedLanguage(newValue);
-                          // Resetear el índice a 0 al cambiar de idioma
                           setState(() {
                             _currentDevocionalIndex = 0;
                           });
@@ -220,7 +216,6 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
                       onChanged: (String? newValue) {
                         if (newValue != null) {
                           devocionalProvider.setSelectedVersion(newValue);
-                          // Resetear el índice a 0 al cambiar de versión
                           setState(() {
                             _currentDevocionalIndex = 0;
                           });
@@ -249,14 +244,12 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
                         context: context,
                         initialDate: devocionales.isEmpty
                             ? DateTime.now()
-                            : devocionales[_currentDevocionalIndex]
-                                .date, // << CORREGIDO: usar fecha del devocional actual
+                            : devocionales[_currentDevocionalIndex].date,
                         firstDate:
                             DateTime(2020), // Rango de fechas para el picker
                         lastDate: DateTime(2030),
                       );
                       if (picked != null) {
-                        // Buscar el devocional para la fecha seleccionada
                         final int index = devocionales.indexWhere(
                           (d) =>
                               d.date.year == picked.year &&
@@ -402,7 +395,6 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
                           color: Colors.deepPurple),
                     ),
                     const SizedBox(height: 10),
-                    // << CORREGIDO: Acceso directo a item.cita y item.texto
                     ...currentDevocional.paraMeditar.map((item) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -410,8 +402,7 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
                           TextSpan(
                             children: [
                               TextSpan(
-                                text:
-                                    '${item.cita}: ', // Ahora item es de tipo ParaMeditar
+                                text: '${item.cita}: ',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -419,8 +410,7 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
                                 ),
                               ),
                               TextSpan(
-                                text: item
-                                    .texto, // Ahora item es de tipo ParaMeditar
+                                text: item.texto,
                                 style: const TextStyle(fontSize: 16),
                               ),
                             ],
@@ -504,13 +494,6 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
                           onPressed: () => _shareAsImage(currentDevocional),
                           icon: const Icon(Icons.image, size: 30),
                         ),
-                        // Botón de compartir en grupo (WhatsApp, etc.)
-                        IconButton(
-                          tooltip: 'Unirme al grupo',
-                          // << CORREGIDO: Cambiado Icons.whatsapp a Icons.group
-                          onPressed: () => _showInvitation(context),
-                          icon: const Icon(Icons.group, size: 30),
-                        ),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -548,18 +531,17 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
                   ),
                 ),
                 IconButton(
-                  tooltip: 'Devocional siguiente',
+                  tooltip: 'Siguiente devocional',
                   onPressed: _currentDevocionalIndex < devocionales.length - 1
                       ? () {
+                          // Mostrar la oración de fe si showInvitationDialog es true
+                          if (devocionalProvider.showInvitationDialog) {
+                            _showInvitation(context);
+                          }
+                          // Siempre avanzar al siguiente devocional (después o en lugar del diálogo)
                           setState(() {
                             _currentDevocionalIndex++;
                           });
-                          // Si se llega al último devocional y el diálogo de invitación está activado
-                          if (_currentDevocionalIndex ==
-                                  devocionales.length - 1 &&
-                              devocionalProvider.showInvitationDialog) {
-                            _showInvitation(context);
-                          }
                         }
                       : null, // Deshabilitar si es el último
                   icon: Icon(
@@ -578,5 +560,3 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
     );
   }
 }
-
-// << CORREGIDO: Eliminada la clase NavigationService al final del archivo
