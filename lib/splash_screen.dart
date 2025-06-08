@@ -105,7 +105,7 @@ class _SplashScreenState extends State<SplashScreen>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // SizedBox para empujar el texto hacia abajo
-                  SizedBox(
+                  const SizedBox(
                       height:
                           150), // Puedes ajustar este valor según sea necesario
 

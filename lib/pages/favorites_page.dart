@@ -131,7 +131,7 @@ class FavoritesPage extends StatelessWidget {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                     content: Text(
-                                        '\"${devocional.versiculo}\" eliminado de favoritos.')),
+                                        '"${devocional.versiculo}" eliminado de favoritos.')),
                               );
                             },
                           ),
