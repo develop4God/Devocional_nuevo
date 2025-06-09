@@ -8,6 +8,7 @@ import 'dart:io' show File;
 import 'package:path_provider/path_provider.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:intl/intl.dart'; // Para formatear la fecha
+import 'package:devocional_nuevo/pages/favorites_page.dart';
 
 // Importa tus propios modelos y providers
 import 'package:devocional_nuevo/models/devocional_model.dart';
@@ -216,9 +217,6 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
         actions: [
           Consumer<DevocionalProvider>(
             builder: (context, devocionalProvider, child) {
-              // No es necesario el selector de idioma y versión en la AppBar
-              // si solo queremos las acciones de compartir/favoritos allí.
-              // Los botones de selección de idioma y versión quedan a cargo del SettingsPage
               return Row(
                 children: [
                   // Selector de Idioma (Mantenido en AppBar si es deseado)
@@ -272,6 +270,19 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
                         );
                       }).toList(),
                     ),
+                  ),
+                  // Botón para ir a favoritos
+                  IconButton(
+                    icon: const Icon(Icons.bookmark_border),
+                    tooltip: 'Ver favoritos',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const FavoritesPage(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               );
