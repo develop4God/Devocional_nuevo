@@ -12,7 +12,7 @@ import 'package:intl/intl.dart'; // Para formatear la fecha
 // Importa tus propios modelos y providers
 import 'package:devocional_nuevo/models/devocional_model.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
-import 'package:devocional_nuevo/pages/favorites_page.dart'; // Importa la página de favoritos
+// Importa la página de favoritos
 import 'package:devocional_nuevo/pages/settings_page.dart'; // Importa la página de configuración
 
 // --- DevocionalesPage (Página principal de devocionales) ---
