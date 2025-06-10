@@ -219,33 +219,33 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
             builder: (context, devocionalProvider, child) {
               return Row(
                 children: [
-                  // Selector de Idioma (Mantenido en AppBar si es deseado)
-                  DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: devocionalProvider.selectedLanguage,
-                      icon: const Icon(Icons.language, color: Colors.white),
-                      dropdownColor: Colors.deepPurple[700],
-                      onChanged: (String? newValue) {
-                        if (newValue != null) {
-                          devocionalProvider.setSelectedLanguage(newValue);
-                          setState(() {
-                            _currentDevocionalIndex = 0;
-                          });
-                        }
-                      },
-                      items: <String>['es', 'en']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value.toUpperCase(),
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  // Selector de Versión (Mantenido en AppBar si es deseado)
+                  // // Selector de Idioma (REMOVIDO de aquí, ahora solo en SettingsPage)
+                  // DropdownButtonHideUnderline(
+                  //   child: DropdownButton<String>(
+                  //     value: devocionalProvider.selectedLanguage,
+                  //     icon: const Icon(Icons.language, color: Colors.white),
+                  //     dropdownColor: Colors.deepPurple[700],
+                  //     onChanged: (String? newValue) {
+                  //       if (newValue != null) {
+                  //         devocionalProvider.setSelectedLanguage(newValue);
+                  //         setState(() {
+                  //           _currentDevocionalIndex = 0;
+                  //         });
+                  //       }
+                  //     },
+                  //     items: <String>['es', 'en']
+                  //         .map<DropdownMenuItem<String>>((String value) {
+                  //       return DropdownMenuItem<String>(
+                  //         value: value,
+                  //         child: Text(
+                  //           value.toUpperCase(),
+                  //           style: const TextStyle(color: Colors.white),
+                  //         ),
+                  //       );
+                  //     }).toList(),
+                  // ),
+                  // ),
+                  // Selector de Versión (Mantenido en AppBar)
                   DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
                       value: devocionalProvider.selectedVersion,
@@ -271,7 +271,7 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
                       }).toList(),
                     ),
                   ),
-                  // Botón para ir a favoritos
+                  // Botón para ir a favoritos (Mantenido en AppBar)
                   IconButton(
                     icon: const Icon(Icons.bookmark_border),
                     tooltip: 'Ver favoritos',
