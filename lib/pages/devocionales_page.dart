@@ -351,7 +351,7 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
                   // Muestra SIEMPRE la fecha actual del sistema
-                  DateFormat('EEEE, d MMMM', 'es').format(DateTime.now()),
+                  DateFormat('EEEE, d MMMM yyyy', 'es').format(DateTime.now()),
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       fontWeight: FontWeight.bold, color: Colors.deepPurple),
                 ),
@@ -374,8 +374,9 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
                             decoration: BoxDecoration(
                               color: Colors.deepPurple[100],
                               borderRadius: BorderRadius.circular(10),
-                              border:
-                                  Border.all(color: Colors.deepPurple.shade300),
+                              border: Border.all(
+                                  color:
+                                      const Color.fromARGB(255, 221, 207, 245)),
                             ),
                             child: AutoSizeText(
                               currentDevocional.versiculo,
@@ -384,11 +385,11 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
                                   .textTheme
                                   .titleLarge!
                                   .copyWith(
-                                    fontStyle: FontStyle.italic,
+                                    //fontStyle: FontStyle.italic,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.deepPurple.shade800,
                                   ),
-                              maxLines: 5,
+                              maxLines: 10,
                             ),
                           ),
                           const SizedBox(height: 20),
