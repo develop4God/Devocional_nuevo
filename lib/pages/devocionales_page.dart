@@ -180,7 +180,7 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
         // Título fijo en lugar de la fecha
-        title: const Text('Tu espacio íntimo con Dios',
+        title: const Text('Mi espacio íntimo con Dios',
             style: TextStyle(color: Colors.white)),
         centerTitle: true,
         actions: [
@@ -583,8 +583,8 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
                           builder: (context) => const SettingsPage()),
                     );
                   },
-                  icon:
-                      const Icon(Icons.settings, color: Colors.white, size: 30),
+                  icon: const Icon(CupertinoIcons.text_badge_plus,
+                      color: Colors.white, size: 30), // <<-- LÍNEA MODIFICADA
                 ),
               ],
             ),
