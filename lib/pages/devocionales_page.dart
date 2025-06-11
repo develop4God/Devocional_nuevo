@@ -180,7 +180,7 @@ class _DevocionalesPageState extends State<DevocionalesPage> {
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
         // Título fijo en lugar de la fecha
-        title: const Text('Tu espacio intimo con Dios',
+        title: const Text('Tu espacio íntimo con Dios',
             style: TextStyle(color: Colors.white)),
         centerTitle: true,
         actions: [

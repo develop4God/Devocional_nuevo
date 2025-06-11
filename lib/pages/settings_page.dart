@@ -85,9 +85,10 @@ class _SettingsPageState extends State<SettingsPage> {
               child: ElevatedButton.icon(
                 icon: Image.network(
                   'https://www.paypalobjects.com/webstatic/icon/pp258.png',
-                  height: 24,
+                  height: 15,
                 ),
-                label: const Text('Donar con PayPal'),
+                label: const Text('Donar con PayPal / Tarjeta',
+                    style: TextStyle(fontSize: 16)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.yellow[700],
                   foregroundColor: Colors.black,
