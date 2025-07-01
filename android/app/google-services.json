@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "123456789012",
-    "project_id": "devocional-nuevo",
-    "storage_bucket": "devocional-nuevo.appspot.com"
+    "project_number": "758036195328",
+    "project_id": "devocional-app",
+    "storage_bucket": "devocional-app.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:123456789012:android:1234567890123456789012",
+        "mobilesdk_app_id": "1:758036195328:android:97498694156e00656450e5",
         "android_client_info": {
           "package_name": "com.develop4god.devocional_nuevo"
         }
@@ -15,7 +15,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDummyKeyForTesting"
+          "current_key": "AIzaSyBDU9pzT5qOFrsySm5Bs-Yzyw74z5Q4a8g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:758036195328:android:557ad009a993c51d6450e5",
+        "android_client_info": {
+          "package_name": "com.example.devocional_nuevo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDU9pzT5qOFrsySm5Bs-Yzyw74z5Q4a8g"
         }
       ],
       "services": {
