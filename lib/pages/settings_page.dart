@@ -276,6 +276,30 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
             ),
+            
+            // Contáctenos
+            const SizedBox(height: 20),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AboutPage(showContactSection: true)),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Row(
+                  children: [
+                    // Icono de contacto usa el color primario del tema
+                    Icon(Icons.contact_support, color: colorScheme.primary),
+                    const SizedBox(width: 10),
+                    // Texto de contacto usa el color de texto de la superficie
+                    Text('Contáctenos',
+                        style: TextStyle(fontSize: 18, color: textTheme.bodyMedium?.color)),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),

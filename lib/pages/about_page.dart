@@ -5,7 +5,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutPage extends StatefulWidget {
-  const AboutPage({super.key});
+  final bool showContactSection;
+  
+  const AboutPage({super.key, this.showContactSection = false});
 
   @override
   State<AboutPage> createState() => _AboutPageState();
@@ -13,11 +15,41 @@ class AboutPage extends StatefulWidget {
 
 class _AboutPageState extends State<AboutPage> {
   String _appVersion = 'Cargando...';
+  String? _selectedContactOption;
+  final TextEditingController _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  final List<String> _contactOptions = [
+    'Errores/Bugs',
+    'Opinión/Feedback',
+    'Mejoras/Improve',
+    'Solicitud de oración'
+  ];
 
   @override
   void initState() {
     super.initState();
     _initPackageInfo();
+    
+    // Si se accede desde la opción "Contáctenos", desplazarse automáticamente a la sección de contacto
+    if (widget.showContactSection) {
+      // Usar un Future.delayed para asegurar que el widget ya está construido
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (_scrollController.hasClients) {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          );
+        }
+      });
+    }
+  }
+  
+  @override
+  void dispose() {
+    _messageController.dispose();
+    _scrollController.dispose();
+    super.dispose();
   }
 
   // Método para obtener la versión de la aplicación
@@ -43,6 +75,68 @@ class _AboutPageState extends State<AboutPage> {
       }
     }
   }
+  
+  // Método para enviar correo electrónico de contacto
+  Future<void> _sendContactEmail() async {
+    if (_selectedContactOption == null) {
+      // Mostrar mensaje de error si no se seleccionó una opción
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Por favor, selecciona un tipo de contacto.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+    
+    final String message = _messageController.text.trim();
+    if (message.isEmpty) {
+      // Mostrar mensaje de error si el mensaje está vacío
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Por favor, escribe un mensaje.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+    
+    // Construir el enlace mailto con los datos del formulario
+    final Uri emailUri = Uri(
+      scheme: 'mailto',
+      path: 'develop4god@gmail.com',
+      query: 'subject=${Uri.encodeComponent("$_selectedContactOption - App Devocionales")}&body=${Uri.encodeComponent(message)}',
+    );
+    
+    try {
+      if (await canLaunchUrl(emailUri)) {
+        await launchUrl(emailUri);
+        // Limpiar el formulario después de enviar
+        setState(() {
+          _selectedContactOption = null;
+          _messageController.clear();
+        });
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('No se pudo abrir el cliente de correo. Por favor, envía un correo manualmente a develop4god@gmail.com'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al abrir el cliente de correo: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +156,7 @@ class _AboutPageState extends State<AboutPage> {
         centerTitle: true, // Asegura que el título del AppBar esté centrado si hay espacio
       ),
       body: SingleChildScrollView(
+        controller: _scrollController,
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start, // Alinea los hijos a la izquierda por defecto
@@ -160,6 +255,88 @@ class _AboutPageState extends State<AboutPage> {
                 ),
               ),
             ),
+            
+            // Sección de contacto (visible solo si showContactSection es true o si se desplaza automáticamente)
+            if (widget.showContactSection) ...[
+              const SizedBox(height: 40),
+              const Divider(),
+              const SizedBox(height: 20),
+              
+              // Título de la sección de contacto
+              Text(
+                'Contáctenos',
+                style: textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.primary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 15),
+              
+              // Descripción
+              Text(
+                'Si tienes alguna pregunta, sugerencia o comentario, no dudes en ponerte en contacto con nosotros.',
+                style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 25),
+              
+              // Dropdown para seleccionar tipo de contacto
+              DropdownButtonFormField<String>(
+                value: _selectedContactOption,
+                decoration: InputDecoration(
+                  labelText: 'Tipo de contacto',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  prefixIcon: Icon(Icons.category, color: colorScheme.primary),
+                ),
+                items: _contactOptions.map((String option) {
+                  return DropdownMenuItem<String>(
+                    value: option,
+                    child: Text(option),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedContactOption = newValue;
+                  });
+                },
+                hint: const Text('Selecciona una opción'),
+              ),
+              const SizedBox(height: 20),
+              
+              // Campo de texto para el mensaje
+              TextField(
+                controller: _messageController,
+                decoration: InputDecoration(
+                  labelText: 'Tu mensaje',
+                  hintText: 'Escribe tu mensaje aquí...',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  prefixIcon: Icon(Icons.message, color: colorScheme.primary),
+                ),
+                maxLines: 5,
+              ),
+              const SizedBox(height: 20),
+              
+              // Botón de enviar
+              Center(
+                child: ElevatedButton.icon(
+                  onPressed: _sendContactEmail,
+                  icon: Icon(Icons.send, color: colorScheme.onPrimary),
+                  label: Text('Enviar mensaje', style: TextStyle(color: colorScheme.onPrimary)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: colorScheme.primary,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
