@@ -3,10 +3,6 @@ import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:workmanager/workmanager.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../utils/constants.dart';
-import 'notification_service.dart';
 
 // Nombre de la tarea en segundo plano
 const String taskName = 'com.develop4god.devocional_nuevo.backgroundTask';
@@ -109,25 +105,16 @@ void callbackDispatcher() {
 // Ejecutar la tarea en segundo plano
 Future<void> _executeBackgroundTask() async {
   try {
-    // Obtener las preferencias compartidas
-    final prefs = await SharedPreferences.getInstance();
+    developer.log('BackgroundServiceNew: Ejecutando tarea en segundo plano', name: 'BackgroundServiceCallback');
     
-    // Verificar si es necesario mostrar una notificación
-    final lastNotificationDate = prefs.getString(Constants.PREF_LAST_NOTIFICATION_DATE) ?? '';
-    final today = DateTime.now().toIso8601String().split('T')[0];
+    // Aquí puedes añadir otras tareas de mantenimiento que NO sean notificaciones
+    // Por ejemplo: sincronización de datos, limpieza de caché, etc.
     
-    if (lastNotificationDate != today) {
-      // Mostrar una notificación
-      final notificationService = NotificationService();
-      await notificationService.initialize();
-      
-      // Mostrar una notificación con el devocional del día
-      await notificationService.showDailyDevotionalNotification();
-      
-      // Guardar la fecha de la última notificación
-      await prefs.setString(Constants.PREF_LAST_NOTIFICATION_DATE, today);
-    }
+    // NOTA: Las notificaciones programadas las maneja NotificationService
+    // Este servicio se usa solo para otras tareas de mantenimiento
+    
+    developer.log('BackgroundServiceNew: Tarea completada', name: 'BackgroundServiceCallback');
   } catch (e) {
-    developer.log('Error al ejecutar la tarea en segundo plano: $e');
+    developer.log('Error al ejecutar la tarea en segundo plano: $e', name: 'BackgroundServiceCallback');
   }
 }
