@@ -117,6 +117,11 @@ class _NotificationPageState extends State<NotificationPage> {
     }
   }
 
+  Future<void> _debugNotifications() async {
+    await _notificationService.debugNotificationStatus();
+    _showSuccessSnackBar('Estado de notificaciones impreso en consola');
+  }
+
   void _showSuccessSnackBar(String message) {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -223,18 +228,36 @@ class _NotificationPageState extends State<NotificationPage> {
               ),
               const SizedBox(height: 15),
               Center(
-                child: ElevatedButton.icon(
-                  onPressed: _testNotification,
-                  icon: Icon(Icons.send, color: Theme.of(context).elevatedButtonTheme.style?.foregroundColor?.resolve(WidgetState.values.toSet())),
-                  label: Text('Probar notificación', style: TextStyle(color: Theme.of(context).elevatedButtonTheme.style?.foregroundColor?.resolve(WidgetState.values.toSet()))),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: colorScheme.primary, // Usa el color primario del tema
-                    foregroundColor: colorScheme.onPrimary, // Usa el color de texto sobre primario
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 10,
+                child: Column(
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: _testNotification,
+                      icon: Icon(Icons.send, color: Theme.of(context).elevatedButtonTheme.style?.foregroundColor?.resolve(WidgetState.values.toSet())),
+                      label: Text('Probar notificación', style: TextStyle(color: Theme.of(context).elevatedButtonTheme.style?.foregroundColor?.resolve(WidgetState.values.toSet()))),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: colorScheme.primary, // Usa el color primario del tema
+                        foregroundColor: colorScheme.onPrimary, // Usa el color de texto sobre primario
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 10,
+                        ),
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 10),
+                    ElevatedButton.icon(
+                      onPressed: _debugNotifications,
+                      icon: Icon(Icons.bug_report, color: colorScheme.onSecondary),
+                      label: Text('Debug notificaciones', style: TextStyle(color: colorScheme.onSecondary)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: colorScheme.secondary,
+                        foregroundColor: colorScheme.onSecondary,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 10,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

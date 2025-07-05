@@ -60,8 +60,7 @@ class NotificationService {
     // Solicitar permisos
     await _requestPermissions();
 
-    // Verificar si es un nuevo día para programar notificación
-    await _checkAndScheduleForNewDay();
+    debugPrint('NotificationService inicializado correctamente');
   }
 
   /// Manejar cuando se toca una notificación
@@ -107,8 +106,10 @@ class NotificationService {
     await prefs.setBool(_notificationsEnabledKey, enabled);
 
     if (enabled) {
+      debugPrint('Habilitando notificaciones...');
       await scheduleDailyNotification();
     } else {
+      debugPrint('Deshabilitando notificaciones...');
       await cancelAllNotifications();
     }
   }
@@ -123,119 +124,103 @@ class NotificationService {
   Future<void> setNotificationTime(String time) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_notificationTimeKey, time);
+    debugPrint('Hora de notificación actualizada a: $time');
 
     // Si las notificaciones están habilitadas, reprogramar
     if (await areNotificationsEnabled()) {
+      debugPrint('Reprogramando notificación con nueva hora...');
       await scheduleDailyNotification();
     }
   }
 
-  /// Verificar si es un nuevo día para programar notificación
-  Future<void> _checkAndScheduleForNewDay() async {
-    final prefs = await SharedPreferences.getInstance();
-    final lastNotificationDate = prefs.getString(_lastNotificationDateKey);
 
-    final today = DateTime.now().toIso8601String().split('T')[0];
-
-    if (lastNotificationDate != today) {
-      // Es un nuevo día, guardar la fecha actual
-      await prefs.setString(_lastNotificationDateKey, today);
-
-      // Si las notificaciones están habilitadas, programar para hoy
-      if (await areNotificationsEnabled()) {
-        await scheduleDailyNotification();
-      }
-    }
-  }
 
   /// Programar notificación diaria
   Future<void> scheduleDailyNotification() async {
-    // Cancelar notificaciones existentes
-    await cancelAllNotifications();
-
-    // Obtener hora configurada
-    final timeString = await getNotificationTime();
-    final timeParts = timeString.split(':');
-    final hour = int.parse(timeParts[0]);
-    final minute = int.parse(timeParts[1]);
-
-    // Crear fecha/hora para la notificación
-    final now = tz.TZDateTime.now(tz.local);
-    var scheduledDate = tz.TZDateTime(
-      tz.local,
-      now.year,
-      now.month,
-      now.day,
-      hour,
-      minute,
-    );
-
-    // Si la hora ya pasó hoy, programar para mañana
-    if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(const Duration(days: 1));
-    }
-
-    // Intentar obtener el título del devocional para hoy
-    String title = '🙏 Devocional de Hoy';
-    String body = 'Tu momento de reflexión diaria te está esperando';
-
     try {
-      // Aquí podrías hacer una petición a tu API para obtener el título del devocional
-      // Por ejemplo:
-      // final devotionalData = await _fetchDevotionalData();
-      // if (devotionalData != null) {
-      //   title = '🙏 ${devotionalData['title']}';
-      //   body = devotionalData['summary'] ?? body;
-      // }
+      // Cancelar notificaciones existentes
+      await cancelAllNotifications();
+      debugPrint('Notificaciones anteriores canceladas');
+
+      // Obtener hora configurada
+      final timeString = await getNotificationTime();
+      final timeParts = timeString.split(':');
+      final hour = int.parse(timeParts[0]);
+      final minute = int.parse(timeParts[1]);
+
+      debugPrint('Programando notificación para las $timeString');
+
+      // Crear fecha/hora para la notificación
+      final now = tz.TZDateTime.now(tz.local);
+      var scheduledDate = tz.TZDateTime(
+        tz.local,
+        now.year,
+        now.month,
+        now.day,
+        hour,
+        minute,
+      );
+
+      // Si la hora ya pasó hoy, programar para mañana
+      if (scheduledDate.isBefore(now)) {
+        scheduledDate = scheduledDate.add(const Duration(days: 1));
+        debugPrint('La hora ya pasó hoy, programando para mañana');
+      }
+
+      debugPrint('Fecha programada: $scheduledDate');
+      debugPrint('Tiempo hasta la notificación: ${scheduledDate.difference(now)}');
+
+      // Configuración de la notificación para Android
+      const AndroidNotificationDetails androidPlatformChannelSpecifics =
+      AndroidNotificationDetails(
+        'daily_devotional',
+        'Devocional Diario',
+        channelDescription: 'Recordatorio diario para leer el devocional',
+        importance: Importance.high,
+        priority: Priority.high,
+        icon: '@mipmap/ic_launcher',
+        enableVibration: true,
+        playSound: true,
+      );
+
+      // Configuración de la notificación para iOS
+      const DarwinNotificationDetails iOSPlatformChannelSpecifics =
+      DarwinNotificationDetails(
+        sound: 'default',
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      );
+
+      // Configuración general
+      const NotificationDetails platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: iOSPlatformChannelSpecifics,
+      );
+
+      // Programar notificación con repetición diaria
+      await _flutterLocalNotificationsPlugin.zonedSchedule(
+        0, // ID de la notificación
+        '🙏 Devocional de Hoy',
+        'Tu momento de reflexión diaria te está esperando',
+        scheduledDate,
+        platformChannelSpecifics,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+        matchDateTimeComponents: DateTimeComponents.time, // Repetir diariamente a la misma hora
+        payload: 'daily_devotional',
+      );
+
+      debugPrint('✅ Notificación programada exitosamente para: $scheduledDate');
+      
+      // Verificar que se programó correctamente
+      final pendingNotifications = await getPendingNotifications();
+      debugPrint('Notificaciones pendientes después de programar: ${pendingNotifications.length}');
+      
     } catch (e) {
-      debugPrint('Error al obtener datos del devocional: $e');
-      // Usar los valores por defecto si hay error
+      debugPrint('❌ Error al programar notificación: $e');
+      rethrow;
     }
-
-    // Configuración de la notificación para Android
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails(
-      'daily_devotional',
-      'Devocional Diario',
-      channelDescription: 'Recordatorio diario para leer el devocional',
-      importance: Importance.high,
-      priority: Priority.high,
-      icon: '@mipmap/ic_launcher',
-      sound: RawResourceAndroidNotificationSound('notification'),
-      enableVibration: true,
-      styleInformation: BigTextStyleInformation(''),
-    );
-
-    // Configuración de la notificación para iOS
-    const DarwinNotificationDetails iOSPlatformChannelSpecifics =
-    DarwinNotificationDetails(
-      sound: 'default',
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
-
-    // Configuración general
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-      iOS: iOSPlatformChannelSpecifics,
-    );
-
-    // Programar notificación
-    await _flutterLocalNotificationsPlugin.zonedSchedule(
-      0, // ID de la notificación
-      title,
-      body,
-      scheduledDate,
-      platformChannelSpecifics,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-      UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.time, // Repetir diariamente
-      payload: 'daily_devotional',
-    );
-
-    debugPrint('Notificación programada para: $scheduledDate');
   }
 
   /// Mostrar notificación inmediata (para testing o notificaciones manuales)
@@ -341,6 +326,39 @@ class NotificationService {
   /// Obtener notificaciones pendientes (para debug)
   Future<List<PendingNotificationRequest>> getPendingNotifications() async {
     return await _flutterLocalNotificationsPlugin.pendingNotificationRequests();
+  }
+
+  /// Verificar el estado de las notificaciones programadas (para debug)
+  Future<void> debugNotificationStatus() async {
+    debugPrint('=== ESTADO DE NOTIFICACIONES ===');
+    
+    final enabled = await areNotificationsEnabled();
+    final time = await getNotificationTime();
+    final hasPermissions = await hasNotificationPermissions();
+    final pendingNotifications = await getPendingNotifications();
+    
+    debugPrint('Notificaciones habilitadas: $enabled');
+    debugPrint('Hora configurada: $time');
+    debugPrint('Permisos concedidos: $hasPermissions');
+    debugPrint('Notificaciones pendientes: ${pendingNotifications.length}');
+    
+    for (var notification in pendingNotifications) {
+      debugPrint('- ID: ${notification.id}, Título: ${notification.title}');
+    }
+    
+    final prefs = await SharedPreferences.getInstance();
+    final lastNotificationDate = prefs.getString(_lastNotificationDateKey);
+    final today = DateTime.now().toIso8601String().split('T')[0];
+    
+    debugPrint('Última notificación: $lastNotificationDate');
+    debugPrint('Fecha actual: $today');
+    
+    // Verificar timezone
+    final now = tz.TZDateTime.now(tz.local);
+    debugPrint('Timezone actual: ${now.location}');
+    debugPrint('Hora actual: $now');
+    
+    debugPrint('=== FIN ESTADO ===');
   }
 
   /// Verificar si hay permisos de notificación

@@ -36,7 +36,14 @@ void main() async {
     await Firebase.initializeApp();
 
     // Inicializar servicio de notificaciones locales
-    await NotificationService().initialize();
+    final notificationService = NotificationService();
+    await notificationService.initialize();
+    
+    // Verificar y reprogramar notificaciones si están habilitadas
+    if (await notificationService.areNotificationsEnabled()) {
+      await notificationService.scheduleDailyNotification();
+      debugPrint('Notificaciones reprogramadas al iniciar la app');
+    }
 
     // Inicializar servicio de notificaciones remotas (Firebase)
     await FirebaseMessagingService().initialize();
@@ -44,9 +51,6 @@ void main() async {
     // Inicializar servicio de tareas en segundo plano
     final backgroundService = BackgroundServiceNew();
     await backgroundService.initialize();
-
-    // Programar notificaciones periódicas
-    await backgroundService.registerPeriodicTask();
 
     // Suscribirse al tema general de notificaciones
     await FirebaseMessagingService().subscribeToTopic('general');
