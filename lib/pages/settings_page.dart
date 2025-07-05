@@ -6,12 +6,12 @@ import 'package:url_launcher/url_launcher.dart';
 import 'dart:developer' as developer;
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart'; // Importa provider
-
+import 'package:devocional_nuevo/pages/contact_page.dart'; // AÑADIDO: Importa ContactPage
 import 'package:devocional_nuevo/pages/favorites_page.dart';
 import 'package:devocional_nuevo/pages/about_page.dart';
 import 'package:devocional_nuevo/pages/notification_page.dart';
 import 'package:devocional_nuevo/providers/theme_provider.dart'; // Importa el ThemeProvider
-import 'package:devocional_nuevo/utils/theme_constants.dart'; // Importa las constantes de tema para acceder a appThemeFamilies
+import 'package:devocional_nuevo/utils/theme_constants.dart'; // MODIFICADO: Importa las constantes de tema para acceder a appThemeFamilies y settingsOptionTextStyle
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -149,16 +149,16 @@ class _SettingsPageState extends State<SettingsPage> {
 
             // Sección para seleccionar la familia de tema
             Text(
-              'Seleccionar Familia de Tema:', // MODIFICADO: Texto del título
+              'Seleccionar Familia de Tema:', // Texto del título
               style: textTheme.titleLarge?.copyWith(color: colorScheme.onSurface), // Usa el color de texto de la superficie
             ),
             const SizedBox(height: 10),
             // Dropdown para elegir la familia de tema
             DropdownButtonFormField<String>(
-              value: themeProvider.currentThemeFamily, // MODIFICADO: Usar currentThemeFamily
+              value: themeProvider.currentThemeFamily, // Usar currentThemeFamily
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
-                labelText: 'Familia de Tema', // MODIFICADO: Texto del label
+                labelText: 'Familia de Tema', // Texto del label
                 labelStyle: TextStyle(color: textTheme.bodyMedium?.color), // Color del label
               ),
               items: themeFamilies.map((String familyName) {
@@ -169,7 +169,7 @@ class _SettingsPageState extends State<SettingsPage> {
               }).toList(),
               onChanged: (String? newValue) {
                 if (newValue != null) {
-                  themeProvider.setThemeFamily(newValue); // MODIFICADO: Usar setThemeFamily
+                  themeProvider.setThemeFamily(newValue); // Usar setThemeFamily
                 }
               },
             ),
@@ -184,9 +184,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   style: textTheme.titleLarge?.copyWith(color: colorScheme.onSurface),
                 ),
                 Switch(
-                  value: themeProvider.currentBrightness == Brightness.dark, // MODIFICADO: Usar currentBrightness
+                  value: themeProvider.currentBrightness == Brightness.dark, // Usar currentBrightness
                   onChanged: (bool value) {
-                    // MODIFICADO: Usar setBrightness directamente
+                    // Usar setBrightness directamente
                     themeProvider.setBrightness(value ? Brightness.dark : Brightness.light);
                   },
                   activeColor: colorScheme.primary, // Color del switch cuando está activo
@@ -276,14 +276,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
             ),
-            
-            // Contáctenos
+
+            // Contáctenos (Ahora navega directamente a ContactPage)
             const SizedBox(height: 20),
             InkWell(
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const AboutPage(showContactSection: true)),
+                  MaterialPageRoute(builder: (context) => const ContactPage()), // MODIFICADO: Navega directamente a ContactPage
                 );
               },
               child: Padding(
@@ -295,7 +295,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     const SizedBox(width: 10),
                     // Texto de contacto usa el color de texto de la superficie
                     Text('Contáctenos',
-                        style: TextStyle(fontSize: 18, color: textTheme.bodyMedium?.color)),
+                        style: textTheme.bodyMedium?.merge(settingsOptionTextStyle).copyWith(color: colorScheme.onSurface)), // MODIFICADO: Estilo estandarizado
                   ],
                 ),
               ),

@@ -1,13 +1,13 @@
 // lib/pages/about_page.dart
+// Esta página muestra información general sobre la aplicación y enlaces relevantes.
 
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:devocional_nuevo/pages/contact_page.dart'; // Importa la nueva ContactPage
 
 class AboutPage extends StatefulWidget {
-  final bool showContactSection;
-  
-  const AboutPage({super.key, this.showContactSection = false});
+  const AboutPage({super.key}); // showContactSection eliminado
 
   @override
   State<AboutPage> createState() => _AboutPageState();
@@ -15,40 +15,24 @@ class AboutPage extends StatefulWidget {
 
 class _AboutPageState extends State<AboutPage> {
   String _appVersion = 'Cargando...';
-  String? _selectedContactOption;
-  final TextEditingController _messageController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
-  final List<String> _contactOptions = [
-    'Errores/Bugs',
-    'Opinión/Feedback',
-    'Mejoras/Improve',
-    'Solicitud de oración'
-  ];
+  // Variables de contacto eliminadas
+  // String? _selectedContactOption;
+  // final TextEditingController _messageController = TextEditingController();
+  // final ScrollController _scrollController = ScrollController();
+  // final List<String> _contactOptions = [...];
 
   @override
   void initState() {
     super.initState();
     _initPackageInfo();
-    
-    // Si se accede desde la opción "Contáctenos", desplazarse automáticamente a la sección de contacto
-    if (widget.showContactSection) {
-      // Usar un Future.delayed para asegurar que el widget ya está construido
-      Future.delayed(const Duration(milliseconds: 500), () {
-        if (_scrollController.hasClients) {
-          _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-          );
-        }
-      });
-    }
+    // Eliminada la lógica de desplazamiento automático que dependía de showContactSection
   }
-  
+
   @override
   void dispose() {
-    _messageController.dispose();
-    _scrollController.dispose();
+    // Dispose de controladores de contacto eliminados
+    // _messageController.dispose();
+    // _scrollController.dispose();
     super.dispose();
   }
 
@@ -75,68 +59,9 @@ class _AboutPageState extends State<AboutPage> {
       }
     }
   }
-  
-  // Método para enviar correo electrónico de contacto
-  Future<void> _sendContactEmail() async {
-    if (_selectedContactOption == null) {
-      // Mostrar mensaje de error si no se seleccionó una opción
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Por favor, selecciona un tipo de contacto.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-    
-    final String message = _messageController.text.trim();
-    if (message.isEmpty) {
-      // Mostrar mensaje de error si el mensaje está vacío
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Por favor, escribe un mensaje.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-    
-    // Construir el enlace mailto con los datos del formulario
-    final Uri emailUri = Uri(
-      scheme: 'mailto',
-      path: 'develop4god@gmail.com',
-      query: 'subject=${Uri.encodeComponent("$_selectedContactOption - App Devocionales")}&body=${Uri.encodeComponent(message)}',
-    );
-    
-    try {
-      if (await canLaunchUrl(emailUri)) {
-        await launchUrl(emailUri);
-        // Limpiar el formulario después de enviar
-        setState(() {
-          _selectedContactOption = null;
-          _messageController.clear();
-        });
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('No se pudo abrir el cliente de correo. Por favor, envía un correo manualmente a develop4god@gmail.com'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error al abrir el cliente de correo: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-  }
+
+  // Método _sendContactEmail eliminado
+  // Future<void> _sendContactEmail() async { ... }
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +81,7 @@ class _AboutPageState extends State<AboutPage> {
         centerTitle: true, // Asegura que el título del AppBar esté centrado si hay espacio
       ),
       body: SingleChildScrollView(
-        controller: _scrollController,
+        // Eliminado controller: _scrollController,
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start, // Alinea los hijos a la izquierda por defecto
@@ -183,7 +108,7 @@ class _AboutPageState extends State<AboutPage> {
                 fontWeight: FontWeight.bold,
                 color: colorScheme.primary, // Usa el color primario de tu tema
               ),
-              textAlign: TextAlign.left, // **Corregido:** Alineado a la izquierda
+              textAlign: TextAlign.left, // Alineado a la izquierda
             ),
             const SizedBox(height: 8),
 
@@ -191,7 +116,7 @@ class _AboutPageState extends State<AboutPage> {
             Text(
               'Versión $_appVersion',
               style: textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurface, // MODIFICADO: de Colors.grey[600] a colorScheme.onSurface
+                color: colorScheme.onSurface, // de Colors.grey[600] a colorScheme.onSurface
               ),
               textAlign: TextAlign.center, // centrado
             ),
@@ -200,7 +125,7 @@ class _AboutPageState extends State<AboutPage> {
             // Descripción de la Aplicación
             Text(
               'Devocionales Cristianos te trae inspiración diaria directamente a tu teléfono. Disfruta de mensajes bíblicos actualizados, explora, guarda tus favoritos, comparte la palabra y personaliza tu experiencia de lectura.',
-              style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface), // MODIFICADO: Añadido colorScheme.onSurface
+              style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface), // Añadido colorScheme.onSurface
               textAlign: TextAlign.center, //centrado
             ),
             const SizedBox(height: 30),
@@ -209,7 +134,7 @@ class _AboutPageState extends State<AboutPage> {
             Text(
               'Características Principales:',
               style: textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold, color: colorScheme.onSurface), // MODIFICADO: Añadido colorScheme.onSurface
+                  fontWeight: FontWeight.bold, color: colorScheme.onSurface), // Añadido colorScheme.onSurface
               textAlign: TextAlign.center, // centrado
             ),
             const SizedBox(height: 10),
@@ -232,7 +157,7 @@ class _AboutPageState extends State<AboutPage> {
               child: Text(
                 'Desarrollado por Develop4God',
                 style: textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface, // MODIFICADO: de Colors.grey[700] a colorScheme.onSurface
+                  color: colorScheme.onSurface, // de Colors.grey[700] a colorScheme.onSurface
                 ),
                 textAlign: TextAlign.center, // Este textAlign ahora centrará el texto dentro del Center
               ),
@@ -243,10 +168,10 @@ class _AboutPageState extends State<AboutPage> {
             Center( // Envuelve el botón en un Center para centrarlo horizontalmente
               child: ElevatedButton.icon(
                 onPressed: () => _launchURL('https://develop4god.github.io/'),
-                icon: Icon(Icons.public, color: colorScheme.onPrimary), // MODIFICADO: de Colors.white a colorScheme.onPrimary
-                label: Text('Términos y Condiciones / Copyright', style: TextStyle(color: colorScheme.onPrimary)), // MODIFICADO: de Colors.white a colorScheme.onPrimary
+                icon: Icon(Icons.public, color: colorScheme.onPrimary), // de Colors.white a colorScheme.onPrimary
+                label: Text('Términos y Condiciones / Copyright', style: TextStyle(color: colorScheme.onPrimary)), // de Colors.white a colorScheme.onPrimary
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: colorScheme.primary, // MODIFICADO: de Colors.deepPurple a colorScheme.primary
+                  backgroundColor: colorScheme.primary, // de Colors.deepPurple a colorScheme.primary
                   padding: const EdgeInsets.symmetric(
                       horizontal: 24, vertical: 12),
                   shape: RoundedRectangleBorder(
@@ -255,88 +180,27 @@ class _AboutPageState extends State<AboutPage> {
                 ),
               ),
             ),
-            
-            // Sección de contacto (visible solo si showContactSection es true o si se desplaza automáticamente)
-            if (widget.showContactSection) ...[
-              const SizedBox(height: 40),
-              const Divider(),
-              const SizedBox(height: 20),
-              
-              // Título de la sección de contacto
-              Text(
-                'Contáctenos',
-                style: textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.primary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 15),
-              
-              // Descripción
-              Text(
-                'Si tienes alguna pregunta, sugerencia o comentario, no dudes en ponerte en contacto con nosotros.',
+
+            // Sección de contacto eliminada y reemplazada por un ListTile de navegación
+            const SizedBox(height: 30),
+            const Divider(),
+            const SizedBox(height: 20),
+
+            // Enlace a la página de Contacto independiente
+            ListTile(
+              leading: Icon(Icons.contact_mail, color: colorScheme.primary), // Icono para contacto
+              title: Text(
+                'Contáctanos',
                 style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface),
-                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 25),
-              
-              // Dropdown para seleccionar tipo de contacto
-              DropdownButtonFormField<String>(
-                value: _selectedContactOption,
-                decoration: InputDecoration(
-                  labelText: 'Tipo de contacto',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  prefixIcon: Icon(Icons.category, color: colorScheme.primary),
-                ),
-                items: _contactOptions.map((String option) {
-                  return DropdownMenuItem<String>(
-                    value: option,
-                    child: Text(option),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedContactOption = newValue;
-                  });
-                },
-                hint: const Text('Selecciona una opción'),
-              ),
-              const SizedBox(height: 20),
-              
-              // Campo de texto para el mensaje
-              TextField(
-                controller: _messageController,
-                decoration: InputDecoration(
-                  labelText: 'Tu mensaje',
-                  hintText: 'Escribe tu mensaje aquí...',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  prefixIcon: Icon(Icons.message, color: colorScheme.primary),
-                ),
-                maxLines: 5,
-              ),
-              const SizedBox(height: 20),
-              
-              // Botón de enviar
-              Center(
-                child: ElevatedButton.icon(
-                  onPressed: _sendContactEmail,
-                  icon: Icon(Icons.send, color: colorScheme.onPrimary),
-                  label: Text('Enviar mensaje', style: TextStyle(color: colorScheme.onPrimary)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: colorScheme.primary,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+              trailing: Icon(Icons.arrow_forward_ios, color: colorScheme.onSurface), // Flecha para indicar navegación
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ContactPage()), // Navega a la ContactPage
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -359,7 +223,7 @@ class _FeatureItem extends StatelessWidget {
         style: Theme
             .of(context)
             .textTheme
-            .bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface), // MODIFICADO: Añadido colorScheme.onSurface
+            .bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface), // Añadido colorScheme.onSurface
         textAlign: TextAlign.center, // centrado
       ),
     );

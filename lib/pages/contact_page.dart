@@ -13,40 +13,63 @@ class ContactPage extends StatefulWidget {
 }
 
 class _ContactPageState extends State<ContactPage> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _messageController = TextEditingController();
+  // MODIFICADO: Variables para el formulario de nombre/email eliminadas
+  // final _formKey = GlobalKey<FormState>();
+  // final _nameController = TextEditingController();
+  // final _emailController = TextEditingController();
 
-  bool _isSending = false;
+  // AÑADIDO: Variables para el formulario de contacto con opciones predefinidas
+  String? _selectedContactOption;
+  final TextEditingController _messageController = TextEditingController();
+  final List<String> _contactOptions = [
+    'Errores/Bugs',
+    'Opinión/Feedback',
+    'Mejoras/Improvements',
+    'Solicitud de oración'
+  ];
+
+// Mantener para el indicador de envío
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _messageController.dispose();
+    // MODIFICADO: Dispose de controladores de nombre/email eliminados
+    // _nameController.dispose();
+    // _emailController.dispose();
+    _messageController.dispose(); // Mantener dispose para el controlador de mensaje
     super.dispose();
   }
 
-  // Método para enviar un correo electrónico
-  Future<void> _sendEmail() async {
-    if (!_formKey.currentState!.validate()) {
+  // MODIFICADO: Método _sendEmail renombrado y adaptado a _sendContactEmail
+  Future<void> _sendContactEmail() async {
+    if (_selectedContactOption == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Por favor, selecciona un tipo de contacto.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    final String message = _messageController.text.trim();
+    if (message.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Por favor, escribe un mensaje.'),
+          backgroundColor: Colors.red,
+        ),
+      );
       return;
     }
 
     setState(() {
-      _isSending = true;
     });
 
-    final String name = _nameController.text.trim();
-    final String email = _emailController.text.trim();
-    final String message = _messageController.text.trim();
-
-    // Construir el enlace mailto con los datos del formulario
+    // Construir el enlace mailto con los datos del formulario de opciones
     final Uri emailUri = Uri(
       scheme: 'mailto',
       path: 'develop4god@gmail.com',
-      query: 'subject=Contacto desde App Devocionales&body=Nombre: $name%0D%0AEmail: $email%0D%0AMensaje: $message',
+      query: 'subject=${Uri.encodeComponent("$_selectedContactOption - App Devocionales")}&body=${Uri.encodeComponent(message)}',
     );
 
     developer.log('Intentando abrir cliente de correo: $emailUri', name: 'EmailLaunch');
@@ -63,9 +86,10 @@ class _ContactPageState extends State<ContactPage> {
             ),
           );
           // Limpiar el formulario
-          _nameController.clear();
-          _emailController.clear();
-          _messageController.clear();
+          setState(() {
+            _selectedContactOption = null;
+            _messageController.clear();
+          });
         }
       } else {
         _showErrorSnackBar('No se pudo abrir el cliente de correo. Por favor, envía un correo manualmente a develop4god@gmail.com');
@@ -76,35 +100,12 @@ class _ContactPageState extends State<ContactPage> {
     } finally {
       if (mounted) {
         setState(() {
-          _isSending = false;
         });
       }
     }
   }
 
-  // Método alternativo para contactar a través de WhatsApp
-  Future<void> _contactViaWhatsApp() async {
-    // Número de WhatsApp (sin espacios ni caracteres especiales)
-    const String phoneNumber = '+34600000000'; // Reemplazar con el número real
-    // Mensaje predeterminado
-    const String message = 'Hola, me comunico desde la app Devocionales Cristianos.';
-    
-    // Construir la URL de WhatsApp
-    final Uri whatsappUri = Uri.parse('https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}');
-    
-    developer.log('Intentando abrir WhatsApp: $whatsappUri', name: 'WhatsAppLaunch');
-    
-    try {
-      if (await canLaunchUrl(whatsappUri)) {
-        await launchUrl(whatsappUri, mode: LaunchMode.externalApplication);
-      } else {
-        _showErrorSnackBar('No se pudo abrir WhatsApp. Asegúrate de tenerlo instalado.');
-      }
-    } catch (e) {
-      developer.log('Error al intentar abrir WhatsApp: $e', error: e, name: 'WhatsAppLaunch');
-      _showErrorSnackBar('Error al abrir WhatsApp: ${e.toString()}');
-    }
-  }
+  // Método alternativo para contactar a través de WhatsApp (se mantiene)
 
   void _showErrorSnackBar(String message) {
     if (mounted) {
@@ -144,117 +145,79 @@ class _ContactPageState extends State<ContactPage> {
               ),
             ),
             const SizedBox(height: 20),
-            
+
             // Descripción
             Text(
               'Si tienes alguna pregunta, sugerencia o comentario, no dudes en ponerte en contacto con nosotros. Estaremos encantados de ayudarte.',
               style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface),
             ),
             const SizedBox(height: 30),
-            
-            // Formulario de contacto
-            Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Campo de nombre
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      labelText: 'Nombre',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      prefixIcon: Icon(Icons.person, color: colorScheme.primary),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Por favor, introduce tu nombre';
-                      }
-                      return null;
-                    },
+
+            // MODIFICADO: Formulario de contacto con opciones predefinidas
+            // Eliminado: Form(key: _formKey, child: Column(...))
+            // Eliminado: TextFormField para Nombre y Email
+
+            // Dropdown para seleccionar tipo de contacto
+            DropdownButtonFormField<String>(
+              value: _selectedContactOption,
+              decoration: InputDecoration(
+                labelText: 'Tipo de contacto',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                prefixIcon: Icon(Icons.category, color: colorScheme.primary),
+              ),
+              items: _contactOptions.map((String option) {
+                return DropdownMenuItem<String>(
+                  value: option,
+                  child: Text(option),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedContactOption = newValue;
+                });
+              },
+              hint: const Text('Selecciona una opción'),
+            ),
+            const SizedBox(height: 20),
+
+            // Campo de texto para el mensaje
+            TextField(
+              controller: _messageController,
+              decoration: InputDecoration(
+                labelText: 'Tu mensaje',
+                hintText: 'Escribe tu mensaje aquí...',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                prefixIcon: Icon(Icons.message, color: colorScheme.primary),
+              ),
+              maxLines: 5,
+            ),
+            const SizedBox(height: 20),
+
+            // Botón de enviar
+            Center(
+              child: ElevatedButton.icon(
+                onPressed: _sendContactEmail, // MODIFICADO: Llama a _sendContactEmail
+                icon: Icon(Icons.send, color: colorScheme.onPrimary),
+                label: Text('Enviar mensaje', style: TextStyle(color: colorScheme.onPrimary)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colorScheme.primary,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
                   ),
-                  const SizedBox(height: 15),
-                  
-                  // Campo de email
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      prefixIcon: Icon(Icons.email, color: colorScheme.primary),
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Por favor, introduce tu email';
-                      }
-                      // Validación simple de formato de email
-                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                        return 'Por favor, introduce un email válido';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 15),
-                  
-                  // Campo de mensaje
-                  TextFormField(
-                    controller: _messageController,
-                    decoration: InputDecoration(
-                      labelText: 'Mensaje',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      prefixIcon: Icon(Icons.message, color: colorScheme.primary),
-                    ),
-                    maxLines: 5,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Por favor, introduce tu mensaje';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 25),
-                  
-                  // Botón de enviar
-                  ElevatedButton.icon(
-                    onPressed: _isSending ? null : _sendEmail,
-                    icon: _isSending 
-                      ? SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: colorScheme.onPrimary,
-                          ),
-                        )
-                      : Icon(Icons.send, color: colorScheme.onPrimary),
-                    label: Text(
-                      _isSending ? 'Enviando...' : 'Enviar mensaje',
-                      style: TextStyle(color: colorScheme.onPrimary),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: colorScheme.primary,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
-            
+
             const SizedBox(height: 30),
             const Divider(),
             const SizedBox(height: 20),
-            
-            // Otras formas de contacto
+
+            // Otras formas de contacto (se mantienen)
             Text(
               'Otras formas de contacto',
               style: textTheme.titleLarge?.copyWith(
@@ -263,14 +226,7 @@ class _ContactPageState extends State<ContactPage> {
               ),
             ),
             const SizedBox(height: 15),
-            
-            // WhatsApp
-            ListTile(
-              leading: Icon(Icons.whatsapp, color: Colors.green),
-              title: Text('Contactar por WhatsApp', style: TextStyle(color: colorScheme.onSurface)),
-              onTap: _contactViaWhatsApp,
-            ),
-            
+
             // Email directo
             ListTile(
               leading: Icon(Icons.email, color: colorScheme.primary),
@@ -287,7 +243,7 @@ class _ContactPageState extends State<ContactPage> {
                 }
               },
             ),
-            
+
             // Sitio web
             ListTile(
               leading: Icon(Icons.language, color: colorScheme.primary),
