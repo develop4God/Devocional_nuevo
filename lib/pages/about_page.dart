@@ -120,7 +120,7 @@ class _AboutPageState extends State<AboutPage> {
               ),
               textAlign: TextAlign.center, // centrado
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 10),
 
             // Descripción de la Aplicación
             Text(
@@ -128,7 +128,7 @@ class _AboutPageState extends State<AboutPage> {
               style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface), // Añadido colorScheme.onSurface
               textAlign: TextAlign.center, //centrado
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 10),
 
             // Características Principales
             Text(
@@ -145,9 +145,11 @@ class _AboutPageState extends State<AboutPage> {
                 _FeatureItem(text: '• Soporte Multi-Versión'),
                 _FeatureItem(text: '• Favoritos'),
                 _FeatureItem(text: '• Compartir Contenido'),
-                _FeatureItem(text: '• Oración de Fe'),
                 _FeatureItem(text: '• Personalización de Idioma'),
-                _FeatureItem(text: '• Interfaz Intuitiva'),
+                _FeatureItem(text: '• Temas personalizables'),
+                _FeatureItem(text: '• Temas Oscuro y Claro'),
+                _FeatureItem(text: '• Opciones de Notificación'),
+
               ],
             ),
             const SizedBox(height: 30),

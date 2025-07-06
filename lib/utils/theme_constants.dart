@@ -250,4 +250,3 @@ final Map<String, Map<String, ThemeData>> appThemeFamilies = {
     ),
   },
 };
-const TextStyle settingsOptionTextStyle = TextStyle(fontSize: 20.0);
