@@ -26,6 +26,7 @@ class _ContactPageState extends State<ContactPage> {
     'Opinión/Feedback',
     'Mejoras/Improvements',
     'Otros'
+
   ];
 
 // Mantener para el indicador de envío
@@ -202,7 +203,9 @@ class _ContactPageState extends State<ContactPage> {
               child: ElevatedButton.icon(
                 onPressed: _sendContactEmail, // MODIFICADO: Llama a _sendContactEmail
                 icon: Icon(Icons.send, color: colorScheme.onPrimary),
+
                 label: Text('Abrir correo', style: TextStyle(color: colorScheme.onPrimary)),
+
                 style: ElevatedButton.styleFrom(
                   backgroundColor: colorScheme.primary,
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -230,7 +233,9 @@ class _ContactPageState extends State<ContactPage> {
             // Email directo
             ListTile(
               leading: Icon(Icons.email, color: colorScheme.primary),
+
               title: Text('develop4God@gmail.com', style: TextStyle(color: colorScheme.onSurface)),
+
               onTap: () async {
                 final Uri emailUri = Uri(
                   scheme: 'mailto',

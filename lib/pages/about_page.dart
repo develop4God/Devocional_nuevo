@@ -1,11 +1,13 @@
 // lib/pages/about_page.dart
+// Esta página muestra información general sobre la aplicación y enlaces relevantes.
 
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:devocional_nuevo/pages/contact_page.dart'; // Importa la nueva ContactPage
 
 class AboutPage extends StatefulWidget {
-  const AboutPage({super.key});
+  const AboutPage({super.key}); // showContactSection eliminado
 
   @override
   State<AboutPage> createState() => _AboutPageState();
@@ -13,11 +15,25 @@ class AboutPage extends StatefulWidget {
 
 class _AboutPageState extends State<AboutPage> {
   String _appVersion = 'Cargando...';
+  // Variables de contacto eliminadas
+  // String? _selectedContactOption;
+  // final TextEditingController _messageController = TextEditingController();
+  // final ScrollController _scrollController = ScrollController();
+  // final List<String> _contactOptions = [...];
 
   @override
   void initState() {
     super.initState();
     _initPackageInfo();
+    // Eliminada la lógica de desplazamiento automático que dependía de showContactSection
+  }
+
+  @override
+  void dispose() {
+    // Dispose de controladores de contacto eliminados
+    // _messageController.dispose();
+    // _scrollController.dispose();
+    super.dispose();
   }
 
   // Método para obtener la versión de la aplicación
@@ -44,6 +60,9 @@ class _AboutPageState extends State<AboutPage> {
     }
   }
 
+  // Método _sendContactEmail eliminado
+  // Future<void> _sendContactEmail() async { ... }
+
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme
@@ -62,6 +81,7 @@ class _AboutPageState extends State<AboutPage> {
         centerTitle: true, // Asegura que el título del AppBar esté centrado si hay espacio
       ),
       body: SingleChildScrollView(
+        // Eliminado controller: _scrollController,
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start, // Alinea los hijos a la izquierda por defecto
@@ -88,7 +108,7 @@ class _AboutPageState extends State<AboutPage> {
                 fontWeight: FontWeight.bold,
                 color: colorScheme.primary, // Usa el color primario de tu tema
               ),
-              textAlign: TextAlign.left, // **Corregido:** Alineado a la izquierda
+              textAlign: TextAlign.left, // Alineado a la izquierda
             ),
             const SizedBox(height: 8),
 
@@ -96,7 +116,7 @@ class _AboutPageState extends State<AboutPage> {
             Text(
               'Versión $_appVersion',
               style: textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurface, // MODIFICADO: de Colors.grey[600] a colorScheme.onSurface
+                color: colorScheme.onSurface, // de Colors.grey[600] a colorScheme.onSurface
               ),
               textAlign: TextAlign.center, // centrado
             ),
@@ -105,7 +125,7 @@ class _AboutPageState extends State<AboutPage> {
             // Descripción de la Aplicación
             Text(
               'Devocionales Cristianos te trae inspiración diaria directamente a tu teléfono. Disfruta de mensajes bíblicos actualizados, explora, guarda tus favoritos, comparte la palabra y personaliza tu experiencia de lectura.',
-              style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface), // MODIFICADO: Añadido colorScheme.onSurface
+              style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface), // Añadido colorScheme.onSurface
               textAlign: TextAlign.center, //centrado
             ),
             const SizedBox(height: 10),
@@ -114,7 +134,7 @@ class _AboutPageState extends State<AboutPage> {
             Text(
               'Características Principales:',
               style: textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold, color: colorScheme.onSurface), // MODIFICADO: Añadido colorScheme.onSurface
+                  fontWeight: FontWeight.bold, color: colorScheme.onSurface), // Añadido colorScheme.onSurface
               textAlign: TextAlign.center, // centrado
             ),
             const SizedBox(height: 10),
@@ -139,7 +159,7 @@ class _AboutPageState extends State<AboutPage> {
               child: Text(
                 'Desarrollado por Develop4God',
                 style: textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface, // MODIFICADO: de Colors.grey[700] a colorScheme.onSurface
+                  color: colorScheme.onSurface, // de Colors.grey[700] a colorScheme.onSurface
                 ),
                 textAlign: TextAlign.center, // Este textAlign ahora centrará el texto dentro del Center
               ),
@@ -150,10 +170,10 @@ class _AboutPageState extends State<AboutPage> {
             Center( // Envuelve el botón en un Center para centrarlo horizontalmente
               child: ElevatedButton.icon(
                 onPressed: () => _launchURL('https://develop4god.github.io/'),
-                icon: Icon(Icons.public, color: colorScheme.onPrimary), // MODIFICADO: de Colors.white a colorScheme.onPrimary
-                label: Text('Términos y Condiciones / Copyright', style: TextStyle(color: colorScheme.onPrimary)), // MODIFICADO: de Colors.white a colorScheme.onPrimary
+                icon: Icon(Icons.public, color: colorScheme.onPrimary), // de Colors.white a colorScheme.onPrimary
+                label: Text('Términos y Condiciones / Copyright', style: TextStyle(color: colorScheme.onPrimary)), // de Colors.white a colorScheme.onPrimary
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: colorScheme.primary, // MODIFICADO: de Colors.deepPurple a colorScheme.primary
+                  backgroundColor: colorScheme.primary, // de Colors.deepPurple a colorScheme.primary
                   padding: const EdgeInsets.symmetric(
                       horizontal: 24, vertical: 12),
                   shape: RoundedRectangleBorder(
@@ -161,6 +181,27 @@ class _AboutPageState extends State<AboutPage> {
                   ),
                 ),
               ),
+            ),
+
+            // Sección de contacto eliminada y reemplazada por un ListTile de navegación
+            const SizedBox(height: 30),
+            const Divider(),
+            const SizedBox(height: 20),
+
+            // Enlace a la página de Contacto independiente
+            ListTile(
+              leading: Icon(Icons.contact_mail, color: colorScheme.primary), // Icono para contacto
+              title: Text(
+                'Contáctanos',
+                style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface),
+              ),
+              trailing: Icon(Icons.arrow_forward_ios, color: colorScheme.onSurface), // Flecha para indicar navegación
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ContactPage()), // Navega a la ContactPage
+                );
+              },
             ),
           ],
         ),
@@ -184,7 +225,7 @@ class _FeatureItem extends StatelessWidget {
         style: Theme
             .of(context)
             .textTheme
-            .bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface), // MODIFICADO: Añadido colorScheme.onSurface
+            .bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface), // Añadido colorScheme.onSurface
         textAlign: TextAlign.center, // centrado
       ),
     );

@@ -10,9 +10,8 @@ import 'package:provider/provider.dart'; // Importa provider
 import 'package:devocional_nuevo/pages/favorites_page.dart';
 import 'package:devocional_nuevo/pages/about_page.dart';
 import 'package:devocional_nuevo/pages/notification_page.dart';
-import 'package:devocional_nuevo/pages/contact_page.dart'; // Importa ContactPage para la navegación directa
 import 'package:devocional_nuevo/providers/theme_provider.dart'; // Importa el ThemeProvider
-import 'package:devocional_nuevo/utils/theme_constants.dart'; // Importa las constantes de tema para acceder a appThemeFamilies y settingsOptionTextStyle
+import 'package:devocional_nuevo/utils/theme_constants.dart'; // Importa las constantes de tema para acceder a appThemeFamilies
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -149,34 +148,28 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 20), // Espacio entre Idioma y Tema
 
             // Sección para seleccionar la familia de tema
-            Row( // Agrupamos el icono y el texto en una nueva Row
-              children: [
-                Icon(Icons.palette, color: colorScheme.primary), // Icono para temas
-                const SizedBox(width: 10), // Espacio entre icono y texto
-                Text(
-                  'Seleccionar Tema:',
-                  style: textTheme.bodyMedium?.merge(settingsOptionTextStyle).copyWith(color: colorScheme.onSurface), // Estilo estandarizado
-                ),
-              ],
+            Text(
+              'Seleccionar Familia de Tema:', // MODIFICADO: Texto del título
+              style: textTheme.titleLarge?.copyWith(color: colorScheme.onSurface), // Usa el color de texto de la superficie
             ),
             const SizedBox(height: 10),
             // Dropdown para elegir la familia de tema
             DropdownButtonFormField<String>(
-              value: themeProvider.currentThemeFamily,
+              value: themeProvider.currentThemeFamily, // MODIFICADO: Usar currentThemeFamily
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
-                labelText: 'Colores',
-                labelStyle: TextStyle(color: textTheme.bodyMedium?.color),
+                labelText: 'Familia de Tema', // MODIFICADO: Texto del label
+                labelStyle: TextStyle(color: textTheme.bodyMedium?.color), // Color del label
               ),
               items: themeFamilies.map((String familyName) {
                 return DropdownMenuItem<String>(
                   value: familyName,
-                  child: Text(themeDisplayNames[familyName] ?? familyName, style: TextStyle(color: textTheme.bodyMedium?.color)),
+                  child: Text(familyName, style: TextStyle(color: textTheme.bodyMedium?.color)), // Color del texto del item
                 );
               }).toList(),
               onChanged: (String? newValue) {
                 if (newValue != null) {
-                  themeProvider.setThemeFamily(newValue);
+                  themeProvider.setThemeFamily(newValue); // MODIFICADO: Usar setThemeFamily
                 }
               },
             ),
@@ -186,21 +179,17 @@ class _SettingsPageState extends State<SettingsPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row( // Agrupamos el icono y el texto en una nueva Row
-                  children: [
-                    Icon(Icons.contrast, color: colorScheme.primary), // Icono para "Luz baja"
-                    const SizedBox(width: 10), // Espacio entre el icono y el texto
-                    Text(
-                      'Luz baja:',
-                      style: textTheme.bodyMedium?.merge(settingsOptionTextStyle).copyWith(color: colorScheme.onSurface), // Estilo estandarizado
-                    ),
-                  ],
+                Text(
+                  'Modo Oscuro:',
+                  style: textTheme.titleLarge?.copyWith(color: colorScheme.onSurface),
                 ),
                 Switch(
-                  value: themeProvider.currentBrightness == Brightness.dark,
+                  value: themeProvider.currentBrightness == Brightness.dark, // MODIFICADO: Usar currentBrightness
                   onChanged: (bool value) {
+                    // MODIFICADO: Usar setBrightness directamente
                     themeProvider.setBrightness(value ? Brightness.dark : Brightness.light);
                   },
+                  activeColor: colorScheme.primary, // Color del switch cuando está activo
                 ),
               ],
             ),
@@ -222,19 +211,25 @@ class _SettingsPageState extends State<SettingsPage> {
                     Icon(Icons.notifications, color: colorScheme.primary),
                     const SizedBox(width: 10),
                     // Texto de notificaciones usa el color de texto de la superficie
-                    Expanded(
-                      child: Text(
-                        'Configuración de notificaciones',
-                        style: textTheme.bodyMedium?.merge(settingsOptionTextStyle).copyWith(color: colorScheme.onSurface), // Estilo estandarizado
-                        maxLines: 1, // Añadido para evitar desbordamiento
-                        overflow: TextOverflow.ellipsis, // Añadido para truncar texto
-                      ),
+                    Text(
+                      'Configuración de notificaciones',
+                      style: TextStyle(fontSize: 18, color: textTheme.bodyMedium?.color),
                     ),
                   ],
                 ),
               ),
             ),
-
+            // Favoritos guardados
+            const SizedBox(height: 30),
+            Row(
+              children: [
+                // Icono de favoritos usa el color primario del tema
+                Icon(Icons.favorite, color: colorScheme.primary),
+                const SizedBox(width: 10),
+                // Texto de favoritos usa el color de texto de la superficie
+                Text('Favoritos', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textTheme.bodyMedium?.color)),
+              ],
+            ),
             const SizedBox(height: 15),
             InkWell(
               onTap: () {
@@ -253,49 +248,13 @@ class _SettingsPageState extends State<SettingsPage> {
                         color: colorScheme.primary),
                     const SizedBox(width: 10),
                     // Texto de favoritos guardados usa el color de texto de la superficie
-                    Expanded(
-                      child: Text(
-                        'Favoritos guardados',
-                        style: textTheme.bodyMedium?.merge(settingsOptionTextStyle).copyWith(color: colorScheme.onSurface), // Estilo estandarizado
-                        maxLines: 1, // Añadido para evitar desbordamiento
-                        overflow: TextOverflow.ellipsis, // Añadido para truncar texto
-                      ),
-                    ),
+                    Text('Favoritos guardados', style: TextStyle(fontSize: 18, color: textTheme.bodyMedium?.color)),
                   ],
                 ),
               ),
             ),
-
-            // Opcion para Contáctanos, entre Favoritos guardados y Acerca de
-            const SizedBox(height: 20), // Espacio después de favoritos guardados
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ContactPage()), // Navega directamente a ContactPage
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Row(
-                  children: [
-                    Icon(Icons.contact_mail, color: colorScheme.primary), // Icono para contacto
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        'Contáctanos',
-                        style: textTheme.bodyMedium?.merge(settingsOptionTextStyle).copyWith(color: colorScheme.onSurface),
-                        maxLines: 1, // Añadido para evitar desbordamiento
-                        overflow: TextOverflow.ellipsis, // Añadido para truncar texto
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
             // Acerca de
-            const SizedBox(height: 20), // Espacio antes de Acerca de
+            const SizedBox(height: 20),
             InkWell(
               onTap: () {
                 Navigator.push(
@@ -311,14 +270,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     Icon(Icons.info_outline, color: colorScheme.primary),
                     const SizedBox(width: 10),
                     // Texto de acerca de usa el color de texto de la superficie
-                    Expanded(
-                      child: Text(
-                        'Acerca de Devocionales Cristianos',
-                        style: textTheme.bodyMedium?.merge(settingsOptionTextStyle).copyWith(color: colorScheme.onSurface), // Estilo estandarizado
-                        maxLines: 1, // Añadido para evitar desbordamiento
-                        overflow: TextOverflow.ellipsis, // Añadido para truncar texto
-                      ),
-                    ),
+                    Text('Acerca de Devocionales Cristianos',
+                        style: TextStyle(fontSize: 18, color: textTheme.bodyMedium?.color)),
                   ],
                 ),
               ),
