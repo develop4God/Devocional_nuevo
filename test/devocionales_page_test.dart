@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
