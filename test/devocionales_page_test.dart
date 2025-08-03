@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/rendering.dart'; // NUEVO: Importación para debugDumpApp
 import 'dart:typed_data';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/material.dart';
