@@ -1,3 +1,4 @@
+// ignore_for_file: constant_identifier_names
 // lib/utils/constants.dart
 
 import 'package:flutter/material.dart'; // ¡Importante! Necesario para GlobalKey y NavigatorState
