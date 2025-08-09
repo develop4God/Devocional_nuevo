@@ -508,6 +508,13 @@ class DevocionalProvider with ChangeNotifier {
     return await hasLocalFile(currentYear, _selectedLanguage);
   }
 
+  /// Verifica si hay datos locales para 2025 y 2026
+  Future<bool> hasTargetYearsLocalData() async {
+    final bool has2025 = await hasLocalFile(2025, _selectedLanguage);
+    final bool has2026 = await hasLocalFile(2026, _selectedLanguage);
+    return has2025 && has2026;
+  }
+
   /// Fuerza la recarga desde la API (ignora archivos locales)
   Future<void> forceRefreshFromAPI() async {
     _isOfflineMode = false;
