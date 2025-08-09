@@ -81,6 +81,9 @@ class _DevocionalesPageState extends State<DevocionalesPage>
                   'No hay índice guardado. Iniciando en el primer devocional (índice 0).');
             }
           });
+          
+          // Record that a devotional is being read when app starts
+          devocionalProvider.recordDevocionalRead();
         }
       } else {
         if (mounted) {
@@ -115,6 +118,9 @@ class _DevocionalesPageState extends State<DevocionalesPage>
     final List<Devocional> devocionales = devocionalProvider.devocionales;
 
     if (_currentDevocionalIndex < devocionales.length - 1) {
+      // Record that a devotional was read before moving to the next one
+      devocionalProvider.recordDevocionalRead();
+      
       setState(() {
         _currentDevocionalIndex++;
       });
