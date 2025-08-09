@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:devocional_nuevo/models/devocional_model.dart';
 import 'package:devocional_nuevo/utils/constants.dart'; // Importación necesaria para Constants.apiUrl
+import 'package:devocional_nuevo/services/spiritual_stats_service.dart';
 
 class DevocionalProvider with ChangeNotifier {
   // Lista para almacenar TODOS los devocionales cargados para el idioma actual, de todas las fechas.
@@ -25,6 +26,9 @@ class DevocionalProvider with ChangeNotifier {
   List<Devocional> _favoriteDevocionales =
       []; // Lista de devocionales favoritos
   bool _showInvitationDialog = true; // Para el diálogo de invitación
+
+  // Service for tracking spiritual statistics
+  final SpiritualStatsService _statsService = SpiritualStatsService();
 
   // Lista de idiomas soportados por tu API
   static const List<String> _supportedLanguages = [
@@ -317,7 +321,22 @@ class DevocionalProvider with ChangeNotifier {
       );
     }
     _saveFavorites();
+    
+    // Update spiritual stats with new favorites count
+    _statsService.updateFavoritesCount(_favoriteDevocionales.length);
+    
     notifyListeners();
+  }
+
+  /// Record that a devotional was read (call this when user reads a devotional)
+  Future<void> recordDevocionalRead() async {
+    try {
+      await _statsService.recordDevocionalRead(
+        favoritesCount: _favoriteDevocionales.length,
+      );
+    } catch (e) {
+      debugPrint('Error recording devotional read: $e');
+    }
   }
 
   // --- Lógica del Diálogo de Invitación ---
