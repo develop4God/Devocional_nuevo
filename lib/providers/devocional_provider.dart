@@ -7,7 +7,9 @@ import 'package:http/http.dart' as http; // Importación correcta para http
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:devocional_nuevo/models/devocional_model.dart';
+import 'package:devocional_nuevo/models/spiritual_progress_stats.dart';
 import 'package:devocional_nuevo/utils/constants.dart'; // Importación necesaria para Constants.apiUrl
+import 'package:devocional_nuevo/services/spiritual_progress_service.dart';
 
 class DevocionalProvider with ChangeNotifier {
   // Lista para almacenar TODOS los devocionales cargados para el idioma actual, de todas las fechas.
@@ -25,6 +27,9 @@ class DevocionalProvider with ChangeNotifier {
   List<Devocional> _favoriteDevocionales =
       []; // Lista de devocionales favoritos
   bool _showInvitationDialog = true; // Para el diálogo de invitación
+
+  // Servicio para tracking de progreso espiritual
+  final SpiritualProgressService _spiritualProgressService = SpiritualProgressService();
 
   // Lista de idiomas soportados por tu API
   static const List<String> _supportedLanguages = [
@@ -342,5 +347,68 @@ class DevocionalProvider with ChangeNotifier {
   // Verificar si un idioma está soportado
   bool isLanguageSupported(String language) {
     return _supportedLanguages.contains(language);
+  }
+
+  // --- Métodos de tracking de progreso espiritual ---
+
+  /// Marca un devocional como completado y registra la actividad
+  Future<void> markDevotionalAsCompleted(Devocional devocional) async {
+    try {
+      // Registrar la actividad en el servicio de progreso espiritual
+      await _spiritualProgressService.recordDevotionalCompletion(
+        devotionalId: devocional.id,
+        date: DateTime.now(),
+        additionalMetadata: {
+          'devotionalDate': devocional.date.toIso8601String(),
+          'version': devocional.version ?? 'unknown',
+          'language': devocional.language ?? 'unknown',
+        },
+      );
+
+      debugPrint('DevocionalProvider: Devocional marcado como completado: ${devocional.id}');
+    } catch (e) {
+      debugPrint('Error al marcar devocional como completado: $e');
+    }
+  }
+
+  /// Registra tiempo de oración
+  Future<void> recordPrayerTime(int minutes, {Map<String, dynamic>? metadata}) async {
+    try {
+      await _spiritualProgressService.recordPrayerTime(
+        minutes: minutes,
+        additionalMetadata: metadata ?? {},
+      );
+      debugPrint('DevocionalProvider: Tiempo de oración registrado: $minutes minutos');
+    } catch (e) {
+      debugPrint('Error al registrar tiempo de oración: $e');
+    }
+  }
+
+  /// Registra un versículo memorizado
+  Future<void> recordVerseMemorized(String verse, {Map<String, dynamic>? metadata}) async {
+    try {
+      await _spiritualProgressService.recordVerseMemorized(
+        verse: verse,
+        additionalMetadata: metadata ?? {},
+      );
+      debugPrint('DevocionalProvider: Versículo memorizado registrado: $verse');
+    } catch (e) {
+      debugPrint('Error al registrar versículo memorizado: $e');
+    }
+  }
+
+  /// Obtiene las estadísticas de progreso espiritual del usuario
+  Future<SpiritualProgressStats?> getSpiritualProgressStats() async {
+    try {
+      return await _spiritualProgressService.getUserStats();
+    } catch (e) {
+      debugPrint('Error al obtener estadísticas de progreso espiritual: $e');
+      return null;
+    }
+  }
+
+  /// Stream para escuchar cambios en las estadísticas
+  Stream<SpiritualProgressStats?> watchSpiritualProgressStats() {
+    return _spiritualProgressService.watchUserStats();
   }
 }
