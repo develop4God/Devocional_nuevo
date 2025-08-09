@@ -8,9 +8,9 @@ Se ha implementado funcionalidad offline completa en el `DevocionalProvider` que
 
 ## Características implementadas
 
-### 1. Descarga automática y manual
-- **Descarga automática**: Los datos se guardan automáticamente cuando se descargan desde la API
-- **Descarga manual**: Los usuarios pueden descargar contenido desde la UI de configuración
+### 1. Descarga manual y gestión offline
+- **Descarga a demanda**: Los devocionales se descargan solo cuando el usuario lo solicita explícitamente
+- **Gestión desde Drawer**: Interfaz accesible para descargar y gestionar contenido offline  
 - **Verificación previa**: Se verifica si ya existe contenido local antes de descargar
 
 ### 2. Almacenamiento local
@@ -132,10 +132,11 @@ Consumer<DevocionalProvider>(
 ## Flujo de funcionamiento
 
 1. **Inicialización**: Al cargar la app, se verifica si hay contenido local
-2. **Indicador en Drawer**: Se muestra el estado actual (descargado/no descargado)
-3. **Gestión desde Drawer**: Usuario accede a gestión offline desde el drawer principal
-4. **Descarga/Actualización**: Se ejecutan las acciones desde el diálogo modal
-5. **Feedback visual**: Estados se sincronizan automáticamente en toda la UI
+2. **Carga condicionada**: Si hay contenido local se usa offline, si no se carga desde API (sin guardar automáticamente)
+3. **Indicador en Drawer**: Se muestra el estado actual (descargado/no descargado)
+4. **Gestión desde Drawer**: Usuario accede a gestión offline desde el drawer principal
+5. **Descarga manual**: Las descargas solo ocurren cuando el usuario las solicita explícitamente
+6. **Feedback visual**: Estados se sincronizan automáticamente en toda la UI
 
 ## Manejo de errores
 

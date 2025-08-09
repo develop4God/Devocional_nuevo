@@ -136,8 +136,8 @@ class DevocionalProvider with ChangeNotifier {
         return;
       }
 
-      // Si no hay datos locales, intentar descargar desde la API
-      debugPrint('No se encontraron datos locales, descargando desde API');
+      // Si no hay datos locales, cargar desde la API sin guardar automáticamente
+      debugPrint('No se encontraron datos locales, cargando desde API para uso inmediato');
       final response = await http.get(Uri.parse(Constants.getDevocionalesApiUrl(currentYear)));
 
       if (response.statusCode != 200) {
@@ -147,19 +147,8 @@ class DevocionalProvider with ChangeNotifier {
       final String responseBody = response.body;
       final Map<String, dynamic> data = json.decode(responseBody);
 
-      // Procesar los datos descargados
+      // Procesar los datos descargados para uso inmediato (sin guardar)
       await _processDevocionalData(data);
-
-      // Guardar automáticamente en almacenamiento local para uso futuro
-      try {
-        final String filePath = await _getLocalFilePath(currentYear, _selectedLanguage);
-        final File file = File(filePath);
-        await file.writeAsString(responseBody);
-        debugPrint('Datos guardados automáticamente en: $filePath');
-      } catch (e) {
-        debugPrint('Error guardando datos automáticamente: $e');
-        // No es crítico si no se puede guardar automáticamente
-      }
 
     } catch (e) {
       _errorMessage = 'Error al cargar los devocionales: $e';
