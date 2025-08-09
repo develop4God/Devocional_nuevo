@@ -4,6 +4,8 @@
 
 Se ha implementado funcionalidad offline completa en el `DevocionalProvider` que permite descargar y almacenar los archivos JSON de devocionales en el dispositivo del usuario para acceso sin conexión a internet.
 
+**ACTUALIZACIÓN**: La gestión offline ha sido migrada del Settings al Drawer principal para mejorar la experiencia de usuario y accesibilidad.
+
 ## Características implementadas
 
 ### 1. Descarga automática y manual
@@ -20,6 +22,31 @@ Se ha implementado funcionalidad offline completa en el `DevocionalProvider` que
 - Prioriza contenido local sobre descargas de red
 - Fallback automático a API si no hay contenido local
 - Indicador visual de modo offline
+
+## Arquitectura de Componentes
+
+### OfflineManagerWidget
+Componente reutilizable extraído de la página de configuraciones que maneja toda la lógica de gestión offline:
+
+```dart
+OfflineManagerWidget({
+  bool showCompactView = false,      // Vista compacta vs completa
+  bool showStatusIndicator = true,   // Mostrar indicadores de estado
+})
+```
+
+#### Características del widget:
+- **Vista compacta**: Solo botón de descarga principal
+- **Vista completa**: Botones de descarga y actualización + información adicional
+- **Estados visuales**: Indicadores de progreso, éxito y error
+- **Integración con provider**: Usa Consumer para sincronización de estado
+
+### Integración en Drawer
+El componente se integra en `DevocionalesDrawer` mediante:
+- **Estado dinámico**: Muestra "Descargar devocionales" o "Devocionales descargados"
+- **Iconos adaptativos**: Download → Check verde cuando hay contenido local
+- **Diálogo modal**: Abre `OfflineManagerWidget` en modo completo
+- **Feedback visual**: Estados de carga y mensajes de éxito/error
 
 ## API del DevocionalProvider
 
@@ -105,10 +132,10 @@ Consumer<DevocionalProvider>(
 ## Flujo de funcionamiento
 
 1. **Inicialización**: Al cargar la app, se verifica si hay contenido local
-2. **Carga offline-first**: Se prioriza contenido local si está disponible
-3. **Fallback a API**: Si no hay contenido local, se descarga desde la API
-4. **Guardado automático**: Los datos descargados se guardan automáticamente
-5. **Gestión manual**: Los usuarios pueden descargar/actualizar desde configuración
+2. **Indicador en Drawer**: Se muestra el estado actual (descargado/no descargado)
+3. **Gestión desde Drawer**: Usuario accede a gestión offline desde el drawer principal
+4. **Descarga/Actualización**: Se ejecutan las acciones desde el diálogo modal
+5. **Feedback visual**: Estados se sincronizan automáticamente en toda la UI
 
 ## Manejo de errores
 
@@ -119,9 +146,31 @@ Consumer<DevocionalProvider>(
 
 ## Archivos modificados
 
-1. `lib/providers/devocional_provider.dart` - Lógica principal offline
-2. `lib/pages/settings_page.dart` - UI de gestión offline  
-3. `test/devocional_provider_offline_test.dart` - Tests unitarios
+1. `lib/providers/devocional_provider.dart` - Lógica principal offline (sin cambios)
+2. `lib/widgets/offline_manager_widget.dart` - **NUEVO**: Componente reutilizable  
+3. `lib/widgets/devocionales_page_drawer.dart` - **MODIFICADO**: Integración offline
+4. `lib/pages/settings_page.dart` - **MODIFICADO**: Sección offline comentada
+5. `test/offline_manager_widget_test.dart` - **NUEVO**: Tests del widget
+6. `test/drawer_offline_integration_test.dart` - **NUEVO**: Tests de integración
+
+## Mejoras implementadas
+
+### UX/UI
+- ✅ Acceso más directo desde drawer principal
+- ✅ Estados visuales mejorados (íconos dinámicos)
+- ✅ Feedback inmediato de estado
+- ✅ Diálogo modal para gestión detallada
+
+### Arquitectura
+- ✅ Componente reutilizable extraído
+- ✅ Separación de responsabilidades
+- ✅ Evita duplicidad de funcionalidad
+- ✅ Mejor organización del código
+
+### Testing
+- ✅ Tests unitarios para el widget
+- ✅ Tests de integración para el drawer
+- ✅ Verificación de estado dinámico
 
 ## Dependencias utilizadas
 
