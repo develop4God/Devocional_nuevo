@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:devocional_nuevo/widgets/theme_selector.dart';
+import 'package:devocional_nuevo/widgets/offline_manager_widget.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:devocional_nuevo/providers/theme_provider.dart';
 import 'package:devocional_nuevo/utils/theme_constants.dart';
@@ -20,6 +21,33 @@ class DevocionalesDrawer extends StatelessWidget {
         'https://forms.gle/HGFNUv9pc8XpG8aa6';
     Share.share(message);
     Navigator.of(context).pop(); // Cerrar drawer tras compartir
+  }
+
+  void _showOfflineManagerDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.offline_pin, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(width: 8),
+              const Text('Gestión de contenido offline'),
+            ],
+          ),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: OfflineManagerWidget(showCompactView: false),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cerrar'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   // Helper para alinear iconos y textos uniformemente
@@ -229,28 +257,37 @@ class DevocionalesDrawer extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     // --- Descargar devocionales ---
-                    drawerRow(
-                      icon: Icons.download_outlined,
-                      iconColor: colorScheme.primary,
-                      label: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Descargar devocionales',
-                            style: textTheme.bodyMedium?.copyWith(
-                                fontSize: 16, color: colorScheme.onSurface),
+                    FutureBuilder<bool>(
+                      future: devocionalProvider.hasCurrentYearLocalData(),
+                      builder: (context, snapshot) {
+                        final bool hasLocalData = snapshot.data ?? false;
+                        return drawerRow(
+                          icon: hasLocalData ? Icons.check_circle : Icons.download_outlined,
+                          iconColor: hasLocalData ? Colors.green : colorScheme.primary,
+                          label: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                hasLocalData ? 'Devocionales descargados' : 'Descargar devocionales',
+                                style: textTheme.bodyMedium?.copyWith(
+                                    fontSize: 16, color: colorScheme.onSurface),
+                              ),
+                              if (!hasLocalData) ...[
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Toca para gestionar',
+                                  style: textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.onSurface.withAlpha(150),
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Próximamente',
-                            style: textTheme.bodySmall?.copyWith(
-                              color: colorScheme.onSurface.withAlpha(150),
-                            ),
-                          ),
-                        ],
-                      ),
-                      onTap: () {
-                        Navigator.of(context).pop();
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            _showOfflineManagerDialog(context);
+                          },
+                        );
                       },
                     ),
                     Divider(

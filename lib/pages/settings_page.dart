@@ -141,7 +141,9 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             const SizedBox(height: 30),
             
-            // Sección de gestión offline
+            // Sección de gestión offline - COMENTADA: Funcionalidad movida al Drawer
+            // Para evitar duplicidad, la gestión offline ahora se maneja desde el Drawer
+            /*
             Divider(color: colorScheme.outline),
             const SizedBox(height: 10),
             Row(
@@ -323,6 +325,7 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
             const SizedBox(height: 20),
+            */
             // Sección para seleccionar la familia de tema
             /*
             Row(
