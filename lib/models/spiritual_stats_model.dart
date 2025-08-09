@@ -176,7 +176,7 @@ class PredefinedAchievements {
         Achievement(
           id: 'streak_3',
           title: 'Constancia',
-          description: 'Mantén una racha de 3 días',
+          description: "Mantén una racha de 3 días",
           icon: Icons.local_fire_department,
           color: Colors.orange,
           threshold: 3,
@@ -185,7 +185,7 @@ class PredefinedAchievements {
         Achievement(
           id: 'streak_7',
           title: 'Semana Espiritual',
-          description: 'Mantén una racha de 7 días',
+          description: "Mantén una racha de 7 días",
           icon: Icons.whatshot,
           color: Colors.red,
           threshold: 7,
@@ -194,7 +194,7 @@ class PredefinedAchievements {
         Achievement(
           id: 'streak_30',
           title: 'Guerrero Espiritual',
-          description: 'Mantén una racha de 30 días',
+          description: "Mantén una racha de 30 días",
           icon: Icons.emoji_events,
           color: Colors.amber,
           threshold: 30,
