@@ -529,7 +529,7 @@ class _DevocionalesPageState extends State<DevocionalesPage>
                                       style: textTheme.bodySmall?.copyWith(
                                           fontSize: 12,
                                           color: colorScheme.onSurface
-                                              .withAlpha(0.7)),
+                                              .withAlpha((0.7* 255).round()),
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
