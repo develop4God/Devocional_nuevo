@@ -14,7 +14,7 @@ import 'package:devocional_nuevo/models/devocional_model.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:devocional_nuevo/pages/settings_page.dart';
 import 'package:devocional_nuevo/services/update_service.dart';
-import 'package:devocional_nuevo/pages/progress_page.dart'; // AJUSTE: Import necesario para progreso
+import 'package:devocional_nuevo/pages/progress_page.dart';
 
 class DevocionalesPage extends StatefulWidget {
   final String? initialDevocionalId;
@@ -249,7 +249,7 @@ class _DevocionalesPageState extends State<DevocionalesPage>
 
   Future<void> _shareAsText(Devocional devocional) async {
     final text =
-        "Devocional del día:\n\nVersículo: ${devocional.versiculo}\n\nReflexión: ${devocional.reflexion}\n\nPara Meditar:\n${devocional.paraMeditar.map((p) => '${p.cita}: ${p.texto}').join('\n')}\n\nOración: ${devocional.oracion}"; // Líneas de Versión, Idioma, y Fecha eliminadas
+        "Devocional del día:\n\nVersículo: ${devocional.versiculo}\n\nReflexión: ${devocional.reflexion}\n\nPara Meditar:\n${devocional.paraMeditar.map((p) => '${p.cita}: ${p.texto}').join('\n')}\n\nOración: ${devocional.oracion}";
     await SharePlus.instance.share(ShareParams(text: text));
   }
 
@@ -276,7 +276,7 @@ class _DevocionalesPageState extends State<DevocionalesPage>
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      drawer: const DevocionalesDrawer(), //nuevo drawer
+      drawer: const DevocionalesDrawer(),
       appBar: AppBar(
         title: Text(
           'Mi espacio íntimo con Dios',
@@ -285,54 +285,6 @@ class _DevocionalesPageState extends State<DevocionalesPage>
                   colorScheme.onPrimary),
         ),
         centerTitle: true,
-        //comentado para el dropdown de versiones
-        /*actions: [
-          Consumer<DevocionalProvider>(
-            builder: (context, devocionalProvider, child) {
-              return Row(
-                children: [
-                  DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: devocionalProvider.selectedVersion,
-                      icon: Icon(
-                        CupertinoIcons.book,
-                        color: Theme.of(context).appBarTheme.foregroundColor ??
-                            colorScheme.onPrimary,
-                      ),
-                      dropdownColor: colorScheme.surface,
-                      selectedItemBuilder: (BuildContext context) {
-                        return <String>[
-                          'RVR1960'
-                        ].map<Widget>((String itemValue) {
-                          return const SizedBox(
-                            width: 40.0,
-                            child: Text(''),
-                          );
-                        }).toList();
-                      },
-                      onChanged: (String? newValue) {
-                        if (newValue != null) {
-                          devocionalProvider.setSelectedVersion(newValue);
-                        }
-                      },
-                      items: const <String>[
-                        'RVR1960'
-                      ].map<DropdownMenuItem<String>>((String itemValue) {
-                        return DropdownMenuItem<String>(
-                          value: itemValue,
-                          child: Text(
-                            itemValue,
-                            style: TextStyle(color: colorScheme.onSurface),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-         ],*/
       ),
       body: Consumer<DevocionalProvider>(
         builder: (context, devocionalProvider, child) {
@@ -503,33 +455,28 @@ class _DevocionalesPageState extends State<DevocionalesPage>
                                       color: colorScheme.primary),
                                 ),
                                 const SizedBox(height: 10),
-                                if (currentDevocional.tags !=
-                                        null && // Movido para que Temas vaya primero
+                                if (currentDevocional.tags != null &&
                                     currentDevocional.tags!.isNotEmpty)
                                   Text(
                                       'Temas: ${currentDevocional.tags!.join(', ')}',
                                       style: textTheme.bodySmall?.copyWith(
                                           fontSize: 14,
                                           color: colorScheme.onSurface)),
-                                if (currentDevocional.version !=
-                                    null) // Movido para ir después de Temas
+                                if (currentDevocional.version != null)
                                   Text('Versión: ${currentDevocional.version}',
                                       style: textTheme.bodySmall?.copyWith(
                                           fontSize: 14,
                                           color: colorScheme.onSurface)),
-                                const SizedBox(
-                                    height:
-                                        10), // Espacio antes de la atribución
+                                const SizedBox(height: 10),
                                 Center(
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
+                                    padding: const EdgeInsets.symmetric(horizontal: 20),
                                     child: Text(
                                       'El texto bíblico Reina-Valera 1960® Sociedades Bíblicas en América Latina, 1960. Derechos renovados 1988, Sociedades Bíblicas Unidas.',
                                       style: textTheme.bodySmall?.copyWith(
                                           fontSize: 12,
-                                          color: colorScheme.onSurface
-                                              .withAlpha((0.7* 255).round()),
+                                          color: colorScheme.onSurface.withAlpha((0.7 * 255).round()),
+                                      ),
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
@@ -651,7 +598,6 @@ class _DevocionalesPageState extends State<DevocionalesPage>
                       : null,
                   icon: Icon(Icons.image, color: appBarForegroundColor, size: 30),
                 ),
-                // AJUSTE: Botón de progreso añadido aquí
                 IconButton(
                   tooltip: 'Ver progreso y logros',
                   onPressed: () {
@@ -691,3 +637,4 @@ class _DevocionalesPageState extends State<DevocionalesPage>
     super.dispose();
   }
 }
+
