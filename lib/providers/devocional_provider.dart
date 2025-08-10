@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:devocional_nuevo/models/devocional_model.dart';
 import 'package:devocional_nuevo/utils/constants.dart'; // Importación necesaria para Constants.apiUrl
+import 'package:devocional_nuevo/services/tts_service.dart';
 
 class DevocionalProvider with ChangeNotifier {
   // Lista para almacenar TODOS los devocionales cargados para el idioma actual, de todas las fechas.
@@ -26,6 +27,12 @@ class DevocionalProvider with ChangeNotifier {
       []; // Lista de devocionales favoritos
   bool _showInvitationDialog = true; // Para el diálogo de invitación
 
+  // Audio state management
+  final TtsService _ttsService = TtsService();
+  bool _isAudioPlaying = false;
+  bool _isAudioPaused = false;
+  String? _currentPlayingDevocionalId;
+
   // Lista de idiomas soportados por tu API
   static const List<String> _supportedLanguages = [
     'es'
@@ -42,11 +49,27 @@ class DevocionalProvider with ChangeNotifier {
   List<Devocional> get favoriteDevocionales => _favoriteDevocionales;
   bool get showInvitationDialog => _showInvitationDialog;
 
+  // Audio getters
+  bool get isAudioPlaying => _isAudioPlaying;
+  bool get isAudioPaused => _isAudioPaused;
+  String? get currentPlayingDevocionalId => _currentPlayingDevocionalId;
+  bool isDevocionalPlaying(String devocionalId) => _currentPlayingDevocionalId == devocionalId;
+
   // Constructor: inicializa los datos cuando el provider se crea
   DevocionalProvider() {
     // initializeData() se llama fuera del constructor, usualmente en AppInitializer
     // usando addPostFrameCallback. Esto asegura que las preferencias se carguen
     // y los datos se obtengan sin conflictos con la fase de construcción.
+    
+    // Initialize TTS service and set up state change callback
+    _ttsService.setStateChangedCallback(() {
+      _isAudioPlaying = _ttsService.isPlaying;
+      _isAudioPaused = _ttsService.isPaused;
+      if (!_ttsService.isActive) {
+        _currentPlayingDevocionalId = null;
+      }
+      notifyListeners();
+    });
   }
 
   // --- Métodos de inicialización y carga ---
@@ -342,5 +365,85 @@ class DevocionalProvider with ChangeNotifier {
   // Verificar si un idioma está soportado
   bool isLanguageSupported(String language) {
     return _supportedLanguages.contains(language);
+  }
+
+  // --- Audio functionality methods ---
+
+  /// Play audio for a devotional
+  Future<void> playDevotional(Devocional devocional) async {
+    try {
+      // Stop any currently playing audio
+      if (_isAudioPlaying) {
+        await _ttsService.stop();
+      }
+      
+      _currentPlayingDevocionalId = devocional.id;
+      await _ttsService.speakDevotional(devocional);
+    } catch (e) {
+      debugPrint('Error playing devotional audio: $e');
+      _currentPlayingDevocionalId = null;
+      notifyListeners();
+    }
+  }
+
+  /// Pause the current audio
+  Future<void> pauseAudio() async {
+    try {
+      await _ttsService.pause();
+    } catch (e) {
+      debugPrint('Error pausing audio: $e');
+    }
+  }
+
+  /// Resume the current audio
+  Future<void> resumeAudio() async {
+    try {
+      await _ttsService.resume();
+    } catch (e) {
+      debugPrint('Error resuming audio: $e');
+    }
+  }
+
+  /// Stop the current audio
+  Future<void> stopAudio() async {
+    try {
+      await _ttsService.stop();
+      _currentPlayingDevocionalId = null;
+    } catch (e) {
+      debugPrint('Error stopping audio: $e');
+    }
+  }
+
+  /// Toggle play/pause for audio
+  Future<void> toggleAudioPlayPause(Devocional devocional) async {
+    if (_currentPlayingDevocionalId == devocional.id) {
+      if (_isAudioPaused) {
+        await resumeAudio();
+      } else if (_isAudioPlaying) {
+        await pauseAudio();
+      }
+    } else {
+      await playDevotional(devocional);
+    }
+  }
+
+  /// Get available TTS languages
+  Future<List<String>> getAvailableLanguages() async {
+    return await _ttsService.getLanguages();
+  }
+
+  /// Set TTS language
+  Future<void> setTtsLanguage(String language) async {
+    await _ttsService.setLanguage(language);
+  }
+
+  /// Set TTS speech rate
+  Future<void> setTtsSpeechRate(double rate) async {
+    await _ttsService.setSpeechRate(rate);
+  }
+
+  /// Dispose audio resources
+  Future<void> disposeAudio() async {
+    await _ttsService.dispose();
   }
 }

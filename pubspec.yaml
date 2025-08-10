@@ -43,6 +43,9 @@ dependencies: # <-- ÚNICA SECCIÓN DEPENDENCIES
   firebase_auth: ^6.0.0
   cloud_firestore: ^6.0.0
 
+  # Audio dependencies
+  flutter_tts: ^4.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
