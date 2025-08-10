@@ -1,4 +1,4 @@
-name: Flutter CI (Chrome)
+name: Flutter CI (chrome)
 
 on:
   workflow_dispatch:
