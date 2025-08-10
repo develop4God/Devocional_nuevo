@@ -496,4 +496,198 @@ class _DevocionalesPageState extends State<DevocionalesPage>
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Tex
+                                Text(
+                                  'Detalles:',
+                                  style: textTheme.titleLarge?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: colorScheme.primary),
+                                ),
+                                const SizedBox(height: 10),
+                                if (currentDevocional.tags !=
+                                        null && // Movido para que Temas vaya primero
+                                    currentDevocional.tags!.isNotEmpty)
+                                  Text(
+                                      'Temas: ${currentDevocional.tags!.join(', ')}',
+                                      style: textTheme.bodySmall?.copyWith(
+                                          fontSize: 14,
+                                          color: colorScheme.onSurface)),
+                                if (currentDevocional.version !=
+                                    null) // Movido para ir después de Temas
+                                  Text('Versión: ${currentDevocional.version}',
+                                      style: textTheme.bodySmall?.copyWith(
+                                          fontSize: 14,
+                                          color: colorScheme.onSurface)),
+                                const SizedBox(
+                                    height:
+                                        10), // Espacio antes de la atribución
+                                Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: Text(
+                                      'El texto bíblico Reina-Valera 1960® Sociedades Bíblicas en América Latina, 1960. Derechos renovados 1988, Sociedades Bíblicas Unidas.',
+                                      style: textTheme.bodySmall?.copyWith(
+                                          fontSize: 12,
+                                          color: colorScheme.onSurface
+                                              .withAlpha(0.7)),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                              ],
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Consumer<DevocionalProvider>(
+                builder: (context, devocionalProvider, child) {
+                  final List<Devocional> devocionales =
+                      devocionalProvider.devocionales;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          tooltip: 'Devocional anterior',
+                          onPressed: _currentDevocionalIndex > 0
+                              ? _goToPreviousDevocional
+                              : null,
+                          icon: Icon(
+                            Icons.arrow_back,
+                            color: _currentDevocionalIndex > 0
+                                ? colorScheme.primary
+                                : colorScheme.primary
+                                    .withAlpha((0.3 * 255).round()),
+                            size: 35,
+                          ),
+                        ),
+                        IconButton(
+                          tooltip: 'Siguiente devocional',
+                          onPressed:
+                              _currentDevocionalIndex < devocionales.length - 1
+                                  ? _goToNextDevocional
+                                  : null,
+                          icon: Icon(
+                            Icons.arrow_forward,
+                            color: _currentDevocionalIndex <
+                                    devocionales.length - 1
+                                ? colorScheme.primary
+                                : colorScheme.primary
+                                    .withAlpha((0.3 * 255).round()),
+                            size: 35,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
+          );
+        },
+      ),
+      bottomNavigationBar: Consumer<DevocionalProvider>(
+        builder: (context, devocionalProvider, child) {
+          final List<Devocional> devocionales = devocionalProvider.devocionales;
+          final Devocional? currentDevocional = devocionales.isNotEmpty
+              ? devocionales[_currentDevocionalIndex]
+              : null;
+          final bool isFavorite = currentDevocional != null
+              ? devocionalProvider.isFavorite(currentDevocional)
+              : false;
+
+          final Color appBarForegroundColor =
+              Theme.of(context).appBarTheme.foregroundColor ??
+                  colorScheme.onPrimary;
+          final Color? appBarBackgroundColor =
+              Theme.of(context).appBarTheme.backgroundColor;
+
+          return BottomAppBar(
+            color: appBarBackgroundColor,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                IconButton(
+                  tooltip: isFavorite
+                      ? 'Quitar de favoritos'
+                      : 'Guardar como favorito',
+                  onPressed: currentDevocional != null
+                      ? () => devocionalProvider.toggleFavorite(
+                          currentDevocional, context)
+                      : null,
+                  icon: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: isFavorite ? Colors.white : Colors.black,
+                        size: 32,
+                      ),
+                      Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: isFavorite ? Colors.red : Colors.white,
+                        size: 30,
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  tooltip: 'Compartir como texto',
+                  onPressed: currentDevocional != null
+                      ? () => _shareAsText(currentDevocional)
+                      : null,
+                  icon: Icon(Icons.share, color: appBarForegroundColor, size: 30),
+                ),
+                IconButton(
+                  tooltip: 'Compartir como imagen (screenshot)',
+                  onPressed: currentDevocional != null
+                      ? () => _shareAsImage(currentDevocional)
+                      : null,
+                  icon: Icon(Icons.image, color: appBarForegroundColor, size: 30),
+                ),
+                // AJUSTE: Botón de progreso añadido aquí
+                IconButton(
+                  tooltip: 'Ver progreso y logros',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ProgressPage(),
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.emoji_events_outlined, color: appBarForegroundColor, size: 30),
+                ),
+                IconButton(
+                  tooltip: 'Configuración',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SettingsPage()),
+                    );
+                  },
+                  icon: Icon(CupertinoIcons.text_badge_plus,
+                      color: appBarForegroundColor, size: 30),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _scrollController.dispose();
+    super.dispose();
+  }
+}
