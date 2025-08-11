@@ -115,6 +115,11 @@ class _DevocionalesPageState extends State<DevocionalesPage>
     final List<Devocional> devocionales = devocionalProvider.devocionales;
 
     if (_currentDevocionalIndex < devocionales.length - 1) {
+      // Stop audio if playing
+      if (devocionalProvider.isAudioPlaying) {
+        devocionalProvider.stopAudio();
+      }
+      
       setState(() {
         _currentDevocionalIndex++;
       });
@@ -130,6 +135,13 @@ class _DevocionalesPageState extends State<DevocionalesPage>
 
   void _goToPreviousDevocional() {
     if (_currentDevocionalIndex > 0) {
+      // Stop audio if playing
+      final devocionalProvider =
+          Provider.of<DevocionalProvider>(context, listen: false);
+      if (devocionalProvider.isAudioPlaying) {
+        devocionalProvider.stopAudio();
+      }
+      
       setState(() {
         _currentDevocionalIndex--;
       });
@@ -560,6 +572,52 @@ class _DevocionalesPageState extends State<DevocionalesPage>
                             size: 35,
                           ),
                         ),
+                        // Audio controls in the center
+                        if (devocionales.isNotEmpty)
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                tooltip: devocionalProvider.isDevocionalPlaying(devocionales[_currentDevocionalIndex].id)
+                                    ? (devocionalProvider.isAudioPaused ? 'Reanudar' : 'Pausar')
+                                    : 'Escuchar',
+                                onPressed: () async {
+                                  await devocionalProvider.toggleAudioPlayPause(
+                                      devocionales[_currentDevocionalIndex]);
+                                },
+                                icon: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: colorScheme.primary.withAlpha((0.1 * 255).round()),
+                                    borderRadius: BorderRadius.circular(25),
+                                    border: Border.all(
+                                      color: colorScheme.primary,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: Icon(
+                                    devocionalProvider.isDevocionalPlaying(devocionales[_currentDevocionalIndex].id)
+                                        ? (devocionalProvider.isAudioPaused ? Icons.play_arrow : Icons.pause)
+                                        : Icons.volume_up,
+                                    color: colorScheme.primary,
+                                    size: 28,
+                                  ),
+                                ),
+                              ),
+                              if (devocionalProvider.isDevocionalPlaying(devocionales[_currentDevocionalIndex].id))
+                                IconButton(
+                                  tooltip: 'Detener',
+                                  onPressed: () async {
+                                    await devocionalProvider.stopAudio();
+                                  },
+                                  icon: Icon(
+                                    Icons.stop,
+                                    color: colorScheme.primary,
+                                    size: 24,
+                                  ),
+                                ),
+                            ],
+                          ),
                         IconButton(
                           tooltip: 'Siguiente devocional',
                           onPressed:
@@ -670,6 +728,12 @@ class _DevocionalesPageState extends State<DevocionalesPage>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _scrollController.dispose();
+    
+    // Stop audio and dispose resources
+    final devocionalProvider =
+        Provider.of<DevocionalProvider>(context, listen: false);
+    devocionalProvider.stopAudio();
+    
     super.dispose();
   }
 }

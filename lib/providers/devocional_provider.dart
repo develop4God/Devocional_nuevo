@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:devocional_nuevo/models/devocional_model.dart';
 import 'package:devocional_nuevo/utils/constants.dart'; // Importación necesaria para Constants.apiUrl
+import 'package:devocional_nuevo/services/tts_service.dart';
+import 'dart:async';
 
 class DevocionalProvider with ChangeNotifier {
   // Lista para almacenar TODOS los devocionales cargados para el idioma actual, de todas las fechas.
@@ -26,6 +28,13 @@ class DevocionalProvider with ChangeNotifier {
       []; // Lista de devocionales favoritos
   bool _showInvitationDialog = true; // Para el diálogo de invitación
 
+  // Audio state management
+  final TtsService _ttsService = TtsService();
+  StreamSubscription<void>? _ttsSubscription;
+  bool _isAudioPlaying = false;
+  bool _isAudioPaused = false;
+  String? _currentPlayingDevocionalId;
+
   // Lista de idiomas soportados por tu API
   static const List<String> _supportedLanguages = [
     'es'
@@ -42,11 +51,32 @@ class DevocionalProvider with ChangeNotifier {
   List<Devocional> get favoriteDevocionales => _favoriteDevocionales;
   bool get showInvitationDialog => _showInvitationDialog;
 
+  // Audio getters
+  bool get isAudioPlaying => _isAudioPlaying;
+  bool get isAudioPaused => _isAudioPaused;
+  String? get currentPlayingDevocionalId => _currentPlayingDevocionalId;
+  bool isDevocionalPlaying(String devocionalId) => _currentPlayingDevocionalId == devocionalId;
+
   // Constructor: inicializa los datos cuando el provider se crea
   DevocionalProvider() {
     // initializeData() se llama fuera del constructor, usualmente en AppInitializer
     // usando addPostFrameCallback. Esto asegura que las preferencias se carguen
     // y los datos se obtengan sin conflictos con la fase de construcción.
+    
+    // Initialize TTS service and set up state change callback with race condition protection
+    _ttsService.setStateChangedCallback(() {
+      // Use a post-frame callback to avoid race conditions during widget building
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!_ttsService.isDisposed) {
+          _isAudioPlaying = _ttsService.isPlaying;
+          _isAudioPaused = _ttsService.isPaused;
+          if (!_ttsService.isActive) {
+            _currentPlayingDevocionalId = null;
+          }
+          notifyListeners();
+        }
+      });
+    });
   }
 
   // --- Métodos de inicialización y carga ---
@@ -342,5 +372,160 @@ class DevocionalProvider with ChangeNotifier {
   // Verificar si un idioma está soportado
   bool isLanguageSupported(String language) {
     return _supportedLanguages.contains(language);
+  }
+
+  // --- Audio functionality methods ---
+
+  /// Play audio for a devotional with comprehensive error handling
+  Future<void> playDevotional(Devocional devocional) async {
+    try {
+      // Validate input
+      if (devocional.id.isEmpty) {
+        throw Exception('Cannot play devotional without valid ID');
+      }
+
+      // Stop any currently playing audio
+      if (_isAudioPlaying) {
+        await _ttsService.stop();
+      }
+      
+      _currentPlayingDevocionalId = devocional.id;
+      await _ttsService.speakDevotional(devocional);
+    } on TtsException catch (e) {
+      debugPrint('TTS Error playing devotional: ${e.message}');
+      _currentPlayingDevocionalId = null;
+      // Don't show error to user for expected TTS issues like platform not supported
+      if (e.code != 'PLATFORM_NOT_SUPPORTED' && e.code != 'SERVICE_DISPOSED') {
+        rethrow;
+      }
+    } catch (e) {
+      debugPrint('Error playing devotional audio: $e');
+      _currentPlayingDevocionalId = null;
+      rethrow;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  /// Pause the current audio with error handling
+  Future<void> pauseAudio() async {
+    try {
+      await _ttsService.pause();
+    } on TtsException catch (e) {
+      debugPrint('TTS Error pausing audio: ${e.message}');
+      if (e.code != 'SERVICE_DISPOSED') {
+        rethrow;
+      }
+    } catch (e) {
+      debugPrint('Error pausing audio: $e');
+      rethrow;
+    }
+  }
+
+  /// Resume the current audio with error handling
+  Future<void> resumeAudio() async {
+    try {
+      await _ttsService.resume();
+    } on TtsException catch (e) {
+      debugPrint('TTS Error resuming audio: ${e.message}');
+      if (e.code != 'SERVICE_DISPOSED') {
+        rethrow;
+      }
+    } catch (e) {
+      debugPrint('Error resuming audio: $e');
+      rethrow;
+    }
+  }
+
+  /// Stop the current audio with error handling
+  Future<void> stopAudio() async {
+    try {
+      await _ttsService.stop();
+      _currentPlayingDevocionalId = null;
+    } on TtsException catch (e) {
+      debugPrint('TTS Error stopping audio: ${e.message}');
+      // Don't rethrow for stop operations - they should be robust
+      _currentPlayingDevocionalId = null;
+    } catch (e) {
+      debugPrint('Error stopping audio: $e');
+      // Don't rethrow for stop operations - they should be robust
+      _currentPlayingDevocionalId = null;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  /// Toggle play/pause for audio
+  Future<void> toggleAudioPlayPause(Devocional devocional) async {
+    if (_currentPlayingDevocionalId == devocional.id) {
+      if (_isAudioPaused) {
+        await resumeAudio();
+      } else if (_isAudioPlaying) {
+        await pauseAudio();
+      }
+    } else {
+      await playDevotional(devocional);
+    }
+  }
+
+  /// Get available TTS languages with error handling
+  Future<List<String>> getAvailableLanguages() async {
+    try {
+      return await _ttsService.getLanguages();
+    } on TtsException catch (e) {
+      debugPrint('TTS Error getting languages: ${e.message}');
+      return []; // Return empty list on error
+    } catch (e) {
+      debugPrint('Error getting available languages: $e');
+      return [];
+    }
+  }
+
+  /// Set TTS language with error handling
+  Future<void> setTtsLanguage(String language) async {
+    try {
+      await _ttsService.setLanguage(language);
+    } on TtsException catch (e) {
+      debugPrint('TTS Error setting language: ${e.message}');
+      rethrow;
+    } catch (e) {
+      debugPrint('Error setting TTS language: $e');
+      rethrow;
+    }
+  }
+
+  /// Set TTS speech rate with validation and error handling
+  Future<void> setTtsSpeechRate(double rate) async {
+    try {
+      await _ttsService.setSpeechRate(rate);
+    } on TtsException catch (e) {
+      debugPrint('TTS Error setting speech rate: ${e.message}');
+      rethrow;
+    } catch (e) {
+      debugPrint('Error setting TTS speech rate: $e');
+      rethrow;
+    }
+  }
+
+  /// Dispose audio resources properly to prevent memory leaks
+  Future<void> disposeAudio() async {
+    try {
+      // Cancel any subscriptions
+      await _ttsSubscription?.cancel();
+      _ttsSubscription = null;
+      
+      // Dispose TTS service
+      await _ttsService.dispose();
+    } catch (e) {
+      debugPrint('Error disposing audio resources: $e');
+      // Don't rethrow disposal errors
+    }
+  }
+
+  @override
+  void dispose() {
+    // Dispose audio resources when provider is disposed
+    disposeAudio();
+    super.dispose();
   }
 }
