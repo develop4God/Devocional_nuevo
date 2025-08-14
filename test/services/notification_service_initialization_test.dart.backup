@@ -7,7 +7,7 @@ import 'notification_service_test_helper.dart';
 
 void main() {
   group('NotificationService - Initialization Tests', () {
-    late NotificationService? notificationService;
+    late NotificationService notificationService;
 
     setUpAll(() async {
       await NotificationServiceTestHelper.setupFirebaseForTesting();
@@ -15,12 +15,7 @@ void main() {
 
     setUp(() async {
       await NotificationServiceTestHelper.setupSharedPreferencesForTesting();
-      try {
-        notificationService = NotificationService();
-      } catch (e) {
-        print('NotificationService creation failed: $e');
-        notificationService = null;
-      }
+      notificationService = NotificationService();
     });
 
     tearDown(() async {

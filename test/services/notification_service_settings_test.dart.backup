@@ -8,7 +8,7 @@ import 'notification_service_test_helper.dart';
 
 void main() {
   group('NotificationService - Settings Persistence Tests', () {
-    late NotificationService? notificationService;
+    late NotificationService notificationService;
 
     setUpAll(() async {
       await NotificationServiceTestHelper.setupFirebaseForTesting();
@@ -16,12 +16,7 @@ void main() {
 
     setUp(() async {
       await NotificationServiceTestHelper.setupSharedPreferencesForTesting();
-      try {
-        notificationService = NotificationService();
-      } catch (e) {
-        print('NotificationService creation failed: $e');
-        notificationService = null;
-      }
+      notificationService = NotificationService();
     });
 
     tearDown(() async {
@@ -30,39 +25,24 @@ void main() {
 
     group('Settings Storage and Retrieval', () {
       test('default settings are properly initialized', () async {
-        if (notificationService == null) {
-          print('Skipping test - NotificationService not available');
-          return;
-        }
-        
-        final isEnabled = await notificationService!.areNotificationsEnabled();
-        final time = await notificationService!.getNotificationTime();
+        final isEnabled = await notificationService.areNotificationsEnabled();
+        final time = await notificationService.getNotificationTime();
 
         expect(isEnabled, isFalse);
         expect(time, equals('09:00'));
       });
 
       test('settings persist after being set', () async {
-        if (notificationService == null) {
-          print('Skipping test - NotificationService not available');
-          return;
-        }
-        
-        await notificationService!.setNotificationsEnabled(true);
-        await notificationService!.setNotificationTime('14:45');
+        await notificationService.setNotificationsEnabled(true);
+        await notificationService.setNotificationTime('14:45');
 
-        expect(await notificationService!.areNotificationsEnabled(), isTrue);
+        expect(await notificationService.areNotificationsEnabled(), isTrue);
         expect(
-            await notificationService!.getNotificationTime(), equals('14:45'));
+            await notificationService.getNotificationTime(), equals('14:45'));
       });
 
       test('settings persist across service instances', () async {
-        if (notificationService == null) {
-          print('Skipping test - NotificationService not available');
-          return;
-        }
-        
-        await notificationService!.setNotificationsEnabled(true);
+        await notificationService.setNotificationsEnabled(true);
         await notificationService.setNotificationTime('20:30');
 
         // Create new instance (should be same singleton)
