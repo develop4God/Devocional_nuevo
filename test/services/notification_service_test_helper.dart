@@ -1,81 +1,78 @@
 // test/services/notification_service_test_helper.dart
 
-
 import 'package:flutter/services.dart';
-
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:firebase_core/firebase_core.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationServiceTestHelper {
-
   static bool _initialized = false;
 
-  
+  // Call this BEFORE any other imports that use Firebase
+  static Future<void> initializeFirebaseBeforeTests() async {
+    if (_initialized) return;
+    
+    TestWidgetsFlutterBinding.ensureInitialized();
+    _setupPlatformChannelMocks();
+    
+    try {
+      await Firebase.initializeApp(
+        options: const FirebaseOptions(
+          apiKey: 'fake-api-key-for-testing',
+          appId: 'fake-app-id-for-testing',
+          messagingSenderId: 'fake-sender-id-for-testing',
+          projectId: 'fake-project-id-for-testing',
+          storageBucket: 'fake-storage-bucket',
+          authDomain: 'fake-auth-domain',
+        ),
+      );
+      print('Firebase initialized successfully for testing');
+    } catch (e) {
+      print('Firebase already initialized or error: $e');
+    }
+    
+    _initialized = true;
+  }
 
   static Future<void> setupFirebaseForTesting() async {
-
-    if (_initialized) return;
-
-    
-
-    TestWidgetsFlutterBinding.ensureInitialized();
-
-    _setupPlatformChannelMocks();
-
-    
-
-    try {
-
-      await Firebase.initializeApp(
-
-        options: const FirebaseOptions(
-
-          apiKey: 'fake-api-key-for-testing',
-
-          appId: 'fake-app-id-for-testing',
-
-          messagingSenderId: 'fake-sender-id-for-testing',
-
-          projectId: 'fake-project-id-for-testing',
-
-          storageBucket: 'fake-storage-bucket',
-
-          authDomain: 'fake-auth-domain',
-
-        ),
-
-      );
-
-    } catch (e) {
-
-      // Firebase ya inicializado
-
-    }
-
-    
-
-    _initialized = true;
-
+    return initializeFirebaseBeforeTests();
   }
 
   static Future<void> setupSharedPreferencesForTesting() async {
-
     SharedPreferences.setMockInitialValues({
-
       'notifications_enabled': false,
-
       'notification_time': '09:00',
-
-      'fcm_token': null,
-
+      // Remove fcm_token entry since null values cause issues
     });
-
   }
 
   static void _setupPlatformChannelMocks() {
+    // Mock Firebase Core to prevent initialization errors
+    const MethodChannel('plugins.flutter.io/firebase_core')
+        .setMockMethodCallHandler((MethodCall methodCall) async {
+      switch (methodCall.method) {
+        case 'Firebase#initializeCore':
+          return {
+            'name': '[DEFAULT]',
+            'options': {
+              'apiKey': 'fake-api-key',
+              'appId': 'fake-app-id',
+              'messagingSenderId': 'fake-sender-id',
+              'projectId': 'fake-project-id',
+            },
+            'pluginConstants': {},
+          };
+        case 'Firebase#initializeApp':
+          return {
+            'name': methodCall.arguments['appName'] ?? '[DEFAULT]',
+            'options': methodCall.arguments['options'],
+            'pluginConstants': {},
+          };
+        default:
+          return null;
+      }
+    });
+
     // Flutter Local Notifications
     const MethodChannel('dexterous.com/flutter/local_notifications')
         .setMockMethodCallHandler((MethodCall methodCall) async {
