@@ -57,12 +57,13 @@ void main() {
     test('Devocional model should serialize and deserialize correctly', () {
       final json = testDevocional.toJson();
       final recreatedDevocional = Devocional.fromJson(json);
-      
+
       expect(recreatedDevocional.id, equals(testDevocional.id));
       expect(recreatedDevocional.versiculo, equals(testDevocional.versiculo));
       expect(recreatedDevocional.reflexion, equals(testDevocional.reflexion));
       expect(recreatedDevocional.oracion, equals(testDevocional.oracion));
-      expect(recreatedDevocional.paraMeditar.length, equals(testDevocional.paraMeditar.length));
+      expect(recreatedDevocional.paraMeditar.length,
+          equals(testDevocional.paraMeditar.length));
     });
 
     group('TTS Error Handling', () {
@@ -89,21 +90,23 @@ void main() {
         // In test environment, we expect platform exceptions
         expect(
           () => ttsService.setSpeechRate(-1.0),
-          throwsA(isA<Exception>()), // Accept MissingPluginException or TtsException
+          throwsA(isA<
+              Exception>()), // Accept MissingPluginException or TtsException
         );
 
         expect(
           () => ttsService.setSpeechRate(4.0),
-          throwsA(isA<Exception>()), // Accept MissingPluginException or TtsException
+          throwsA(isA<
+              Exception>()), // Accept MissingPluginException or TtsException
         );
       });
 
       test('should handle operations on disposed service', () async {
         await ttsService.dispose();
-        
+
         // Note: isDisposed not available in current implementation
         // We test that operations after dispose throw exceptions
-        
+
         expect(
           () => ttsService.speakDevotional(testDevocional),
           throwsA(isA<TtsException>()),
@@ -169,12 +172,12 @@ void main() {
       test('should handle concurrent operations safely', () async {
         // Test multiple concurrent operations
         final futures = <Future>[];
-        
+
         for (int i = 0; i < 5; i++) {
           // Use speakText instead of initialize (which doesn't exist)
           futures.add(ttsService.speakText('Test $i'));
         }
-        
+
         // Should not throw exceptions due to concurrent access
         try {
           await Future.wait(futures);
@@ -192,12 +195,14 @@ void main() {
         // In test environment, platform methods may not be available
         expect(
           () => ttsService.setLanguage(''),
-          throwsA(isA<Exception>()), // Accept MissingPluginException or TtsException
+          throwsA(isA<
+              Exception>()), // Accept MissingPluginException or TtsException
         );
 
         expect(
           () => ttsService.setLanguage('   '),
-          throwsA(isA<Exception>()), // Accept MissingPluginException or TtsException
+          throwsA(isA<
+              Exception>()), // Accept MissingPluginException or TtsException
         );
       });
 

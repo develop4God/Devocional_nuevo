@@ -73,16 +73,16 @@ void main() {
 
     test('PredefinedAchievements contains expected achievements', () {
       final achievements = PredefinedAchievements.all;
-      
+
       expect(achievements.isNotEmpty, true);
       expect(achievements.length, greaterThanOrEqualTo(8));
-      
+
       // Check for specific achievements
       final firstReadAchievement = achievements.firstWhere(
         (a) => a.id == 'first_read',
         orElse: () => throw Exception('first_read achievement not found'),
       );
-      
+
       expect(firstReadAchievement.title, 'Primer Paso');
       expect(firstReadAchievement.threshold, 1);
       expect(firstReadAchievement.type, AchievementType.reading);
@@ -90,13 +90,13 @@ void main() {
 
     test('SpiritualStatsService basic functionality', () async {
       final service = SpiritualStatsService();
-      
+
       // Get initial stats
       final initialStats = await service.getStats();
       expect(initialStats.totalDevocionalesRead, 0);
       expect(initialStats.currentStreak, 0);
       expect(initialStats.readDevocionalIds, isEmpty);
-      
+
       // Record a devotional read with proper criteria
       final updatedStats = await service.recordDevocionalRead(
         devocionalId: 'devotional_123',
@@ -107,7 +107,7 @@ void main() {
       expect(updatedStats.currentStreak, 1);
       expect(updatedStats.lastActivityDate, isNotNull);
       expect(updatedStats.readDevocionalIds, contains('devotional_123'));
-      
+
       // Update favorites count
       final statsWithFavorites = await service.updateFavoritesCount(5);
       expect(statsWithFavorites.favoritesCount, 5);
@@ -115,7 +115,7 @@ void main() {
 
     test('Devotional ID tracking prevents duplicates', () async {
       final service = SpiritualStatsService();
-      
+
       // Record the same devotional multiple times with proper criteria
       await service.recordDevocionalRead(
         devocionalId: 'devotional_456',
@@ -132,9 +132,9 @@ void main() {
         readingTimeSeconds: 70,
         scrollPercentage: 0.85,
       );
-      
+
       final stats = await service.getStats();
-      
+
       // Should only count once
       expect(stats.totalDevocionalesRead, 1);
       expect(stats.readDevocionalIds.length, 1);
@@ -143,7 +143,7 @@ void main() {
 
     test('Anti-spam protection prevents rapid reading', () async {
       final service = SpiritualStatsService();
-      
+
       // Record first read with proper criteria
       final firstStats = await service.recordDevocionalRead(
         devocionalId: 'devotional_spam_test',
@@ -151,7 +151,7 @@ void main() {
         scrollPercentage: 0.85,
       );
       expect(firstStats.totalDevocionalesRead, 1);
-      
+
       // Try to record the same devotional immediately (should be ignored due to duplicate ID)
       final secondStats = await service.recordDevocionalRead(
         devocionalId: 'devotional_spam_test',
@@ -163,7 +163,7 @@ void main() {
 
     test('Different devotionals on same day count correctly', () async {
       final service = SpiritualStatsService();
-      
+
       // Record multiple different devotionals with proper criteria
       await service.recordDevocionalRead(
         devocionalId: 'devotional_1',
@@ -180,9 +180,9 @@ void main() {
         readingTimeSeconds: 70,
         scrollPercentage: 0.85,
       );
-      
+
       final stats = await service.getStats();
-      
+
       expect(stats.totalDevocionalesRead, 3);
       expect(stats.currentStreak, 1); // Same day, so streak is 1
       expect(stats.readDevocionalIds.length, 3);
@@ -193,61 +193,63 @@ void main() {
 
     test('Achievement unlocking works correctly', () async {
       final service = SpiritualStatsService();
-      
+
       // Record first devotional read to unlock "Primer Paso" with proper criteria
       final stats = await service.recordDevocionalRead(
         devocionalId: 'devotional_achievement_test',
         readingTimeSeconds: 70,
         scrollPercentage: 0.85,
       );
-      
+
       // Check if first read achievement is unlocked
       final firstReadAchievement = stats.unlockedAchievements.firstWhere(
         (achievement) => achievement.id == 'first_read',
-        orElse: () => throw Exception('First read achievement should be unlocked'),
+        orElse: () =>
+            throw Exception('First read achievement should be unlocked'),
       );
-      
+
       expect(firstReadAchievement.isUnlocked, true);
     });
 
     test('Favorites count achievement unlocking', () async {
       final service = SpiritualStatsService();
-      
+
       // Update favorites count to unlock achievement
       final stats = await service.updateFavoritesCount(1);
-      
+
       // Check if first favorite achievement is unlocked
       final firstFavoriteAchievement = stats.unlockedAchievements.firstWhere(
         (achievement) => achievement.id == 'first_favorite',
-        orElse: () => throw Exception('First favorite achievement should be unlocked'),
+        orElse: () =>
+            throw Exception('First favorite achievement should be unlocked'),
       );
-      
+
       expect(firstFavoriteAchievement.isUnlocked, true);
     });
 
     test('hasDevocionalBeenRead works correctly', () async {
       final service = SpiritualStatsService();
-      
+
       // Initially, no devotional has been read
       expect(await service.hasDevocionalBeenRead('test_devotional'), false);
-      
+
       // Record a devotional read with proper criteria
       await service.recordDevocionalRead(
         devocionalId: 'test_devotional',
         readingTimeSeconds: 70,
         scrollPercentage: 0.85,
       );
-      
+
       // Now it should return true
       expect(await service.hasDevocionalBeenRead('test_devotional'), true);
-      
+
       // Other devotionals should still return false
       expect(await service.hasDevocionalBeenRead('other_devotional'), false);
     });
 
     test('Reset stats clears all data', () async {
       final service = SpiritualStatsService();
-      
+
       // Add some data with proper criteria
       await service.recordDevocionalRead(
         devocionalId: 'test_reset',
@@ -255,12 +257,12 @@ void main() {
         scrollPercentage: 0.85,
       );
       await service.updateFavoritesCount(5);
-      
+
       // Verify data exists
       var stats = await service.getStats();
       expect(stats.totalDevocionalesRead, 1);
       expect(stats.favoritesCount, 5);
-      
+
       // Reset and verify data is cleared
       await service.resetStats();
       stats = await service.getStats();
