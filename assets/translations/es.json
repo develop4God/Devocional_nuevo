@@ -128,7 +128,15 @@
     "not_now": "Ahora no",
     "permissions_required": "Permisos Requeridos",
     "permissions_disabled_message": "Las notificaciones están desactivadas permanentemente. Por favor, habilítalas en la configuración de tu dispositivo para recibir recordatorios diarios.",
-    "open_settings": "Abrir Configuración"
+    "open_settings": "Abrir Configuración",
+    "config_title": "Configuración Notificaciones",
+    "user_not_authenticated": "Error: Usuario no autenticado. Por favor, reinicia la aplicación.",
+    "error_loading_config": "Error al cargar la configuración",
+    "time_not_changed": "La hora no ha cambiado.",
+    "time_updated": "Hora de notificación ajustada a {{time}}",
+    "toggle_notifications": "Activar/Desactivar Notificaciones",
+    "daily_reminder_time": "Hora de la notificación diaria",
+    "confirm_time": "Confirmar hora"
   },
   "common": {
     "ok": "Aceptar",

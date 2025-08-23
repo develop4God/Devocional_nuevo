@@ -128,7 +128,15 @@
     "not_now": "Not now",
     "permissions_required": "Permissions Required",
     "permissions_disabled_message": "Notifications are permanently disabled. Please enable them in your device settings to receive daily reminders.",
-    "open_settings": "Open Settings"
+    "open_settings": "Open Settings",
+    "config_title": "Notification Settings",
+    "user_not_authenticated": "Error: User not authenticated. Please restart the application.",
+    "error_loading_config": "Error loading configuration",
+    "time_not_changed": "Time has not changed.",
+    "time_updated": "Notification time adjusted to {{time}}",
+    "toggle_notifications": "Enable/Disable Notifications",
+    "daily_reminder_time": "Daily notification time",
+    "confirm_time": "Confirm time"
   },
   "common": {
     "ok": "OK",

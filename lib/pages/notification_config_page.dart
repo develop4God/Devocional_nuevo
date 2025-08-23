@@ -1,5 +1,6 @@
 // lib/pages/notification_config_page.dart
 
+import 'package:devocional_nuevo/services/localization_service.dart';
 import 'package:flutter/material.dart';
 import 'package:devocional_nuevo/services/notification_service.dart';
 import 'dart:developer' as developer;
@@ -49,7 +50,7 @@ class _NotificationConfigPageState extends State<NotificationConfigPage> {
             backgroundColor:
                 colorScheme.secondary, // Fondo del SnackBar usando secondary
             content: Text(
-              'Error: Usuario no autenticado. Por favor, reinicia la aplicación.', // TEXTO TRADUCIDO
+              'notifications.user_not_authenticated'.tr(), // TEXTO TRADUCIDO
               style: TextStyle(
                   color: colorScheme
                       .onSecondary), // Texto del SnackBar usando onSecondary
@@ -155,7 +156,7 @@ class _NotificationConfigPageState extends State<NotificationConfigPage> {
           SnackBar(
             backgroundColor: colorScheme.secondary,
             content: Text(
-              'Error al cargar la configuración: $e', // Corregido el mensaje de error para mostrar 'e'
+              '${'notifications.error_loading_config'.tr()}: $e', // Corregido el mensaje de error para mostrar 'e'
               style: TextStyle(color: colorScheme.onSecondary),
             ),
           ),
@@ -274,7 +275,8 @@ class _NotificationConfigPageState extends State<NotificationConfigPage> {
           SnackBar(
             backgroundColor: colorScheme.secondary,
             content: Text(
-              'La hora no ha cambiado.', // MENSAJE SI HORA NO CAMBIA
+              'notifications.time_not_changed'
+                  .tr(), // MENSAJE SI HORA NO CAMBIA
               style: TextStyle(color: colorScheme.onSecondary),
             ),
           ),
@@ -313,7 +315,9 @@ class _NotificationConfigPageState extends State<NotificationConfigPage> {
         SnackBar(
           backgroundColor: colorScheme.secondary,
           content: Text(
-            'Hora de notificación ajustada a $timeString', // TEXTO TRADUCIDO
+            'notifications.time_updated'
+                .tr()
+                .replaceAll('{{time}}', timeString), // TEXTO TRADUCIDO
             style: TextStyle(color: colorScheme.onSecondary),
           ),
         ),
@@ -385,8 +389,8 @@ class _NotificationConfigPageState extends State<NotificationConfigPage> {
     if (_isLoading) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Configuración Notificaciones',
-              style: TextStyle(color: Colors.white)), // TEXTO TRADUCIDO
+          title: Text('notifications.config_title'.tr(),
+              style: const TextStyle(color: Colors.white)), // TEXTO TRADUCIDO
         ),
         body: const Center(child: CircularProgressIndicator()),
       );
@@ -394,8 +398,8 @@ class _NotificationConfigPageState extends State<NotificationConfigPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Configuración Notificaciones',
-            style: TextStyle(color: Colors.white)), // TEXTO TRADUCIDO
+        title: Text('notifications.config_title'.tr(),
+            style: const TextStyle(color: Colors.white)), // TEXTO TRADUCIDO
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -406,7 +410,7 @@ class _NotificationConfigPageState extends State<NotificationConfigPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Activar/Desactivar Notificaciones', // TEXTO TRADUCIDO
+                  'notifications.toggle_notifications'.tr(), // TEXTO TRADUCIDO
                   style: textTheme.titleMedium
                       ?.copyWith(color: colorScheme.onSurface),
                 ),
@@ -431,7 +435,8 @@ class _NotificationConfigPageState extends State<NotificationConfigPage> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        'Hora de la notificación diaria', // TEXTO TRADUCIDO
+                        'notifications.daily_reminder_time'
+                            .tr(), // TEXTO TRADUCIDO
                         style: textTheme.titleMedium?.copyWith(
                           color: _notificationsEnabled
                               ? colorScheme.onSurface
@@ -469,7 +474,7 @@ class _NotificationConfigPageState extends State<NotificationConfigPage> {
                       ? Colors.white
                       : Colors.white.withAlpha(127)),
               label: Text(
-                'Confirmar hora', // Nuevo texto para el botón
+                'notifications.confirm_time'.tr(), // Nuevo texto para el botón
                 style: textTheme.titleMedium?.copyWith(
                   color: (_notificationsEnabled && isConfirmButtonEnabled)
                       ? Colors.white

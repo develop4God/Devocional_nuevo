@@ -128,7 +128,15 @@
     "not_now": "Pas maintenant",
     "permissions_required": "Autorisations Requises",
     "permissions_disabled_message": "Les notifications sont définitivement désactivées. Veuillez les activer dans les paramètres de votre appareil pour recevoir des rappels quotidiens.",
-    "open_settings": "Ouvrir les Paramètres"
+    "open_settings": "Ouvrir les Paramètres",
+    "config_title": "Paramètres de Notification",
+    "user_not_authenticated": "Erreur: Utilisateur non authentifié. Veuillez redémarrer l'application.",
+    "error_loading_config": "Erreur de chargement de la configuration",
+    "time_not_changed": "L'heure n'a pas changé.",
+    "time_updated": "Heure de notification ajustée à {{time}}",
+    "toggle_notifications": "Activer/Désactiver les Notifications",
+    "daily_reminder_time": "Heure de notification quotidienne",
+    "confirm_time": "Confirmer l'heure"
   },
   "common": {
     "ok": "OK",
