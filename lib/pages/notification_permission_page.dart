@@ -1,5 +1,6 @@
 // lib/pages/notification_permission_page.dart
 
+import 'package:devocional_nuevo/services/localization_service.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -22,8 +23,8 @@ class _NotificationPermissionPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Permisos de Notificación',
-            style: TextStyle(color: Colors.white)),
+        title: Text('notifications.permission_title'.tr(),
+            style: const TextStyle(color: Colors.white)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -36,9 +37,9 @@ class _NotificationPermissionPageState
               color: Colors.deepPurple,
             ),
             const SizedBox(height: 24),
-            const Text(
-              '¡No te pierdas ningún devocional!',
-              style: TextStyle(
+            Text(
+              'notifications.permission_headline'.tr(),
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.deepPurple,
@@ -46,9 +47,9 @@ class _NotificationPermissionPageState
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Permítenos enviarte notificaciones para recordarte leer tu devocional diario y mantenerte informado sobre nuevas características.',
-              style: TextStyle(
+            Text(
+              'notifications.permission_description'.tr(),
+              style: const TextStyle(
                 fontSize: 16,
                 color: Colors.black87,
               ),
@@ -71,15 +72,15 @@ class _NotificationPermissionPageState
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    child: const Text('Permitir Notificaciones'),
+                    child: Text('notifications.allow_notifications'.tr()),
                   ),
             const SizedBox(height: 16),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
-              child: const Text(
-                'Ahora no',
+              child: Text(
+                'notifications.not_now'.tr(),
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 16,
@@ -165,16 +166,16 @@ class _NotificationPermissionPageState
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Permisos Requeridos'),
-        content: const Text(
-          'Las notificaciones están desactivadas permanentemente. Por favor, habilítalas en la configuración de tu dispositivo para recibir recordatorios diarios.',
+        title: Text('notifications.permissions_required'.tr()),
+        content: Text(
+          'notifications.permissions_disabled_message'.tr(),
         ),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('Cancelar'),
+            child: Text('common.cancel'.tr()),
           ),
           ElevatedButton(
             onPressed: () {
@@ -184,7 +185,7 @@ class _NotificationPermissionPageState
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.deepPurple,
             ),
-            child: const Text('Abrir Configuración'),
+            child: Text('notifications.open_settings'.tr()),
           ),
         ],
       ),

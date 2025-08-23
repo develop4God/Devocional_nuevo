@@ -98,6 +98,38 @@
       "no_email_client": "Impossible d'ouvrir le client email. Veuillez envoyer un email manuellement à develop4god@gmail.com"
     }
   },
+  "progress": {
+    "title": "Mon Progrès Spirituel",
+    "back": "Retour",
+    "error_loading": "Erreur de chargement des statistiques",
+    "retry": "Réessayer",
+    "tip_title": "Conseil utile",
+    "tip_message": "Touchez n'importe quel succès pour voir les informations complètes",
+    "achievements_title": "Succès",
+    "day": "jour",
+    "days": "jours",
+    "next_goal": "Prochain objectif: {{days}} jours",
+    "goal_reached": "Objectif atteint!",
+    "completed_devotionals": "Dévotions complétées",
+    "saved_favorites": "Favoris sauvegardés"
+  },
+  "favorites": {
+    "title": "Mes Favoris Sauvegardés",
+    "no_favorites": "Vous n'avez pas encore de dévotions favorites.",
+    "instructions": "Marquez l'icône du cœur sur une dévotion pour la sauvegarder ici.",
+    "remove_tooltip": "Retirer des favoris",
+    "removed_message": "\"{{verse}}\" retiré des favoris."
+  },
+  "notifications": {
+    "permission_title": "Autorisations de Notification",
+    "permission_headline": "Ne manquez aucune dévotion!",
+    "permission_description": "Permettez-nous de vous envoyer des notifications pour vous rappeler de lire votre dévotion quotidienne et vous tenir informé des nouvelles fonctionnalités.",
+    "allow_notifications": "Autoriser les Notifications",
+    "not_now": "Pas maintenant",
+    "permissions_required": "Autorisations Requises",
+    "permissions_disabled_message": "Les notifications sont définitivement désactivées. Veuillez les activer dans les paramètres de votre appareil pour recevoir des rappels quotidiens.",
+    "open_settings": "Ouvrir les Paramètres"
+  },
   "common": {
     "ok": "OK",
     "cancel": "Annuler",

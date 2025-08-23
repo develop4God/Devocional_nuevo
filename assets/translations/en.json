@@ -98,6 +98,38 @@
       "no_email_client": "Could not open email client. Please send an email manually to develop4god@gmail.com"
     }
   },
+  "progress": {
+    "title": "My Spiritual Progress",
+    "back": "Back",
+    "error_loading": "Error loading statistics",
+    "retry": "Retry",
+    "tip_title": "Useful tip",
+    "tip_message": "Tap any achievement to see complete information",
+    "achievements_title": "Achievements",
+    "day": "day",
+    "days": "days",
+    "next_goal": "Next goal: {{days}} days",
+    "goal_reached": "Goal reached!",
+    "completed_devotionals": "Completed devotionals",
+    "saved_favorites": "Saved favorites"
+  },
+  "favorites": {
+    "title": "My Saved Favorites",
+    "no_favorites": "You don't have any favorite devotionals yet.",
+    "instructions": "Mark the heart icon on a devotional to save it here.",
+    "remove_tooltip": "Remove from favorites",
+    "removed_message": "\"{{verse}}\" removed from favorites."
+  },
+  "notifications": {
+    "permission_title": "Notification Permissions",
+    "permission_headline": "Don't miss any devotional!",
+    "permission_description": "Allow us to send you notifications to remind you to read your daily devotional and keep you informed about new features.",
+    "allow_notifications": "Allow Notifications",
+    "not_now": "Not now",
+    "permissions_required": "Permissions Required",
+    "permissions_disabled_message": "Notifications are permanently disabled. Please enable them in your device settings to receive daily reminders.",
+    "open_settings": "Open Settings"
+  },
   "common": {
     "ok": "OK",
     "cancel": "Cancel",

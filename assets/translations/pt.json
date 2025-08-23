@@ -98,6 +98,38 @@
       "no_email_client": "Não foi possível abrir o cliente de email. Por favor, envie um email manualmente para develop4god@gmail.com"
     }
   },
+  "progress": {
+    "title": "Meu Progresso Espiritual",
+    "back": "Voltar",
+    "error_loading": "Erro ao carregar estatísticas",
+    "retry": "Tentar novamente",
+    "tip_title": "Dica útil",
+    "tip_message": "Toque em qualquer conquista para ver informações completas",
+    "achievements_title": "Conquistas",
+    "day": "dia",
+    "days": "dias",
+    "next_goal": "Próxima meta: {{days}} dias",
+    "goal_reached": "Meta alcançada!",
+    "completed_devotionals": "Devocionais completos",
+    "saved_favorites": "Favoritos salvos"
+  },
+  "favorites": {
+    "title": "Meus Favoritos Salvos",
+    "no_favorites": "Você ainda não tem devocionais favoritos.",
+    "instructions": "Marque o ícone do coração em um devocional para salvá-lo aqui.",
+    "remove_tooltip": "Remover dos favoritos",
+    "removed_message": "\"{{verse}}\" removido dos favoritos."
+  },
+  "notifications": {
+    "permission_title": "Permissões de Notificação",
+    "permission_headline": "Não perca nenhum devocional!",
+    "permission_description": "Permita-nos enviar notificações para lembrá-lo de ler seu devocional diário e mantê-lo informado sobre novos recursos.",
+    "allow_notifications": "Permitir Notificações",
+    "not_now": "Agora não",
+    "permissions_required": "Permissões Necessárias",
+    "permissions_disabled_message": "As notificações estão permanentemente desativadas. Por favor, ative-as nas configurações do seu dispositivo para receber lembretes diários.",
+    "open_settings": "Abrir Configurações"
+  },
   "common": {
     "ok": "OK",
     "cancel": "Cancelar",
