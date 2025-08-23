@@ -3,6 +3,34 @@
     "title": "Devocionales Cristianos",
     "version": "Versión"
   },
+  "devotionals": {
+    "app_title": "Mi espacio íntimo con Dios",
+    "no_devotionals_available": "No hay devocionales disponibles para el idioma/versión seleccionados.",
+    "themes_label": "Temas: ",
+    "version_label": "Versión: ",
+    "bible_copyright": "El texto bíblico Reina-Valera 1960® Sociedades Bíblicas en América Latina, 1960. Derechos renovados 1988, Sociedades Bíblicas Unidas.",
+    "prayer_invitation": {
+      "title": "¡Oración de fe, para vida eterna!",
+      "done_message": "Ya la hice 🙏\nNo mostrar nuevamente"
+    },
+    "share": {
+      "daily_devotional": "Devocional del día",
+      "subject": "Devocional",
+      "content": "Devocional del día:\n\nVersículo: {{verse}}\n\nReflexión: {{reflection}}\n\nPara Meditar:\n{{meditations}}\n\nOración: {{prayer}}"
+    },
+    "navigation": {
+      "previous": "Anterior",
+      "next": "Siguiente"
+    },
+    "tooltips": {
+      "add_favorite": "Guardar como favorito",
+      "remove_favorite": "Quitar de favoritos",
+      "share_text": "Compartir como texto",
+      "share_image": "Compartir como imagen",
+      "progress": "Progreso",
+      "settings": "Configuración"
+    }
+  },
   "settings": {
     "title": "Configuración",
     "language": "Idioma:",
@@ -47,9 +75,28 @@
   },
   "contact": {
     "title": "Contacto",
+    "type_label": "Tipo de contacto",
     "contact_type": "Tipo de contacto",
+    "select_option": "Selecciona una opción",
+    "message_label": "Tu mensaje",
+    "message_hint": "Escribe tu mensaje aquí...",
+    "open_email": "Abrir correo",
+    "website": "Visitar nuestro sitio web",
     "send": "Enviar",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "success": "Abriendo cliente de correo...",
+    "email_subject": "App Devocionales",
+    "options": {
+      "bugs": "Errores/Bugs",
+      "feedback": "Opinión/Feedback",
+      "improvements": "Mejoras/Improvements",
+      "other": "Otros"
+    },
+    "errors": {
+      "select_type": "Por favor, selecciona un tipo de contacto.",
+      "write_message": "Por favor, escribe un mensaje.",
+      "no_email_client": "No se pudo abrir el cliente de correo. Por favor, envía un correo manualmente a develop4god@gmail.com"
+    }
   },
   "common": {
     "ok": "Aceptar",

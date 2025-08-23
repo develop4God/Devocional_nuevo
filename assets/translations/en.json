@@ -3,6 +3,34 @@
     "title": "Christian Devotionals",
     "version": "Version"
   },
+  "devotionals": {
+    "app_title": "My intimate space with God",
+    "no_devotionals_available": "No devotionals available for the selected language/version.",
+    "themes_label": "Themes: ",
+    "version_label": "Version: ",
+    "bible_copyright": "The biblical text Reina-Valera 1960® Bible Societies in Latin America, 1960. Rights renewed 1988, United Bible Societies.",
+    "prayer_invitation": {
+      "title": "Prayer of faith, for eternal life!",
+      "done_message": "I already did it 🙏\nDon't show again"
+    },
+    "share": {
+      "daily_devotional": "Daily devotional",
+      "subject": "Devotional",
+      "content": "Daily devotional:\n\nVerse: {{verse}}\n\nReflection: {{reflection}}\n\nTo Meditate:\n{{meditations}}\n\nPrayer: {{prayer}}"
+    },
+    "navigation": {
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "tooltips": {
+      "add_favorite": "Save as favorite",
+      "remove_favorite": "Remove from favorites",
+      "share_text": "Share as text",
+      "share_image": "Share as image",
+      "progress": "Progress",
+      "settings": "Settings"
+    }
+  },
   "settings": {
     "title": "Settings",
     "language": "Language:",
@@ -47,9 +75,28 @@
   },
   "contact": {
     "title": "Contact",
+    "type_label": "Contact type",
     "contact_type": "Contact type",
+    "select_option": "Select an option",
+    "message_label": "Your message",
+    "message_hint": "Write your message here...",
+    "open_email": "Open email",
+    "website": "Visit our website",
     "send": "Send",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "success": "Opening email client...",
+    "email_subject": "Devotionals App",
+    "options": {
+      "bugs": "Bugs/Errors",
+      "feedback": "Opinion/Feedback",
+      "improvements": "Improvements",
+      "other": "Other"
+    },
+    "errors": {
+      "select_type": "Please select a contact type.",
+      "write_message": "Please write a message.",
+      "no_email_client": "Could not open email client. Please send an email manually to develop4god@gmail.com"
+    }
   },
   "common": {
     "ok": "OK",
