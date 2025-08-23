@@ -3,7 +3,9 @@ import 'dart:developer' as developer;
 import 'package:devocional_nuevo/pages/about_page.dart';
 import 'package:devocional_nuevo/pages/contact_page.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
+import 'package:devocional_nuevo/providers/localization_provider.dart';
 import 'package:devocional_nuevo/providers/theme_provider.dart';
+import 'package:devocional_nuevo/services/localization_service.dart';
 import 'package:devocional_nuevo/utils/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,35 +20,25 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  String _selectedLanguage = 'es'; // Idioma por defecto
   double _ttsSpeed = 0.4; // Velocidad de TTS por defecto
 
   @override
   void initState() {
     super.initState();
-    _loadTtsLanguages();
+    _loadSettings();
   }
 
-  Future<void> _loadTtsLanguages() async {
-    final devocionalProvider =
-        Provider.of<DevocionalProvider>(context, listen: false);
+  Future<void> _loadSettings() async {
     try {
-      final languages = await devocionalProvider.getAvailableLanguages();
-      // Load saved preferences
+      // Load saved TTS preferences
       final prefs = await SharedPreferences.getInstance();
-      final savedLanguage = prefs.getString('tts_language');
       final savedRate = prefs.getDouble('tts_rate') ?? 0.5;
 
       setState(() {
         _ttsSpeed = savedRate;
-        // Use saved language if available, otherwise default to Spanish
-        if (savedLanguage != null && languages.contains(savedLanguage)) {
-        } else if (languages.contains('es-ES')) {
-        } else if (languages.contains('es')) {
-        } else if (languages.isNotEmpty) {}
       });
     } catch (e) {
-      developer.log('Error loading TTS languages: $e');
+      developer.log('Error loading settings: $e');
     }
   }
 
@@ -165,26 +157,40 @@ class _SettingsPageState extends State<SettingsPage> {
                 Icon(Icons.language, color: colorScheme.primary),
                 const SizedBox(width: 10),
                 Text(
-                  'Idioma:',
+                  'settings.language'.tr(),
                   style: textTheme.bodyMedium?.copyWith(
                     fontSize: 16,
                     color: colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(width: 10),
-                DropdownButton<String>(
-                  value: _selectedLanguage,
-                  items: const [
-                    DropdownMenuItem(value: 'es', child: Text('Español')),
-                  ],
-                  onChanged: (String? newValue) {
-                    if (newValue != null) {
-                      setState(() {
-                        _selectedLanguage = newValue;
-                        developer.log('Idioma cambiado a: $_selectedLanguage',
-                            name: 'SettingsPage');
-                      });
-                    }
+                Consumer<LocalizationProvider>(
+                  builder: (context, localizationProvider, child) {
+                    return DropdownButton<String>(
+                      value: localizationProvider.currentLanguage,
+                      items: localizationProvider.supportedLanguages.map((String languageCode) {
+                        return DropdownMenuItem(
+                          value: languageCode,
+                          child: Text('languages.$languageCode'.tr()),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) async {
+                        if (newValue != null) {
+                          // Get references before async operations
+                          final devocionalProvider = Provider.of<DevocionalProvider>(context, listen: false);
+                          
+                          // Set language
+                          await localizationProvider.setLanguage(newValue);
+                          
+                          // Update TTS language
+                          final ttsLocale = localizationProvider.getTtsLocale();
+                          await devocionalProvider.setTtsLanguage(ttsLocale);
+                          
+                          developer.log('Language changed to: $newValue (TTS: $ttsLocale)',
+                              name: 'SettingsPage');
+                        }
+                      },
+                    );
                   },
                 ),
               ],
@@ -192,7 +198,7 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 20),
             // Sección para configuración de Audio/TTS
             Text(
-              'Configuración de Audio',
+              'settings.audio_settings'.tr(),
               style: textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: colorScheme.primary,
@@ -206,7 +212,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    'Velocidad de lectura:',
+                    'settings.reading_speed'.tr(),
                     style: textTheme.bodyMedium
                         ?.copyWith(fontSize: 16, color: colorScheme.onSurface),
                   ),

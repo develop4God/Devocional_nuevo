@@ -1,0 +1,63 @@
+{
+  "app": {
+    "title": "Christian Devotionals",
+    "version": "Version"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language:",
+    "audio_settings": "Audio Settings",
+    "reading_speed": "Reading speed:",
+    "theme_settings": "Theme Settings",
+    "select_theme": "Select Theme:",
+    "light_mode": "Light Mode",
+    "dark_mode": "Dark Mode",
+    "automatic": "Automatic",
+    "about": "About",
+    "contact": "Contact",
+    "support": "Support the Project"
+  },
+  "languages": {
+    "es": "Español",
+    "en": "English",
+    "pt": "Português", 
+    "fr": "Français"
+  },
+  "about": {
+    "title": "About",
+    "description": "Christian Devotionals brings daily inspiration directly to your phone. Enjoy updated biblical messages, explore, save your favorites, share the word and customize your reading experience.",
+    "main_features": "Main Features:",
+    "feature_daily": "• Daily Devotionals",
+    "feature_multi_version": "• Multi-Version Support",
+    "feature_favorites": "• Favorites",
+    "feature_share": "• Share Content",
+    "feature_language": "• Language Customization",
+    "feature_themes": "• Customizable Themes",
+    "feature_dark_light": "• Dark and Light Themes",
+    "feature_notifications": "• Notification Options",
+    "developed_by": "Developed by"
+  },
+  "tts": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop", 
+    "continue": "Continue",
+    "loading": "Loading...",
+    "retry": "Retry"
+  },
+  "contact": {
+    "title": "Contact",
+    "contact_type": "Contact type",
+    "send": "Send",
+    "cancel": "Cancel"
+  },
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "close": "Close", 
+    "save": "Save",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  }
+}

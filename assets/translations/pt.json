@@ -1,0 +1,63 @@
+{
+  "app": {
+    "title": "Devocionais Cristãos",
+    "version": "Versão"
+  },
+  "settings": {
+    "title": "Configurações",
+    "language": "Idioma:",
+    "audio_settings": "Configurações de Áudio",
+    "reading_speed": "Velocidade de leitura:",
+    "theme_settings": "Configurações de Tema",
+    "select_theme": "Selecionar Tema:",
+    "light_mode": "Modo Claro",
+    "dark_mode": "Modo Escuro",
+    "automatic": "Automático",
+    "about": "Sobre",
+    "contact": "Contato",
+    "support": "Apoiar o Projeto"
+  },
+  "languages": {
+    "es": "Español",
+    "en": "English",
+    "pt": "Português", 
+    "fr": "Français"
+  },
+  "about": {
+    "title": "Sobre",
+    "description": "Devocionais Cristãos traz inspiração diária diretamente ao seu telefone. Desfrute de mensagens bíblicas atualizadas, explore, salve seus favoritos, compartilhe a palavra e personalize sua experiência de leitura.",
+    "main_features": "Características Principais:",
+    "feature_daily": "• Devocionais Diários",
+    "feature_multi_version": "• Suporte Multi-Versão",
+    "feature_favorites": "• Favoritos",
+    "feature_share": "• Compartilhar Conteúdo",
+    "feature_language": "• Personalização de Idioma",
+    "feature_themes": "• Temas Personalizáveis",
+    "feature_dark_light": "• Temas Escuro e Claro",
+    "feature_notifications": "• Opções de Notificação",
+    "developed_by": "Desenvolvido por"
+  },
+  "tts": {
+    "play": "Reproduzir",
+    "pause": "Pausar",
+    "stop": "Parar",
+    "continue": "Continuar",
+    "loading": "Carregando...",
+    "retry": "Tentar novamente"
+  },
+  "contact": {
+    "title": "Contato",
+    "contact_type": "Tipo de contato",
+    "send": "Enviar",
+    "cancel": "Cancelar"
+  },
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancelar",
+    "close": "Fechar",
+    "save": "Salvar",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso"
+  }
+}

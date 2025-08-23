@@ -1,0 +1,63 @@
+{
+  "app": {
+    "title": "Dévotions Chrétiennes", 
+    "version": "Version"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language": "Langue :",
+    "audio_settings": "Paramètres Audio",
+    "reading_speed": "Vitesse de lecture :",
+    "theme_settings": "Paramètres de Thème",
+    "select_theme": "Sélectionner le Thème :",
+    "light_mode": "Mode Clair",
+    "dark_mode": "Mode Sombre",
+    "automatic": "Automatique",
+    "about": "À propos",
+    "contact": "Contact",
+    "support": "Soutenir le Projet"
+  },
+  "languages": {
+    "es": "Español",
+    "en": "English",
+    "pt": "Português", 
+    "fr": "Français"
+  },
+  "about": {
+    "title": "À propos",
+    "description": "Dévotions Chrétiennes apporte l'inspiration quotidienne directement sur votre téléphone. Profitez de messages bibliques mis à jour, explorez, sauvegardez vos favoris, partagez la parole et personnalisez votre expérience de lecture.",
+    "main_features": "Caractéristiques Principales :",
+    "feature_daily": "• Dévotions Quotidiennes",
+    "feature_multi_version": "• Support Multi-Version",
+    "feature_favorites": "• Favoris",
+    "feature_share": "• Partager le Contenu",
+    "feature_language": "• Personnalisation de la Langue",
+    "feature_themes": "• Thèmes Personnalisables",
+    "feature_dark_light": "• Thèmes Sombre et Clair",
+    "feature_notifications": "• Options de Notification",
+    "developed_by": "Développé par"
+  },
+  "tts": {
+    "play": "Lire",
+    "pause": "Pause",
+    "stop": "Arrêter",
+    "continue": "Continuer",
+    "loading": "Chargement...",
+    "retry": "Réessayer"
+  },
+  "contact": {
+    "title": "Contact",
+    "contact_type": "Type de contact",
+    "send": "Envoyer",
+    "cancel": "Annuler"
+  },
+  "common": {
+    "ok": "OK",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "save": "Enregistrer",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès"
+  }
+}

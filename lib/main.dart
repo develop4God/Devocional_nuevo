@@ -6,6 +6,7 @@ import 'package:devocional_nuevo/controllers/audio_controller.dart';
 import 'package:devocional_nuevo/game_loop_runner.dart' as runner;
 import 'package:devocional_nuevo/pages/settings_page.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
+import 'package:devocional_nuevo/providers/localization_provider.dart';
 import 'package:devocional_nuevo/providers/theme_provider.dart';
 import 'package:devocional_nuevo/services/notification_service.dart';
 import 'package:devocional_nuevo/services/spiritual_stats_service.dart'; // NUEVO
@@ -90,6 +91,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => DevocionalProvider()),
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => AudioController()),
+        ChangeNotifierProvider(create: (context) => LocalizationProvider()),
       ],
       child: const AppInitializer(),
     ),
@@ -134,6 +136,20 @@ class _AppInitializerState extends State<AppInitializer> {
     } catch (e) {
       developer.log(
           'ERROR en AppInitializer: Error al inicializar zona horaria o date formatting: $e',
+          name: 'MainApp',
+          error: e);
+    }
+
+    // Initialize localization service
+    try {
+      if (mounted) {
+        final localizationProvider = Provider.of<LocalizationProvider>(context, listen: false);
+        await localizationProvider.initialize();
+        developer.log('MainApp: Localization service initialized', name: 'MainApp');
+      }
+    } catch (e) {
+      developer.log(
+          'ERROR en AppInitializer: Error al inicializar servicio de localización: $e',
           name: 'MainApp',
           error: e);
     }
@@ -253,15 +269,24 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
+    
     return MaterialApp(
       title: 'Devocionales',
       debugShowCheckedModeBanner: false,
       theme: themeProvider.currentTheme,
       navigatorKey: navigatorKey,
-      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      locale: localizationProvider.locale,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       supportedLocales: const [
-        Locale('en', ''),
         Locale('es', ''),
+        Locale('en', ''),
+        Locale('pt', ''), 
+        Locale('fr', ''),
       ],
       home: const SplashScreen(),
       routes: {
