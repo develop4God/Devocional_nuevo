@@ -1,5 +1,6 @@
 import 'package:devocional_nuevo/controllers/audio_controller.dart';
 import 'package:devocional_nuevo/models/devocional_model.dart';
+import 'package:devocional_nuevo/services/localization_service.dart';
 import 'package:devocional_nuevo/services/tts_service.dart';
 import 'package:devocional_nuevo/utils/bubble_constants.dart';
 import 'package:flutter/material.dart';
@@ -69,7 +70,7 @@ class _TtsPlayerWidgetState extends State<TtsPlayerWidget> {
         if (hasError && isThisDevocional) {
           // Error en este devocional
           mainIcon = const Icon(Icons.refresh, size: 32);
-          mainTooltip = 'Reintentar';
+          mainTooltip = 'tts.retry'.tr();
           mainColor = Colors.red;
         } else if (isLoading && isThisDevocional) {
           // Cargando este devocional
@@ -78,18 +79,18 @@ class _TtsPlayerWidgetState extends State<TtsPlayerWidget> {
             height: 28,
             child: CircularProgressIndicator(strokeWidth: 3),
           );
-          mainTooltip = 'Cargando...';
+          mainTooltip = 'tts.loading'.tr();
           mainColor = Colors.blue;
           isButtonEnabled = false;
         } else if (effectiveIsPlaying && currentState == TtsState.playing) {
           // Este devocional está reproduciendo
           mainIcon = const Icon(Icons.pause, size: 32);
-          mainTooltip = 'Pausar';
+          mainTooltip = 'tts.pause'.tr();
           mainColor = Colors.orange;
         } else if (isThisDevocional && currentState == TtsState.paused) {
           // Este devocional está pausado
           mainIcon = const Icon(Icons.play_arrow, size: 32);
-          mainTooltip = 'Continuar';
+          mainTooltip = 'tts.continue'.tr();
           mainColor = Colors.green;
         } else if (isThisDevocional &&
             (currentState == TtsState.stopping ||
@@ -101,14 +102,14 @@ class _TtsPlayerWidgetState extends State<TtsPlayerWidget> {
             child: CircularProgressIndicator(strokeWidth: 3),
           );
           mainTooltip = currentState == TtsState.stopping
-              ? 'Deteniendo...'
-              : 'Iniciando...';
+              ? 'tts.stop'.tr()
+              : 'tts.loading'.tr();
           mainColor = Colors.blue;
           isButtonEnabled = false;
         } else {
           // Estado idle o devocional diferente
           mainIcon = const Icon(Icons.play_arrow, size: 32).newIconBadge;
-          mainTooltip = 'Escuchar';
+          mainTooltip = 'tts.play'.tr();
           mainColor = Colors.blue;
         }
 
