@@ -16,7 +16,8 @@ void main() {
     test('should initialize with default or detected language', () async {
       await localizationService.initialize();
       // Should be one of the supported languages
-      expect(localizationService.supportedLanguages, contains(localizationService.currentLanguage));
+      expect(localizationService.supportedLanguages,
+          contains(localizationService.currentLanguage));
     });
 
     test('should support all required languages', () {
@@ -28,20 +29,21 @@ void main() {
 
     test('should change language correctly', () async {
       await localizationService.initialize();
-      
+
       await localizationService.setLanguage('en');
       expect(localizationService.currentLanguage, equals('en'));
-      
+
       await localizationService.setLanguage('pt');
       expect(localizationService.currentLanguage, equals('pt'));
-      
+
       await localizationService.setLanguage('fr');
       expect(localizationService.currentLanguage, equals('fr'));
     });
 
-    test('should fallback to default language for unsupported language', () async {
+    test('should fallback to default language for unsupported language',
+        () async {
       await localizationService.initialize();
-      
+
       await localizationService.setLanguage('de'); // Unsupported language
       expect(localizationService.currentLanguage, equals('es'));
     });
@@ -49,30 +51,30 @@ void main() {
     test('should persist language preference', () async {
       await localizationService.initialize();
       await localizationService.setLanguage('en');
-      
+
       final prefs = await SharedPreferences.getInstance();
       expect(prefs.getString('selected_language'), equals('en'));
     });
 
     test('should return correct TTS locale for each language', () async {
       await localizationService.initialize();
-      
+
       await localizationService.setLanguage('es');
       expect(localizationService.getTtsLocale(), equals('es-ES'));
-      
+
       await localizationService.setLanguage('en');
       expect(localizationService.getTtsLocale(), equals('en-US'));
-      
+
       await localizationService.setLanguage('pt');
       expect(localizationService.getTtsLocale(), equals('pt-BR'));
-      
+
       await localizationService.setLanguage('fr');
       expect(localizationService.getTtsLocale(), equals('fr-FR'));
     });
 
     test('should return correct locale object', () async {
       await localizationService.initialize();
-      
+
       await localizationService.setLanguage('en');
       final locale = localizationService.getLocale();
       expect(locale.languageCode, equals('en'));
@@ -88,40 +90,44 @@ void main() {
     });
 
     test('String extension .tr() should work', () {
-      expect('test'.tr(), equals('test')); // Returns key when no translation loaded
+      expect('test'.tr(),
+          equals('test')); // Returns key when no translation loaded
     });
   });
 
   group('Translation Loading Tests', () {
-    testWidgets('should load translations correctly', (WidgetTester tester) async {
+    testWidgets('should load translations correctly',
+        (WidgetTester tester) async {
       // Initialize widget binding for asset loading
       await tester.pumpWidget(MaterialApp(home: Container()));
-      
+
       final localizationService = LocalizationService();
       await localizationService.initialize();
-      
+
       // Test basic translation keys that should exist in all languages
       await localizationService.setLanguage('es');
       expect(localizationService.translate('app.title'), isNotEmpty);
-      
+
       await localizationService.setLanguage('en');
       expect(localizationService.translate('app.title'), isNotEmpty);
-      
+
       await localizationService.setLanguage('pt');
       expect(localizationService.translate('app.title'), isNotEmpty);
-      
+
       await localizationService.setLanguage('fr');
       expect(localizationService.translate('app.title'), isNotEmpty);
     });
 
-    testWidgets('should return key when translation not found', (WidgetTester tester) async {
+    testWidgets('should return key when translation not found',
+        (WidgetTester tester) async {
       await tester.pumpWidget(MaterialApp(home: Container()));
-      
+
       final localizationService = LocalizationService();
       await localizationService.initialize();
-      
+
       // Test with non-existent key
-      expect(localizationService.translate('non.existent.key'), equals('non.existent.key'));
+      expect(localizationService.translate('non.existent.key'),
+          equals('non.existent.key'));
     });
   });
 }

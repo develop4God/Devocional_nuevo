@@ -168,7 +168,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   builder: (context, localizationProvider, child) {
                     return DropdownButton<String>(
                       value: localizationProvider.currentLanguage,
-                      items: localizationProvider.supportedLanguages.map((String languageCode) {
+                      items: localizationProvider.supportedLanguages
+                          .map((String languageCode) {
                         return DropdownMenuItem(
                           value: languageCode,
                           child: Text('languages.$languageCode'.tr()),
@@ -177,16 +178,19 @@ class _SettingsPageState extends State<SettingsPage> {
                       onChanged: (String? newValue) async {
                         if (newValue != null) {
                           // Get references before async operations
-                          final devocionalProvider = Provider.of<DevocionalProvider>(context, listen: false);
-                          
+                          final devocionalProvider =
+                              Provider.of<DevocionalProvider>(context,
+                                  listen: false);
+
                           // Set language
                           await localizationProvider.setLanguage(newValue);
-                          
+
                           // Update TTS language
                           final ttsLocale = localizationProvider.getTtsLocale();
                           await devocionalProvider.setTtsLanguage(ttsLocale);
-                          
-                          developer.log('Language changed to: $newValue (TTS: $ttsLocale)',
+
+                          developer.log(
+                              'Language changed to: $newValue (TTS: $ttsLocale)',
                               name: 'SettingsPage');
                         }
                       },

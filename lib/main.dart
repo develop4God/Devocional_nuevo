@@ -143,9 +143,11 @@ class _AppInitializerState extends State<AppInitializer> {
     // Initialize localization service
     try {
       if (mounted) {
-        final localizationProvider = Provider.of<LocalizationProvider>(context, listen: false);
+        final localizationProvider =
+            Provider.of<LocalizationProvider>(context, listen: false);
         await localizationProvider.initialize();
-        developer.log('MainApp: Localization service initialized', name: 'MainApp');
+        developer.log('MainApp: Localization service initialized',
+            name: 'MainApp');
       }
     } catch (e) {
       developer.log(
@@ -270,7 +272,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final localizationProvider = Provider.of<LocalizationProvider>(context);
-    
+
     return MaterialApp(
       title: 'Devocionales',
       debugShowCheckedModeBanner: false,
@@ -285,7 +287,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [
         Locale('es', ''),
         Locale('en', ''),
-        Locale('pt', ''), 
+        Locale('pt', ''),
         Locale('fr', ''),
       ],
       home: const SplashScreen(),
