@@ -138,6 +138,49 @@
     "daily_reminder_time": "Daily notification time",
     "confirm_time": "Confirm time"
   },
+  "drawer": {
+    "share_app_message": "Join the pre-launch of the Christian devotionals app.\nLink to register and be built up with the word of God.\nhttps://forms.gle/HGFNUv9pc8XpG8aa6",
+    "downloading": "Downloading...",
+    "confirm_download": "Confirm download",
+    "download_description": "This download is performed only once. It allows access to devotionals and verses without internet connection/offline.",
+    "downloading_progress": "Downloading... {{progress}}%",
+    "cancel": "Cancel",
+    "accept": "Accept",
+    "download_success": "Devotionals downloaded successfully",
+    "download_error": "Download error. Check your connection and try again.",
+    "header_title": "Your Bible, your style",
+    "close_tooltip": "Close",
+    "bible_version": "Bible Version",
+    "saved_favorites": "Saved favorites",
+    "light_mode": "High light (light mode)",
+    "dark_mode": "Low light (dark mode)",
+    "notification_settings": "Notification settings",
+    "share_app": "Share Christian Devotionals app",
+    "devotionals_downloaded": "Devotionals downloaded",
+    "download_devotionals": "Download devotionals",
+    "enjoy_offline_content": "Enjoy content without internet",
+    "for_offline_use": "For offline use",
+    "already_offline_message": "You can now access your content without internet",
+    "select_theme_color": "Select theme color"
+  },
+  "offline_manager": {
+    "using_offline_content": "Using offline content",
+    "download_current_year": "Download current year",
+    "update": "Update",
+    "download_success": "Download completed successfully",
+    "download_error": "Download error. Check your connection.",
+    "content_updated": "Content updated from server",
+    "offline_available": "You have offline content available for the current year",
+    "no_offline_content": "No offline content for the current year"
+  },
+  "splash": {
+    "preparing_space": "Preparing your space with God..."
+  },
+  "providers": {
+    "cannot_save_no_id": "Cannot save devotional without ID",
+    "removed_from_favorites": "Devotional removed from favorites", 
+    "saved_as_favorite": "Devotional saved as favorite"
+  },
   "common": {
     "ok": "OK",
     "cancel": "Cancel",

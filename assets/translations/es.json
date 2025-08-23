@@ -138,6 +138,49 @@
     "daily_reminder_time": "Hora de la notificación diaria",
     "confirm_time": "Confirmar hora"
   },
+  "drawer": {
+    "share_app_message": "¡Participa en el pre-lanzamiento del app devocionales Cristianos.\nEnlace para inscribirte y edificarte con la palabra de Dios.\nhttps://forms.gle/HGFNUv9pc8XpG8aa6",
+    "downloading": "Descargando...",
+    "confirm_download": "Confirmar descarga",
+    "download_description": "Esta descarga se realiza una sola vez. Permite acceder a los devocionales y versículos sin conexión a internet/offline.",
+    "downloading_progress": "Descargando... {{progress}}%",
+    "cancel": "Cancelar",
+    "accept": "Aceptar",
+    "download_success": "Devocionales descargados exitosamente",
+    "download_error": "Error en la descarga. Verifica tu conexión y reintenta.",
+    "header_title": "Tu Biblia, tu estilo",
+    "close_tooltip": "Cerrar",
+    "bible_version": "Versión Bíblica",
+    "saved_favorites": "Favoritos guardados",
+    "light_mode": "Luz alta (modo claro)",
+    "dark_mode": "Luz baja (modo oscuro)",
+    "notification_settings": "Configuración de notificaciones",
+    "share_app": "Comparte app Devocionales Cristianos",
+    "devotionals_downloaded": "Devocionales descargados",
+    "download_devotionals": "Descargar devocionales",
+    "enjoy_offline_content": "Disfruta contenido sin internet",
+    "for_offline_use": "Para uso sin internet",
+    "already_offline_message": "Ya puedes acceder a tu contenido sin internet",
+    "select_theme_color": "Seleciona color de tema"
+  },
+  "offline_manager": {
+    "using_offline_content": "Usando contenido offline",
+    "download_current_year": "Descargar año actual",
+    "update": "Actualizar",
+    "download_success": "Descarga completada exitosamente",
+    "download_error": "Error en la descarga. Verifica tu conexión.",
+    "content_updated": "Contenido actualizado desde el servidor",
+    "offline_available": "Tienes contenido offline disponible para el año actual",
+    "no_offline_content": "No hay contenido offline para el año actual"
+  },
+  "splash": {
+    "preparing_space": "Preparando tu espacio con Dios..."
+  },
+  "providers": {
+    "cannot_save_no_id": "No se puede guardar devocional sin ID",
+    "removed_from_favorites": "Devocional removido de favoritos", 
+    "saved_as_favorite": "Devocional guardado como favorito"
+  },
   "common": {
     "ok": "Aceptar",
     "cancel": "Cancelar",

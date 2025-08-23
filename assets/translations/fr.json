@@ -138,6 +138,49 @@
     "daily_reminder_time": "Heure de notification quotidienne",
     "confirm_time": "Confirmer l'heure"
   },
+  "drawer": {
+    "share_app_message": "Participez au pré-lancement de l'app dévotionnels Chrétiens.\nLien pour vous inscrire et vous édifier avec la parole de Dieu.\nhttps://forms.gle/HGFNUv9pc8XpG8aa6",
+    "downloading": "Téléchargement...",
+    "confirm_download": "Confirmer le téléchargement",
+    "download_description": "Ce téléchargement ne se fait qu'une seule fois. Il permet d'accéder aux dévotionnels et versets sans connexion internet/hors ligne.",
+    "downloading_progress": "Téléchargement... {{progress}}%",
+    "cancel": "Annuler",
+    "accept": "Accepter",
+    "download_success": "Dévotionnels téléchargés avec succès",
+    "download_error": "Erreur de téléchargement. Vérifiez votre connexion et réessayez.",
+    "header_title": "Votre Bible, votre style",
+    "close_tooltip": "Fermer",
+    "bible_version": "Version de la Bible",
+    "saved_favorites": "Favoris sauvegardés",
+    "light_mode": "Lumière forte (mode clair)",
+    "dark_mode": "Lumière faible (mode sombre)",
+    "notification_settings": "Paramètres de notification",
+    "share_app": "Partager l'app Dévotionnels Chrétiens",
+    "devotionals_downloaded": "Dévotionnels téléchargés",
+    "download_devotionals": "Télécharger les dévotionnels",
+    "enjoy_offline_content": "Profitez du contenu sans internet",
+    "for_offline_use": "Pour usage hors ligne",
+    "already_offline_message": "Vous pouvez maintenant accéder à votre contenu sans internet",
+    "select_theme_color": "Sélectionner la couleur du thème"
+  },
+  "offline_manager": {
+    "using_offline_content": "Utilisation de contenu hors ligne",
+    "download_current_year": "Télécharger l'année actuelle",
+    "update": "Mettre à jour",
+    "download_success": "Téléchargement terminé avec succès",
+    "download_error": "Erreur de téléchargement. Vérifiez votre connexion.",
+    "content_updated": "Contenu mis à jour depuis le serveur",
+    "offline_available": "Vous avez du contenu hors ligne disponible pour l'année actuelle",
+    "no_offline_content": "Pas de contenu hors ligne pour l'année actuelle"
+  },
+  "splash": {
+    "preparing_space": "Préparation de votre espace avec Dieu..."
+  },
+  "providers": {
+    "cannot_save_no_id": "Impossible d'enregistrer le dévotionnel sans ID",
+    "removed_from_favorites": "Dévotionnel retiré des favoris", 
+    "saved_as_favorite": "Dévotionnel enregistré comme favori"
+  },
   "common": {
     "ok": "OK",
     "cancel": "Annuler",
