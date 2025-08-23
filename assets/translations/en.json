@@ -11,7 +11,10 @@
     "bible_copyright": "The biblical text Reina-Valera 1960® Bible Societies in Latin America, 1960. Rights renewed 1988, United Bible Societies.",
     "prayer_invitation": {
       "title": "Prayer of faith, for eternal life!",
-      "done_message": "I already did it 🙏\nDon't show again"
+      "done_message": "I already did it 🙏\nDon't show again",
+      "instruction": "Repeat this prayer out loud, with faith and believing with all your heart:\n",
+      "prayer_text": "Jesus Christ, I believe that you died on the cross for me, I ask for forgiveness and I repent from my heart for my sins. I ask you to be my Savior and the lord of my life. Free me from eternal death and write my name in the book of life.\nIn the mighty name of Jesus, amen.\n",
+      "promises": "If you made this prayer and believe it:\nYou and your house will be saved (Acts 16:31)\nYou will live eternally (Jn 11:25-26)\nYou will never thirst again (Jn 4:14)\nYou will be with Christ in heaven (Rev 19:9)\nThere is joy in heaven when a sinner repents (Luke 15:10)\nIt is written and God is faithful (Dt 7:9)\n\nFrom now on you have salvation and new life in Jesus Christ."
     },
     "share": {
       "daily_devotional": "Daily devotional",
@@ -63,7 +66,11 @@
     "feature_themes": "• Customizable Themes",
     "feature_dark_light": "• Dark and Light Themes",
     "feature_notifications": "• Notification Options",
-    "developed_by": "Developed with"
+    "developed_by": "Developed with",
+    "url_error": "Could not open the link.",
+    "terms_copyright": "Terms and Conditions / Copyright",
+    "page_title": "About your app",
+    "by_develop4god": "by Develop4God"
   },
   "tts": {
     "play": "Play",

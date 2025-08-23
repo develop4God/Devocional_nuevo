@@ -11,7 +11,10 @@
     "bible_copyright": "Le texte biblique Reina-Valera 1960® Sociétés Bibliques en Amérique Latine, 1960. Droits renouvelés 1988, Sociétés Bibliques Unies.",
     "prayer_invitation": {
       "title": "Prière de foi, pour la vie éternelle !",
-      "done_message": "Je l'ai déjà fait 🙏\nNe plus afficher"
+      "done_message": "Je l'ai déjà fait 🙏\nNe plus afficher",
+      "instruction": "Répétez cette prière à voix haute, avec foi et en croyant de tout votre cœur :\n",
+      "prayer_text": "Jésus Christ, je crois que tu es mort sur la croix pour moi, je demande pardon et je me repens de cœur pour mes péchés. Je te demande d'être mon Sauveur et le seigneur de ma vie. Libère-moi de la mort éternelle et écris mon nom dans le livre de la vie.\nAu nom puissant de Jésus, amen.\n",
+      "promises": "Si tu as fait cette prière et que tu y crois :\nTu seras sauvé toi et ta maison (Ac 16:31)\nTu vivras éternellement (Jn 11:25-26)\nTu n'auras plus jamais soif (Jn 4:14)\nTu seras avec Christ dans les cieux (Ap 19:9)\nIl y a de la joie dans les cieux quand un pécheur se repent (Lc 15:10)\nIl est écrit et Dieu est fidèle (Dt 7:9)\n\nDès maintenant tu as le salut et une vie nouvelle en Jésus Christ."
     },
     "share": {
       "daily_devotional": "Dévotion du jour",
@@ -63,7 +66,11 @@
     "feature_themes": "• Thèmes Personnalisables",
     "feature_dark_light": "• Thèmes Sombre et Clair",
     "feature_notifications": "• Options de Notification",
-    "developed_by": "Développé avec"
+    "developed_by": "Développé avec",
+    "url_error": "Impossible d'ouvrir le lien.",
+    "terms_copyright": "Termes et Conditions / Copyright",
+    "page_title": "À propos de votre application",
+    "by_develop4god": "par Develop4God"
   },
   "tts": {
     "play": "Lire",

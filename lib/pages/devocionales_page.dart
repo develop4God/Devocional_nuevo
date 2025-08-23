@@ -285,14 +285,14 @@ class _DevocionalesPageState extends State<DevocionalesPage>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  "Repite esta oración en voz alta, con fe y creyendo con todo el corazón:\n",
+                  "devotionals.prayer_invitation.instruction".tr(),
                   textAlign: TextAlign.justify,
                   style: textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurface,
                   ),
                 ),
                 Text(
-                  "Jesucristo, creo que moriste en la cruz por mi, te pido perdón y me arrepiento de corazón por mis pecados. Te pido seas mi Salvador y el señor de vida. Líbrame de la muerte eterna y escribe mi nombre en el libro de la vida.\nEn el poderoso nombre de Jesús, amén.\n",
+                  "devotionals.prayer_invitation.prayer_text".tr(),
                   textAlign: TextAlign.justify,
                   style: textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
@@ -300,7 +300,7 @@ class _DevocionalesPageState extends State<DevocionalesPage>
                   ),
                 ),
                 Text(
-                  "Si hiciste esta oración y lo crees:\nSerás salvo tu y tu casa (Hch 16:31)\nVivirás eternamente (Jn 11:25-26)\nNunca más tendrás sed (Jn 4:14)\nEstarás con Cristo en los cielos (Ap 19:9)\nHay gozo en los cielos cuando un pecador se arrepiente (Luc 15:10)\nEscrito está y Dios es fiel (Dt 7:9)\n\nDesde ya tienes salvación y vida nueva en Jesucristo.",
+                  "devotionals.prayer_invitation.promises".tr(),
                   textAlign: TextAlign.justify,
                   style: textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurface,

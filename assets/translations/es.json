@@ -11,7 +11,10 @@
     "bible_copyright": "El texto bíblico Reina-Valera 1960® Sociedades Bíblicas en América Latina, 1960. Derechos renovados 1988, Sociedades Bíblicas Unidas.",
     "prayer_invitation": {
       "title": "¡Oración de fe, para vida eterna!",
-      "done_message": "Ya la hice 🙏\nNo mostrar nuevamente"
+      "done_message": "Ya la hice 🙏\nNo mostrar nuevamente",
+      "instruction": "Repite esta oración en voz alta, con fe y creyendo con todo el corazón:\n",
+      "prayer_text": "Jesucristo, creo que moriste en la cruz por mi, te pido perdón y me arrepiento de corazón por mis pecados. Te pido seas mi Salvador y el señor de vida. Líbrame de la muerte eterna y escribe mi nombre en el libro de la vida.\nEn el poderoso nombre de Jesús, amén.\n",
+      "promises": "Si hiciste esta oración y lo crees:\nSerás salvo tu y tu casa (Hch 16:31)\nVivirás eternamente (Jn 11:25-26)\nNunca más tendrás sed (Jn 4:14)\nEstarás con Cristo en los cielos (Ap 19:9)\nHay gozo en los cielos cuando un pecador se arrepiente (Luc 15:10)\nEscrito está y Dios es fiel (Dt 7:9)\n\nDesde ya tienes salvación y vida nueva en Jesucristo."
     },
     "share": {
       "daily_devotional": "Devocional del día",
@@ -63,7 +66,11 @@
     "feature_themes": "• Temas personalizables",
     "feature_dark_light": "• Temas Oscuro y Claro",
     "feature_notifications": "• Opciones de Notificación",
-    "developed_by": "Desarrollado con"
+    "developed_by": "Desarrollado con",
+    "url_error": "No se pudo abrir el enlace.",
+    "terms_copyright": "Términos y Condiciones / Copyright",
+    "page_title": "Acerca de tu app",
+    "by_develop4god": "por Develop4God"
   },
   "tts": {
     "play": "Reproducir",

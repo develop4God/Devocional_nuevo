@@ -37,8 +37,8 @@ class _AboutPageState extends State<AboutPage> {
       // Si la URL no se puede abrir, muestra un SnackBar
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('No se pudo abrir el enlace.'),
+          SnackBar(
+            content: Text('about.url_error'.tr()),
             backgroundColor: Colors.red,
           ),
         );
@@ -54,7 +54,7 @@ class _AboutPageState extends State<AboutPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Acerca de tu app',
+          'about.page_title'.tr(),
           style: TextStyle(
               color: Theme.of(context)
                   .appBarTheme
@@ -150,7 +150,7 @@ class _AboutPageState extends State<AboutPage> {
             Center(
               // Envuelve el texto con Center para centrarlo horizontalmente
               child: Text(
-                '${'about.developed_by'.tr()} ❤️ por Develop4God',
+                '${'about.developed_by'.tr()} ❤️ ${'about.by_develop4god'.tr()}',
                 style: textTheme.bodyMedium?.copyWith(
                   color: colorScheme
                       .onSurface, // MODIFICADO: de Colors.grey[700] a colorScheme.onSurface
@@ -168,7 +168,7 @@ class _AboutPageState extends State<AboutPage> {
                 onPressed: () => _launchURL('https://develop4god.github.io/'),
                 icon: Icon(Icons.public, color: colorScheme.onPrimary),
                 // MODIFICADO: de Colors.white a colorScheme.onPrimary
-                label: Text('Términos y Condiciones / Copyright',
+                label: Text('about.terms_copyright'.tr(),
                     style: TextStyle(color: colorScheme.onPrimary)),
                 // MODIFICADO: de Colors.white a colorScheme.onPrimary
                 style: ElevatedButton.styleFrom(
