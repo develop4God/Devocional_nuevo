@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:devocional_nuevo/utils/constants.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -11,7 +12,7 @@ void main() {
     setUp(() {
       // Mock SharedPreferences
       SharedPreferences.setMockInitialValues({});
-      
+
       // Mock MethodChannel for platform-specific services
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(
@@ -49,7 +50,7 @@ void main() {
         const MethodChannel('plugins.flutter.io/shared_preferences'),
         null,
       );
-      
+
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(
         const MethodChannel('flutter_tts'),
@@ -71,7 +72,7 @@ void main() {
 
       // When: Switch to English
       provider.setSelectedLanguage('en');
-      
+
       // Wait a moment for the async operations to complete
       await Future.delayed(const Duration(milliseconds: 100));
 
@@ -86,31 +87,39 @@ void main() {
       const int testYear = 2025;
 
       // Spanish (backward compatibility) - should use original format
-      final spanishUrl = Constants.getDevocionalesApiUrl(testYear, 'es', 'RVR1960');
+      final spanishUrl =
+          Constants.getDevocionalesApiUrl(testYear, 'es', 'RVR1960');
       expect(
         spanishUrl,
-        equals('https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_$testYear.json'),
+        equals(
+            'https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_$testYear.json'),
       );
 
       // Spanish with NVI - should still use original format
-      final spanishNviUrl = Constants.getDevocionalesApiUrl(testYear, 'es', 'NVI');
+      final spanishNviUrl =
+          Constants.getDevocionalesApiUrl(testYear, 'es', 'NVI');
       expect(
         spanishNviUrl,
-        equals('https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_$testYear.json'),
+        equals(
+            'https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_$testYear.json'),
       );
 
       // English with KJV - should use new format
-      final englishKjvUrl = Constants.getDevocionalesApiUrl(testYear, 'en', 'KJV');
+      final englishKjvUrl =
+          Constants.getDevocionalesApiUrl(testYear, 'en', 'KJV');
       expect(
         englishKjvUrl,
-        equals('https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_$testYear._EN_KJV.json'),
+        equals(
+            'https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_$testYear._EN_KJV.json'),
       );
 
       // English with NIV - should use new format
-      final englishNivUrl = Constants.getDevocionalesApiUrl(testYear, 'en', 'NIV');
+      final englishNivUrl =
+          Constants.getDevocionalesApiUrl(testYear, 'en', 'NIV');
       expect(
         englishNivUrl,
-        equals('https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_$testYear._EN_NIV.json'),
+        equals(
+            'https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_$testYear._EN_NIV.json'),
       );
 
       // Verify URL format matches expected pattern for non-Spanish languages
@@ -118,7 +127,8 @@ void main() {
       expect(englishNivUrl.contains('._EN_NIV.json'), isTrue);
     });
 
-    test('should handle local storage with language-specific filenames', () async {
+    test('should handle local storage with language-specific filenames',
+        () async {
       // Test file naming conventions for different languages
       final provider = DevocionalProvider();
 
@@ -130,10 +140,10 @@ void main() {
 
       // When switching to English
       provider.setSelectedLanguage('en');
-      
+
       // Wait a moment for the async operations to complete
       await Future.delayed(const Duration(milliseconds: 100));
-      
+
       expect(provider.selectedLanguage, equals('en'));
       // The expectation is that English would use versioned filenames
       // This test verifies the language switching functionality works
@@ -155,7 +165,8 @@ void main() {
       expect(englishVersions, contains('NIV'));
 
       // Test getting versions for Spanish explicitly
-      List<String> spanishVersionsExplicit = provider.getVersionsForLanguage('es');
+      List<String> spanishVersionsExplicit =
+          provider.getVersionsForLanguage('es');
       expect(spanishVersionsExplicit, contains('RVR1960'));
       expect(spanishVersionsExplicit, contains('NVI'));
     });
@@ -175,7 +186,7 @@ void main() {
     test('should handle version switching within same language', () async {
       // Test switching versions within the same language
       final provider = DevocionalProvider();
-      
+
       // Start with Spanish RVR1960
       expect(provider.selectedLanguage, equals('es'));
       expect(provider.selectedVersion, equals('RVR1960'));
@@ -183,15 +194,13 @@ void main() {
       // Switch to NVI within Spanish
       provider.setSelectedVersion('NVI');
       expect(provider.selectedLanguage, equals('es')); // Language unchanged
-      expect(provider.selectedVersion, equals('NVI'));   // Version changed
+      expect(provider.selectedVersion, equals('NVI')); // Version changed
     });
 
     test('should maintain language consistency across restarts', () async {
       // Test that language preference is persisted
-      SharedPreferences.setMockInitialValues({
-        'selectedLanguage': 'en',
-        'selectedVersion': 'NIV'
-      });
+      SharedPreferences.setMockInitialValues(
+          {'selectedLanguage': 'en', 'selectedVersion': 'NIV'});
 
       final provider = DevocionalProvider();
       await provider.initializeData();
@@ -203,16 +212,16 @@ void main() {
     test('should reset to default version when changing language', () async {
       // Test that changing language resets version to default for new language
       final provider = DevocionalProvider();
-      
+
       // Start with Spanish
       expect(provider.selectedLanguage, equals('es'));
       expect(provider.selectedVersion, equals('RVR1960'));
-      
+
       // Change to NVI
       provider.setSelectedVersion('NVI');
       await Future.delayed(const Duration(milliseconds: 100));
       expect(provider.selectedVersion, equals('NVI'));
-      
+
       // Switch to English - should reset to English default
       provider.setSelectedLanguage('en');
       await Future.delayed(const Duration(milliseconds: 100));
@@ -224,14 +233,15 @@ void main() {
     test('should handle empty or null language preferences', () async {
       // Test initialization with no saved preferences
       SharedPreferences.setMockInitialValues({});
-      
+
       final provider = DevocionalProvider();
       // Wait for initialization to complete
       await Future.delayed(const Duration(milliseconds: 100));
-      
+
       // Should default to Spanish (this may depend on device locale detection)
       // The core test is that it doesn't crash and selects a valid language
-      expect(Constants.supportedLanguages.keys, contains(provider.selectedLanguage));
+      expect(Constants.supportedLanguages.keys,
+          contains(provider.selectedLanguage));
       expect(provider.availableVersions, contains(provider.selectedVersion));
     });
 
@@ -239,26 +249,26 @@ void main() {
       // Test that supported languages are correctly configured
       final provider = DevocionalProvider();
       final supportedLanguages = provider.supportedLanguages;
-      
+
       expect(supportedLanguages, contains('es'));
       expect(supportedLanguages, contains('en'));
       expect(supportedLanguages.length, greaterThanOrEqualTo(2));
-      
+
       // Each supported language should have versions available
       for (final lang in supportedLanguages) {
         final versions = provider.getVersionsForLanguage(lang);
-        expect(versions.isNotEmpty, isTrue, 
-               reason: 'Language $lang should have available versions');
+        expect(versions.isNotEmpty, isTrue,
+            reason: 'Language $lang should have available versions');
       }
     });
 
     test('should handle API response structure for different languages', () {
       // This test verifies that the provider expects correct data structure
       final provider = DevocionalProvider();
-      
+
       // Spanish should expect simple structure (backward compatibility)
       expect(provider.selectedLanguage, equals('es'));
-      
+
       // The provider should be ready to handle different API response structures
       // Spanish: Direct devotional data
       // Other languages: Language-nested structure
@@ -269,11 +279,11 @@ void main() {
     test('should correctly identify current language context', () {
       // Test that the provider correctly tracks current language context
       final provider = DevocionalProvider();
-      
+
       // Initially Spanish
       expect(provider.selectedLanguage, equals('es'));
       expect(provider.selectedVersion, equals('RVR1960'));
-      
+
       // Language and version should be consistent
       final availableVersions = provider.availableVersions;
       expect(availableVersions, contains(provider.selectedVersion));
