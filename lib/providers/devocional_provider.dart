@@ -83,11 +83,21 @@ class DevocionalProvider with ChangeNotifier {
   String? get currentTrackedDevocionalId =>
       _readingTracker.currentTrackedDevocionalId;
 
-  // Supported languages
-  static const List<String> _supportedLanguages = ['es'];
+  // Supported languages - Updated to include new languages (pt and fr commented out initially)
+  static const List<String> _supportedLanguages = ['es', 'en']; // 'pt', 'fr' to be added later
   static const String _fallbackLanguage = 'es';
 
   List<String> get supportedLanguages => List.from(_supportedLanguages);
+
+  // Get available Bible versions for current language
+  List<String> get availableVersions {
+    return Constants.bibleVersionsByLanguage[_selectedLanguage] ?? ['RVR1960'];
+  }
+
+  // Get available versions for a specific language
+  List<String> getVersionsForLanguage(String language) {
+    return Constants.bibleVersionsByLanguage[language] ?? [];
+  }
 
   // ========== CONSTRUCTOR ==========
   DevocionalProvider() {
@@ -131,7 +141,10 @@ class DevocionalProvider with ChangeNotifier {
         await prefs.setString('selectedLanguage', _selectedLanguage);
       }
 
-      _selectedVersion = prefs.getString('selectedVersion') ?? 'RVR1960';
+      // Set default version based on selected language
+      String savedVersion = prefs.getString('selectedVersion') ?? '';
+      String defaultVersion = Constants.defaultVersionByLanguage[_selectedLanguage] ?? 'RVR1960';
+      _selectedVersion = savedVersion.isNotEmpty ? savedVersion : defaultVersion;
 
       await _loadFavorites();
       await _loadInvitationDialogPreference();
@@ -155,6 +168,8 @@ class DevocionalProvider with ChangeNotifier {
   // ========== AUDIO METHODS (DELEGATES) ==========
   Future<void> playDevotional(Devocional devocional) async {
     debugPrint('🎵 Provider: playDevotional llamado para ${devocional.id}');
+    // Update TTS language context before playing
+    _audioController.ttsService.setLanguageContext(_selectedLanguage, _selectedVersion);
     await _audioController.playDevotional(devocional);
   }
 
@@ -231,7 +246,7 @@ class DevocionalProvider with ChangeNotifier {
 
       // Try local storage first
       Map<String, dynamic>? localData =
-          await _loadFromLocalStorage(currentYear, _selectedLanguage);
+          await _loadFromLocalStorage(currentYear, _selectedLanguage, _selectedVersion);
 
       if (localData != null) {
         debugPrint('Loading from local storage');
@@ -240,10 +255,10 @@ class DevocionalProvider with ChangeNotifier {
         return;
       }
 
-      // Load from API
-      debugPrint('Loading from API');
+      // Load from API with language and version
+      debugPrint('Loading from API for language: $_selectedLanguage, version: $_selectedVersion');
       final response = await http
-          .get(Uri.parse(Constants.getDevocionalesApiUrl(currentYear)));
+          .get(Uri.parse(Constants.getDevocionalesApiUrl(currentYear, _selectedLanguage, _selectedVersion)));
 
       if (response.statusCode != 200) {
         throw Exception('Failed to load from API: ${response.statusCode}');
@@ -341,6 +356,11 @@ class DevocionalProvider with ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('selectedLanguage', supportedLanguage);
 
+      // Reset version to default for new language
+      String defaultVersion = Constants.defaultVersionByLanguage[supportedLanguage] ?? 'RVR1960';
+      _selectedVersion = defaultVersion;
+      await prefs.setString('selectedVersion', defaultVersion);
+
       if (language != supportedLanguage) {
         debugPrint(
             'Language $language not available, using $supportedLanguage');
@@ -355,7 +375,8 @@ class DevocionalProvider with ChangeNotifier {
       _selectedVersion = version;
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('selectedVersion', version);
-      _filterDevocionalesByVersion();
+      // Refetch data for new version
+      await _fetchAllDevocionalesForLanguage();
     }
   }
 
@@ -449,14 +470,20 @@ class DevocionalProvider with ChangeNotifier {
     return devocionalesDir;
   }
 
-  Future<String> _getLocalFilePath(int year, String language) async {
+  Future<String> _getLocalFilePath(int year, String language, [String? version]) async {
     final Directory storageDir = await _getLocalStorageDirectory();
-    return '${storageDir.path}/devocional_${year}_$language.json';
+    // Include version in filename for new languages, maintain backward compatibility for Spanish
+    if (language == 'es' && version == 'RVR1960') {
+      return '${storageDir.path}/devocional_${year}_$language.json';
+    } else {
+      final versionSuffix = version != null ? '_$version' : '';
+      return '${storageDir.path}/devocional_${year}_$language$versionSuffix.json';
+    }
   }
 
-  Future<bool> hasLocalFile(int year, String language) async {
+  Future<bool> hasLocalFile(int year, String language, [String? version]) async {
     try {
-      final String filePath = await _getLocalFilePath(year, language);
+      final String filePath = await _getLocalFilePath(year, language, version);
       final File file = File(filePath);
       return await file.exists();
     } catch (e) {
@@ -473,7 +500,7 @@ class DevocionalProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final String url = Constants.getDevocionalesApiUrl(year);
+      final String url = Constants.getDevocionalesApiUrl(year, _selectedLanguage, _selectedVersion);
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode != 200) {
@@ -486,7 +513,7 @@ class DevocionalProvider with ChangeNotifier {
         throw Exception('Invalid JSON structure: missing "data" field');
       }
 
-      final String filePath = await _getLocalFilePath(year, _selectedLanguage);
+      final String filePath = await _getLocalFilePath(year, _selectedLanguage, _selectedVersion);
       final File file = File(filePath);
       await file.writeAsString(response.body);
 
@@ -504,9 +531,9 @@ class DevocionalProvider with ChangeNotifier {
   }
 
   Future<Map<String, dynamic>?> _loadFromLocalStorage(
-      int year, String language) async {
+      int year, String language, [String? version]) async {
     try {
-      final String filePath = await _getLocalFilePath(year, language);
+      final String filePath = await _getLocalFilePath(year, language, version);
       final File file = File(filePath);
 
       if (!await file.exists()) return null;
@@ -580,8 +607,8 @@ class DevocionalProvider with ChangeNotifier {
   }
 
   Future<bool> hasTargetYearsLocalData() async {
-    final bool has2025 = await hasLocalFile(2025, _selectedLanguage);
-    final bool has2026 = await hasLocalFile(2026, _selectedLanguage);
+    final bool has2025 = await hasLocalFile(2025, _selectedLanguage, _selectedVersion);
+    final bool has2026 = await hasLocalFile(2026, _selectedLanguage, _selectedVersion);
     return has2025 && has2026;
   }
 
