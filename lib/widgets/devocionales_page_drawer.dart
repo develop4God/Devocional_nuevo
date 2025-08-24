@@ -196,7 +196,7 @@ class DevocionalesDrawer extends StatelessWidget {
 
     // Get available versions for current language
     final versions = devocionalProvider.availableVersions;
-    
+
     final drawerBackgroundColor = theme.scaffoldBackgroundColor;
 
     return Drawer(
@@ -276,7 +276,8 @@ class DevocionalesDrawer extends StatelessWidget {
                             }
                           },
                           selectedItemBuilder: (BuildContext context) {
-                            return Constants.supportedLanguages.entries.map<Widget>((entry) {
+                            return Constants.supportedLanguages.entries
+                                .map<Widget>((entry) {
                               return Row(
                                 children: [
                                   Text(
@@ -290,7 +291,8 @@ class DevocionalesDrawer extends StatelessWidget {
                               );
                             }).toList();
                           },
-                          items: Constants.supportedLanguages.entries.map<DropdownMenuItem<String>>((entry) {
+                          items: Constants.supportedLanguages.entries
+                              .map<DropdownMenuItem<String>>((entry) {
                             return DropdownMenuItem<String>(
                               value: entry.key,
                               child: Text(

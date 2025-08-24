@@ -404,7 +404,7 @@ class TtsService {
 
   String _normalizeTtsText(String text, [String? language, String? version]) {
     String normalized = text;
-    
+
     // Get Bible version expansions based on language
     final bibleVersions = _getBibleVersionExpansions(language ?? 'es');
 
@@ -625,10 +625,10 @@ class TtsService {
     if (match != null) {
       final number = match.group(1)!;
       final bookName = match.group(2)!;
-      
+
       final ordinals = {'1': 'First', '2': 'Second', '3': 'Third'};
       final ordinal = ordinals[number] ?? number;
-      
+
       return reference.replaceFirst(
         RegExp('^$number\\s+$bookName', caseSensitive: false),
         '$ordinal $bookName',
@@ -643,10 +643,10 @@ class TtsService {
     if (match != null) {
       final number = match.group(1)!;
       final bookName = match.group(2)!;
-      
+
       final ordinals = {'1': 'Primeiro', '2': 'Segundo', '3': 'Terceiro'};
       final ordinal = ordinals[number] ?? number;
-      
+
       return reference.replaceFirst(
         RegExp('^$number\\s+$bookName', caseSensitive: false),
         '$ordinal $bookName',
@@ -661,10 +661,10 @@ class TtsService {
     if (match != null) {
       final number = match.group(1)!;
       final bookName = match.group(2)!;
-      
+
       final ordinals = {'1': 'Premier', '2': 'Deuxième', '3': 'Troisième'};
       final ordinal = ordinals[number] ?? number;
-      
+
       return reference.replaceFirst(
         RegExp('^$number\\s+$bookName', caseSensitive: false),
         '$ordinal $bookName',
@@ -677,13 +677,15 @@ class TtsService {
     List<String> chunks = [];
 
     if (devocional.versiculo.trim().isNotEmpty) {
-      final normalizedVerse = _normalizeTtsText(devocional.versiculo, _currentLanguage, _currentVersion);
+      final normalizedVerse = _normalizeTtsText(
+          devocional.versiculo, _currentLanguage, _currentVersion);
       chunks.add('Versículo: ${_sanitize(normalizedVerse)}');
     }
 
     if (devocional.reflexion.trim().isNotEmpty) {
       chunks.add('Reflexión:');
-      final reflection = _normalizeTtsText(_sanitize(devocional.reflexion), _currentLanguage, _currentVersion);
+      final reflection = _normalizeTtsText(
+          _sanitize(devocional.reflexion), _currentLanguage, _currentVersion);
       final paragraphs = reflection.split(RegExp(r'\n+'));
 
       for (final paragraph in paragraphs) {
@@ -693,7 +695,8 @@ class TtsService {
             final sentences = trimmed.split(RegExp(r'(?<=[.!?])\s+'));
             String chunkParagraph = '';
             for (final sentence in sentences) {
-              final normalizedSentence = _normalizeTtsText(sentence, _currentLanguage, _currentVersion);
+              final normalizedSentence = _normalizeTtsText(
+                  sentence, _currentLanguage, _currentVersion);
               if (chunkParagraph.length + normalizedSentence.length < 300) {
                 chunkParagraph += '$normalizedSentence ';
               } else {
@@ -705,7 +708,8 @@ class TtsService {
               chunks.add(chunkParagraph.trim());
             }
           } else {
-            chunks.add(_normalizeTtsText(trimmed, _currentLanguage, _currentVersion));
+            chunks.add(
+                _normalizeTtsText(trimmed, _currentLanguage, _currentVersion));
           }
         }
       }
@@ -714,8 +718,10 @@ class TtsService {
     if (devocional.paraMeditar.isNotEmpty) {
       chunks.add('Para Meditar:');
       for (final item in devocional.paraMeditar) {
-        final citation = _normalizeTtsText(_sanitize(item.cita), _currentLanguage, _currentVersion);
-        final text = _normalizeTtsText(_sanitize(item.texto), _currentLanguage, _currentVersion);
+        final citation = _normalizeTtsText(
+            _sanitize(item.cita), _currentLanguage, _currentVersion);
+        final text = _normalizeTtsText(
+            _sanitize(item.texto), _currentLanguage, _currentVersion);
         if (citation.isNotEmpty && text.isNotEmpty) {
           chunks.add('$citation: $text');
         }
@@ -724,7 +730,8 @@ class TtsService {
 
     if (devocional.oracion.trim().isNotEmpty) {
       chunks.add('Oración:');
-      final prayer = _normalizeTtsText(_sanitize(devocional.oracion), _currentLanguage, _currentVersion);
+      final prayer = _normalizeTtsText(
+          _sanitize(devocional.oracion), _currentLanguage, _currentVersion);
       final paragraphs = prayer.split(RegExp(r'\n+'));
 
       for (final paragraph in paragraphs) {
@@ -734,7 +741,8 @@ class TtsService {
             final sentences = trimmed.split(RegExp(r'(?<=[.!?])\s+'));
             String chunkParagraph = '';
             for (final sentence in sentences) {
-              final normalizedSentence = _normalizeTtsText(sentence, _currentLanguage, _currentVersion);
+              final normalizedSentence = _normalizeTtsText(
+                  sentence, _currentLanguage, _currentVersion);
               if (chunkParagraph.length + normalizedSentence.length < 300) {
                 chunkParagraph += '$normalizedSentence ';
               } else {
@@ -746,7 +754,8 @@ class TtsService {
               chunks.add(chunkParagraph.trim());
             }
           } else {
-            chunks.add(_normalizeTtsText(trimmed, _currentLanguage, _currentVersion));
+            chunks.add(
+                _normalizeTtsText(trimmed, _currentLanguage, _currentVersion));
           }
         }
       }
@@ -848,7 +857,8 @@ class TtsService {
         await _initialize();
       }
 
-      final normalizedText = _normalizeTtsText(_sanitize(text), _currentLanguage, _currentVersion);
+      final normalizedText =
+          _normalizeTtsText(_sanitize(text), _currentLanguage, _currentVersion);
       if (normalizedText.isEmpty) {
         throw const TtsException('No valid text content to speak');
       }
