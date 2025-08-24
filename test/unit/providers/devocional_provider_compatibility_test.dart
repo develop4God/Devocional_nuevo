@@ -1,24 +1,14 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:devocional_nuevo/utils/constants.dart';
-
-import 'devocional_provider_compatibility_test.mocks.dart';
-
-@GenerateMocks([http.Client])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('Backward Compatibility Tests', () {
-    late MockClient mockClient;
-
     setUp(() {
-      mockClient = MockClient();
       // Mock SharedPreferences
       SharedPreferences.setMockInitialValues({});
       

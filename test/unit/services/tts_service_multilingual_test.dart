@@ -1,24 +1,14 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 
 import 'package:devocional_nuevo/services/tts_service.dart';
-
-import 'tts_service_multilingual_test.mocks.dart';
-
-@GenerateMocks([FlutterTts])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('TTS Multilingual Support', () {
-    late MockFlutterTts mockFlutterTts;
     late TtsService ttsService;
 
     setUp(() {
-      mockFlutterTts = MockFlutterTts();
-      
       // Mock MethodChannel for SharedPreferences
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(
@@ -78,13 +68,11 @@ void main() {
       // We need to access the private method indirectly through text normalization
       // Spanish version expansions
       ttsService.setLanguageContext('es', 'RVR1960');
-      final spanishText = 'La RVR1960 dice...';
       // The normalization should expand RVR1960
       // This tests the Spanish Bible version expansion indirectly
       
       // English version expansions
       ttsService.setLanguageContext('en', 'KJV');
-      final englishText = 'The KJV states...';
       // The normalization should expand KJV to "King James Version"
       
       // Test specific version expansions
@@ -174,9 +162,6 @@ void main() {
       // Test _generateChunks uses language context
       // Since _generateChunks is private, we test through speakDevotional
       
-      // Create a mock devotional
-      final mockDevocional = createMockDevocional();
-      
       // Test Spanish context
       ttsService.setLanguageContext('es', 'RVR1960');
       // We verify that the method call doesn't crash and context is set
@@ -256,29 +241,4 @@ void main() {
       expect(ttsService.isDisposed, isFalse);
     });
   });
-}
-
-// Helper function to create a mock devotional for testing
-dynamic createMockDevocional() {
-  // Since we can't import the actual Devocional model easily in the test,
-  // we create a mock object that has the required properties
-  return MockDevocional();
-}
-
-class MockDevocional {
-  String get id => 'test_devotional';
-  String get versiculo => 'Test verse from the Bible';
-  String get reflexion => 'This is a test reflection for the devotional.';
-  List<MockParaMeditar> get paraMeditar => [
-    MockParaMeditar('Test citation', 'Test meditation text')
-  ];
-  String get oracion => 'Test prayer for the devotional.';
-  DateTime get date => DateTime.now();
-}
-
-class MockParaMeditar {
-  final String cita;
-  final String texto;
-  
-  MockParaMeditar(this.cita, this.texto);
 }

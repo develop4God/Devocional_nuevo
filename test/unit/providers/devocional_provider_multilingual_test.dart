@@ -1,24 +1,14 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:devocional_nuevo/utils/constants.dart';
-
-import 'devocional_provider_multilingual_test.mocks.dart';
-
-@GenerateMocks([http.Client])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('DevocionalProvider Multilingual Support', () {
-    late MockClient mockClient;
-
     setUp(() {
-      mockClient = MockClient();
       // Mock SharedPreferences
       SharedPreferences.setMockInitialValues({});
       
@@ -113,14 +103,14 @@ void main() {
       final englishKjvUrl = Constants.getDevocionalesApiUrl(testYear, 'en', 'KJV');
       expect(
         englishKjvUrl,
-        equals('https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_${testYear}._EN_KJV.json'),
+        equals('https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_$testYear._EN_KJV.json'),
       );
 
       // English with NIV - should use new format
       final englishNivUrl = Constants.getDevocionalesApiUrl(testYear, 'en', 'NIV');
       expect(
         englishNivUrl,
-        equals('https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_${testYear}._EN_NIV.json'),
+        equals('https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_$testYear._EN_NIV.json'),
       );
 
       // Verify URL format matches expected pattern for non-Spanish languages
