@@ -65,7 +65,7 @@ void main() {
 
       // Look for navigation buttons (forward/backward)
       final forwardButtonFinder = find.byIcon(Icons.arrow_forward);
-      final backwardButtonFinder = find.byIcon(Icons.arrow_back);
+      // final backwardButtonFinder = find.byIcon(Icons.arrow_back); // Reserved for future navigation
 
       // Navigate to next devotional if possible
       if (forwardButtonFinder.evaluate().isNotEmpty) {

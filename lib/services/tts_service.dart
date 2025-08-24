@@ -64,6 +64,8 @@ class TtsService {
 
   bool get isActive => isPlaying || isPaused;
 
+  bool get isDisposed => _disposed;
+
   bool get _isPlatformSupported {
     try {
       return Platform.isAndroid ||
@@ -804,6 +806,10 @@ class TtsService {
   }
 
   // ========== PUBLIC API ==========
+
+  Future<void> initialize() async {
+    await _initialize();
+  }
 
   Future<void> speakDevotional(Devocional devocional) async {
     debugPrint(
