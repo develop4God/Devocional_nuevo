@@ -1,4 +1,5 @@
 // lib/pages/progress_page.dart - Fixed themed shadows
+import 'package:devocional_nuevo/services/localization_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -71,7 +72,7 @@ class _ProgressPageState extends State<ProgressPage>
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al cargar estadísticas: $e')),
+          SnackBar(content: Text('${'progress.error_loading'.tr()}: $e')),
         );
       }
     }
@@ -127,7 +128,7 @@ class _ProgressPageState extends State<ProgressPage>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Consejo útil',
+                    'progress.tip_title'.tr(),
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
@@ -136,7 +137,7 @@ class _ProgressPageState extends State<ProgressPage>
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'Toca cualquier logro para ver información completa',
+                    'progress.tip_message'.tr(),
                     style: TextStyle(
                       fontSize: 13,
                       color: Colors.white,
@@ -189,10 +190,10 @@ class _ProgressPageState extends State<ProgressPage>
             ),
           ),
           onPressed: () => Navigator.of(context).pop(),
-          tooltip: 'Regresar',
+          tooltip: 'progress.back'.tr(),
         ),
         title: Text(
-          'Mi Progreso Espiritual',
+          'progress.title'.tr(),
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.primary,
@@ -234,7 +235,7 @@ class _ProgressPageState extends State<ProgressPage>
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: _loadStats,
-            child: const Text('Reintentar'),
+            child: Text('progress.retry'.tr()),
           ),
         ],
       ),
@@ -323,7 +324,9 @@ class _ProgressPageState extends State<ProgressPage>
                     ),
                   ),
                   Text(
-                    _stats!.currentStreak == 1 ? 'día' : 'días',
+                    _stats!.currentStreak == 1
+                        ? 'progress.day'.tr()
+                        : 'progress.days'.tr(),
                     style: TextStyle(
                       fontSize: 16,
                       color: colorScheme.onPrimary.withValues(alpha: 0.8),
@@ -357,8 +360,10 @@ class _ProgressPageState extends State<ProgressPage>
         const SizedBox(height: 8),
         Text(
           nextMilestone > 0
-              ? 'Siguiente meta: $nextMilestone días'
-              : '¡Meta alcanzada!',
+              ? 'progress.next_goal'
+                  .tr()
+                  .replaceAll('{{days}}', nextMilestone.toString())
+              : 'progress.goal_reached'.tr(),
           style: TextStyle(
             fontSize: 12,
             color:
@@ -391,7 +396,7 @@ class _ProgressPageState extends State<ProgressPage>
             },
             borderRadius: BorderRadius.circular(16),
             child: _buildStatCard(
-              title: 'Devocionales completos',
+              title: 'progress.completed_devotionals'.tr(),
               value: '${_stats!.totalDevocionalesRead}',
               icon: Icons.auto_stories,
               color: Colors.blue,
@@ -408,7 +413,7 @@ class _ProgressPageState extends State<ProgressPage>
             },
             borderRadius: BorderRadius.circular(16),
             child: _buildStatCard(
-              title: 'Favoritos guardados',
+              title: 'progress.saved_favorites'.tr(),
               value: '${_stats!.favoritesCount}',
               icon: Icons.favorite,
               color: Colors.pink,
@@ -494,7 +499,7 @@ class _ProgressPageState extends State<ProgressPage>
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Logros',
+          'progress.achievements_title'.tr(),
           textAlign: TextAlign.center, //
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,

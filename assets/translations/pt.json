@@ -1,0 +1,200 @@
+{
+  "app": {
+    "title": "Devocionais Cristãos",
+    "version": "Versão"
+  },
+  "devotionals": {
+    "app_title": "Meu espaço íntimo com Deus",
+    "no_devotionals_available": "Nenhum devocional disponível para o idioma/versão selecionados.",
+    "themes_label": "Temas: ",
+    "version_label": "Versão: ",
+    "bible_copyright": "O texto bíblico Reina-Valera 1960® Sociedades Bíblicas na América Latina, 1960. Direitos renovados 1988, Sociedades Bíblicas Unidas.",
+    "prayer_invitation": {
+      "title": "Oração de fé, para a vida eterna!",
+      "done_message": "Já fiz 🙏\nNão mostrar novamente",
+      "instruction": "Repita esta oração em voz alta, com fé e acreditando de todo o coração:\n",
+      "prayer_text": "Jesus Cristo, creio que morreste na cruz por mim, peço perdão e me arrependo de coração pelos meus pecados. Te peço para seres meu Salvador e senhor da minha vida. Liberta-me da morte eterna e escreve meu nome no livro da vida.\nEm nome poderoso de Jesus, amém.\n",
+      "promises": "Se fizeste esta oração e acreditas:\nSerás salvo tu e tua casa (At 16:31)\nViverás eternamente (Jo 11:25-26)\nNunca mais terás sede (Jo 4:14)\nEstarás com Cristo nos céus (Ap 19:9)\nHá alegria nos céus quando um pecador se arrepende (Lc 15:10)\nEstá escrito e Deus é fiel (Dt 7:9)\n\nDesde já tens salvação e vida nova em Jesus Cristo."
+    },
+    "share": {
+      "daily_devotional": "Devocional do dia",
+      "subject": "Devocional",
+      "content": "Devocional do dia:\n\nVersículo: {{verse}}\n\nReflexão: {{reflection}}\n\nPara Meditar:\n{{meditations}}\n\nOração: {{prayer}}"
+    },
+    "navigation": {
+      "previous": "Anterior",
+      "next": "Próximo"
+    },
+    "tooltips": {
+      "add_favorite": "Salvar como favorito",
+      "remove_favorite": "Remover dos favoritos",
+      "share_text": "Compartilhar como texto",
+      "share_image": "Compartilhar como imagem",
+      "progress": "Progresso",
+      "settings": "Configurações"
+    }
+  },
+  "settings": {
+    "title": "Configurações",
+    "language": "Idioma:",
+    "audio_settings": "Configurações de Áudio",
+    "reading_speed": "Velocidade de leitura:",
+    "theme_settings": "Configurações de Tema",
+    "select_theme": "Selecionar Tema:",
+    "light_mode": "Modo Claro",
+    "dark_mode": "Modo Escuro",
+    "automatic": "Automático",
+    "about": "Sobre",
+    "contact": "Contato",
+    "support": "Apoiar o Projeto"
+  },
+  "languages": {
+    "es": "Español",
+    "en": "English",
+    "pt": "Português", 
+    "fr": "Français"
+  },
+  "about": {
+    "title": "Sobre",
+    "description": "Devocionais Cristãos traz inspiração diária diretamente ao seu telefone. Desfrute de mensagens bíblicas atualizadas, explore, salve seus favoritos, compartilhe a palavra e personalize sua experiência de leitura.",
+    "main_features": "Características Principais:",
+    "feature_daily": "• Devocionais Diários",
+    "feature_multi_version": "• Suporte Multi-Versão",
+    "feature_favorites": "• Favoritos",
+    "feature_share": "• Compartilhar Conteúdo",
+    "feature_language": "• Personalização de Idioma",
+    "feature_themes": "• Temas Personalizáveis",
+    "feature_dark_light": "• Temas Escuro e Claro",
+    "feature_notifications": "• Opções de Notificação",
+    "developed_by": "Desenvolvido com",
+    "url_error": "Não foi possível abrir o link.",
+    "terms_copyright": "Termos e Condições / Copyright",
+    "page_title": "Sobre seu aplicativo",
+    "by_develop4god": "por Develop4God"
+  },
+  "tts": {
+    "play": "Reproduzir",
+    "pause": "Pausar",
+    "stop": "Parar",
+    "continue": "Continuar",
+    "loading": "Carregando...",
+    "retry": "Tentar novamente"
+  },
+  "contact": {
+    "title": "Contato",
+    "type_label": "Tipo de contato",
+    "contact_type": "Tipo de contato",
+    "select_option": "Selecione uma opção",
+    "message_label": "Sua mensagem",
+    "message_hint": "Escreva sua mensagem aqui...",
+    "open_email": "Abrir email",
+    "website": "Visitar nosso site",
+    "send": "Enviar",
+    "cancel": "Cancelar",
+    "success": "Abrindo cliente de email...",
+    "email_subject": "App Devocionais",
+    "options": {
+      "bugs": "Erros/Bugs",
+      "feedback": "Opinião/Feedback",
+      "improvements": "Melhorias",
+      "other": "Outros"
+    },
+    "errors": {
+      "select_type": "Por favor, selecione um tipo de contato.",
+      "write_message": "Por favor, escreva uma mensagem.",
+      "no_email_client": "Não foi possível abrir o cliente de email. Por favor, envie um email manualmente para develop4god@gmail.com"
+    }
+  },
+  "progress": {
+    "title": "Meu Progresso Espiritual",
+    "back": "Voltar",
+    "error_loading": "Erro ao carregar estatísticas",
+    "retry": "Tentar novamente",
+    "tip_title": "Dica útil",
+    "tip_message": "Toque em qualquer conquista para ver informações completas",
+    "achievements_title": "Conquistas",
+    "day": "dia",
+    "days": "dias",
+    "next_goal": "Próxima meta: {{days}} dias",
+    "goal_reached": "Meta alcançada!",
+    "completed_devotionals": "Devocionais completos",
+    "saved_favorites": "Favoritos salvos"
+  },
+  "favorites": {
+    "title": "Meus Favoritos Salvos",
+    "no_favorites": "Você ainda não tem devocionais favoritos.",
+    "instructions": "Marque o ícone do coração em um devocional para salvá-lo aqui.",
+    "remove_tooltip": "Remover dos favoritos",
+    "removed_message": "\"{{verse}}\" removido dos favoritos."
+  },
+  "notifications": {
+    "permission_title": "Permissões de Notificação",
+    "permission_headline": "Não perca nenhum devocional!",
+    "permission_description": "Permita-nos enviar notificações para lembrá-lo de ler seu devocional diário e mantê-lo informado sobre novos recursos.",
+    "allow_notifications": "Permitir Notificações",
+    "not_now": "Agora não",
+    "permissions_required": "Permissões Necessárias",
+    "permissions_disabled_message": "As notificações estão permanentemente desativadas. Por favor, ative-as nas configurações do seu dispositivo para receber lembretes diários.",
+    "open_settings": "Abrir Configurações",
+    "config_title": "Configurações de Notificação",
+    "user_not_authenticated": "Erro: Usuário não autenticado. Por favor, reinicie a aplicação.",
+    "error_loading_config": "Erro ao carregar configuração",
+    "time_not_changed": "O horário não foi alterado.",
+    "time_updated": "Horário de notificação ajustado para {{time}}",
+    "toggle_notifications": "Ativar/Desativar Notificações",
+    "daily_reminder_time": "Horário da notificação diária",
+    "confirm_time": "Confirmar horário"
+  },
+  "drawer": {
+    "share_app_message": "Participe do pré-lançamento do app devocionais Cristãos.\nLink para se inscrever e se edificar com a palavra de Deus.\nhttps://forms.gle/HGFNUv9pc8XpG8aa6",
+    "downloading": "Baixando...",
+    "confirm_download": "Confirmar download",
+    "download_description": "Este download é realizado apenas uma vez. Permite acesso aos devocionais e versículos sem conexão à internet/offline.",
+    "downloading_progress": "Baixando... {{progress}}%",
+    "cancel": "Cancelar",
+    "accept": "Aceitar",
+    "download_success": "Devocionais baixados com sucesso",
+    "download_error": "Erro no download. Verifique sua conexão e tente novamente.",
+    "header_title": "Sua Bíblia, seu estilo",
+    "close_tooltip": "Fechar",
+    "bible_version": "Versão da Bíblia",
+    "saved_favorites": "Favoritos salvos",
+    "light_mode": "Luz alta (modo claro)",
+    "dark_mode": "Luz baixa (modo escuro)",
+    "notification_settings": "Configurações de notificação",
+    "share_app": "Compartilhar app Devocionais Cristãos",
+    "devotionals_downloaded": "Devocionais baixados",
+    "download_devotionals": "Baixar devocionais",
+    "enjoy_offline_content": "Aproveite conteúdo sem internet",
+    "for_offline_use": "Para uso offline",
+    "already_offline_message": "Você já pode acessar seu conteúdo sem internet",
+    "select_theme_color": "Selecionar cor do tema"
+  },
+  "offline_manager": {
+    "using_offline_content": "Usando conteúdo offline",
+    "download_current_year": "Baixar ano atual",
+    "update": "Atualizar",
+    "download_success": "Download concluído com sucesso",
+    "download_error": "Erro no download. Verifique sua conexão.",
+    "content_updated": "Conteúdo atualizado do servidor",
+    "offline_available": "Você tem conteúdo offline disponível para o ano atual",
+    "no_offline_content": "Sem conteúdo offline para o ano atual"
+  },
+  "splash": {
+    "preparing_space": "Preparando seu espaço com Deus..."
+  },
+  "providers": {
+    "cannot_save_no_id": "Não é possível salvar devocional sem ID",
+    "removed_from_favorites": "Devocional removido dos favoritos", 
+    "saved_as_favorite": "Devocional salvo como favorito"
+  },
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancelar",
+    "close": "Fechar",
+    "save": "Salvar",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso"
+  }
+}

@@ -7,6 +7,7 @@ import 'dart:ui';
 
 import 'package:devocional_nuevo/controllers/audio_controller.dart'; // NEW
 import 'package:devocional_nuevo/models/devocional_model.dart';
+import 'package:devocional_nuevo/services/localization_service.dart';
 import 'package:devocional_nuevo/services/spiritual_stats_service.dart';
 import 'package:devocional_nuevo/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -387,9 +388,9 @@ class DevocionalProvider with ChangeNotifier {
   void toggleFavorite(Devocional devocional, BuildContext context) {
     if (devocional.id.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No se puede guardar devocional sin ID'),
-          duration: Duration(seconds: 2),
+        SnackBar(
+          content: Text('providers.cannot_save_no_id'.tr()),
+          duration: const Duration(seconds: 2),
         ),
       );
       return;
@@ -401,7 +402,7 @@ class DevocionalProvider with ChangeNotifier {
       _favoriteDevocionales.removeWhere((fav) => fav.id == devocional.id);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Devocional removido de favoritos',
+          content: Text('providers.removed_from_favorites'.tr(),
               style: TextStyle(color: colorScheme.onSecondary)),
           duration: const Duration(seconds: 2),
           backgroundColor: colorScheme.secondary,
@@ -411,7 +412,7 @@ class DevocionalProvider with ChangeNotifier {
       _favoriteDevocionales.add(devocional);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Devocional guardado como favorito',
+          content: Text('providers.saved_as_favorite'.tr(),
               style: TextStyle(color: colorScheme.onSecondary)),
           duration: const Duration(seconds: 2),
           backgroundColor: colorScheme.secondary,

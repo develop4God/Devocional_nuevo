@@ -1,0 +1,200 @@
+{
+  "app": {
+    "title": "Christian Devotionals",
+    "version": "Version"
+  },
+  "devotionals": {
+    "app_title": "My intimate space with God",
+    "no_devotionals_available": "No devotionals available for the selected language/version.",
+    "themes_label": "Themes: ",
+    "version_label": "Version: ",
+    "bible_copyright": "The biblical text Reina-Valera 1960® Bible Societies in Latin America, 1960. Rights renewed 1988, United Bible Societies.",
+    "prayer_invitation": {
+      "title": "Prayer of faith, for eternal life!",
+      "done_message": "I already did it 🙏\nDon't show again",
+      "instruction": "Repeat this prayer out loud, with faith and believing with all your heart:\n",
+      "prayer_text": "Jesus Christ, I believe that you died on the cross for me, I ask for forgiveness and I repent from my heart for my sins. I ask you to be my Savior and the lord of my life. Free me from eternal death and write my name in the book of life.\nIn the mighty name of Jesus, amen.\n",
+      "promises": "If you made this prayer and believe it:\nYou and your house will be saved (Acts 16:31)\nYou will live eternally (Jn 11:25-26)\nYou will never thirst again (Jn 4:14)\nYou will be with Christ in heaven (Rev 19:9)\nThere is joy in heaven when a sinner repents (Luke 15:10)\nIt is written and God is faithful (Dt 7:9)\n\nFrom now on you have salvation and new life in Jesus Christ."
+    },
+    "share": {
+      "daily_devotional": "Daily devotional",
+      "subject": "Devotional",
+      "content": "Daily devotional:\n\nVerse: {{verse}}\n\nReflection: {{reflection}}\n\nTo Meditate:\n{{meditations}}\n\nPrayer: {{prayer}}"
+    },
+    "navigation": {
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "tooltips": {
+      "add_favorite": "Save as favorite",
+      "remove_favorite": "Remove from favorites",
+      "share_text": "Share as text",
+      "share_image": "Share as image",
+      "progress": "Progress",
+      "settings": "Settings"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language:",
+    "audio_settings": "Audio Settings",
+    "reading_speed": "Reading speed:",
+    "theme_settings": "Theme Settings",
+    "select_theme": "Select Theme:",
+    "light_mode": "Light Mode",
+    "dark_mode": "Dark Mode",
+    "automatic": "Automatic",
+    "about": "About",
+    "contact": "Contact",
+    "support": "Support the Project"
+  },
+  "languages": {
+    "es": "Español",
+    "en": "English",
+    "pt": "Português", 
+    "fr": "Français"
+  },
+  "about": {
+    "title": "About",
+    "description": "Christian Devotionals brings daily inspiration directly to your phone. Enjoy updated biblical messages, explore, save your favorites, share the word and customize your reading experience.",
+    "main_features": "Main Features:",
+    "feature_daily": "• Daily Devotionals",
+    "feature_multi_version": "• Multi-Version Support",
+    "feature_favorites": "• Favorites",
+    "feature_share": "• Share Content",
+    "feature_language": "• Language Customization",
+    "feature_themes": "• Customizable Themes",
+    "feature_dark_light": "• Dark and Light Themes",
+    "feature_notifications": "• Notification Options",
+    "developed_by": "Developed with",
+    "url_error": "Could not open the link.",
+    "terms_copyright": "Terms and Conditions / Copyright",
+    "page_title": "About your app",
+    "by_develop4god": "by Develop4God"
+  },
+  "tts": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop", 
+    "continue": "Continue",
+    "loading": "Loading...",
+    "retry": "Retry"
+  },
+  "contact": {
+    "title": "Contact",
+    "type_label": "Contact type",
+    "contact_type": "Contact type",
+    "select_option": "Select an option",
+    "message_label": "Your message",
+    "message_hint": "Write your message here...",
+    "open_email": "Open email",
+    "website": "Visit our website",
+    "send": "Send",
+    "cancel": "Cancel",
+    "success": "Opening email client...",
+    "email_subject": "Devotionals App",
+    "options": {
+      "bugs": "Bugs/Errors",
+      "feedback": "Opinion/Feedback",
+      "improvements": "Improvements",
+      "other": "Other"
+    },
+    "errors": {
+      "select_type": "Please select a contact type.",
+      "write_message": "Please write a message.",
+      "no_email_client": "Could not open email client. Please send an email manually to develop4god@gmail.com"
+    }
+  },
+  "progress": {
+    "title": "My Spiritual Progress",
+    "back": "Back",
+    "error_loading": "Error loading statistics",
+    "retry": "Retry",
+    "tip_title": "Useful tip",
+    "tip_message": "Tap any achievement to see complete information",
+    "achievements_title": "Achievements",
+    "day": "day",
+    "days": "days",
+    "next_goal": "Next goal: {{days}} days",
+    "goal_reached": "Goal reached!",
+    "completed_devotionals": "Completed devotionals",
+    "saved_favorites": "Saved favorites"
+  },
+  "favorites": {
+    "title": "My Saved Favorites",
+    "no_favorites": "You don't have any favorite devotionals yet.",
+    "instructions": "Mark the heart icon on a devotional to save it here.",
+    "remove_tooltip": "Remove from favorites",
+    "removed_message": "\"{{verse}}\" removed from favorites."
+  },
+  "notifications": {
+    "permission_title": "Notification Permissions",
+    "permission_headline": "Don't miss any devotional!",
+    "permission_description": "Allow us to send you notifications to remind you to read your daily devotional and keep you informed about new features.",
+    "allow_notifications": "Allow Notifications",
+    "not_now": "Not now",
+    "permissions_required": "Permissions Required",
+    "permissions_disabled_message": "Notifications are permanently disabled. Please enable them in your device settings to receive daily reminders.",
+    "open_settings": "Open Settings",
+    "config_title": "Notification Settings",
+    "user_not_authenticated": "Error: User not authenticated. Please restart the application.",
+    "error_loading_config": "Error loading configuration",
+    "time_not_changed": "Time has not changed.",
+    "time_updated": "Notification time adjusted to {{time}}",
+    "toggle_notifications": "Enable/Disable Notifications",
+    "daily_reminder_time": "Daily notification time",
+    "confirm_time": "Confirm time"
+  },
+  "drawer": {
+    "share_app_message": "Join the pre-launch of the Christian devotionals app.\nLink to register and be built up with the word of God.\nhttps://forms.gle/HGFNUv9pc8XpG8aa6",
+    "downloading": "Downloading...",
+    "confirm_download": "Confirm download",
+    "download_description": "This download is performed only once. It allows access to devotionals and verses without internet connection/offline.",
+    "downloading_progress": "Downloading... {{progress}}%",
+    "cancel": "Cancel",
+    "accept": "Accept",
+    "download_success": "Devotionals downloaded successfully",
+    "download_error": "Download error. Check your connection and try again.",
+    "header_title": "Your Bible, your style",
+    "close_tooltip": "Close",
+    "bible_version": "Bible Version",
+    "saved_favorites": "Saved favorites",
+    "light_mode": "High light (light mode)",
+    "dark_mode": "Low light (dark mode)",
+    "notification_settings": "Notification settings",
+    "share_app": "Share Christian Devotionals app",
+    "devotionals_downloaded": "Devotionals downloaded",
+    "download_devotionals": "Download devotionals",
+    "enjoy_offline_content": "Enjoy content without internet",
+    "for_offline_use": "For offline use",
+    "already_offline_message": "You can now access your content without internet",
+    "select_theme_color": "Select theme color"
+  },
+  "offline_manager": {
+    "using_offline_content": "Using offline content",
+    "download_current_year": "Download current year",
+    "update": "Update",
+    "download_success": "Download completed successfully",
+    "download_error": "Download error. Check your connection.",
+    "content_updated": "Content updated from server",
+    "offline_available": "You have offline content available for the current year",
+    "no_offline_content": "No offline content for the current year"
+  },
+  "splash": {
+    "preparing_space": "Preparing your space with God..."
+  },
+  "providers": {
+    "cannot_save_no_id": "Cannot save devotional without ID",
+    "removed_from_favorites": "Devotional removed from favorites", 
+    "saved_as_favorite": "Devotional saved as favorite"
+  },
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "close": "Close", 
+    "save": "Save",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  }
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
+import 'package:devocional_nuevo/services/localization_service.dart';
 
 class OfflineManagerWidget extends StatelessWidget {
   final bool showCompactView;
@@ -37,7 +38,7 @@ class OfflineManagerWidget extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'Usando contenido offline',
+                        'offline_manager.using_offline_content'.tr(),
                         style: textTheme.bodyMedium?.copyWith(
                           color: colorScheme.onPrimaryContainer,
                           fontWeight: FontWeight.w500,
@@ -127,7 +128,7 @@ class OfflineManagerWidget extends StatelessWidget {
                       : () =>
                           _downloadDevocionales(context, devocionalProvider),
                   icon: Icon(Icons.download),
-                  label: Text('Descargar año actual'),
+                  label: Text('offline_manager.download_current_year'.tr()),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                   ),
@@ -144,7 +145,7 @@ class OfflineManagerWidget extends StatelessWidget {
                           : () => _downloadDevocionales(
                               context, devocionalProvider),
                       icon: Icon(Icons.download),
-                      label: Text('Descargar año actual'),
+                      label: Text('offline_manager.download_current_year'.tr()),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
@@ -157,7 +158,7 @@ class OfflineManagerWidget extends StatelessWidget {
                           ? null
                           : () => _refreshFromAPI(context, devocionalProvider),
                       icon: Icon(Icons.refresh),
-                      label: Text('Actualizar'),
+                      label: Text('offline_manager.update'.tr()),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
@@ -176,8 +177,8 @@ class OfflineManagerWidget extends StatelessWidget {
                   if (snapshot.hasData) {
                     return Text(
                       snapshot.data!
-                          ? 'Tienes contenido offline disponible para el año actual'
-                          : 'No hay contenido offline para el año actual',
+                          ? 'offline_manager.offline_available'.tr()
+                          : 'offline_manager.no_offline_content'.tr(),
                       style: textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                         fontStyle: FontStyle.italic,
@@ -203,8 +204,8 @@ class OfflineManagerWidget extends StatelessWidget {
         SnackBar(
           content: Text(
             success
-                ? 'Descarga completada exitosamente'
-                : 'Error en la descarga. Verifica tu conexión.',
+                ? 'offline_manager.download_success'.tr()
+                : 'offline_manager.download_error'.tr(),
           ),
           backgroundColor: success ? colorScheme.primary : colorScheme.error,
         ),
@@ -220,7 +221,7 @@ class OfflineManagerWidget extends StatelessWidget {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Contenido actualizado desde el servidor'),
+          content: Text('offline_manager.content_updated'.tr()),
           backgroundColor: colorScheme.primary,
         ),
       );

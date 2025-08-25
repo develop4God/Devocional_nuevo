@@ -2,6 +2,7 @@
 
 import 'package:devocional_nuevo/models/devocional_model.dart'; // Asegúrate de importar tu modelo
 import 'package:devocional_nuevo/pages/devocionales_page.dart'; // Importar DevocionalesPage
+import 'package:devocional_nuevo/services/localization_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Para formatear la fecha
 import 'package:provider/provider.dart';
@@ -19,7 +20,7 @@ class FavoritesPage extends StatelessWidget {
             .appBarTheme
             .backgroundColor, // Usa el color de fondo del AppBar del tema
         foregroundColor: Colors.white,
-        title: const Text('Mis favoritos guardados'),
+        title: Text('favorites.title'.tr()),
         centerTitle: true,
       ),
       body: Consumer<DevocionalProvider>(
@@ -42,7 +43,7 @@ class FavoritesPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Aún no tienes devocionales favoritos.',
+                      'favorites.no_favorites'.tr(),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 18,
@@ -51,7 +52,7 @@ class FavoritesPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Marca el ícono del corazón en un devocional para guardarlo aquí.',
+                      'favorites.instructions'.tr(),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
@@ -129,14 +130,16 @@ class FavoritesPage extends StatelessWidget {
                               color: Colors.red,
                               size: 28,
                             ),
-                            tooltip: 'Quitar de favoritos',
+                            tooltip: 'favorites.remove_tooltip'.tr(),
                             onPressed: () {
                               devocionalProvider.toggleFavorite(
                                   devocional, context);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                    content: Text(
-                                        '"${devocional.versiculo}" eliminado de favoritos.')),
+                                    content: Text('favorites.removed_message'
+                                        .tr()
+                                        .replaceAll('{{verse}}',
+                                            devocional.versiculo))),
                               );
                             },
                           ),
