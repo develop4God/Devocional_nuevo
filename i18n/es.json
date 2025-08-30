@@ -104,9 +104,16 @@
     "audio_settings": "Configuración de Audio",
     "enable_tts": "Habilitar texto a voz",
     "tts_speed": "Velocidad de lectura",
-    "tts_voice": "Voz del asistente",
+    "tts_voice": "Seleccione voz",
     "select_voice": "Seleccionar voz",
     "voice_changed": "Voz cambiada exitosamente",
+    "language_change_dialog_title": "Descargar y Reiniciar",
+    "language_change_dialog_message": "Para completar el cambio de idioma a {language}, es necesario descargar el contenido devocional y la aplicación se reiniciará. ¿Deseas continuar?",
+    "language_change_confirm": "Descargar y Reiniciar",
+    "language_change_cancel": "Cancelar",
+    "language_change_downloading": "Descargando contenido en {language}...",
+    "language_change_error": "Error al descargar contenido para {language}. Por favor intenta más tarde.",
+    "language_change_success": "Idioma cambiado a {language}. La aplicación se reiniciará para aplicar los cambios.",
     "notifications": "Notificaciones",
     "enable_notifications": "Habilitar notificaciones",
     "notification_time": "Hora de notificación",
@@ -121,6 +128,14 @@
     "paypal_launch_error": "No se pudo abrir PayPal. El sistema no pudo lanzar la URL.",
     "paypal_error": "Error al abrir PayPal: {error}",
     "paypal_no_app_error": "No se pudo abrir PayPal. Asegúrate de tener un navegador web o la app de PayPal instalada."
+  },
+  "application_language": {
+    "title": "Idioma de la Aplicación",
+    "description": "Selecciona y descarga el idioma que deseas usar para la aplicación. Cada idioma incluye contenido devocional para el año.",
+    "current_language": "Idioma actual",
+    "download_failed": "Error al descargar el contenido del idioma. Por favor, inténtalo de nuevo.",
+    "downloading": "Descargando...",
+    "downloaded": "Descargado"
   },
   "navigation": {
     "home": "Inicio",

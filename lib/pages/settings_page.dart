@@ -2,6 +2,7 @@ import 'dart:developer' as developer;
 
 import 'package:devocional_nuevo/extensions/string_extensions.dart';
 import 'package:devocional_nuevo/pages/about_page.dart';
+import 'package:devocional_nuevo/pages/application_language_page.dart';
 import 'package:devocional_nuevo/pages/contact_page.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:devocional_nuevo/providers/localization_provider.dart';
@@ -162,68 +163,48 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 20),
 
             // Language Selection Section
-            Row(
-              children: [
-                Icon(Icons.language, color: colorScheme.primary),
-                const SizedBox(width: 10),
-                Text(
-                  'settings.language'.tr(),
-                  style: textTheme.bodyMedium?.copyWith(
-                    fontSize: 16,
-                    color: colorScheme.onSurface,
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ApplicationLanguagePage(),
                   ),
-                ),
-                const SizedBox(width: 10),
-                DropdownButton<String>(
-                  value: localizationProvider.currentLocale.languageCode,
-                  items: Constants.supportedLanguages.entries.map((entry) {
-                    return DropdownMenuItem(
-                      value: entry.key,
-                      child: Text(entry.value),
-                    );
-                  }).toList(),
-                  onChanged: (String? newLanguage) async {
-                    if (newLanguage != null && mounted) {
-                      // Capture context before async gap
-                      final currentContext = context;
-                      await localizationProvider.changeLanguage(newLanguage);
-
-                      // Update DevocionalProvider with new language
-                      if (mounted) {
-                        // ignore: use_build_context_synchronously
-                        final devocionalProvider =
-                            // ignore: use_build_context_synchronously
-                            Provider.of<DevocionalProvider>(currentContext,
-                                listen: false);
-                        devocionalProvider.setSelectedLanguage(newLanguage);
-
-                        // Automatically set the default version for the new language
-                        final defaultVersion =
-                            Constants.defaultVersionByLanguage[newLanguage];
-                        if (defaultVersion != null) {
-                          devocionalProvider.setSelectedVersion(defaultVersion);
-                        }
-
-                        developer.log('Language changed to: $newLanguage',
-                            name: 'SettingsPage');
-                        developer.log('Version changed to: $defaultVersion',
-                            name: 'SettingsPage');
-
-                        // Reload TTS settings for new language
-                        await _loadTtsSettings();
-
-                        // ignore: use_build_context_synchronously
-                        ScaffoldMessenger.of(currentContext).showSnackBar(
-                          SnackBar(
-                            content: Text('settings.language_changed'.tr()),
-                            duration: const Duration(seconds: 2),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+                child: Row(
+                  children: [
+                    Icon(Icons.language, color: colorScheme.primary),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'settings.language'.tr(),
+                            style: textTheme.bodyMedium?.copyWith(
+                              fontSize: 16,
+                              color: colorScheme.onSurface,
+                            ),
                           ),
-                        );
-                      }
-                    }
-                  },
+                          const SizedBox(height: 4),
+                          Text(
+                            Constants.supportedLanguages[localizationProvider.currentLocale.languageCode] ?? 
+                                localizationProvider.currentLocale.languageCode,
+                            style: textTheme.bodySmall?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant),
+                  ],
                 ),
-              ],
+              ),
             ),
 
             const SizedBox(height: 20),

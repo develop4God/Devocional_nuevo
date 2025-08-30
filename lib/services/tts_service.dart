@@ -5,6 +5,7 @@ import 'dart:io' show Platform;
 import 'package:devocional_nuevo/models/devocional_model.dart';
 import 'package:devocional_nuevo/services/localization_service.dart';
 import 'package:devocional_nuevo/services/spiritual_stats_service.dart';
+import 'package:devocional_nuevo/services/tts/bible_text_formatter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -404,30 +405,9 @@ class TtsService {
 
   // --- Normalización avanzada de referencia bíblica ---
   /// Formatea dinámicamente los libros con ordinal si comienza con 1, 2, 3
+  /// Usa el contexto de idioma actual para formatear apropiadamente
   String formatBibleBook(String reference) {
-    final exp =
-        RegExp(r'^([123])\s+([A-Za-záéíóúÁÉÍÓÚñÑ]+)', caseSensitive: false);
-    final match = exp.firstMatch(reference.trim());
-    if (match != null) {
-      final number = match.group(1)!;
-      final book = match.group(2)!;
-      String ordinal;
-      switch (number) {
-        case '1':
-          ordinal = 'Primera de';
-          break;
-        case '2':
-          ordinal = 'Segunda de';
-          break;
-        case '3':
-          ordinal = 'Tercera de';
-          break;
-        default:
-          ordinal = '';
-      }
-      return reference.replaceFirst(exp, '$ordinal $book');
-    }
-    return reference;
+    return BibleTextFormatter.formatBibleBook(reference, _currentLanguage);
   }
 
   String _normalizeTtsText(String text, [String? language, String? version]) {
@@ -1441,6 +1421,7 @@ class TtsService {
     if (!_isInitialized) await _initialize();
     try {
       final voices = await _flutterTts.getVoices;
+
       if (voices is List<dynamic>) {
         return voices.map((voice) {
           if (voice is Map) {
@@ -1459,10 +1440,116 @@ class TtsService {
   }
 
   Future<List<String>> getVoicesForLanguage(String language) async {
-    final allVoices = await getVoices();
-    final targetLocale = _getLocaleForLanguage(language);
+    if (!_isInitialized) await _initialize();
 
-    return allVoices.where((voice) => voice.contains(targetLocale)).toList();
+    final targetLocale = _getLocaleForLanguage(language);
+    debugPrint('🎯 Looking for voices with locale: $targetLocale');
+
+    try {
+      final rawVoices = await _flutterTts.getVoices;
+
+      if (rawVoices is List<dynamic>) {
+        final filteredRawVoices = rawVoices.where((voice) {
+          if (voice is Map) {
+            final locale = voice['locale'] as String? ?? '';
+            return locale.contains(targetLocale);
+          }
+          return false;
+        }).toList();
+
+        debugPrint(
+            '🔍 Found ${filteredRawVoices.length} voices for $targetLocale');
+        debugPrint('🎤 FINAL VOICES LIST: $filteredRawVoices');
+
+        return filteredRawVoices.map((voice) {
+          final name = voice['name'] as String? ?? '';
+          final locale = voice['locale'] as String? ?? '';
+          final cleanName = _cleanVoiceName(name);
+          final genderInfo = _getVoiceGenderInfo(name);
+          final displayName = genderInfo.isNotEmpty ? '$cleanName ($genderInfo)' : cleanName;
+          return '$displayName ($locale)';
+        }).toList()
+          ..sort((a, b) {
+            // Prioritize US voices by putting them at the top
+            final aIsUS = a.contains('-US') || a.contains('_US');
+            final bIsUS = b.contains('-US') || b.contains('_US');
+            
+            if (aIsUS && !bIsUS) return -1;
+            if (!aIsUS && bIsUS) return 1;
+            
+            // Secondary sort: prioritize female voices, then male voices
+            final aIsFemale = a.contains('♀') || a.contains('Female');
+            final bIsFemale = b.contains('♀') || b.contains('Female');
+            final aIsMale = a.contains('♂') || a.contains('Male');
+            final bIsMale = b.contains('♂') || b.contains('Male');
+            
+            if (aIsFemale && !bIsFemale) return -1;
+            if (!aIsFemale && bIsFemale) return 1;
+            if (aIsMale && !bIsMale) return -1;
+            if (!aIsMale && bIsMale) return 1;
+            
+            // Tertiary sort by name for consistent ordering
+            return a.compareTo(b);
+          });
+      }
+
+      return [];
+    } catch (e) {
+      debugPrint('Error getting voices for $language: $e');
+      return [];
+    }
+  }
+
+  String _getVoiceGenderInfo(String voiceName) {
+    final name = voiceName.toLowerCase();
+    
+    // Common female voice names across platforms
+    const femaleNames = [
+      'samantha', 'anna', 'karen', 'moira', 'tessa', 'veena', 'zuzana',
+      'carolina', 'silvia', 'monica', 'lucia', 'sofia', 'paloma',
+      'maria', 'carmen', 'elena', 'isabel', 'fernanda', 'ines',
+      'alice', 'amelie', 'marie', 'celine', 'claudia', 'audrey',
+      'susan', 'victoria', 'kate', 'zira', 'hazel', 'heather',
+      'cortana', 'aria', 'eva', 'joanna', 'kimberly', 'salli',
+      'nicole', 'emma', 'amy', 'elly', 'chloe', 'olivia',
+      'bianca', 'carla', 'vitoria', 'female'
+    ];
+    
+    // Common male voice names across platforms
+    const maleNames = [
+      'alex', 'daniel', 'diego', 'carlos', 'jorge', 'juan',
+      'thomas', 'ricky', 'fred', 'david', 'mark', 'richard',
+      'aaron', 'albert', 'brad', 'bruce', 'ralph', 'kevin',
+      'lee', 'paul', 'reed', 'alan', 'gordon', 'henry',
+      'james', 'john', 'malcolm', 'michael', 'nathan', 'oliver',
+      'ryan', 'sean', 'william', 'antonio', 'francisco',
+      'ricardo', 'miguel', 'pedro', 'jose', 'felipe',
+      'sebastiao', 'male'
+    ];
+    
+    // Check for explicit gender indicators first
+    if (name.contains('female') || name.contains('woman')) {
+      return '♀ Female';
+    }
+    if (name.contains('male') || name.contains('man')) {
+      return '♂ Male';
+    }
+    
+    // Check against known names
+    for (final femaleName in femaleNames) {
+      if (name.contains(femaleName)) {
+        return '♀ Female';
+      }
+    }
+    
+    for (final maleName in maleNames) {
+      if (name.contains(maleName)) {
+        return '♂ Male';
+      }
+    }
+    
+    // Return empty string if gender cannot be determined
+    return '';
   }
 
   String _getLocaleForLanguage(String language) {
@@ -1478,6 +1565,38 @@ class TtsService {
       default:
         return 'es-ES';
     }
+  }
+
+  String _cleanVoiceName(String voiceName) {
+    // Remove common prefixes and suffixes to make names more user-friendly
+    String cleanName = voiceName;
+    
+    // Remove platform-specific prefixes
+    cleanName = cleanName.replaceAll(RegExp(r'^com\.apple\.ttsbundle\.'), '');
+    cleanName = cleanName.replaceAll(RegExp(r'^com\.apple\.speech\.synthesis\.voice\.'), '');
+    cleanName = cleanName.replaceAll(RegExp(r'^microsoft-'), '');
+    cleanName = cleanName.replaceAll(RegExp(r'^google-'), '');
+    
+    // Replace underscores and dashes with spaces for readability
+    cleanName = cleanName.replaceAll('_', ' ');
+    cleanName = cleanName.replaceAll('-', ' ');
+    
+    // Capitalize first letter of each word
+    cleanName = cleanName.split(' ').map((word) {
+      if (word.isEmpty) return word;
+      return word[0].toUpperCase() + word.substring(1).toLowerCase();
+    }).join(' ');
+    
+    // Handle common voice name patterns
+    cleanName = cleanName.replaceAll(RegExp(r'\bVoice\b'), '');
+    cleanName = cleanName.replaceAll(RegExp(r'\bTts\b'), '');
+    cleanName = cleanName.replaceAll(RegExp(r'\bSpeech\b'), '');
+    
+    // Remove extra spaces
+    cleanName = cleanName.replaceAll(RegExp(r'\s+'), ' ').trim();
+    
+    // If the name is empty after cleaning, return the original
+    return cleanName.isEmpty ? voiceName : cleanName;
   }
 
   Future<void> setVoice(Map<String, String> voice) async {

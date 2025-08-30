@@ -537,8 +537,12 @@ class DevocionalProvider with ChangeNotifier {
       debugPrint('🔍 Language: $_selectedLanguage, Version: $_selectedVersion');
       final response = await http.get(Uri.parse(url));
 
-      if (response.statusCode != 200) {
-        throw Exception('Error al descargar: ${response.statusCode}');
+      if (response.statusCode == 404) {
+        debugPrint('❌ File not found (404): $_selectedLanguage $_selectedVersion year $year');
+        throw Exception('File not available for $_selectedLanguage $_selectedVersion year $year');
+      } else if (response.statusCode != 200) {
+        debugPrint('❌ HTTP Error ${response.statusCode}: ${response.reasonPhrase}');
+        throw Exception('HTTP Error ${response.statusCode}: ${response.reasonPhrase}');
       }
 
       final Map<String, dynamic> jsonData = json.decode(response.body);
@@ -553,11 +557,11 @@ class DevocionalProvider with ChangeNotifier {
       await file.writeAsString(response.body);
 
       _downloadStatus = 'Devocionales del año $year descargados exitosamente';
-      debugPrint('File saved to: $filePath');
+      debugPrint('✅ File saved to: $filePath');
       return true;
     } catch (e) {
       _downloadStatus = 'Error al descargar devocionales: $e';
-      debugPrint('Error in downloadAndStoreDevocionales: $e');
+      debugPrint('❌ Error in downloadAndStoreDevocionales: $e');
       return false;
     } finally {
       _isDownloading = false;
@@ -609,7 +613,65 @@ class DevocionalProvider with ChangeNotifier {
 
   Future<bool> downloadCurrentYearDevocionales() async {
     final int currentYear = DateTime.now().year;
-    return await downloadAndStoreDevocionales(currentYear);
+    
+    // Try current year first
+    bool success = await downloadAndStoreDevocionales(currentYear);
+    
+    // If current year fails, try fallback logic for missing versions
+    if (!success) {
+      success = await _tryVersionFallback(currentYear);
+    }
+    
+    return success;
+  }
+
+  Future<bool> _tryVersionFallback(int year) async {
+    debugPrint('🔄 Trying version fallback for $_selectedLanguage $_selectedVersion');
+    
+    // Get available versions for the language
+    final availableVersions = Constants.bibleVersionsByLanguage[_selectedLanguage] ?? [];
+    debugPrint('🔄 Available versions for $_selectedLanguage: $availableVersions');
+    
+    // Try other versions for the same language, prioritizing the default version first
+    final defaultVersion = Constants.defaultVersionByLanguage[_selectedLanguage];
+    final versionsToTry = <String>[];
+    
+    // Add default version first if it's different from current
+    if (defaultVersion != null && defaultVersion != _selectedVersion) {
+      versionsToTry.add(defaultVersion);
+    }
+    
+    // Add other versions
+    for (final version in availableVersions) {
+      if (version != _selectedVersion && version != defaultVersion) {
+        versionsToTry.add(version);
+      }
+    }
+    
+    debugPrint('🔄 Versions to try in order: $versionsToTry');
+    
+    for (final version in versionsToTry) {
+      debugPrint('🔄 Trying fallback version: $version');
+      final originalVersion = _selectedVersion;
+      _selectedVersion = version;
+      
+      final success = await downloadAndStoreDevocionales(year);
+      if (success) {
+        debugPrint('✅ Fallback successful with version: $version');
+        // Update stored version preference
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('selected_version_$_selectedLanguage', version);
+        await prefs.setString('selectedVersion', version); // Also update global preference
+        notifyListeners();
+        return true;
+      }
+      
+      // Restore original version if fallback failed
+      _selectedVersion = originalVersion;
+    }
+    
+    debugPrint('❌ All version fallbacks failed for $_selectedLanguage');
+    return false;
   }
 
   Future<bool> downloadDevocionalesForYear(int year) async {
