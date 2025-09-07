@@ -963,6 +963,13 @@ class SpiritualStatsService {
     await prefs.remove(_lastReadDevocionalKey);
     await prefs.remove(_lastReadTimeKey);
 
+    // Clear review-related preferences
+    await prefs.remove(_userRatedAppKey);
+    await prefs.remove(_neverAskReviewKey);
+    await prefs.remove(_remindLaterDateKey);
+    await prefs.remove(_reviewRequestCountKey);
+    await prefs.remove(_lastReviewRequestKey);
+
     // Limpiar backups
     try {
       final directory = await getApplicationDocumentsDirectory();
