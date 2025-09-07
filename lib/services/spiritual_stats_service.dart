@@ -3,16 +3,26 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/spiritual_stats_model.dart';
+import '../services/localization_service.dart';
+import '../extensions/string_extensions.dart';
 
 class SpiritualStatsService {
   static const String _statsKey = 'spiritual_stats';
   static const String _readDatesKey = 'read_dates';
   static const String _lastReadDevocionalKey = 'last_read_devocional';
   static const String _lastReadTimeKey = 'last_read_time';
+
+  // Review-related keys
+  static const String _userRatedAppKey = 'user_rated_app';
+  static const String _neverAskReviewKey = 'never_ask_review_again';
+  static const String _remindLaterDateKey = 'review_remind_later_date';
+  static const String _reviewRequestCountKey = 'review_request_count';
+  static const String _lastReviewRequestKey = 'last_review_request_date';
 
   // Configuración para JSON backup
   static const String _jsonBackupEnabledKey = 'json_backup_enabled';
@@ -278,6 +288,7 @@ class SpiritualStatsService {
     int? favoritesCount,
     int readingTimeSeconds = 0,
     double scrollPercentage = 0.0,
+    BuildContext? context,
   }) async {
     final prefs = await SharedPreferences.getInstance();
     final stats = await getStats();
@@ -348,7 +359,215 @@ class SpiritualStatsService {
 
     debugPrint(
         'Recorded devotional for statistics: $devocionalId, total: ${updatedStats.totalDevocionalesRead}');
+
+    // Check if we should show review request
+    if (context != null &&
+        await shouldShowReviewRequest(updatedStats.totalDevocionalesRead)) {
+      // Schedule review dialog to show after frame is rendered
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) {
+          showReviewDialog(context);
+        }
+      });
+    }
+
     return updatedStats;
+  }
+
+  /// Check if we should show review request based on conditions
+  Future<bool> shouldShowReviewRequest(int totalDevocionalesRead) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // Check if user already rated app or said never ask again
+    final userRated = prefs.getBool(_userRatedAppKey) ?? false;
+    final neverAsk = prefs.getBool(_neverAskReviewKey) ?? false;
+
+    if (userRated || neverAsk) {
+      debugPrint('Review request: User already rated or said never ask again');
+      return false;
+    }
+
+    // Check if we've reached a milestone
+    final milestones = [5, 25, 50, 100, 200, 300, 500];
+    if (!milestones.contains(totalDevocionalesRead)) {
+      debugPrint(
+          'Review request: Not at milestone (total: $totalDevocionalesRead)');
+      return false;
+    }
+
+    // Check if 90+ days have passed since last request
+    final lastRequestDate = prefs.getInt(_lastReviewRequestKey);
+    if (lastRequestDate != null) {
+      final daysSinceLastRequest =
+          (DateTime.now().millisecondsSinceEpoch ~/ 1000 - lastRequestDate) /
+              (24 * 3600);
+      if (daysSinceLastRequest < 90) {
+        debugPrint(
+            'Review request: Only ${daysSinceLastRequest.toStringAsFixed(1)} days since last request');
+        return false;
+      }
+    }
+
+    // Check if user chose "remind later" and 30+ days have passed
+    final remindLaterDate = prefs.getInt(_remindLaterDateKey);
+    if (remindLaterDate != null) {
+      final daysSinceRemindLater =
+          (DateTime.now().millisecondsSinceEpoch ~/ 1000 - remindLaterDate) /
+              (24 * 3600);
+      if (daysSinceRemindLater < 30) {
+        debugPrint(
+            'Review request: Only ${daysSinceRemindLater.toStringAsFixed(1)} days since remind later');
+        return false;
+      }
+    }
+
+    debugPrint('Review request: All conditions met, showing review dialog');
+    return true;
+  }
+
+  /// Show review dialog with multilingual support
+  Future<void> showReviewDialog(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // Record this request attempt
+    await prefs.setInt(
+        _lastReviewRequestKey, DateTime.now().millisecondsSinceEpoch ~/ 1000);
+
+    // Increment request count
+    final requestCount = prefs.getInt(_reviewRequestCountKey) ?? 0;
+    await prefs.setInt(_reviewRequestCountKey, requestCount + 1);
+
+    if (!context.mounted) return;
+
+    final currentLanguage =
+        LocalizationService.instance.currentLocale.languageCode;
+    debugPrint('Review request: Current language=$currentLanguage');
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) => AlertDialog(
+        title: Row(
+          children: [
+            const Text('🙏'),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'review.title'.tr(),
+                style: Theme.of(dialogContext).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          'review.message'.tr(),
+          style: Theme.of(dialogContext).textTheme.bodyMedium,
+        ),
+        actions: [
+          // First button: "Yes, I want to share"
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.of(dialogContext).pop();
+              debugPrint('Review request: User selected "Yes, want to share"');
+              await _markUserRated();
+              if (context.mounted) {
+                await requestInAppReview(context);
+              }
+            },
+            child: Text('review.button_share'.tr()),
+          ),
+          // Second button: "Already rated it"
+          TextButton(
+            onPressed: () async {
+              Navigator.of(dialogContext).pop();
+              debugPrint('Review request: User selected "Already rated"');
+              await _markUserRated();
+            },
+            child: Text('review.button_already_rated'.tr()),
+          ),
+          // Third button: "Not now"
+          TextButton(
+            onPressed: () async {
+              Navigator.of(dialogContext).pop();
+              debugPrint('Review request: User selected "Not now"');
+              await _setRemindLater();
+            },
+            child: Text('review.button_not_now'.tr()),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Request in-app review with fallback to Play Store
+  Future<void> requestInAppReview(BuildContext context) async {
+    try {
+      final InAppReview inAppReview = InAppReview.instance;
+
+      if (await inAppReview.isAvailable()) {
+        debugPrint('In-App Review: Available, requesting review');
+        await inAppReview.requestReview();
+      } else {
+        debugPrint('In-App Review: Not available, showing fallback dialog');
+        if (context.mounted) {
+          await _showPlayStoreFallback(context);
+        }
+      }
+    } catch (e) {
+      debugPrint('In-App Review: Error requesting review: $e');
+      if (context.mounted) {
+        await _showPlayStoreFallback(context);
+      }
+    }
+  }
+
+  /// Show fallback dialog to redirect to Play Store
+  Future<void> _showPlayStoreFallback(BuildContext context) async {
+    if (!context.mounted) return;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) => AlertDialog(
+        title: Text('review.fallback_title'.tr()),
+        content: Text('review.fallback_message'.tr()),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text('review.fallback_cancel'.tr()),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.of(dialogContext).pop();
+              try {
+                final InAppReview inAppReview = InAppReview.instance;
+                await inAppReview.openStoreListing();
+                debugPrint('In-App Review: Opened Play Store listing');
+              } catch (e) {
+                debugPrint('In-App Review: Error opening Play Store: $e');
+              }
+            },
+            child: Text('review.fallback_go'.tr()),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Mark that user has rated the app
+  Future<void> _markUserRated() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_userRatedAppKey, true);
+    debugPrint('Review request: Marked user as rated');
+  }
+
+  /// Set remind later date (30 days from now)
+  Future<void> _setRemindLater() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(
+        _remindLaterDateKey, DateTime.now().millisecondsSinceEpoch ~/ 1000);
+    debugPrint('Review request: Set remind later for 30 days');
   }
 
   Future<SpiritualStats> recordDevotionalHeard({

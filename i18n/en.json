@@ -355,5 +355,16 @@
   "bubble_constants": {
     "new_feature": "New",
     "updated_feature": "Update"
+  },
+  "review": {
+    "title": "Thank you for your faithfulness 🙏",
+    "message": "Your testimony can bless others.\n\nWould you like to share your experience by rating the app?\n\nGod bless you.",
+    "button_share": "Yes, I want to share",
+    "button_already_rated": "Already rated it",
+    "button_not_now": "Not now",
+    "fallback_title": "Go to Google Play",
+    "fallback_message": "Would you like to rate the app on Google Play Store?",
+    "fallback_go": "Go to Play Store",
+    "fallback_cancel": "Cancel"
   }
 }

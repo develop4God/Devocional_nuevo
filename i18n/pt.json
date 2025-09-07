@@ -354,5 +354,16 @@
   "bubble_constants": {
     "new_feature": "Novo",
     "updated_feature": "Atualização"
+  },
+  "review": {
+    "title": "Obrigado por sua constância 🙏",
+    "message": "Seu testemunho pode abençoar outros.\n\nGostaria de compartilhar sua experiência avaliando o app?\n\nDeus te abençoe.",
+    "button_share": "Sim, quero compartilhar",
+    "button_already_rated": "Já avaliei",
+    "button_not_now": "Agora não",
+    "fallback_title": "Ir ao Google Play",
+    "fallback_message": "Gostaria de avaliar o app na Google Play Store?",
+    "fallback_go": "Ir ao Play Store",
+    "fallback_cancel": "Cancelar"
   }
 }

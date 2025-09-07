@@ -124,7 +124,7 @@ class DevocionalesTracking {
     _autoCompletedDevocionals.add(devocionalId);
 
     // Registrar la lectura inmediatamente
-    devocionalProvider.recordDevocionalRead(devocionalId);
+    devocionalProvider.recordDevocionalRead(devocionalId, _context);
 
     // FORZAR ACTUALIZACIÓN INMEDIATA DE LA UI
     devocionalProvider.forceUIUpdate();
@@ -191,7 +191,7 @@ class DevocionalesTracking {
       listen: false,
     );
 
-    devocionalProvider.recordDevocionalRead(devocionalId);
+    devocionalProvider.recordDevocionalRead(devocionalId, _context);
     debugPrint('📊 Manual reading recorded for: $devocionalId');
   }
 

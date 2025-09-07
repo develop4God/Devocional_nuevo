@@ -232,7 +232,8 @@ class DevocionalProvider with ChangeNotifier {
     _readingTracker.resume();
   }
 
-  Future<void> recordDevocionalRead(String devocionalId) async {
+  Future<void> recordDevocionalRead(String devocionalId,
+      [BuildContext? context]) async {
     final trackingData = _readingTracker.finalize(devocionalId);
 
     try {
@@ -241,6 +242,7 @@ class DevocionalProvider with ChangeNotifier {
         favoritesCount: _favoriteDevocionales.length,
         readingTimeSeconds: trackingData.readingTime,
         scrollPercentage: trackingData.scrollPercentage,
+        context: context, // Pass context for review dialog
       );
 
       debugPrint('✅ Recorded devotional read: $devocionalId');

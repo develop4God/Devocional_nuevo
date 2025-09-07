@@ -355,5 +355,16 @@
   "bubble_constants": {
     "new_feature": "Nouveau",
     "updated_feature": "Mise à jour"
+  },
+  "review": {
+    "title": "Merci pour votre constance 🙏",
+    "message": "Votre témoignage peut bénir d'autres.\n\nAimeriez-vous partager votre expérience en notant l'app?\n\nQue Dieu vous bénisse.",
+    "button_share": "Oui, je veux partager",
+    "button_already_rated": "Déjà noté",
+    "button_not_now": "Pas maintenant",
+    "fallback_title": "Aller sur Google Play",
+    "fallback_message": "Aimeriez-vous noter l'app sur Google Play Store?",
+    "fallback_go": "Aller sur Play Store",
+    "fallback_cancel": "Annuler"
   }
 }
