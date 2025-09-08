@@ -428,6 +428,76 @@ class DevocionalProvider with ChangeNotifier {
       _favoriteDevocionales.map((devocional) => devocional.toJson()).toList(),
     );
     await prefs.setString('favorites', favoritesJson);
+    
+    // Also create a JSON backup file for favorites if it doesn't exist
+    await _createFavoritesBackupIfNeeded();
+  }
+
+  /// Create JSON backup file for favorites if it doesn't exist
+  Future<void> _createFavoritesBackupIfNeeded() async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final backupFile = File('${directory.path}/favorites_backup.json');
+      
+      // Only create if file doesn't exist or is outdated
+      if (!await backupFile.exists()) {
+        await _createFavoritesBackup();
+      }
+    } catch (e) {
+      debugPrint('Error checking favorites backup: $e');
+    }
+  }
+
+  /// Create JSON backup file for favorites
+  Future<void> _createFavoritesBackup() async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final backupFile = File('${directory.path}/favorites_backup.json');
+      
+      final backupData = {
+        'version': '1.0.0',
+        'backup_type': 'favorites',
+        'created_at': DateTime.now().toIso8601String(),
+        'favorites': _favoriteDevocionales.map((d) => d.toJson()).toList(),
+        'count': _favoriteDevocionales.length,
+      };
+
+      await backupFile.writeAsString(
+        const JsonEncoder.withIndent('  ').convert(backupData),
+      );
+
+      debugPrint('Favorites backup created: ${backupFile.path}');
+    } catch (e) {
+      debugPrint('Error creating favorites backup: $e');
+    }
+  }
+
+  /// Validate favorites backup and create if missing
+  Future<bool> validateFavoritesBackup() async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final backupFile = File('${directory.path}/favorites_backup.json');
+      
+      if (!await backupFile.exists()) {
+        await _createFavoritesBackup();
+        return true;
+      }
+      
+      // Validate backup file structure
+      final content = await backupFile.readAsString();
+      final data = json.decode(content);
+      
+      if (data['favorites'] == null || data['version'] == null) {
+        debugPrint('Invalid favorites backup, recreating...');
+        await _createFavoritesBackup();
+        return true;
+      }
+      
+      return true;
+    } catch (e) {
+      debugPrint('Error validating favorites backup: $e');
+      return false;
+    }
   }
 
   bool isFavorite(Devocional devocional) {
