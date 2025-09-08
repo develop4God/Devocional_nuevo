@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -222,7 +221,7 @@ class GoogleDriveBackupService {
 
     try {
       // Search for existing folder
-      final query = "name='$_appFolderName' and mimeType='application/vnd.google-apps.folder' and trashed=false";
+      const query = "name='$_appFolderName' and mimeType='application/vnd.google-apps.folder' and trashed=false";
       final fileList = await _driveApi!.files.list(q: query);
       
       if (fileList.files != null && fileList.files!.isNotEmpty) {

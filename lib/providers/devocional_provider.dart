@@ -150,6 +150,10 @@ class DevocionalProvider with ChangeNotifier {
           savedVersion.isNotEmpty ? savedVersion : defaultVersion;
 
       await _loadFavorites();
+      
+      // Validate and create favorites backup if needed
+      await validateFavoritesBackup();
+      
       await _loadInvitationDialogPreference();
       await _fetchAllDevocionalesForLanguage();
     } catch (e) {
