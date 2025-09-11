@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "758036195328",
+    "project_id": "devocional-app",
+    "storage_bucket": "devocional-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:758036195328:android:97498694156e00656450e5",
+        "android_client_info": {
+          "package_name": "com.develop4god.devocional_nuevo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "758036195328-ngh8slj7ps17fiihu78hrms7mr8v9r1t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.develop4god.devocional_nuevo",
+            "certificate_hash": "f0cb4f9f107fd56db12985b5c272b96dc10dff98"
+          }
+        },
+        {
+          "client_id": "758036195328-nqj5525rujqcta736juokvdonh4eh1tg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDU9pzT5qOFrsySm5Bs-Yzyw74z5Q4a8g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "758036195328-nqj5525rujqcta736juokvdonh4eh1tg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "758036195328-0t1r5ct9v4viufkjos5b2krm3ac2vvcc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.devocionalNuevo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
