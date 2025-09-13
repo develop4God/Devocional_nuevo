@@ -7,6 +7,9 @@ class LocalizationProvider extends ChangeNotifier {
 
   Locale get currentLocale => _localizationService.currentLocale;
 
+  /// Get current language code
+  String get currentLanguage => _localizationService.currentLocale.languageCode;
+
   List<Locale> get supportedLocales => LocalizationService.supportedLocales;
 
   /// Initialize localization

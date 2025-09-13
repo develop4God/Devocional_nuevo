@@ -1,12 +1,15 @@
 import 'dart:developer' as developer;
 
 import 'package:devocional_nuevo/blocs/prayer_bloc.dart';
+import 'package:devocional_nuevo/blocs/chat/chat_bloc.dart';
+import 'package:devocional_nuevo/blocs/chat/chat_event.dart';
 import 'package:devocional_nuevo/controllers/audio_controller.dart';
 import 'package:devocional_nuevo/pages/devocionales_page.dart';
 import 'package:devocional_nuevo/pages/settings_page.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:devocional_nuevo/providers/localization_provider.dart';
 import 'package:devocional_nuevo/providers/theme_provider.dart';
+import 'package:devocional_nuevo/services/gemini_chat_service.dart';
 import 'package:devocional_nuevo/services/notification_service.dart';
 import 'package:devocional_nuevo/services/spiritual_stats_service.dart';
 import 'package:devocional_nuevo/splash_screen.dart';
@@ -16,6 +19,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -77,6 +81,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void main() async {
   developer.log('App: Función main() iniciada.', name: 'MainApp');
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Load environment variables
+  await dotenv.load(fileName: ".env");
+  
   await Firebase.initializeApp();
 
   // Configurar el manejador de mensajes FCM en segundo plano
@@ -91,6 +99,12 @@ void main() async {
         ChangeNotifierProvider(create: (context) => LocalizationProvider()),
         ChangeNotifierProvider(create: (context) => DevocionalProvider()),
         BlocProvider(create: (context) => PrayerBloc()),
+        BlocProvider<ChatBloc>(
+          create: (context) => ChatBloc(
+            GeminiChatService(),
+            context.read<LocalizationProvider>(),
+          )..add(LoadChatHistoryEvent()),
+        ),
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => AudioController()),
       ],
