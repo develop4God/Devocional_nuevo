@@ -4,7 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class GeminiChatService {
   static String get _apiKey => dotenv.env['GEMINI_API_KEY'] ?? '';
   late final GenerativeModel _model;
-  
+
   GeminiChatService() {
     // Configure generation settings for optimal biblical responses
     final generationConfig = GenerationConfig(
@@ -13,7 +13,7 @@ class GeminiChatService {
       topP: 0.95,
       maxOutputTokens: 1024,
     );
-    
+
     // Safety settings to allow religious content
     final safetySettings = [
       SafetySetting(HarmCategory.harassment, HarmBlockThreshold.medium),
@@ -21,7 +21,7 @@ class GeminiChatService {
       SafetySetting(HarmCategory.sexuallyExplicit, HarmBlockThreshold.medium),
       SafetySetting(HarmCategory.dangerousContent, HarmBlockThreshold.medium),
     ];
-    
+
     _model = GenerativeModel(
       model: 'gemini-2.0-flash-lite',
       apiKey: _apiKey,
@@ -29,7 +29,7 @@ class GeminiChatService {
       safetySettings: safetySettings,
     );
   }
-  
+
   Future<String> sendMessage(String userMessage, String language) async {
     try {
       final prompt = _buildPrompt(userMessage, language);
@@ -40,10 +40,11 @@ class GeminiChatService {
       throw Exception('Error communicating with Gemini: $e');
     }
   }
-  
+
   String _buildPrompt(String userMessage, String language) {
     final prompts = {
-      'es': '''Eres un asistente bíblico cristiano sabio y pastoral. Responde en español de manera clara, amorosa y edificante.
+      'es':
+          '''Eres un asistente bíblico cristiano sabio y pastoral. Responde en español de manera clara, amorosa y edificante.
       
 Directrices:
 - Usa un tono cálido y pastoral
@@ -54,8 +55,8 @@ Directrices:
 Usuario: $userMessage
 
 Responde de manera que edifique espiritualmente al usuario.''',
-
-      'en': '''You are a wise and pastoral Christian biblical assistant. Respond in English clearly, lovingly and edifyingly.
+      'en':
+          '''You are a wise and pastoral Christian biblical assistant. Respond in English clearly, lovingly and edifyingly.
 
 Guidelines:
 - Use a warm and pastoral tone
@@ -66,8 +67,8 @@ Guidelines:
 User: $userMessage
 
 Respond in a way that spiritually edifies the user.''',
-
-      'pt': '''Você é um assistente bíblico cristão sábio e pastoral. Responda em português de forma clara, amorosa e edificante.
+      'pt':
+          '''Você é um assistente bíblico cristão sábio e pastoral. Responda em português de forma clara, amorosa e edificante.
 
 Diretrizes:
 - Use um tom caloroso e pastoral
@@ -78,8 +79,8 @@ Diretrizes:
 Usuário: $userMessage
 
 Responda de forma que edifique espiritualmente o usuário.''',
-
-      'fr': '''Tu es un assistant biblique chrétien sage et pastoral. Réponds en français de manière claire, aimante et édifiante.
+      'fr':
+          '''Tu es un assistant biblique chrétien sage et pastoral. Réponds en français de manière claire, aimante et édifiante.
 
 Directives:
 - Utilise un ton chaleureux et pastoral
@@ -91,10 +92,10 @@ Utilisateur: $userMessage
 
 Réponds d'une manière qui édifie spirituellement l'utilisateur.''',
     };
-    
+
     return prompts[language] ?? prompts['es']!;
   }
-  
+
   String _getErrorMessage(String language) {
     final messages = {
       'es': 'Lo siento, no pude procesar tu pregunta en este momento.',

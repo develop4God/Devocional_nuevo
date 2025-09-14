@@ -6,7 +6,7 @@ class ChatMessage extends Equatable {
   final bool isUser;
   final DateTime timestamp;
   final List<String>? biblicalReferences;
-  
+
   const ChatMessage({
     required this.id,
     required this.content,
@@ -14,23 +14,24 @@ class ChatMessage extends Equatable {
     required this.timestamp,
     this.biblicalReferences,
   });
-  
+
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'content': content,
-    'isUser': isUser,
-    'timestamp': timestamp.toIso8601String(),
-    'biblicalReferences': biblicalReferences,
-  };
-  
+        'id': id,
+        'content': content,
+        'isUser': isUser,
+        'timestamp': timestamp.toIso8601String(),
+        'biblicalReferences': biblicalReferences,
+      };
+
   factory ChatMessage.fromJson(Map<String, dynamic> json) => ChatMessage(
-    id: json['id'],
-    content: json['content'],
-    isUser: json['isUser'],
-    timestamp: DateTime.parse(json['timestamp']),
-    biblicalReferences: json['biblicalReferences']?.cast<String>(),
-  );
-  
+        id: json['id'],
+        content: json['content'],
+        isUser: json['isUser'],
+        timestamp: DateTime.parse(json['timestamp']),
+        biblicalReferences: json['biblicalReferences']?.cast<String>(),
+      );
+
   @override
-  List<Object?> get props => [id, content, isUser, timestamp, biblicalReferences];
+  List<Object?> get props =>
+      [id, content, isUser, timestamp, biblicalReferences];
 }

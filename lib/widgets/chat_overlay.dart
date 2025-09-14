@@ -15,14 +15,14 @@ class ChatOverlay extends StatefulWidget {
 class _ChatOverlayState extends State<ChatOverlay> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  
+
   @override
   void dispose() {
     _controller.dispose();
     _scrollController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,14 +42,14 @@ class _ChatOverlayState extends State<ChatOverlay> {
             child: Row(
               children: [
                 Icon(
-                  Icons.auto_awesome, 
+                  Icons.auto_awesome,
                   color: Theme.of(context).primaryColor,
                 ),
                 const SizedBox(width: 8),
                 const Text(
                   'Biblical Assistant',
                   style: TextStyle(
-                    fontSize: 18, 
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -61,7 +61,7 @@ class _ChatOverlayState extends State<ChatOverlay> {
               ],
             ),
           ),
-          
+
           // Messages
           Expanded(
             child: BlocBuilder<ChatBloc, ChatState>(
@@ -81,10 +81,10 @@ class _ChatOverlayState extends State<ChatOverlay> {
                     ),
                   );
                 }
-                
+
                 final messages = _getMessagesFromState(state);
                 final isLoading = state is ChatLoading;
-                
+
                 return ListView.builder(
                   controller: _scrollController,
                   padding: const EdgeInsets.symmetric(vertical: 8),
@@ -124,7 +124,7 @@ class _ChatOverlayState extends State<ChatOverlay> {
               },
             ),
           ),
-          
+
           // Input area
           Container(
             padding: const EdgeInsets.all(16),
@@ -134,7 +134,7 @@ class _ChatOverlayState extends State<ChatOverlay> {
             child: BlocBuilder<ChatBloc, ChatState>(
               builder: (context, state) {
                 final isLoading = state is ChatLoading;
-                
+
                 return Row(
                   children: [
                     Expanded(
@@ -159,8 +159,8 @@ class _ChatOverlayState extends State<ChatOverlay> {
                     const SizedBox(width: 8),
                     FloatingActionButton.small(
                       onPressed: isLoading ? null : () => _sendMessage(context),
-                      backgroundColor: isLoading 
-                          ? Colors.grey[300] 
+                      backgroundColor: isLoading
+                          ? Colors.grey[300]
                           : Theme.of(context).primaryColor,
                       child: Icon(
                         Icons.send,
@@ -176,7 +176,7 @@ class _ChatOverlayState extends State<ChatOverlay> {
       ),
     );
   }
-  
+
   void _sendMessage(BuildContext context) {
     if (_controller.text.trim().isNotEmpty) {
       context.read<ChatBloc>().add(SendMessageEvent(_controller.text.trim()));
@@ -184,7 +184,7 @@ class _ChatOverlayState extends State<ChatOverlay> {
       _scrollToBottom();
     }
   }
-  
+
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
@@ -196,7 +196,7 @@ class _ChatOverlayState extends State<ChatOverlay> {
       }
     });
   }
-  
+
   List<dynamic> _getMessagesFromState(ChatState state) {
     if (state is ChatSuccess) return state.messages;
     if (state is ChatLoading) return state.messages;
