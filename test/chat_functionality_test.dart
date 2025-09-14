@@ -10,6 +10,7 @@ import 'package:devocional_nuevo/providers/localization_provider.dart';
 
 // Mock classes
 class MockGeminiChatService extends Mock implements GeminiChatService {}
+
 class MockLocalizationProvider extends Mock implements LocalizationProvider {}
 
 void main() {
@@ -21,10 +22,10 @@ void main() {
     setUp(() {
       mockChatService = MockGeminiChatService();
       mockLocalizationProvider = MockLocalizationProvider();
-      
+
       // Setup default mock returns
       when(() => mockLocalizationProvider.currentLanguage).thenReturn('es');
-      
+
       chatBloc = ChatBloc(mockChatService, mockLocalizationProvider);
     });
 
@@ -49,7 +50,8 @@ void main() {
         isA<ChatSuccess>(),
       ],
       verify: (bloc) {
-        verify(() => mockChatService.sendMessage('Test message', 'es')).called(1);
+        verify(() => mockChatService.sendMessage('Test message', 'es'))
+            .called(1);
       },
     );
 
@@ -72,7 +74,8 @@ void main() {
       build: () => chatBloc,
       act: (bloc) => bloc.add(ClearChatEvent()),
       expect: () => [
-        isA<ChatSuccess>().having((state) => state.messages, 'messages', isEmpty),
+        isA<ChatSuccess>()
+            .having((state) => state.messages, 'messages', isEmpty),
       ],
     );
   });

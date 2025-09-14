@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class ChatFloatingButton extends StatelessWidget {
   final VoidCallback onPressed;
-  
+
   const ChatFloatingButton({
-    Key? key, 
+    Key? key,
     required this.onPressed,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(

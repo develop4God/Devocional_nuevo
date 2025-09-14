@@ -3,26 +3,26 @@ import '../models/chat_message.dart';
 
 class ChatMessageWidget extends StatelessWidget {
   final ChatMessage message;
-  
+
   const ChatMessageWidget({
-    Key? key, 
+    Key? key,
     required this.message,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       child: Row(
-        mainAxisAlignment: message.isUser 
-            ? MainAxisAlignment.end 
-            : MainAxisAlignment.start,
+        mainAxisAlignment:
+            message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!message.isUser) ...[
             CircleAvatar(
               radius: 16,
-              backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+              backgroundColor:
+                  Theme.of(context).primaryColor.withValues(alpha: 0.1),
               child: Icon(
                 Icons.auto_awesome,
                 size: 18,
@@ -31,13 +31,12 @@ class ChatMessageWidget extends StatelessWidget {
             ),
             const SizedBox(width: 8),
           ],
-          
           Flexible(
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: message.isUser 
-                    ? Theme.of(context).primaryColor 
+                color: message.isUser
+                    ? Theme.of(context).primaryColor
                     : Colors.grey[100],
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -50,7 +49,6 @@ class ChatMessageWidget extends StatelessWidget {
               ),
             ),
           ),
-          
           if (message.isUser) ...[
             const SizedBox(width: 8),
             CircleAvatar(
