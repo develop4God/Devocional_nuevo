@@ -4,9 +4,9 @@ class ChatFloatingButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const ChatFloatingButton({
-    Key? key,
+    super.key,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

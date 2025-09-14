@@ -5,9 +5,9 @@ class ChatMessageWidget extends StatelessWidget {
   final ChatMessage message;
 
   const ChatMessageWidget({
-    Key? key,
+    super.key,
     required this.message,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

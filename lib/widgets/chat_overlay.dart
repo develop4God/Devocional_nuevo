@@ -6,7 +6,7 @@ import '../blocs/chat/chat_state.dart';
 import 'chat_message_widget.dart';
 
 class ChatOverlay extends StatefulWidget {
-  const ChatOverlay({Key? key}) : super(key: key);
+  const ChatOverlay({super.key});
 
   @override
   State<ChatOverlay> createState() => _ChatOverlayState();
