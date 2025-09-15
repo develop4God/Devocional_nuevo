@@ -6,7 +6,8 @@ import 'package:devocional_nuevo/pages/devocionales_page.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('smoke test: DevocionalesPage loads and drawer opens', (WidgetTester tester) async {
+  testWidgets('smoke test: DevocionalesPage loads and drawer opens',
+      (WidgetTester tester) async {
     app.main();
 
     // Espera 15 segundos para la carga inicial y splash
