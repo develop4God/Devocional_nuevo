@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../providers/theme_provider.dart';
 import '../../services/onboarding_service.dart';
 import '../backup_bloc.dart';
 import '../backup_event.dart';
@@ -14,9 +13,11 @@ import 'onboarding_models.dart';
 import 'onboarding_state.dart';
 
 /// BLoC for managing onboarding flow functionality
+/// Note: This BLoC is deprecated and maintained only for backward compatibility with tests.
+/// Use OnboardingNotifier with Riverpod instead.
+@Deprecated('Use OnboardingNotifier with Riverpod instead')
 class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
   final OnboardingService _onboardingService;
-  final ThemeProvider _themeProvider;
   final BackupBloc? _backupBloc;
 
   // Configuration persistence keys
@@ -36,10 +37,9 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
 
   OnboardingBloc({
     required OnboardingService onboardingService,
-    required ThemeProvider themeProvider,
     BackupBloc? backupBloc,
+    @Deprecated('ThemeProvider is no longer used') dynamic themeProvider,
   })  : _onboardingService = onboardingService,
-        _themeProvider = themeProvider,
         _backupBloc = backupBloc,
         super(const OnboardingInitial()) {
     // Register event handlers
@@ -271,8 +271,9 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
         configurationData: const {},
       ));
 
-      // Apply theme immediately for preview
-      await _themeProvider.setThemeFamily(event.themeFamily);
+      // Theme selection is now handled by Riverpod ThemeNotifier
+      // This is a no-op for backward compatibility
+      debugPrint('🎨 [ONBOARDING_BLOC] Theme selection deprecated - use Riverpod instead');
       debugPrint(
           '🎨 [ONBOARDING_BLOC] Tema aplicado para preview: ${event.themeFamily}');
 
