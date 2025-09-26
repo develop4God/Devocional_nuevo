@@ -18,7 +18,14 @@ final audioControllerProvider = ChangeNotifierProvider<AudioController>((ref) {
   return AudioController();
 });
 
-// Note: BackupBloc migrated to BackupNotifier in backup/backup_providers.dart
-// Note: OnboardingBloc migrated to OnboardingNotifier in onboarding/onboarding_providers.dart
-// Note: ThemeProvider migrated to ThemeNotifier in theme/theme_providers.dart
-// Note: PrayerBloc to be migrated to PrayerNotifier in future iteration
+// ✅ MIGRATED TO RIVERPOD:
+// - BackupBloc → BackupNotifier in backup/backup_providers.dart
+// - OnboardingBloc → OnboardingNotifier in onboarding/onboarding_providers.dart
+// - ThemeProvider → ThemeNotifier in theme/theme_providers.dart
+// - DevocionalesBloc → DevocionalesNotifier in devocionales/devocionales_providers.dart
+// - PrayerBloc → PrayersNotifier in prayers/prayers_providers.dart
+
+// 🔄 PENDING MIGRATION (Future iterations):
+// - LocalizationProvider → To be migrated to StateNotifier
+// - DevocionalProvider → To be migrated to StateNotifier
+// - AudioController → To be migrated to StateNotifier

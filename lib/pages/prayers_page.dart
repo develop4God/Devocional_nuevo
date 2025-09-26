@@ -1,11 +1,9 @@
 import 'package:devocional_nuevo/extensions/string_extensions.dart';
 import 'package:devocional_nuevo/models/prayer_model.dart';
-import 'package:devocional_nuevo/blocs/prayer_bloc.dart';
-import 'package:devocional_nuevo/blocs/prayer_event.dart';
-import 'package:devocional_nuevo/blocs/prayer_state.dart';
+import 'package:devocional_nuevo/providers/prayers/prayers_providers.dart';
 import 'package:devocional_nuevo/widgets/add_prayer_modal.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 /// Widget personalizado para el AppBar de la aplicación.
@@ -55,14 +53,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-class PrayersPage extends StatefulWidget {
+class PrayersPage extends ConsumerStatefulWidget {
   const PrayersPage({super.key});
 
   @override
-  State<PrayersPage> createState() => _PrayersPageState();
+  ConsumerState<PrayersPage> createState() => _PrayersPageState();
 }
 
-class _PrayersPageState extends State<PrayersPage>
+class _PrayersPageState extends ConsumerState<PrayersPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -73,7 +71,7 @@ class _PrayersPageState extends State<PrayersPage>
 
     // Trigger initial loading of prayers
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<PrayerBloc>().add(LoadPrayers());
+      ref.read(prayersProvider.notifier).loadPrayers();
     });
   }
 
@@ -117,57 +115,62 @@ class _PrayersPageState extends State<PrayersPage>
           ),
           // El contenido expandido
           Expanded(
-            child: BlocBuilder<PrayerBloc, PrayerState>(
-              builder: (context, state) {
-                if (state is PrayerLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
+            child: Consumer(
+              builder: (context, ref, child) {
+                final state = ref.watch(prayersProvider);
 
-                if (state is PrayerError) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                return state.when(
+                  initial: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  loaded: (prayers, errorMessage) {
+                    return TabBarView(
+                      controller: _tabController,
                       children: [
-                        Icon(
-                          Icons.error_outline,
-                          size: 64,
-                          color: colorScheme.error,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          state.message,
-                          style:
-                              Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                    color: colorScheme.error,
-                                  ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: () {
-                            context.read<PrayerBloc>().add(RefreshPrayers());
-                          },
-                          child: Text('prayer.retry'.tr()),
-                        ),
+                        _buildActivePrayersTab(
+                            context,
+                            prayers.where((p) => p.isActive).toList(),
+                            errorMessage),
+                        _buildAnsweredPrayersTab(
+                            context,
+                            prayers.where((p) => p.isAnswered).toList(),
+                            errorMessage),
                       ],
-                    ),
-                  );
-                }
-
-                if (state is PrayerLoaded) {
-                  return TabBarView(
-                    controller: _tabController,
-                    children: [
-                      _buildActivePrayersTab(context, state),
-                      _buildAnsweredPrayersTab(context, state),
-                    ],
-                  );
-                }
-
-                return const Center(
-                  child: CircularProgressIndicator(),
+                    );
+                  },
+                  error: (message) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            size: 64,
+                            color: colorScheme.error,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            message,
+                            style:
+                                Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                      color: colorScheme.error,
+                                    ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              ref
+                                  .read(prayersProvider.notifier)
+                                  .refreshPrayers();
+                            },
+                            child: Text('prayer.retry'.tr()),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 );
               },
             ),
@@ -184,10 +187,9 @@ class _PrayersPageState extends State<PrayersPage>
 
   Widget _buildActivePrayersTab(
     BuildContext context,
-    PrayerLoaded state,
+    List<Prayer> activePrayers,
+    String? errorMessage,
   ) {
-    final activePrayers = state.activePrayers;
-
     if (activePrayers.isEmpty) {
       return _buildEmptyState(
         context,
@@ -199,7 +201,7 @@ class _PrayersPageState extends State<PrayersPage>
 
     return RefreshIndicator(
       onRefresh: () async {
-        context.read<PrayerBloc>().add(RefreshPrayers());
+        ref.read(prayersProvider.notifier).refreshPrayers();
       },
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
@@ -209,7 +211,7 @@ class _PrayersPageState extends State<PrayersPage>
           return _buildPrayerCard(
             context,
             prayer,
-            state,
+            errorMessage,
             isActive: true,
           );
         },
@@ -219,10 +221,9 @@ class _PrayersPageState extends State<PrayersPage>
 
   Widget _buildAnsweredPrayersTab(
     BuildContext context,
-    PrayerLoaded state,
+    List<Prayer> answeredPrayers,
+    String? errorMessage,
   ) {
-    final answeredPrayers = state.answeredPrayers;
-
     if (answeredPrayers.isEmpty) {
       return _buildEmptyState(
         context,
@@ -234,7 +235,7 @@ class _PrayersPageState extends State<PrayersPage>
 
     return RefreshIndicator(
       onRefresh: () async {
-        context.read<PrayerBloc>().add(RefreshPrayers());
+        ref.read(prayersProvider.notifier).refreshPrayers();
       },
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
@@ -244,7 +245,7 @@ class _PrayersPageState extends State<PrayersPage>
           return _buildPrayerCard(
             context,
             prayer,
-            state,
+            errorMessage,
             isActive: false,
           );
         },
@@ -298,7 +299,7 @@ class _PrayersPageState extends State<PrayersPage>
   Widget _buildPrayerCard(
     BuildContext context,
     Prayer prayer,
-    PrayerLoaded state, {
+    String? errorMessage, {
     required bool isActive,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -362,13 +363,13 @@ class _PrayersPageState extends State<PrayersPage>
                       switch (value) {
                         case 'toggle_status':
                           if (isActive) {
-                            context
-                                .read<PrayerBloc>()
-                                .add(MarkPrayerAsAnswered(prayer.id));
+                            ref
+                                .read(prayersProvider.notifier)
+                                .markPrayerAsAnswered(prayer.id);
                           } else {
-                            context
-                                .read<PrayerBloc>()
-                                .add(MarkPrayerAsActive(prayer.id));
+                            ref
+                                .read(prayersProvider.notifier)
+                                .markPrayerAsActive(prayer.id);
                           }
                           break;
                         case 'edit':
@@ -540,7 +541,7 @@ class _PrayersPageState extends State<PrayersPage>
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              context.read<PrayerBloc>().add(DeletePrayer(prayer.id));
+              ref.read(prayersProvider.notifier).deletePrayer(prayer.id);
             },
             style: TextButton.styleFrom(
               foregroundColor: Colors.red,

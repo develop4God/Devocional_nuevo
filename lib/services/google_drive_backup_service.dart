@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../blocs/prayer_bloc.dart';
-import '../blocs/prayer_event.dart';
+import '../providers/prayers/prayers_providers.dart';
 import '../providers/devocional_provider.dart';
 import '../services/spiritual_stats_service.dart';
 import 'compression_service.dart';
 import 'connectivity_service.dart';
 import 'google_drive_auth_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Service for managing Google Drive backup functionality
 /// Integrates with real Google Drive API for cloud storage
@@ -743,7 +743,7 @@ class GoogleDriveBackupService {
   Future<bool> restoreExistingBackup(
     String fileId, {
     DevocionalProvider? devocionalProvider,
-    PrayerBloc? prayerBloc,
+    WidgetRef? ref,
   }) async {
     try {
       final driveApi = await _authService.getDriveApi();
@@ -796,9 +796,9 @@ class GoogleDriveBackupService {
         debugPrint('✅ DevocionalProvider notified and reloaded');
       }
 
-      if (prayerBloc != null) {
-        prayerBloc.add(RefreshPrayers());
-        debugPrint('✅ PrayerBloc notified to refresh');
+      if (ref != null) {
+        ref.read(prayersProvider.notifier).refreshPrayers();
+        debugPrint('✅ PrayersNotifier notified to refresh');
       }
 
       // Update last backup time
