@@ -1,10 +1,10 @@
 import 'package:devocional_nuevo/extensions/string_extensions.dart';
-import 'package:devocional_nuevo/providers/theme_provider.dart';
+import 'package:devocional_nuevo/providers/theme/theme_providers.dart';
 import 'package:devocional_nuevo/utils/theme_constants.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class OnboardingThemeSelectionPage extends StatefulWidget {
+class OnboardingThemeSelectionPage extends ConsumerStatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
 
@@ -15,12 +15,12 @@ class OnboardingThemeSelectionPage extends StatefulWidget {
   });
 
   @override
-  State<OnboardingThemeSelectionPage> createState() =>
+  ConsumerState<OnboardingThemeSelectionPage> createState() =>
       _OnboardingThemeSelectionPageState();
 }
 
 class _OnboardingThemeSelectionPageState
-    extends State<OnboardingThemeSelectionPage> {
+    extends ConsumerState<OnboardingThemeSelectionPage> {
   String? selectedTheme;
 
   @override
@@ -28,9 +28,9 @@ class _OnboardingThemeSelectionPageState
     super.initState();
     // Get current theme as default selection
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+      final currentThemeFamily = ref.read(currentThemeFamilyProvider);
       setState(() {
-        selectedTheme = themeProvider.currentThemeFamily;
+        selectedTheme = currentThemeFamily;
       });
     });
   }
@@ -156,10 +156,7 @@ class _OnboardingThemeSelectionPageState
                                   selectedTheme = themeKey;
                                 });
                                 // Apply theme immediately for live preview
-                                Provider.of<ThemeProvider>(
-                                  context,
-                                  listen: false,
-                                ).setThemeFamily(themeKey);
+                                ref.read(themeProvider.notifier).setThemeFamily(themeKey);
                               },
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 300),

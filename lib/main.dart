@@ -9,7 +9,7 @@ import 'package:devocional_nuevo/pages/onboarding/onboarding_flow.dart';
 import 'package:devocional_nuevo/pages/settings_page.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:devocional_nuevo/providers/localization_provider.dart';
-import 'package:devocional_nuevo/providers/theme_provider.dart';
+import 'package:devocional_nuevo/providers/theme/theme_providers.dart';
 import 'package:devocional_nuevo/services/backup_scheduler_service.dart';
 import 'package:devocional_nuevo/services/connectivity_service.dart';
 import 'package:devocional_nuevo/services/google_drive_auth_service.dart';
@@ -27,7 +27,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as provider_pkg;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -116,42 +117,43 @@ void main() async {
 
   // Lanzar runApp lo antes posible (sin inicializaciones bloqueantes)
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => LocalizationProvider()),
-        ChangeNotifierProvider(create: (context) => DevocionalProvider()),
-        BlocProvider(create: (context) => PrayerBloc()),
-        ChangeNotifierProvider(create: (context) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => AudioController()),
-        // Agregar BackupBloc
-        BlocProvider(
-          create: (context) => BackupBloc(
-            backupService: GoogleDriveBackupService(
-              authService: GoogleDriveAuthService(),
-              connectivityService: ConnectivityService(),
-              statsService: SpiritualStatsService(),
+    ProviderScope(
+      child: provider_pkg.MultiProvider(
+        providers: [
+          provider_pkg.ChangeNotifierProvider(create: (context) => LocalizationProvider()),
+          provider_pkg.ChangeNotifierProvider(create: (context) => DevocionalProvider()),
+          BlocProvider(create: (context) => PrayerBloc()),
+          provider_pkg.ChangeNotifierProvider(create: (_) => AudioController()),
+          // Agregar BackupBloc
+          BlocProvider(
+            create: (context) => BackupBloc(
+              backupService: GoogleDriveBackupService(
+                authService: GoogleDriveAuthService(),
+                connectivityService: ConnectivityService(),
+                statsService: SpiritualStatsService(),
+              ),
+              schedulerService: null, // ✅ El BLoC maneja null correctamente
+              devocionalProvider: context.read<DevocionalProvider>(),
             ),
-            schedulerService: null, // ✅ El BLoC maneja null correctamente
-            devocionalProvider: context.read<DevocionalProvider>(),
           ),
-        ),
-      ],
-      child: const MyApp(),
+        ],
+        child: const MyApp(),
+      ),
     ),
   );
 }
 
 // App principal - Siempre muestra SplashScreen primero
 // App principal - Siempre muestra SplashScreen primero
-class MyApp extends StatefulWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  ConsumerState<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
-  late Future<bool> _initializationFuture; // ← Cambiar nombre
+class _MyAppState extends ConsumerState<MyApp> {
+  late Future<bool> _initializationFuture;
 
   @override
   void initState() {
@@ -163,7 +165,7 @@ class _MyAppState extends State<MyApp> {
   Future<bool> _initializeApp() async {
     try {
       // 1. Primero inicializar localización (crítico para traducciones)
-      await Provider.of<LocalizationProvider>(context, listen: false)
+      await provider_pkg.Provider.of<LocalizationProvider>(context, listen: false)
           .initialize();
 
       developer.log(
@@ -195,13 +197,13 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    final localizationProvider = Provider.of<LocalizationProvider>(context);
+    final themeData = ref.watch(currentThemeDataProvider);
+    final localizationProvider = provider_pkg.Provider.of<LocalizationProvider>(context);
 
     return MaterialApp(
       title: 'Devocionales',
       debugShowCheckedModeBanner: false,
-      theme: themeProvider.currentTheme,
+      theme: themeData,
       navigatorKey: navigatorKey,
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       supportedLocales: localizationProvider.supportedLocales,
@@ -294,7 +296,7 @@ class _AppInitializerState extends State<AppInitializer> {
 
   Future<void> _initServices() async {
     // Get providers before any async operations
-    final localizationProvider = Provider.of<LocalizationProvider>(
+    final localizationProvider = provider_pkg.Provider.of<LocalizationProvider>(
       context,
       listen: false,
     );
@@ -424,7 +426,7 @@ class _AppInitializerState extends State<AppInitializer> {
     if (!mounted) return;
 
     try {
-      final devocionalProvider = Provider.of<DevocionalProvider>(
+      final devocionalProvider = provider_pkg.Provider.of<DevocionalProvider>(
         context,
         listen: false,
       );

@@ -3,14 +3,15 @@ import 'package:devocional_nuevo/pages/favorites_page.dart';
 import 'package:devocional_nuevo/pages/notification_config_page.dart';
 import 'package:devocional_nuevo/pages/prayers_page.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
-import 'package:devocional_nuevo/providers/theme_provider.dart';
+import 'package:devocional_nuevo/providers/theme/theme_providers.dart';
 import 'package:devocional_nuevo/utils/bubble_constants.dart';
 import 'package:devocional_nuevo/widgets/theme_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as provider_pkg;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
-class DevocionalesDrawer extends StatelessWidget {
+class DevocionalesDrawer extends ConsumerWidget {
   const DevocionalesDrawer({super.key});
 
   void _shareApp(BuildContext context) {
@@ -100,7 +101,7 @@ class DevocionalesDrawer extends StatelessWidget {
 
                         // Tu lógica real de descarga con progreso
                         final devocionalProvider =
-                            Provider.of<DevocionalProvider>(context,
+                            provider_pkg.Provider.of<DevocionalProvider>(context,
                                 listen: false);
 
                         bool success = await devocionalProvider
@@ -187,9 +188,11 @@ class DevocionalesDrawer extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final devocionalProvider = Provider.of<DevocionalProvider>(context);
-    final themeProvider = Provider.of<ThemeProvider>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final devocionalProvider = provider_pkg.Provider.of<DevocionalProvider>(context);
+    final currentThemeFamily = ref.watch(currentThemeFamilyProvider);
+    final currentBrightness = ref.watch(currentBrightnessProvider);
+    final dividerColor = ref.watch(dividerAdaptiveColorProvider);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
@@ -350,12 +353,12 @@ class DevocionalesDrawer extends StatelessWidget {
                     const SizedBox(height: 5),
                     // --- Switch modo oscuro ---
                     drawerRow(
-                      icon: themeProvider.currentBrightness == Brightness.dark
+                      icon: currentBrightness == Brightness.dark
                           ? Icons.light_mode_outlined
                           : Icons.dark_mode_outlined,
                       iconColor: colorScheme.primary,
                       label: Text(
-                        themeProvider.currentBrightness == Brightness.dark
+                        currentBrightness == Brightness.dark
                             ? 'drawer.light_mode'.tr()
                             : 'drawer.dark_mode'.tr(),
                         style: textTheme.bodyMedium?.copyWith(
@@ -364,18 +367,16 @@ class DevocionalesDrawer extends StatelessWidget {
                         ),
                       ),
                       trailing: Switch(
-                        value:
-                            themeProvider.currentBrightness == Brightness.dark,
+                        value: currentBrightness == Brightness.dark,
                         onChanged: (bool value) {
-                          themeProvider.setBrightness(
+                          ref.read(themeProvider.notifier).setBrightness(
                             value ? Brightness.dark : Brightness.light,
                           );
                         },
                       ),
                       onTap: () {
-                        final newValue =
-                            themeProvider.currentBrightness != Brightness.dark;
-                        themeProvider.setBrightness(
+                        final newValue = currentBrightness != Brightness.dark;
+                        ref.read(themeProvider.notifier).setBrightness(
                           newValue ? Brightness.dark : Brightness.light,
                         );
                       },
@@ -475,7 +476,7 @@ class DevocionalesDrawer extends StatelessWidget {
                     ),
                     Divider(
                       height: 32,
-                      color: themeProvider.dividerAdaptiveColor,
+                      color: dividerColor,
                     ),
                     // --- Selector visual de temas con icono y título a la par, y el grid debajo ---
                     Padding(
@@ -514,10 +515,10 @@ class DevocionalesDrawer extends StatelessWidget {
                           SizedBox(
                             height: 120,
                             child: ThemeSelectorCircleGrid(
-                              selectedTheme: themeProvider.currentThemeFamily,
-                              brightness: themeProvider.currentBrightness,
+                              selectedTheme: currentThemeFamily,
+                              brightness: currentBrightness,
                               onThemeChanged: (theme) {
-                                themeProvider.setThemeFamily(theme);
+                                ref.read(themeProvider.notifier).setThemeFamily(theme);
                                 Navigator.of(context).pop();
                               },
                             ),
