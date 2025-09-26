@@ -7,22 +7,24 @@ import 'package:devocional_nuevo/pages/onboarding/onboarding_backup_configuratio
 import 'package:devocional_nuevo/pages/onboarding/onboarding_complete_page.dart';
 import 'package:devocional_nuevo/pages/onboarding/onboarding_theme_selection_page.dart';
 import 'package:devocional_nuevo/pages/onboarding/onboarding_welcome_page.dart';
+import 'package:devocional_nuevo/providers/theme/theme_adapter.dart';
+import 'package:devocional_nuevo/providers/theme/riverpod_theme_adapter.dart';
 import 'package:devocional_nuevo/providers/theme_provider.dart';
 import 'package:devocional_nuevo/services/onboarding_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class OnboardingFlow extends StatefulWidget {
+class OnboardingFlow extends ConsumerStatefulWidget {
   final VoidCallback onComplete;
 
   const OnboardingFlow({super.key, required this.onComplete});
 
   @override
-  State<OnboardingFlow> createState() => _OnboardingFlowState();
+  ConsumerState<OnboardingFlow> createState() => _OnboardingFlowState();
 }
 
-class _OnboardingFlowState extends State<OnboardingFlow> {
+class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
   final PageController _pageController = PageController();
   late OnboardingBloc _onboardingBloc;
 
@@ -32,14 +34,8 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
 
     // Initialize OnboardingBloc with required dependencies
     // Use try-catch to handle missing providers gracefully
-    ThemeProvider? themeProvider;
+    ThemeAdapter? themeAdapter;
     BackupBloc? backupBloc;
-
-    try {
-      themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-    } catch (e) {
-      debugPrint('⚠️ ThemeProvider not found in context, using fallback');
-    }
 
     try {
       backupBloc = context.read<BackupBloc?>();
@@ -47,9 +43,12 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
       debugPrint('⚠️ BackupBloc not found in context, continuing without it');
     }
 
+    // Use RiverpodThemeAdapter instead of ThemeProvider
+    themeAdapter = RiverpodThemeAdapter(ref);
+
     _onboardingBloc = OnboardingBloc(
       onboardingService: OnboardingService.instance,
-      themeProvider: themeProvider ?? _createFallbackThemeProvider(),
+      themeProvider: _createThemeProviderAdapter(themeAdapter),
       backupBloc: backupBloc,
     );
 
@@ -57,21 +56,10 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
     _onboardingBloc.add(const InitializeOnboarding());
   }
 
-  /// Create a fallback ThemeProvider for testing
-  ThemeProvider _createFallbackThemeProvider() {
-    debugPrint('⚠️ [ONBOARDING_FLOW] Using fallback ThemeProvider for testing');
-    final fallbackProvider = ThemeProvider();
-
-    // Initialize with default values to prevent null errors
-    try {
-      // Ensure the provider has a valid default state
-      fallbackProvider.initializeDefaults();
-    } catch (e) {
-      debugPrint(
-          '⚠️ [ONBOARDING_FLOW] Fallback provider initialization failed: $e');
-    }
-
-    return fallbackProvider;
+  /// Create a ThemeProvider-like adapter from RiverpodThemeAdapter
+  /// This is a temporary bridge until OnboardingBloc is fully migrated
+  ThemeProvider _createThemeProviderAdapter(ThemeAdapter adapter) {
+    return _RiverpodThemeProviderBridge(adapter);
   }
 
   @override
@@ -321,5 +309,39 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
         ),
       ), // Closes Directionality widget child
     ); // Closes Directionality widget
+  }
+}
+
+/// Bridge class to adapt Riverpod ThemeAdapter to the old ThemeProvider interface
+/// This is a temporary solution until OnboardingBloc is fully migrated to Riverpod
+class _RiverpodThemeProviderBridge extends ThemeProvider {
+  final ThemeAdapter _adapter;
+
+  _RiverpodThemeProviderBridge(this._adapter);
+
+  @override
+  Future<void> setThemeFamily(String familyName) async {
+    await _adapter.setThemeFamily(familyName);
+    // Notify listeners that theme changed (for any observers)
+    notifyListeners();
+  }
+
+  @override
+  Future<void> setBrightness(Brightness brightness) async {
+    await _adapter.setBrightness(brightness);
+    // Notify listeners that brightness changed (for any observers)
+    notifyListeners();
+  }
+
+  @override
+  String get currentThemeFamily => _adapter.currentThemeFamily;
+
+  @override
+  Brightness get currentBrightness => _adapter.currentBrightness;
+
+  @override
+  void initializeDefaults() {
+    // Not needed for Riverpod implementation
+    // The Riverpod providers handle initialization
   }
 }
