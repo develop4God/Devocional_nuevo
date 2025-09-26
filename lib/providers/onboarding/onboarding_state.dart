@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:devocional_nuevo/blocs/onboarding/onboarding_models.dart';
+import 'package:devocional_nuevo/models/onboarding_models.dart';
 
 part 'onboarding_state.freezed.dart';
 

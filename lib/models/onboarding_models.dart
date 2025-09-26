@@ -1,4 +1,4 @@
-// lib/blocs/onboarding/onboarding_models.dart
+// lib/models/onboarding_models.dart
 import 'package:equatable/equatable.dart';
 
 /// Configuration types for onboarding operations

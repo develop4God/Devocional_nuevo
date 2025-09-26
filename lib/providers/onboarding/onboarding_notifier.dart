@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:devocional_nuevo/providers/onboarding/onboarding_state.dart';
 import 'package:devocional_nuevo/providers/theme/theme_providers.dart';
 import 'package:devocional_nuevo/services/onboarding_service.dart';
-import 'package:devocional_nuevo/blocs/onboarding/onboarding_models.dart';
+import 'package:devocional_nuevo/models/onboarding_models.dart';
 import 'package:devocional_nuevo/blocs/backup_bloc.dart';
 import 'package:devocional_nuevo/blocs/backup_event.dart';
 

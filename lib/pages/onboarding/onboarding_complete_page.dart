@@ -1,22 +1,20 @@
 import 'dart:math' as math;
 
 import 'package:devocional_nuevo/extensions/string_extensions.dart';
+import 'package:devocional_nuevo/providers/onboarding/onboarding_providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../blocs/onboarding/onboarding_bloc.dart';
-import '../../blocs/onboarding/onboarding_state.dart';
-
-class OnboardingCompletePage extends StatefulWidget {
+class OnboardingCompletePage extends ConsumerStatefulWidget {
   final VoidCallback onStartApp;
 
   const OnboardingCompletePage({super.key, required this.onStartApp});
 
   @override
-  State<OnboardingCompletePage> createState() => _OnboardingCompletePageState();
+  ConsumerState<OnboardingCompletePage> createState() => _OnboardingCompletePageState();
 }
 
-class _OnboardingCompletePageState extends State<OnboardingCompletePage>
+class _OnboardingCompletePageState extends ConsumerState<OnboardingCompletePage>
     with TickerProviderStateMixin {
   late AnimationController _celebrationController;
   late AnimationController _particleController;
@@ -321,13 +319,10 @@ class _OnboardingCompletePageState extends State<OnboardingCompletePage>
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return BlocBuilder<OnboardingBloc, OnboardingState>(
-      builder: (context, state) {
-        Map<String, dynamic> configurations = {};
-        if (state is OnboardingCompleted) {
-          configurations = state.appliedConfigurations;
-        }
-
+    return Consumer(
+      builder: (context, ref, child) {
+        final userSelections = ref.watch(onboardingUserSelectionsProvider);
+        
         return Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
@@ -385,7 +380,7 @@ class _OnboardingCompletePageState extends State<OnboardingCompletePage>
               _buildSetupItem(
                 context,
                 Icons.palette_outlined,
-                _getThemeStatusMessage(configurations),
+                _getThemeStatusMessage(userSelections),
                 true,
               ),
 
@@ -394,10 +389,10 @@ class _OnboardingCompletePageState extends State<OnboardingCompletePage>
               // Backup configuration
               _buildSetupItem(
                 context,
-                _getBackupStatusIcon(configurations),
-                _getBackupStatusMessage(configurations),
-                _isBackupConfigured(configurations) ||
-                    _wasBackupSkipped(configurations),
+                _getBackupStatusIcon(userSelections),
+                _getBackupStatusMessage(userSelections),
+                _isBackupConfigured(userSelections) ||
+                    _wasBackupSkipped(userSelections),
               ),
 
               const SizedBox(height: 16),
@@ -476,36 +471,36 @@ class _OnboardingCompletePageState extends State<OnboardingCompletePage>
     );
   }
 
-  bool _isBackupConfigured(Map<String, dynamic> configurations) {
-    return configurations['backupEnabled'] == true;
+  bool _isBackupConfigured(Map<String, dynamic> userSelections) {
+    return userSelections['backupEnabled'] == true;
   }
 
-  bool _wasBackupSkipped(Map<String, dynamic> configurations) {
-    return configurations['backupSkipped'] == true;
+  bool _wasBackupSkipped(Map<String, dynamic> userSelections) {
+    return userSelections['backupSkipped'] == true;
   }
 
-  IconData _getBackupStatusIcon(Map<String, dynamic> configurations) {
-    if (_isBackupConfigured(configurations)) {
+  IconData _getBackupStatusIcon(Map<String, dynamic> userSelections) {
+    if (_isBackupConfigured(userSelections)) {
       return Icons.cloud_done_outlined;
-    } else if (_wasBackupSkipped(configurations)) {
+    } else if (_wasBackupSkipped(userSelections)) {
       return Icons.schedule_outlined;
     } else {
       return Icons.cloud_off_outlined;
     }
   }
 
-  String _getBackupStatusMessage(Map<String, dynamic> configurations) {
-    if (_isBackupConfigured(configurations)) {
+  String _getBackupStatusMessage(Map<String, dynamic> userSelections) {
+    if (_isBackupConfigured(userSelections)) {
       return 'Respaldo automático configurado';
-    } else if (_wasBackupSkipped(configurations)) {
+    } else if (_wasBackupSkipped(userSelections)) {
       return 'Podrás configurar el respaldo más tarde';
     } else {
       return 'Respaldo omitido';
     }
   }
 
-  String _getThemeStatusMessage(Map<String, dynamic> configurations) {
-    final selectedTheme = configurations['selectedThemeFamily'] as String?;
+  String _getThemeStatusMessage(Map<String, dynamic> userSelections) {
+    final selectedTheme = userSelections['selectedThemeFamily'] as String?;
     if (selectedTheme != null && selectedTheme.isNotEmpty) {
       return 'Tema "$selectedTheme" seleccionado';
     }
