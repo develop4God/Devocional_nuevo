@@ -1,19 +1,12 @@
 import 'dart:developer' as developer;
 
-import 'package:devocional_nuevo/blocs/backup_bloc.dart';
 import 'package:devocional_nuevo/blocs/backup_event.dart';
-import 'package:devocional_nuevo/blocs/prayer_bloc.dart';
-import 'package:devocional_nuevo/controllers/audio_controller.dart';
 import 'package:devocional_nuevo/pages/devocionales_page.dart';
 import 'package:devocional_nuevo/pages/onboarding/onboarding_flow.dart';
 import 'package:devocional_nuevo/pages/settings_page.dart';
-import 'package:devocional_nuevo/providers/devocional_provider.dart';
-import 'package:devocional_nuevo/providers/localization_provider.dart';
+import 'package:devocional_nuevo/providers/app_providers.dart';
 import 'package:devocional_nuevo/providers/theme/theme_providers.dart';
 import 'package:devocional_nuevo/services/backup_scheduler_service.dart';
-import 'package:devocional_nuevo/services/connectivity_service.dart';
-import 'package:devocional_nuevo/services/google_drive_auth_service.dart';
-import 'package:devocional_nuevo/services/google_drive_backup_service.dart';
 import 'package:devocional_nuevo/services/notification_service.dart';
 import 'package:devocional_nuevo/services/onboarding_service.dart';
 import 'package:devocional_nuevo/services/spiritual_stats_service.dart';
@@ -23,11 +16,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:provider/provider.dart' as provider_pkg;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
@@ -118,27 +109,7 @@ void main() async {
   // Lanzar runApp lo antes posible (sin inicializaciones bloqueantes)
   runApp(
     ProviderScope(
-      child: provider_pkg.MultiProvider(
-        providers: [
-          provider_pkg.ChangeNotifierProvider(create: (context) => LocalizationProvider()),
-          provider_pkg.ChangeNotifierProvider(create: (context) => DevocionalProvider()),
-          BlocProvider(create: (context) => PrayerBloc()),
-          provider_pkg.ChangeNotifierProvider(create: (_) => AudioController()),
-          // Agregar BackupBloc
-          BlocProvider(
-            create: (context) => BackupBloc(
-              backupService: GoogleDriveBackupService(
-                authService: GoogleDriveAuthService(),
-                connectivityService: ConnectivityService(),
-                statsService: SpiritualStatsService(),
-              ),
-              schedulerService: null, // ✅ El BLoC maneja null correctamente
-              devocionalProvider: context.read<DevocionalProvider>(),
-            ),
-          ),
-        ],
-        child: const MyApp(),
-      ),
+      child: const MyApp(),
     ),
   );
 }
@@ -165,8 +136,7 @@ class _MyAppState extends ConsumerState<MyApp> {
   Future<bool> _initializeApp() async {
     try {
       // 1. Primero inicializar localización (crítico para traducciones)
-      await provider_pkg.Provider.of<LocalizationProvider>(context, listen: false)
-          .initialize();
+      await ref.read(localizationProvider.notifier).initialize();
 
       developer.log(
         'App: LocalizationService inicializado correctamente',
@@ -198,7 +168,7 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   Widget build(BuildContext context) {
     final themeData = ref.watch(currentThemeDataProvider);
-    final localizationProvider = provider_pkg.Provider.of<LocalizationProvider>(context);
+    final localizationProviderInstance = ref.watch(localizationProvider);
 
     return MaterialApp(
       title: 'Devocionales',
@@ -206,8 +176,8 @@ class _MyAppState extends ConsumerState<MyApp> {
       theme: themeData,
       navigatorKey: navigatorKey,
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      supportedLocales: localizationProvider.supportedLocales,
-      locale: localizationProvider.currentLocale,
+      supportedLocales: localizationProviderInstance.supportedLocales,
+      locale: localizationProviderInstance.currentLocale,
       home: FutureBuilder<bool>(
         future: _initializationFuture, // ← Usar el future unificado
         builder: (context, snapshot) {
@@ -252,14 +222,14 @@ class _MyAppState extends ConsumerState<MyApp> {
 }
 
 // Widget que maneja la inicialización mientras muestra SplashScreen
-class AppInitializer extends StatefulWidget {
+class AppInitializer extends ConsumerStatefulWidget {
   const AppInitializer({super.key});
 
   @override
-  State<AppInitializer> createState() => _AppInitializerState();
+  ConsumerState<AppInitializer> createState() => _AppInitializerState();
 }
 
-class _AppInitializerState extends State<AppInitializer> {
+class _AppInitializerState extends ConsumerState<AppInitializer> {
   @override
   void initState() {
     super.initState();
@@ -269,7 +239,7 @@ class _AppInitializerState extends State<AppInitializer> {
 
   Future<void> _initializeInBackground() async {
     // Capturar BLoC ANTES de cualquier await
-    final backupBloc = context.read<BackupBloc>();
+    final backupBloc = ref.read(backupBlocProvider);
 
     // Dar tiempo para que el SplashScreen se muestre
     await Future.delayed(const Duration(milliseconds: 600));
@@ -296,10 +266,8 @@ class _AppInitializerState extends State<AppInitializer> {
 
   Future<void> _initServices() async {
     // Get providers before any async operations
-    final localizationProvider = provider_pkg.Provider.of<LocalizationProvider>(
-      context,
-      listen: false,
-    );
+    final localizationProviderInstance =
+        ref.read(localizationProvider.notifier);
 
     // Inicialización global
     try {
@@ -319,7 +287,7 @@ class _AppInitializerState extends State<AppInitializer> {
 
     // Initialize localization service
     try {
-      await localizationProvider.initialize();
+      await localizationProviderInstance.initialize();
       developer.log(
         'AppInitializer: Localization service initialized successfully.',
         name: 'MainApp',
@@ -426,11 +394,8 @@ class _AppInitializerState extends State<AppInitializer> {
     if (!mounted) return;
 
     try {
-      final devocionalProvider = provider_pkg.Provider.of<DevocionalProvider>(
-        context,
-        listen: false,
-      );
-      await devocionalProvider.initializeData();
+      final devocionalProviderInstance = ref.read(devocionalProvider.notifier);
+      await devocionalProviderInstance.initializeData();
       developer.log(
         'AppInitializer: Datos del DevocionalProvider cargados correctamente.',
         name: 'MainApp',
