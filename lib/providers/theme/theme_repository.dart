@@ -6,7 +6,7 @@ class ThemeRepository {
   // Keys for storing theme preferences
   static const String _themeFamilyKey = 'theme_family_name';
   static const String _brightnessKey = 'theme_brightness';
-  
+
   // Default values
   static const String defaultThemeFamily = 'Deep Purple';
   static const String defaultBrightness = 'light';
@@ -15,12 +15,13 @@ class ThemeRepository {
   Future<String> getThemeFamily() async {
     final prefs = await SharedPreferences.getInstance();
     final savedThemeFamily = prefs.getString(_themeFamilyKey);
-    
+
     // Validate saved theme exists in our theme map
-    if (savedThemeFamily != null && appThemeFamilies.containsKey(savedThemeFamily)) {
+    if (savedThemeFamily != null &&
+        appThemeFamilies.containsKey(savedThemeFamily)) {
       return savedThemeFamily;
     }
-    
+
     return defaultThemeFamily;
   }
 
@@ -43,17 +44,20 @@ class ThemeRepository {
   }
 
   /// Get complete theme preference as a record for atomic loading
-  Future<({String themeFamily, String brightness})> getThemePreferences() async {
+  Future<({String themeFamily, String brightness})>
+      getThemePreferences() async {
     final prefs = await SharedPreferences.getInstance();
-    
+
     final savedThemeFamily = prefs.getString(_themeFamilyKey);
-    final savedBrightness = prefs.getString(_brightnessKey) ?? defaultBrightness;
-    
+    final savedBrightness =
+        prefs.getString(_brightnessKey) ?? defaultBrightness;
+
     // Validate theme family exists
-    final themeFamily = (savedThemeFamily != null && appThemeFamilies.containsKey(savedThemeFamily))
+    final themeFamily = (savedThemeFamily != null &&
+            appThemeFamilies.containsKey(savedThemeFamily))
         ? savedThemeFamily
         : defaultThemeFamily;
-    
+
     return (themeFamily: themeFamily, brightness: savedBrightness);
   }
 

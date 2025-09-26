@@ -2,21 +2,20 @@
 
 import 'package:devocional_nuevo/extensions/string_extensions.dart';
 import 'package:devocional_nuevo/models/prayer_model.dart';
-import 'package:devocional_nuevo/blocs/prayer_bloc.dart';
-import 'package:devocional_nuevo/blocs/prayer_event.dart';
+import 'package:devocional_nuevo/providers/prayers/prayers_providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AddPrayerModal extends StatefulWidget {
+class AddPrayerModal extends ConsumerStatefulWidget {
   final Prayer? prayerToEdit;
 
   const AddPrayerModal({super.key, this.prayerToEdit});
 
   @override
-  State<AddPrayerModal> createState() => _AddPrayerModalState();
+  ConsumerState<AddPrayerModal> createState() => _AddPrayerModalState();
 }
 
-class _AddPrayerModalState extends State<AddPrayerModal> {
+class _AddPrayerModalState extends ConsumerState<AddPrayerModal> {
   final TextEditingController _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   bool _isLoading = false;
@@ -284,12 +283,12 @@ class _AddPrayerModalState extends State<AddPrayerModal> {
 
     try {
       if (_isEditing) {
-        context
-            .read<PrayerBloc>()
-            .add(EditPrayer(widget.prayerToEdit!.id, text));
+        await ref
+            .read(prayersProvider.notifier)
+            .editPrayer(widget.prayerToEdit!.id, text);
         _showSuccessSnackBar('prayers.prayer_updated'.tr());
       } else {
-        context.read<PrayerBloc>().add(AddPrayer(text));
+        await ref.read(prayersProvider.notifier).addPrayer(text);
         _showSuccessSnackBar('prayers.prayer_created'.tr());
       }
 

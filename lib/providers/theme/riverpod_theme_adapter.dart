@@ -30,12 +30,12 @@ class RiverpodThemeAdapter implements ThemeAdapter {
   }
 }
 
-/// Legacy ThemeProvider implementation of ThemeAdapter 
+/// Legacy ThemeProvider implementation of ThemeAdapter
 /// (for migration purposes - to be removed after full migration)
 class LegacyThemeAdapter implements ThemeAdapter {
   // This can be used if we need backward compatibility during migration
   // We'll implement this if needed, but for now we'll use Riverpod approach
-  
+
   @override
   Future<void> setThemeFamily(String familyName) async {
     // Implementation would wrap old ThemeProvider

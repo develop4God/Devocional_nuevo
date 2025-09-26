@@ -101,7 +101,8 @@ class DevocionalesDrawer extends ConsumerWidget {
 
                         // Tu lógica real de descarga con progreso
                         final devocionalProvider =
-                            provider_pkg.Provider.of<DevocionalProvider>(context,
+                            provider_pkg.Provider.of<DevocionalProvider>(
+                                context,
                                 listen: false);
 
                         bool success = await devocionalProvider
@@ -189,7 +190,8 @@ class DevocionalesDrawer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final devocionalProvider = provider_pkg.Provider.of<DevocionalProvider>(context);
+    final devocionalProvider =
+        provider_pkg.Provider.of<DevocionalProvider>(context);
     final currentThemeFamily = ref.watch(currentThemeFamilyProvider);
     final currentBrightness = ref.watch(currentBrightnessProvider);
     final dividerColor = ref.watch(dividerAdaptiveColorProvider);
@@ -370,15 +372,15 @@ class DevocionalesDrawer extends ConsumerWidget {
                         value: currentBrightness == Brightness.dark,
                         onChanged: (bool value) {
                           ref.read(themeProvider.notifier).setBrightness(
-                            value ? Brightness.dark : Brightness.light,
-                          );
+                                value ? Brightness.dark : Brightness.light,
+                              );
                         },
                       ),
                       onTap: () {
                         final newValue = currentBrightness != Brightness.dark;
                         ref.read(themeProvider.notifier).setBrightness(
-                          newValue ? Brightness.dark : Brightness.light,
-                        );
+                              newValue ? Brightness.dark : Brightness.light,
+                            );
                       },
                     ),
                     const SizedBox(height: 5),
@@ -518,7 +520,9 @@ class DevocionalesDrawer extends ConsumerWidget {
                               selectedTheme: currentThemeFamily,
                               brightness: currentBrightness,
                               onThemeChanged: (theme) {
-                                ref.read(themeProvider.notifier).setThemeFamily(theme);
+                                ref
+                                    .read(themeProvider.notifier)
+                                    .setThemeFamily(theme);
                                 Navigator.of(context).pop();
                               },
                             ),

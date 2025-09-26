@@ -7,10 +7,10 @@ abstract class ThemeAdapter {
 
   /// Set the brightness mode
   Future<void> setBrightness(Brightness brightness);
-  
+
   /// Get current theme family
   String get currentThemeFamily;
-  
+
   /// Get current brightness
   Brightness get currentBrightness;
 }

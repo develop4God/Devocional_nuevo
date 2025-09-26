@@ -11,7 +11,8 @@ class OnboardingCompletePage extends ConsumerStatefulWidget {
   const OnboardingCompletePage({super.key, required this.onStartApp});
 
   @override
-  ConsumerState<OnboardingCompletePage> createState() => _OnboardingCompletePageState();
+  ConsumerState<OnboardingCompletePage> createState() =>
+      _OnboardingCompletePageState();
 }
 
 class _OnboardingCompletePageState extends ConsumerState<OnboardingCompletePage>
@@ -322,7 +323,7 @@ class _OnboardingCompletePageState extends ConsumerState<OnboardingCompletePage>
     return Consumer(
       builder: (context, ref, child) {
         final userSelections = ref.watch(onboardingUserSelectionsProvider);
-        
+
         return Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(

@@ -156,7 +156,9 @@ class _OnboardingThemeSelectionPageState
                                   selectedTheme = themeKey;
                                 });
                                 // Apply theme immediately for live preview
-                                ref.read(themeProvider.notifier).setThemeFamily(themeKey);
+                                ref
+                                    .read(themeProvider.notifier)
+                                    .setThemeFamily(themeKey);
                               },
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 300),

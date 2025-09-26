@@ -17,7 +17,8 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
     try {
       final prefs = await _repository.getThemePreferences();
       final themeData = _getThemeData(prefs.themeFamily, prefs.brightness);
-      final brightness = prefs.brightness == 'light' ? Brightness.light : Brightness.dark;
+      final brightness =
+          prefs.brightness == 'light' ? Brightness.light : Brightness.dark;
 
       state = ThemeState.loaded(
         themeFamily: prefs.themeFamily,
@@ -26,7 +27,8 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
       );
     } catch (e) {
       // Fallback to default theme on error
-      final themeData = appThemeFamilies[ThemeRepository.defaultThemeFamily]!['light']!;
+      final themeData =
+          appThemeFamilies[ThemeRepository.defaultThemeFamily]!['light']!;
       state = ThemeState.loaded(
         themeFamily: ThemeRepository.defaultThemeFamily,
         brightness: Brightness.light,
@@ -48,7 +50,8 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
 
     try {
       await _repository.setThemeFamily(familyName);
-      final themeData = _getThemeData(familyName, _brightnessToString(currentState.brightness));
+      final themeData = _getThemeData(
+          familyName, _brightnessToString(currentState.brightness));
 
       state = ThemeState.loaded(
         themeFamily: familyName,
@@ -71,7 +74,8 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
     try {
       final brightnessString = _brightnessToString(brightness);
       await _repository.setBrightness(brightnessString);
-      final themeData = _getThemeData(currentState.themeFamily, brightnessString);
+      final themeData =
+          _getThemeData(currentState.themeFamily, brightnessString);
 
       state = ThemeState.loaded(
         themeFamily: currentState.themeFamily,
@@ -102,7 +106,8 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
 
   /// Initialize with default values (useful for testing)
   void initializeDefaults() {
-    final themeData = appThemeFamilies[ThemeRepository.defaultThemeFamily]!['light']!;
+    final themeData =
+        appThemeFamilies[ThemeRepository.defaultThemeFamily]!['light']!;
     state = ThemeState.loaded(
       themeFamily: ThemeRepository.defaultThemeFamily,
       brightness: Brightness.light,

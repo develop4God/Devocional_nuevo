@@ -12,7 +12,10 @@ import 'package:devocional_nuevo/providers/devocional_provider.dart';
 
 // Mock classes
 class MockBackupRepository extends Mock implements BackupRepository {}
-class MockGoogleDriveBackupService extends Mock implements GoogleDriveBackupService {}
+
+class MockGoogleDriveBackupService extends Mock
+    implements GoogleDriveBackupService {}
+
 class MockDevocionalProvider extends Mock implements DevocionalProvider {}
 
 void main() {
@@ -22,26 +25,26 @@ void main() {
 
     setUp(() {
       mockRepository = MockBackupRepository();
-      
+
       // Setup default successful repository responses
       when(() => mockRepository.loadBackupSettings()).thenAnswer((_) async => (
-        autoBackupEnabled: false,
-        backupFrequency: 'weekly',
-        wifiOnlyEnabled: true,
-        compressionEnabled: true,
-        backupOptions: {
-          'devotionals': true,
-          'prayers': true,
-          'settings': true,
-          'favorites': true,
-        },
-        lastBackupTime: null,
-        nextBackupTime: null,
-        estimatedSize: 512 * 1024,
-        storageInfo: <String, dynamic>{},
-        isAuthenticated: false,
-        userEmail: null,
-      ));
+            autoBackupEnabled: false,
+            backupFrequency: 'weekly',
+            wifiOnlyEnabled: true,
+            compressionEnabled: true,
+            backupOptions: {
+              'devotionals': true,
+              'prayers': true,
+              'settings': true,
+              'favorites': true,
+            },
+            lastBackupTime: null,
+            nextBackupTime: null,
+            estimatedSize: 512 * 1024,
+            storageInfo: <String, dynamic>{},
+            isAuthenticated: false,
+            userEmail: null,
+          ));
 
       // Create container with mocked repository
       container = ProviderContainer(
@@ -64,7 +67,7 @@ void main() {
       test('should load backup settings on initialization', () async {
         // Read the provider to trigger initialization
         container.read(backupProvider);
-        
+
         // Wait for async initialization
         await Future.delayed(const Duration(milliseconds: 100));
 
@@ -80,10 +83,10 @@ void main() {
         await Future.delayed(const Duration(milliseconds: 100));
 
         final backupState = container.read(backupProvider);
-        
+
         expect(backupState, isA<BackupRiverpodStateLoaded>());
         final loadedState = backupState as BackupRiverpodStateLoaded;
-        
+
         expect(loadedState.autoBackupEnabled, false);
         expect(loadedState.backupFrequency, 'weekly');
         expect(loadedState.wifiOnlyEnabled, true);
@@ -109,7 +112,7 @@ void main() {
         await Future.delayed(const Duration(milliseconds: 100));
 
         final backupState = container.read(backupProvider);
-        
+
         expect(backupState, isA<BackupRiverpodStateError>());
         final errorState = backupState as BackupRiverpodStateError;
         expect(errorState.message, contains('Failed to load backup settings'));
@@ -138,7 +141,8 @@ void main() {
 
       test('should return correct state flags when not loaded', () {
         // Note: BackupProvider auto-loads on creation, so it will be in loading state initially
-        expect(container.read(backupLoadingProvider), true); // Loading initially
+        expect(
+            container.read(backupLoadingProvider), true); // Loading initially
         expect(container.read(backupLoadedProvider), false);
         expect(container.read(backupInProgressProvider), false);
         expect(container.read(backupHasErrorProvider), false);
@@ -175,12 +179,14 @@ void main() {
         expect(container.read(backupInProgressProvider), false);
         expect(container.read(backupHasErrorProvider), false);
         expect(container.read(backupErrorMessageProvider), null);
-        expect(container.read(backupLoadedDataProvider), isA<BackupRiverpodStateLoaded>());
+        expect(container.read(backupLoadedDataProvider),
+            isA<BackupRiverpodStateLoaded>());
       });
     });
 
     group('Provider Reactivity', () {
-      test('should update all convenience providers when state changes', () async {
+      test('should update all convenience providers when state changes',
+          () async {
         // Initial load
         container.read(backupProvider);
         await Future.delayed(const Duration(milliseconds: 100));
@@ -251,7 +257,8 @@ void main() {
 
         // Should be in error state
         expect(container.read(backupHasErrorProvider), true);
-        expect(container.read(backupErrorMessageProvider), contains('Failed to update auto backup setting'));
+        expect(container.read(backupErrorMessageProvider),
+            contains('Failed to update auto backup setting'));
       });
 
       test('should handle create backup errors', () async {
@@ -268,7 +275,8 @@ void main() {
 
         // Should be in error state
         expect(container.read(backupHasErrorProvider), true);
-        expect(container.read(backupErrorMessageProvider), contains('Failed to create backup'));
+        expect(container.read(backupErrorMessageProvider),
+            contains('Failed to create backup'));
       });
     });
 
@@ -295,24 +303,25 @@ void main() {
 
       test('should handle sign out from Google Drive', () async {
         // Setup initial authenticated state
-        when(() => mockRepository.loadBackupSettings()).thenAnswer((_) async => (
-          autoBackupEnabled: false,
-          backupFrequency: 'weekly',
-          wifiOnlyEnabled: true,
-          compressionEnabled: true,
-          backupOptions: {
-            'devotionals': true,
-            'prayers': true,
-            'settings': true,
-            'favorites': true,
-          },
-          lastBackupTime: null,
-          nextBackupTime: null,
-          estimatedSize: 512 * 1024,
-          storageInfo: <String, dynamic>{},
-          isAuthenticated: true,
-          userEmail: 'user@example.com',
-        ));
+        when(() => mockRepository.loadBackupSettings())
+            .thenAnswer((_) async => (
+                  autoBackupEnabled: false,
+                  backupFrequency: 'weekly',
+                  wifiOnlyEnabled: true,
+                  compressionEnabled: true,
+                  backupOptions: {
+                    'devotionals': true,
+                    'prayers': true,
+                    'settings': true,
+                    'favorites': true,
+                  },
+                  lastBackupTime: null,
+                  nextBackupTime: null,
+                  estimatedSize: 512 * 1024,
+                  storageInfo: <String, dynamic>{},
+                  isAuthenticated: true,
+                  userEmail: 'user@example.com',
+                ));
 
         // Initial load
         container.read(backupProvider);

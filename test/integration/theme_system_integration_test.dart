@@ -9,7 +9,8 @@ import 'package:devocional_nuevo/utils/theme_constants.dart';
 /// Simple integration test to validate the theme system works end-to-end
 void main() {
   group('Theme System Integration Test', () {
-    testWidgets('should load and display theme correctly', (WidgetTester tester) async {
+    testWidgets('should load and display theme correctly',
+        (WidgetTester tester) async {
       // Create a simple test app with Riverpod theme providers
       await tester.pumpWidget(
         ProviderScope(
@@ -17,7 +18,7 @@ void main() {
             home: Consumer(
               builder: (context, ref, child) {
                 final themeState = ref.watch(themeProvider);
-                
+
                 return Scaffold(
                   appBar: AppBar(title: const Text('Theme Test')),
                   body: Column(
@@ -31,13 +32,17 @@ void main() {
                         const Text('Loading theme...'),
                       ElevatedButton(
                         onPressed: () {
-                          ref.read(themeProvider.notifier).setThemeFamily('Green');
+                          ref
+                              .read(themeProvider.notifier)
+                              .setThemeFamily('Green');
                         },
                         child: const Text('Change to Green'),
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          ref.read(themeProvider.notifier).setBrightness(Brightness.dark);
+                          ref
+                              .read(themeProvider.notifier)
+                              .setBrightness(Brightness.dark);
                         },
                         child: const Text('Toggle Dark'),
                       ),
@@ -61,11 +66,12 @@ void main() {
       }
 
       // Verify theme is loaded (be more flexible about the state)
-      final hasLoadedState = tester.any(find.text('Theme State: ThemeStateLoaded'));
+      final hasLoadedState =
+          tester.any(find.text('Theme State: ThemeStateLoaded'));
       final hasLoadingState = tester.any(find.text('Loading theme...'));
-      
+
       expect(hasLoadedState || hasLoadingState, isTrue,
-             reason: 'Should have either loaded or loading state');
+          reason: 'Should have either loaded or loading state');
 
       // If we have loaded state, test the functionality
       if (hasLoadedState) {
@@ -75,18 +81,19 @@ void main() {
         // Test theme family change
         await tester.tap(find.text('Change to Green'));
         await tester.pumpAndSettle();
-        
+
         expect(find.text('Family: Green'), findsOneWidget);
 
         // Test brightness change
         await tester.tap(find.text('Toggle Dark'));
         await tester.pumpAndSettle();
-        
+
         expect(find.text('Brightness: Brightness.dark'), findsOneWidget);
       }
     });
 
-    testWidgets('should provide correct convenience values', (WidgetTester tester) async {
+    testWidgets('should provide correct convenience values',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
@@ -95,13 +102,14 @@ void main() {
                 final themeFamily = ref.watch(currentThemeFamilyProvider);
                 final brightness = ref.watch(currentBrightnessProvider);
                 final dividerColor = ref.watch(dividerAdaptiveColorProvider);
-                
+
                 return Scaffold(
                   body: Column(
                     children: [
                       Text('Family: $themeFamily'),
                       Text('Brightness: $brightness'),
-                      Text('Divider: ${dividerColor == Colors.black ? "black" : "white"}'),
+                      Text(
+                          'Divider: ${dividerColor == Colors.black ? "black" : "white"}'),
                     ],
                   ),
                 );
@@ -115,24 +123,31 @@ void main() {
 
       // Verify convenience providers work
       expect(find.textContaining('Family: Deep Purple'), findsOneWidget);
-      expect(find.textContaining('Brightness: Brightness.light'), findsOneWidget);
+      expect(
+          find.textContaining('Brightness: Brightness.light'), findsOneWidget);
       expect(find.text('Divider: black'), findsOneWidget);
     });
 
     test('should have all required theme families in constants', () {
-      final expectedThemes = ['Deep Purple', 'Green', 'Pink', 'Cyan', 'Light Blue'];
-      
+      final expectedThemes = [
+        'Deep Purple',
+        'Green',
+        'Pink',
+        'Cyan',
+        'Light Blue'
+      ];
+
       for (final theme in expectedThemes) {
-        expect(appThemeFamilies.containsKey(theme), isTrue, 
-               reason: 'Theme family $theme should exist');
+        expect(appThemeFamilies.containsKey(theme), isTrue,
+            reason: 'Theme family $theme should exist');
         expect(appThemeFamilies[theme]!.containsKey('light'), isTrue,
-               reason: 'Light variant for $theme should exist');
+            reason: 'Light variant for $theme should exist');
         expect(appThemeFamilies[theme]!.containsKey('dark'), isTrue,
-               reason: 'Dark variant for $theme should exist');
+            reason: 'Dark variant for $theme should exist');
       }
-      
+
       expect(themeDisplayNames.keys.length, equals(expectedThemes.length),
-             reason: 'Display names should match theme families');
+          reason: 'Display names should match theme families');
     });
   });
 }

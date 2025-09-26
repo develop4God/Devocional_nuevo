@@ -19,7 +19,7 @@ void main() {
     setUp(() {
       mockOnboardingService = MockOnboardingService();
       SharedPreferences.setMockInitialValues({});
-      
+
       container = ProviderContainer(
         overrides: [
           // Override the onboarding service dependency
@@ -93,7 +93,8 @@ void main() {
 
       expect(notifier.state, isA<OnboardingStepActiveState>());
       final activeState = notifier.state as OnboardingStepActiveState;
-      expect(activeState.userSelections['selectedThemeFamily'], equals('Green'));
+      expect(
+          activeState.userSelections['selectedThemeFamily'], equals('Green'));
       expect(activeState.currentStepIndex, equals(1)); // Should be step 1 (2-1)
     });
 
@@ -108,7 +109,7 @@ void main() {
 
       // Initialize first
       await notifier.initialize();
-      
+
       final initialState = notifier.state as OnboardingStepActiveState;
 
       // Select theme
@@ -116,7 +117,8 @@ void main() {
 
       expect(notifier.state, isA<OnboardingStepActiveState>());
       final updatedState = notifier.state as OnboardingStepActiveState;
-      expect(updatedState.userSelections['selectedThemeFamily'], equals('Cyan'));
+      expect(
+          updatedState.userSelections['selectedThemeFamily'], equals('Cyan'));
     });
 
     test('should handle backup configuration', () async {
@@ -149,7 +151,7 @@ void main() {
       );
 
       await notifier.initialize();
-      
+
       final initialState = notifier.state as OnboardingStepActiveState;
       expect(initialState.currentStepIndex, equals(0));
 
@@ -208,7 +210,7 @@ void main() {
       );
 
       await notifier.initialize();
-      
+
       final beforeGoBack = notifier.state as OnboardingStepActiveState;
       expect(beforeGoBack.currentStepIndex, equals(0));
       expect(beforeGoBack.canGoBack, isFalse);
@@ -230,7 +232,7 @@ void main() {
       );
 
       await notifier.initialize();
-      
+
       final beforeSkip = notifier.state as OnboardingStepActiveState;
       expect(beforeSkip.currentStepIndex, equals(0));
 
@@ -284,18 +286,18 @@ void main() {
       );
 
       await notifier.initialize();
-      
+
       var activeState = notifier.state as OnboardingStepActiveState;
       expect(activeState.progress.completedSteps, equals(0));
 
       await notifier.selectTheme('Green');
-      
+
       activeState = notifier.state as OnboardingStepActiveState;
       expect(activeState.progress.completedSteps, equals(1));
       expect(activeState.progress.progressPercentage, greaterThan(0));
 
       await notifier.configureBackupOption(true);
-      
+
       activeState = notifier.state as OnboardingStepActiveState;
       expect(activeState.progress.completedSteps, equals(2));
       expect(activeState.progress.progressPercentage, greaterThan(25));
@@ -323,7 +325,8 @@ void main() {
         expect(activeState.canProgress, isTrue); // Theme selected, can progress
       });
 
-      test('should require backup configuration to progress from step 2', () async {
+      test('should require backup configuration to progress from step 2',
+          () async {
         when(() => mockOnboardingService.isOnboardingComplete())
             .thenAnswer((_) async => false);
 
@@ -341,7 +344,8 @@ void main() {
         await notifier.configureBackupOption(false);
 
         activeState = notifier.state as OnboardingStepActiveState;
-        expect(activeState.canProgress, isTrue); // Backup configured, can progress
+        expect(
+            activeState.canProgress, isTrue); // Backup configured, can progress
       });
     });
   });

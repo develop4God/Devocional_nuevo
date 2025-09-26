@@ -17,7 +17,7 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
   // Configuration persistence keys
   static const String _configurationKey = 'onboarding_configuration';
   static const String _progressKey = 'onboarding_progress';
-  
+
   // Total steps in onboarding flow
   static const int _totalSteps = 4;
 
@@ -35,14 +35,16 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
 
   /// Initialize onboarding flow and determine starting point
   Future<void> initialize() async {
-    debugPrint('🔄 [ONBOARDING_NOTIFIER] === INICIANDO InitializeOnboarding ===');
+    debugPrint(
+        '🔄 [ONBOARDING_NOTIFIER] === INICIANDO InitializeOnboarding ===');
 
     state = const OnboardingRiverpodState.loading();
 
     try {
       // Check if onboarding has been completed
       final isCompleted = await _onboardingService.isOnboardingComplete();
-      debugPrint('📊 [ONBOARDING_NOTIFIER] Onboarding completado: $isCompleted');
+      debugPrint(
+          '📊 [ONBOARDING_NOTIFIER] Onboarding completado: $isCompleted');
 
       if (isCompleted) {
         state = OnboardingRiverpodState.completed(
@@ -56,20 +58,26 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
       final savedConfiguration = await _loadSavedConfiguration();
       final savedProgress = await _loadSavedProgress();
 
-      debugPrint('📊 [ONBOARDING_NOTIFIER] Configuración guardada: $savedConfiguration');
+      debugPrint(
+          '📊 [ONBOARDING_NOTIFIER] Configuración guardada: $savedConfiguration');
       debugPrint('📊 [ONBOARDING_NOTIFIER] Progreso guardado: $savedProgress');
 
       // Determine starting step based on progress
       final currentStepIndex = _determineCurrentStep(savedProgress);
-      debugPrint('📊 [ONBOARDING_NOTIFIER] Iniciando en paso: $currentStepIndex');
+      debugPrint(
+          '📊 [ONBOARDING_NOTIFIER] Iniciando en paso: $currentStepIndex');
 
       final stepInfo = _getStepInfo(currentStepIndex);
       final completedStepsList = _getCompletedStepsList(savedConfiguration);
       final progress = OnboardingProgress(
         totalSteps: _totalSteps,
-        completedSteps: completedStepsList.where((completed) => completed).length,
+        completedSteps:
+            completedStepsList.where((completed) => completed).length,
         stepCompletionStatus: completedStepsList,
-        progressPercentage: (completedStepsList.where((completed) => completed).length / _totalSteps) * 100,
+        progressPercentage:
+            (completedStepsList.where((completed) => completed).length /
+                    _totalSteps) *
+                100,
       );
 
       // Emit initial step active state
@@ -83,7 +91,8 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
         progress: progress,
       );
 
-      debugPrint('✅ [ONBOARDING_NOTIFIER] OnboardingStepActive emitido exitosamente');
+      debugPrint(
+          '✅ [ONBOARDING_NOTIFIER] OnboardingStepActive emitido exitosamente');
     } catch (e, stackTrace) {
       debugPrint('❌ [ONBOARDING_NOTIFIER] Error en inicialización: $e');
       debugPrint('🔍 [ONBOARDING_NOTIFIER] StackTrace: $stackTrace');
@@ -101,14 +110,16 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
   /// Progress to specific step in onboarding
   Future<void> progressToStep(int stepIndex) async {
     if (_isProcessingStep) {
-      debugPrint('⚠️ [ONBOARDING_NOTIFIER] Ya procesando paso, ignorando solicitud');
+      debugPrint(
+          '⚠️ [ONBOARDING_NOTIFIER] Ya procesando paso, ignorando solicitud');
       return;
     }
 
     _isProcessingStep = true;
 
     try {
-      debugPrint('🔄 [ONBOARDING_NOTIFIER] === INICIANDO ProgressToStep: $stepIndex ===');
+      debugPrint(
+          '🔄 [ONBOARDING_NOTIFIER] === INICIANDO ProgressToStep: $stepIndex ===');
 
       final currentState = state;
       if (currentState is! OnboardingStepActiveState) {
@@ -117,21 +128,28 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
       }
 
       if (stepIndex < 0 || stepIndex >= _totalSteps) {
-        debugPrint('❌ [ONBOARDING_NOTIFIER] Índice de paso inválido: $stepIndex');
+        debugPrint(
+            '❌ [ONBOARDING_NOTIFIER] Índice de paso inválido: $stepIndex');
         return;
       }
 
       // Save current progress
       await _saveProgress(stepIndex + 1, _totalSteps);
-      debugPrint('💾 [ONBOARDING_NOTIFIER] Progreso guardado: ${stepIndex + 1}/$_totalSteps');
+      debugPrint(
+          '💾 [ONBOARDING_NOTIFIER] Progreso guardado: ${stepIndex + 1}/$_totalSteps');
 
       final stepInfo = _getStepInfo(stepIndex);
-      final completedStepsList = _getCompletedStepsList(currentState.userSelections);
+      final completedStepsList =
+          _getCompletedStepsList(currentState.userSelections);
       final progress = OnboardingProgress(
         totalSteps: _totalSteps,
-        completedSteps: completedStepsList.where((completed) => completed).length,
+        completedSteps:
+            completedStepsList.where((completed) => completed).length,
         stepCompletionStatus: completedStepsList,
-        progressPercentage: (completedStepsList.where((completed) => completed).length / _totalSteps) * 100,
+        progressPercentage:
+            (completedStepsList.where((completed) => completed).length /
+                    _totalSteps) *
+                100,
       );
 
       // Update state
@@ -140,7 +158,8 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
         currentStep: stepInfo,
         userSelections: currentState.userSelections,
         stepConfiguration: _getStepConfiguration(stepInfo),
-        canProgress: _canProgressFromStep(stepIndex, currentState.userSelections),
+        canProgress:
+            _canProgressFromStep(stepIndex, currentState.userSelections),
         canGoBack: stepIndex > 0,
         progress: progress,
       );
@@ -161,12 +180,14 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
 
   /// Select theme during onboarding
   Future<void> selectTheme(String themeFamily) async {
-    debugPrint('🔄 [ONBOARDING_NOTIFIER] === INICIANDO SelectTheme: $themeFamily ===');
+    debugPrint(
+        '🔄 [ONBOARDING_NOTIFIER] === INICIANDO SelectTheme: $themeFamily ===');
 
     try {
       final currentState = state;
       if (currentState is! OnboardingStepActiveState) {
-        debugPrint('❌ [ONBOARDING_NOTIFIER] Estado no válido para selección de tema');
+        debugPrint(
+            '❌ [ONBOARDING_NOTIFIER] Estado no válido para selección de tema');
         return;
       }
 
@@ -178,9 +199,11 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
 
       // Apply theme immediately for preview using Riverpod
       await _ref.read(themeProvider.notifier).setThemeFamily(themeFamily);
-      debugPrint('🎨 [ONBOARDING_NOTIFIER] Tema aplicado para preview: $themeFamily');
+      debugPrint(
+          '🎨 [ONBOARDING_NOTIFIER] Tema aplicado para preview: $themeFamily');
 
-      final updatedSelections = Map<String, dynamic>.from(currentState.userSelections);
+      final updatedSelections =
+          Map<String, dynamic>.from(currentState.userSelections);
       updatedSelections['selectedThemeFamily'] = themeFamily;
 
       // Validate configuration before saving
@@ -196,15 +219,20 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
 
       // Save configuration
       await _saveConfiguration(updatedSelections);
-      debugPrint('💾 [ONBOARDING_NOTIFIER] Configuración guardada: (selectedThemeFamily)');
+      debugPrint(
+          '💾 [ONBOARDING_NOTIFIER] Configuración guardada: (selectedThemeFamily)');
 
       // Return to step active state with updated selections
       final completedStepsList = _getCompletedStepsList(updatedSelections);
       final progress = OnboardingProgress(
         totalSteps: _totalSteps,
-        completedSteps: completedStepsList.where((completed) => completed).length,
+        completedSteps:
+            completedStepsList.where((completed) => completed).length,
         stepCompletionStatus: completedStepsList,
-        progressPercentage: (completedStepsList.where((completed) => completed).length / _totalSteps) * 100,
+        progressPercentage:
+            (completedStepsList.where((completed) => completed).length /
+                    _totalSteps) *
+                100,
       );
 
       state = OnboardingRiverpodState.stepActive(
@@ -212,7 +240,8 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
         currentStep: currentState.currentStep,
         userSelections: updatedSelections,
         stepConfiguration: currentState.stepConfiguration,
-        canProgress: _canProgressFromStep(currentState.currentStepIndex, updatedSelections),
+        canProgress: _canProgressFromStep(
+            currentState.currentStepIndex, updatedSelections),
         canGoBack: currentState.canGoBack,
         progress: progress,
       );
@@ -231,12 +260,14 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
 
   /// Configure backup option during onboarding
   Future<void> configureBackupOption(bool enableBackup) async {
-    debugPrint('🔄 [ONBOARDING_NOTIFIER] === INICIANDO ConfigureBackupOption: $enableBackup ===');
+    debugPrint(
+        '🔄 [ONBOARDING_NOTIFIER] === INICIANDO ConfigureBackupOption: $enableBackup ===');
 
     try {
       final currentState = state;
       if (currentState is! OnboardingStepActiveState) {
-        debugPrint('❌ [ONBOARDING_NOTIFIER] Estado no válido para configuración de backup');
+        debugPrint(
+            '❌ [ONBOARDING_NOTIFIER] Estado no válido para configuración de backup');
         return;
       }
 
@@ -246,7 +277,8 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
         configurationData: {},
       );
 
-      final updatedSelections = Map<String, dynamic>.from(currentState.userSelections);
+      final updatedSelections =
+          Map<String, dynamic>.from(currentState.userSelections);
       updatedSelections['backupEnabled'] = enableBackup;
 
       // If backup is enabled, trigger setup using Riverpod
@@ -254,7 +286,8 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
         try {
           final backupNotifier = _ref.read(backupProvider.notifier);
           await backupNotifier.signInToGoogleDrive();
-          debugPrint('🔧 [ONBOARDING_NOTIFIER] Google Drive Auth setup iniciado');
+          debugPrint(
+              '🔧 [ONBOARDING_NOTIFIER] Google Drive Auth setup iniciado');
         } catch (e) {
           debugPrint('❌ [ONBOARDING_NOTIFIER] Error setting up backup: $e');
         }
@@ -262,15 +295,20 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
 
       // Save configuration
       await _saveConfiguration(updatedSelections);
-      debugPrint('💾 [ONBOARDING_NOTIFIER] Configuración de backup guardada: $enableBackup');
+      debugPrint(
+          '💾 [ONBOARDING_NOTIFIER] Configuración de backup guardada: $enableBackup');
 
       // Return to step active state
       final completedStepsList = _getCompletedStepsList(updatedSelections);
       final progress = OnboardingProgress(
         totalSteps: _totalSteps,
-        completedSteps: completedStepsList.where((completed) => completed).length,
+        completedSteps:
+            completedStepsList.where((completed) => completed).length,
         stepCompletionStatus: completedStepsList,
-        progressPercentage: (completedStepsList.where((completed) => completed).length / _totalSteps) * 100,
+        progressPercentage:
+            (completedStepsList.where((completed) => completed).length /
+                    _totalSteps) *
+                100,
       );
 
       state = OnboardingRiverpodState.stepActive(
@@ -278,7 +316,8 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
         currentStep: currentState.currentStep,
         userSelections: updatedSelections,
         stepConfiguration: currentState.stepConfiguration,
-        canProgress: _canProgressFromStep(currentState.currentStepIndex, updatedSelections),
+        canProgress: _canProgressFromStep(
+            currentState.currentStepIndex, updatedSelections),
         canGoBack: currentState.canGoBack,
         progress: progress,
       );
@@ -298,14 +337,16 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
   /// Complete onboarding flow
   Future<void> complete() async {
     if (_isCompletingOnboarding) {
-      debugPrint('⚠️ [ONBOARDING_NOTIFIER] Ya completando onboarding, ignorando solicitud');
+      debugPrint(
+          '⚠️ [ONBOARDING_NOTIFIER] Ya completando onboarding, ignorando solicitud');
       return;
     }
 
     _isCompletingOnboarding = true;
 
     try {
-      debugPrint('🔄 [ONBOARDING_NOTIFIER] === INICIANDO CompleteOnboarding ===');
+      debugPrint(
+          '🔄 [ONBOARDING_NOTIFIER] === INICIANDO CompleteOnboarding ===');
 
       final currentState = state;
       if (currentState is! OnboardingStepActiveState) {
@@ -361,7 +402,7 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
   }
 
   // Private helper methods
-  
+
   int _determineCurrentStep(int? savedProgress) {
     if (savedProgress == null) return 0;
     return (savedProgress - 1).clamp(0, _totalSteps - 1);
@@ -416,7 +457,8 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
     return {}; // Can be extended with step-specific configuration
   }
 
-  bool _canProgressFromStep(int stepIndex, Map<String, dynamic> userSelections) {
+  bool _canProgressFromStep(
+      int stepIndex, Map<String, dynamic> userSelections) {
     switch (stepIndex) {
       case 1: // Theme selection step
         return userSelections.containsKey('selectedThemeFamily');
@@ -440,14 +482,15 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
     return true; // Basic validation - can be extended
   }
 
-  Future<void> _applyFinalConfigurations(Map<String, dynamic> configurations) async {
+  Future<void> _applyFinalConfigurations(
+      Map<String, dynamic> configurations) async {
     // Apply theme configuration
     if (configurations.containsKey('selectedThemeFamily')) {
       await _ref.read(themeProvider.notifier).setThemeFamily(
-        configurations['selectedThemeFamily'] as String,
-      );
+            configurations['selectedThemeFamily'] as String,
+          );
     }
-    
+
     // Other configurations can be applied here
   }
 
@@ -456,7 +499,8 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_progressKey);
     } catch (e) {
-      debugPrint('⚠️ [ONBOARDING_NOTIFIER] Error limpiando datos temporales: $e');
+      debugPrint(
+          '⚠️ [ONBOARDING_NOTIFIER] Error limpiando datos temporales: $e');
     }
   }
 
@@ -486,7 +530,7 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
 
   Future<void> _saveConfiguration(Map<String, dynamic> config) async {
     if (_isSavingConfiguration) return;
-    
+
     _isSavingConfiguration = true;
     try {
       final prefs = await SharedPreferences.getInstance();

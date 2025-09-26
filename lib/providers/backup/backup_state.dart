@@ -35,14 +35,15 @@ class BackupRiverpodState with _$BackupRiverpodState {
     required DateTime timestamp,
   }) = BackupRiverpodStateCreated;
 
-  /// Restoring backup state  
+  /// Restoring backup state
   const factory BackupRiverpodState.restoring() = BackupRiverpodStateRestoring;
 
   /// Backup restored successfully
   const factory BackupRiverpodState.restored() = BackupRiverpodStateRestored;
 
   /// Settings updated successfully
-  const factory BackupRiverpodState.settingsUpdated() = BackupRiverpodStateSettingsUpdated;
+  const factory BackupRiverpodState.settingsUpdated() =
+      BackupRiverpodStateSettingsUpdated;
 
   /// Success state for UX feedback
   const factory BackupRiverpodState.success({
@@ -66,7 +67,8 @@ extension BackupRiverpodStateExtensions on BackupRiverpodState {
 
   /// Check if backup is in progress (creating or restoring)
   bool get isInProgress =>
-      this is BackupRiverpodStateCreating || this is BackupRiverpodStateRestoring;
+      this is BackupRiverpodStateCreating ||
+      this is BackupRiverpodStateRestoring;
 
   /// Check if there's an error
   bool get hasError => this is BackupRiverpodStateError;

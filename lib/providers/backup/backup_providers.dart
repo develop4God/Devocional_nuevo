@@ -13,7 +13,7 @@ import 'backup_notifier.dart';
 /// Provider for BackupRepository with all required dependencies
 final backupRepositoryProvider = Provider<BackupRepository>((ref) {
   final devocionalProviderInstance = ref.read(devocionalProvider);
-  
+
   final backupService = GoogleDriveBackupService(
     authService: GoogleDriveAuthService(),
     connectivityService: ConnectivityService(),
@@ -29,7 +29,8 @@ final backupRepositoryProvider = Provider<BackupRepository>((ref) {
 
 /// Main provider for backup state management
 /// Replaces BackupBloc with modern Riverpod StateNotifier pattern
-final backupProvider = StateNotifierProvider<BackupNotifier, BackupRiverpodState>((ref) {
+final backupProvider =
+    StateNotifierProvider<BackupNotifier, BackupRiverpodState>((ref) {
   final repository = ref.watch(backupRepositoryProvider);
   return BackupNotifier(repository);
 });
@@ -39,8 +40,9 @@ final backupProvider = StateNotifierProvider<BackupNotifier, BackupRiverpodState
 final autoBackupEnabledProvider = Provider<bool>((ref) {
   final state = ref.watch(backupProvider);
   return state.mapOrNull(
-    loaded: (loaded) => loaded.autoBackupEnabled,
-  ) ?? false;
+        loaded: (loaded) => loaded.autoBackupEnabled,
+      ) ??
+      false;
 });
 
 /// Convenience provider for backup frequency
@@ -48,8 +50,9 @@ final autoBackupEnabledProvider = Provider<bool>((ref) {
 final backupFrequencyProvider = Provider<String>((ref) {
   final state = ref.watch(backupProvider);
   return state.mapOrNull(
-    loaded: (loaded) => loaded.backupFrequency,
-  ) ?? 'weekly';
+        loaded: (loaded) => loaded.backupFrequency,
+      ) ??
+      'weekly';
 });
 
 /// Convenience provider for WiFi-only setting
@@ -57,8 +60,9 @@ final backupFrequencyProvider = Provider<String>((ref) {
 final wifiOnlyEnabledProvider = Provider<bool>((ref) {
   final state = ref.watch(backupProvider);
   return state.mapOrNull(
-    loaded: (loaded) => loaded.wifiOnlyEnabled,
-  ) ?? true;
+        loaded: (loaded) => loaded.wifiOnlyEnabled,
+      ) ??
+      true;
 });
 
 /// Convenience provider for compression enabled status
@@ -66,8 +70,9 @@ final wifiOnlyEnabledProvider = Provider<bool>((ref) {
 final compressionEnabledProvider = Provider<bool>((ref) {
   final state = ref.watch(backupProvider);
   return state.mapOrNull(
-    loaded: (loaded) => loaded.compressionEnabled,
-  ) ?? true;
+        loaded: (loaded) => loaded.compressionEnabled,
+      ) ??
+      true;
 });
 
 /// Convenience provider for backup options (what to include)
@@ -75,13 +80,14 @@ final compressionEnabledProvider = Provider<bool>((ref) {
 final backupOptionsProvider = Provider<Map<String, bool>>((ref) {
   final state = ref.watch(backupProvider);
   return state.mapOrNull(
-    loaded: (loaded) => loaded.backupOptions,
-  ) ?? {
-    'devotionals': true,
-    'prayers': true,
-    'settings': true,
-    'favorites': true,
-  };
+        loaded: (loaded) => loaded.backupOptions,
+      ) ??
+      {
+        'devotionals': true,
+        'prayers': true,
+        'settings': true,
+        'favorites': true,
+      };
 });
 
 /// Convenience provider for last backup time
@@ -107,8 +113,9 @@ final nextBackupTimeProvider = Provider<DateTime?>((ref) {
 final estimatedBackupSizeProvider = Provider<int>((ref) {
   final state = ref.watch(backupProvider);
   return state.mapOrNull(
-    loaded: (loaded) => loaded.estimatedSize,
-  ) ?? 0;
+        loaded: (loaded) => loaded.estimatedSize,
+      ) ??
+      0;
 });
 
 /// Convenience provider for storage information
@@ -116,8 +123,9 @@ final estimatedBackupSizeProvider = Provider<int>((ref) {
 final storageInfoProvider = Provider<Map<String, dynamic>>((ref) {
   final state = ref.watch(backupProvider);
   return state.mapOrNull(
-    loaded: (loaded) => loaded.storageInfo,
-  ) ?? {};
+        loaded: (loaded) => loaded.storageInfo,
+      ) ??
+      {};
 });
 
 /// Convenience provider for authentication status
@@ -125,8 +133,9 @@ final storageInfoProvider = Provider<Map<String, dynamic>>((ref) {
 final isAuthenticatedProvider = Provider<bool>((ref) {
   final state = ref.watch(backupProvider);
   return state.mapOrNull(
-    loaded: (loaded) => loaded.isAuthenticated,
-  ) ?? false;
+        loaded: (loaded) => loaded.isAuthenticated,
+      ) ??
+      false;
 });
 
 /// Convenience provider for user email

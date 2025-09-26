@@ -6,7 +6,7 @@ part 'theme_state.freezed.dart';
 @freezed
 class ThemeState with _$ThemeState {
   const factory ThemeState.loading() = ThemeStateLoading;
-  
+
   const factory ThemeState.loaded({
     required String themeFamily,
     required Brightness brightness,

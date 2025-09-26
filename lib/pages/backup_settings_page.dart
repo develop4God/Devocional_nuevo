@@ -14,7 +14,7 @@ class BackupSettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     debugPrint('🏗️ [DEBUG] BackupSettingsPage build iniciado');
-    
+
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -28,7 +28,7 @@ class BackupSettingsPage extends ConsumerWidget {
       body: Consumer(
         builder: (context, ref, child) {
           final backupState = ref.watch(backupProvider);
-          
+
           return backupState.when(
             initial: () => const Center(child: Text('Initializing...')),
             loading: () => const Center(child: CircularProgressIndicator()),
@@ -44,23 +44,23 @@ class BackupSettingsPage extends ConsumerWidget {
               storageInfo,
               isAuthenticated,
               userEmail,
-            ) => _buildLoadedView(
-              context, 
-              ref, 
-              BackupRiverpodStateLoaded(
-                autoBackupEnabled: autoBackupEnabled,
-                backupFrequency: backupFrequency,
-                wifiOnlyEnabled: wifiOnlyEnabled,
-                compressionEnabled: compressionEnabled,
-                backupOptions: backupOptions,
-                lastBackupTime: lastBackupTime,
-                nextBackupTime: nextBackupTime,
-                estimatedSize: estimatedSize,
-                storageInfo: storageInfo,
-                isAuthenticated: isAuthenticated,
-                userEmail: userEmail,
-              )
-            ),
+            ) =>
+                _buildLoadedView(
+                    context,
+                    ref,
+                    BackupRiverpodStateLoaded(
+                      autoBackupEnabled: autoBackupEnabled,
+                      backupFrequency: backupFrequency,
+                      wifiOnlyEnabled: wifiOnlyEnabled,
+                      compressionEnabled: compressionEnabled,
+                      backupOptions: backupOptions,
+                      lastBackupTime: lastBackupTime,
+                      nextBackupTime: nextBackupTime,
+                      estimatedSize: estimatedSize,
+                      storageInfo: storageInfo,
+                      isAuthenticated: isAuthenticated,
+                      userEmail: userEmail,
+                    )),
             creating: () => const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -71,7 +71,8 @@ class BackupSettingsPage extends ConsumerWidget {
                 ],
               ),
             ),
-            created: (timestamp) => const Center(child: Text('Backup created successfully!')),
+            created: (timestamp) =>
+                const Center(child: Text('Backup created successfully!')),
             restoring: () => const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -82,13 +83,16 @@ class BackupSettingsPage extends ConsumerWidget {
                 ],
               ),
             ),
-            restored: () => const Center(child: Text('Backup restored successfully!')),
-            settingsUpdated: () => const Center(child: Text('Settings updated successfully!')),
+            restored: () =>
+                const Center(child: Text('Backup restored successfully!')),
+            settingsUpdated: () =>
+                const Center(child: Text('Settings updated successfully!')),
             success: (title, message) => Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.check_circle, color: colorScheme.primary, size: 48),
+                  Icon(Icons.check_circle,
+                      color: colorScheme.primary, size: 48),
                   SizedBox(height: 16),
                   Text(
                     title,
@@ -116,7 +120,8 @@ class BackupSettingsPage extends ConsumerWidget {
                   ),
                   SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () => ref.read(backupProvider.notifier).loadBackupSettings(),
+                    onPressed: () =>
+                        ref.read(backupProvider.notifier).loadBackupSettings(),
                     child: Text('Retry'),
                   ),
                 ],
@@ -129,10 +134,7 @@ class BackupSettingsPage extends ConsumerWidget {
   }
 
   Widget _buildLoadedView(
-    BuildContext context, 
-    WidgetRef ref, 
-    BackupRiverpodStateLoaded state
-  ) {
+      BuildContext context, WidgetRef ref, BackupRiverpodStateLoaded state) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -171,7 +173,8 @@ class BackupSettingsPage extends ConsumerWidget {
                     if (state.lastBackupTime != null) ...[
                       const SizedBox(height: 8),
                       Text(
-                        'backup.last_backup'.tr() + ' ${_formatDateTime(state.lastBackupTime!)}',
+                        'backup.last_backup'.tr() +
+                            ' ${_formatDateTime(state.lastBackupTime!)}',
                         style: theme.textTheme.bodySmall,
                       ),
                     ],
@@ -191,14 +194,14 @@ class BackupSettingsPage extends ConsumerWidget {
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Actions
           _buildActionButtons(context, ref, state),
-          
+
           const SizedBox(height: 16),
-          
+
           // Settings
           _buildSettings(context, ref, state),
         ],
@@ -207,17 +210,15 @@ class BackupSettingsPage extends ConsumerWidget {
   }
 
   Widget _buildActionButtons(
-    BuildContext context, 
-    WidgetRef ref, 
-    BackupRiverpodStateLoaded state
-  ) {
+      BuildContext context, WidgetRef ref, BackupRiverpodStateLoaded state) {
     return Column(
       children: [
         if (!state.isAuthenticated) ...[
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: () => ref.read(backupProvider.notifier).signInToGoogleDrive(),
+              onPressed: () =>
+                  ref.read(backupProvider.notifier).signInToGoogleDrive(),
               icon: const Icon(Icons.cloud),
               label: Text('backup.sign_in'.tr()),
             ),
@@ -227,7 +228,8 @@ class BackupSettingsPage extends ConsumerWidget {
             children: [
               Expanded(
                 child: ElevatedButton.icon(
-                  onPressed: () => ref.read(backupProvider.notifier).createManualBackup(),
+                  onPressed: () =>
+                      ref.read(backupProvider.notifier).createManualBackup(),
                   icon: const Icon(Icons.backup),
                   label: Text('backup.create_backup'.tr()),
                 ),
@@ -235,7 +237,8 @@ class BackupSettingsPage extends ConsumerWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: ElevatedButton.icon(
-                  onPressed: () => ref.read(backupProvider.notifier).restoreFromBackup(),
+                  onPressed: () =>
+                      ref.read(backupProvider.notifier).restoreFromBackup(),
                   icon: const Icon(Icons.restore),
                   label: Text('backup.restore'.tr()),
                 ),
@@ -246,7 +249,8 @@ class BackupSettingsPage extends ConsumerWidget {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
-              onPressed: () => ref.read(backupProvider.notifier).signOutFromGoogleDrive(),
+              onPressed: () =>
+                  ref.read(backupProvider.notifier).signOutFromGoogleDrive(),
               icon: const Icon(Icons.logout),
               label: Text('backup.sign_out'.tr()),
             ),
@@ -257,10 +261,7 @@ class BackupSettingsPage extends ConsumerWidget {
   }
 
   Widget _buildSettings(
-    BuildContext context, 
-    WidgetRef ref, 
-    BackupRiverpodStateLoaded state
-  ) {
+      BuildContext context, WidgetRef ref, BackupRiverpodStateLoaded state) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -270,31 +271,33 @@ class BackupSettingsPage extends ConsumerWidget {
             Text(
               'backup.settings'.tr(),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 16),
-            
+
             // Auto backup toggle
             SwitchListTile(
               title: Text('backup.auto_backup'.tr()),
               subtitle: Text('backup.auto_backup_subtitle'.tr()),
               value: state.autoBackupEnabled,
-              onChanged: (value) => ref.read(backupProvider.notifier).toggleAutoBackup(value),
+              onChanged: (value) =>
+                  ref.read(backupProvider.notifier).toggleAutoBackup(value),
             ),
-            
+
             const Divider(),
-            
+
             // Backup frequency
             ListTile(
               title: Text('backup.frequency'.tr()),
               subtitle: Text(state.backupFrequency),
               trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () => _showFrequencySelector(context, ref, state.backupFrequency),
+              onTap: () =>
+                  _showFrequencySelector(context, ref, state.backupFrequency),
             ),
-            
+
             const Divider(),
-            
+
             // Advanced settings
             ListTile(
               title: Text('backup.advanced_settings'.tr()),
@@ -308,7 +311,8 @@ class BackupSettingsPage extends ConsumerWidget {
     );
   }
 
-  void _showFrequencySelector(BuildContext context, WidgetRef ref, String currentFrequency) {
+  void _showFrequencySelector(
+      BuildContext context, WidgetRef ref, String currentFrequency) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -316,16 +320,22 @@ class BackupSettingsPage extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             'Daily',
-            'Weekly', 
+            'Weekly',
             'Monthly',
-          ].map((frequency) => ListTile(
-            title: Text(frequency),
-            trailing: currentFrequency == frequency ? const Icon(Icons.check) : null,
-            onTap: () {
-              ref.read(backupProvider.notifier).changeBackupFrequency(frequency);
-              Navigator.pop(context);
-            },
-          )).toList(),
+          ]
+              .map((frequency) => ListTile(
+                    title: Text(frequency),
+                    trailing: currentFrequency == frequency
+                        ? const Icon(Icons.check)
+                        : null,
+                    onTap: () {
+                      ref
+                          .read(backupProvider.notifier)
+                          .changeBackupFrequency(frequency);
+                      Navigator.pop(context);
+                    },
+                  ))
+              .toList(),
         );
       },
     );

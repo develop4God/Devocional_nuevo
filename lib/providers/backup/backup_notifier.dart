@@ -9,7 +9,8 @@ class BackupNotifier extends StateNotifier<BackupRiverpodState> {
   final BackupRepository _repository;
 
   /// Constructor initializes with loading state
-  BackupNotifier(this._repository) : super(const BackupRiverpodState.initial()) {
+  BackupNotifier(this._repository)
+      : super(const BackupRiverpodState.initial()) {
     // Auto-load backup settings when notifier is created
     loadBackupSettings();
   }
@@ -163,7 +164,7 @@ class BackupNotifier extends StateNotifier<BackupRiverpodState> {
     final currentState = state as BackupRiverpodStateLoaded;
     final updatedOptions = Map<String, bool>.from(currentState.backupOptions);
     updatedOptions[key] = enabled;
-    
+
     await updateBackupOptions(updatedOptions);
   }
 
@@ -308,7 +309,7 @@ class BackupNotifier extends StateNotifier<BackupRiverpodState> {
   Future<void> checkStartupBackup() async {
     try {
       final shouldBackup = await _repository.shouldPerformStartupBackup();
-      
+
       if (shouldBackup) {
         // Automatically create backup if needed
         await createManualBackup();

@@ -4,7 +4,8 @@ import 'package:devocional_nuevo/providers/onboarding/onboarding_notifier.dart';
 import 'package:devocional_nuevo/services/onboarding_service.dart';
 
 /// Main onboarding provider that manages onboarding state
-final onboardingProvider = StateNotifierProvider<OnboardingNotifier, OnboardingRiverpodState>((ref) {
+final onboardingProvider =
+    StateNotifierProvider<OnboardingNotifier, OnboardingRiverpodState>((ref) {
   return OnboardingNotifier(
     onboardingService: OnboardingService.instance,
     ref: ref,

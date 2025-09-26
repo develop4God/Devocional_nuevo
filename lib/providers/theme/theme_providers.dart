@@ -20,10 +20,11 @@ final themeProvider = StateNotifierProvider<ThemeNotifier, ThemeState>((ref) {
 
 /// Get current theme family (falls back to default if loading)
 final currentThemeFamilyProvider = Provider<String>((ref) {
-  return ref.watch(themeProvider).themeFamilyOrNull ?? ThemeRepository.defaultThemeFamily;
+  return ref.watch(themeProvider).themeFamilyOrNull ??
+      ThemeRepository.defaultThemeFamily;
 });
 
-/// Get current brightness (falls back to light if loading)  
+/// Get current brightness (falls back to light if loading)
 final currentBrightnessProvider = Provider<Brightness>((ref) {
   return ref.watch(themeProvider).brightnessOrNull ?? Brightness.light;
 });
@@ -31,8 +32,8 @@ final currentBrightnessProvider = Provider<Brightness>((ref) {
 /// Get current ThemeData (falls back to default theme if loading)
 final currentThemeDataProvider = Provider<ThemeData>((ref) {
   final themeState = ref.watch(themeProvider);
-  return themeState.themeDataOrNull ?? 
-         appThemeFamilies[ThemeRepository.defaultThemeFamily]!['light']!;
+  return themeState.themeDataOrNull ??
+      appThemeFamilies[ThemeRepository.defaultThemeFamily]!['light']!;
 });
 
 /// Get adaptive divider color based on current brightness
@@ -43,7 +44,7 @@ final dividerAdaptiveColorProvider = Provider<Color>((ref) {
 /// Check if theme is currently loading
 final themeLoadingProvider = Provider<bool>((ref) {
   return ref.watch(themeProvider).maybeWhen(
-    loading: () => true,
-    orElse: () => false,
-  );
+        loading: () => true,
+        orElse: () => false,
+      );
 });

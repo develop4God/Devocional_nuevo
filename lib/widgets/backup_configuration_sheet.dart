@@ -30,15 +30,15 @@ class BackupConfigurationSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     // Watch the backup state for real-time updates
     final backupState = ref.watch(backupProvider);
-    
+
     // Get the current state to display
     final displayState = backupState.maybeWhen(
       loaded: (
         autoBackupEnabled,
-        backupFrequency, 
+        backupFrequency,
         wifiOnlyEnabled,
         compressionEnabled,
         backupOptions,
@@ -48,7 +48,8 @@ class BackupConfigurationSheet extends ConsumerWidget {
         storageInfo,
         isAuthenticated,
         userEmail,
-      ) => BackupRiverpodStateLoaded(
+      ) =>
+          BackupRiverpodStateLoaded(
         autoBackupEnabled: autoBackupEnabled,
         backupFrequency: backupFrequency,
         wifiOnlyEnabled: wifiOnlyEnabled,
@@ -93,7 +94,7 @@ class BackupConfigurationSheet extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            
+
             // Header
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
@@ -113,7 +114,7 @@ class BackupConfigurationSheet extends ConsumerWidget {
                 ],
               ),
             ),
-            
+
             // Content
             Expanded(
               child: SingleChildScrollView(
@@ -159,19 +160,19 @@ class BackupConfigurationSheet extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 16),
-            
             SwitchListTile(
               title: Text('backup.wifi_only'.tr()),
               subtitle: Text('backup.wifi_only_subtitle'.tr()),
               value: displayState.wifiOnlyEnabled,
-              onChanged: (value) => ref.read(backupProvider.notifier).toggleWifiOnly(value),
+              onChanged: (value) =>
+                  ref.read(backupProvider.notifier).toggleWifiOnly(value),
             ),
-            
             SwitchListTile(
               title: Text('backup.compress_data'.tr()),
               subtitle: Text('backup.compress_data_subtitle'.tr()),
               value: displayState.compressionEnabled,
-              onChanged: (value) => ref.read(backupProvider.notifier).toggleCompression(value),
+              onChanged: (value) =>
+                  ref.read(backupProvider.notifier).toggleCompression(value),
             ),
           ],
         ),
@@ -198,12 +199,12 @@ class BackupConfigurationSheet extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 16),
-            
             ...displayState.backupOptions.entries.map((entry) {
               return CheckboxListTile(
                 title: Text('backup.option_${entry.key}'.tr()),
                 value: entry.value,
-                onChanged: (value) => ref.read(backupProvider.notifier)
+                onChanged: (value) => ref
+                    .read(backupProvider.notifier)
                     .toggleBackupOption(entry.key, value ?? false),
               );
             }),
@@ -220,7 +221,7 @@ class BackupConfigurationSheet extends ConsumerWidget {
     ThemeData theme,
   ) {
     final colorScheme = theme.colorScheme;
-    
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -234,7 +235,6 @@ class BackupConfigurationSheet extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 16),
-            
             if (displayState.userEmail != null) ...[
               ListTile(
                 leading: const Icon(Icons.account_circle),
@@ -244,7 +244,6 @@ class BackupConfigurationSheet extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
             ],
-            
             if (displayState.storageInfo.isNotEmpty) ...[
               ListTile(
                 leading: const Icon(Icons.storage),
@@ -254,16 +253,13 @@ class BackupConfigurationSheet extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
             ],
-            
             ListTile(
               leading: const Icon(Icons.info_outline),
               title: Text('backup.estimated_size'.tr()),
               subtitle: Text(_formatBytes(displayState.estimatedSize)),
               contentPadding: EdgeInsets.zero,
             ),
-            
             const SizedBox(height: 16),
-            
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
@@ -284,7 +280,7 @@ class BackupConfigurationSheet extends ConsumerWidget {
 
   void _showSignOutDialog(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    
+
     showDialog(
       context: context,
       builder: (dialogContext) {
@@ -316,22 +312,23 @@ class BackupConfigurationSheet extends ConsumerWidget {
 
   String _formatStorageInfo(Map<String, dynamic> storageInfo) {
     if (storageInfo.isEmpty) return 'Unknown';
-    
+
     final used = storageInfo['used'] ?? 0;
     final total = storageInfo['total'] ?? 0;
-    
+
     if (total > 0) {
       final percentage = (used / total * 100).toStringAsFixed(1);
       return '${_formatBytes(used)} / ${_formatBytes(total)} ($percentage%)';
     }
-    
+
     return _formatBytes(used);
   }
 
   String _formatBytes(int bytes) {
     if (bytes < 1024) return '$bytes B';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    if (bytes < 1024 * 1024 * 1024) return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    if (bytes < 1024 * 1024 * 1024)
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
     return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB';
   }
 }

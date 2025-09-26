@@ -22,7 +22,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
   @override
   void initState() {
     super.initState();
-    
+
     // Initialize onboarding flow using Riverpod
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(onboardingProvider.notifier).initialize();
@@ -123,14 +123,17 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
             final onboardingState = ref.watch(onboardingProvider);
 
             // Listen for state changes and handle completion
-            ref.listen<OnboardingRiverpodState>(onboardingProvider, (previous, next) {
+            ref.listen<OnboardingRiverpodState>(onboardingProvider,
+                (previous, next) {
               next.when(
                 initial: () {},
                 loading: () {},
-                stepActive: (currentStepIndex, currentStep, userSelections, stepConfiguration, canProgress, canGoBack, progress) {
+                stepActive: (currentStepIndex, currentStep, userSelections,
+                    stepConfiguration, canProgress, canGoBack, progress) {
                   // Update page controller if needed
                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                    if (_pageController.hasClients && _pageController.page?.round() != currentStepIndex) {
+                    if (_pageController.hasClients &&
+                        _pageController.page?.round() != currentStepIndex) {
                       _animateToPage(currentStepIndex);
                     }
                   });
@@ -145,11 +148,13 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
                 error: (message, category, errorContext) {
                   // Show detailed error dialog instead of just snackbar
                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                    _showErrorDialog(context, OnboardingErrorState(
-                      message: message,
-                      category: category,
-                      errorContext: errorContext,
-                    ));
+                    _showErrorDialog(
+                        context,
+                        OnboardingErrorState(
+                          message: message,
+                          category: category,
+                          errorContext: errorContext,
+                        ));
                   });
                 },
               );
@@ -166,7 +171,8 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
                   child: CircularProgressIndicator(),
                 ),
               ),
-              stepActive: (currentStepIndex, currentStep, userSelections, stepConfiguration, canProgress, canGoBack, progress) {
+              stepActive: (currentStepIndex, currentStep, userSelections,
+                  stepConfiguration, canProgress, canGoBack, progress) {
                 return Scaffold(
                   body: Column(
                     children: [
@@ -195,12 +201,14 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
                   ),
                 );
               },
-              configuring: (configurationType, configurationData) => const Scaffold(
+              configuring: (configurationType, configurationData) =>
+                  const Scaffold(
                 body: Center(
                   child: CircularProgressIndicator(),
                 ),
               ),
-              completed: (appliedConfigurations, completionTimestamp) => const Scaffold(
+              completed: (appliedConfigurations, completionTimestamp) =>
+                  const Scaffold(
                 body: Center(
                   child: Text('Onboarding completed!'),
                 ),
@@ -223,7 +231,8 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
                       ),
                       const SizedBox(height: 16),
                       ElevatedButton(
-                        onPressed: () => ref.read(onboardingProvider.notifier).initialize(),
+                        onPressed: () =>
+                            ref.read(onboardingProvider.notifier).initialize(),
                         child: const Text('Retry'),
                       ),
                     ],

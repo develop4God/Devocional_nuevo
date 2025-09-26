@@ -27,19 +27,20 @@ class BackupRepository {
         _devocionalProvider = devocionalProvider;
 
   /// Load all backup settings from SharedPreferences
-  Future<({
-    bool autoBackupEnabled,
-    String backupFrequency,
-    bool wifiOnlyEnabled,
-    bool compressionEnabled,
-    Map<String, bool> backupOptions,
-    DateTime? lastBackupTime,
-    DateTime? nextBackupTime,
-    int estimatedSize,
-    Map<String, dynamic> storageInfo,
-    bool isAuthenticated,
-    String? userEmail,
-  })> loadBackupSettings() async {
+  Future<
+      ({
+        bool autoBackupEnabled,
+        String backupFrequency,
+        bool wifiOnlyEnabled,
+        bool compressionEnabled,
+        Map<String, bool> backupOptions,
+        DateTime? lastBackupTime,
+        DateTime? nextBackupTime,
+        int estimatedSize,
+        Map<String, dynamic> storageInfo,
+        bool isAuthenticated,
+        String? userEmail,
+      })> loadBackupSettings() async {
     try {
       final prefs = await SharedPreferences.getInstance();
 
@@ -51,7 +52,8 @@ class BackupRepository {
 
       // Load backup options (what to include in backup)
       final optionsString = prefs.getString(_backupOptionsKey) ?? '{}';
-      final Map<String, bool> backupOptions = _parseBackupOptions(optionsString);
+      final Map<String, bool> backupOptions =
+          _parseBackupOptions(optionsString);
 
       // Load last backup time
       final lastBackupTimestamp = prefs.getInt(_lastBackupTimeKey);
@@ -60,7 +62,8 @@ class BackupRepository {
           : null;
 
       // Calculate next backup time based on frequency and last backup
-      final nextBackupTime = _calculateNextBackupTime(lastBackupTime, backupFrequency);
+      final nextBackupTime =
+          _calculateNextBackupTime(lastBackupTime, backupFrequency);
 
       // Get estimated backup size
       final estimatedSize = await _getEstimatedBackupSize();
@@ -178,11 +181,11 @@ class BackupRepository {
       // For this migration, we'll simulate backup creation with current timestamp
       // In real implementation, _backupService.createBackup() would handle the actual backup
       final timestamp = DateTime.now();
-      
+
       // Save last backup time
       final prefs = await SharedPreferences.getInstance();
       await prefs.setInt(_lastBackupTimeKey, timestamp.millisecondsSinceEpoch);
-      
+
       return timestamp;
     } catch (e) {
       throw Exception('Failed to create backup: $e');
@@ -224,13 +227,14 @@ class BackupRepository {
     try {
       final prefs = await SharedPreferences.getInstance();
       final autoEnabled = prefs.getBool(_autoBackupKey) ?? false;
-      
+
       if (!autoEnabled) return false;
 
       final lastBackupTimestamp = prefs.getInt(_lastBackupTimeKey);
       if (lastBackupTimestamp == null) return true;
 
-      final lastBackupTime = DateTime.fromMillisecondsSinceEpoch(lastBackupTimestamp);
+      final lastBackupTime =
+          DateTime.fromMillisecondsSinceEpoch(lastBackupTimestamp);
       final now = DateTime.now();
       final hoursSinceLastBackup = now.difference(lastBackupTime).inHours;
 
@@ -261,13 +265,15 @@ class BackupRepository {
           options[parts[0]] = parts[1].toLowerCase() == 'true';
         }
       }
-      
-      return options.isNotEmpty ? options : {
-        'devotionals': true,
-        'prayers': true,
-        'settings': true,
-        'favorites': true,
-      };
+
+      return options.isNotEmpty
+          ? options
+          : {
+              'devotionals': true,
+              'prayers': true,
+              'settings': true,
+              'favorites': true,
+            };
     } catch (e) {
       return {
         'devotionals': true,

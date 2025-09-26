@@ -1,21 +1,11 @@
 import 'dart:async';
 
-import 'package:devocional_nuevo/blocs/backup_bloc.dart';
-import 'package:devocional_nuevo/blocs/backup_event.dart';
-import 'package:devocional_nuevo/blocs/backup_state.dart';
-import 'package:devocional_nuevo/blocs/prayer_bloc.dart';
 import 'package:devocional_nuevo/extensions/string_extensions.dart';
-import 'package:devocional_nuevo/providers/devocional_provider.dart';
-import 'package:devocional_nuevo/services/backup_scheduler_service.dart';
-import 'package:devocional_nuevo/services/connectivity_service.dart';
-import 'package:devocional_nuevo/services/google_drive_auth_service.dart';
-import 'package:devocional_nuevo/services/google_drive_backup_service.dart';
-import 'package:devocional_nuevo/services/spiritual_stats_service.dart';
+import 'package:devocional_nuevo/providers/backup/backup_providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class OnboardingBackupConfigurationPage extends StatefulWidget {
+class OnboardingBackupConfigurationPage extends ConsumerStatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
   final VoidCallback onSkip;
@@ -28,15 +18,14 @@ class OnboardingBackupConfigurationPage extends StatefulWidget {
   });
 
   @override
-  State<OnboardingBackupConfigurationPage> createState() =>
+  ConsumerState<OnboardingBackupConfigurationPage> createState() =>
       _OnboardingBackupConfigurationPageState();
 }
 
 class _OnboardingBackupConfigurationPageState
-    extends State<OnboardingBackupConfigurationPage> {
+    extends ConsumerState<OnboardingBackupConfigurationPage> {
   bool _isConnecting = false;
   bool _isNavigating = false;
-  bool _hasAutoConfigured = false;
   Timer? _timeoutTimer;
 
   @override
@@ -46,276 +35,364 @@ class _OnboardingBackupConfigurationPageState
   }
 
   @override
+  void initState() {
+    super.initState();
+    // Load backup settings when the page loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Load initial backup settings
+      ref.read(backupProvider.notifier).initialize();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    debugPrint('🏗️ [DEBUG] OnboardingBackupConfigurationPage build iniciado');
-
-    // Create services with dependencies - same as BackupSettingsPage
-    final authService = GoogleDriveAuthService();
-    debugPrint('🔧 [DEBUG] GoogleDriveAuthService creado');
-
-    final connectivityService = ConnectivityService();
-    debugPrint('🔧 [DEBUG] ConnectivityService creado');
-
-    final statsService = SpiritualStatsService();
-    debugPrint('🔧 [DEBUG] SpiritualStatsService creado');
-
-    final backupService = GoogleDriveBackupService(
-      authService: authService,
-      connectivityService: connectivityService,
-      statsService: statsService,
-    );
-    debugPrint('🔧 [DEBUG] GoogleDriveBackupService creado con dependencias');
-
-    return BlocProvider(
-      create: (context) {
-        // 🔧 CRÍTICO: Crear BackupSchedulerService igual que en BackupSettingsPage
-        final schedulerService = BackupSchedulerService(
-          backupService: backupService,
-          connectivityService: connectivityService,
-        );
-        debugPrint('🔧 [DEBUG] BackupSchedulerService creado para onboarding');
-
-        final bloc = BackupBloc(
-          backupService: backupService,
-          schedulerService: schedulerService, // 🔧 AGREGADO
-          devocionalProvider: Provider.of<DevocionalProvider>(
-            context,
-            listen: false,
-          ),
-          prayerBloc: context.read<PrayerBloc>(), // 🔧 AGREGADO
-        );
-
-        // Load initial settings
-        bloc.add(const LoadBackupSettings());
-        return bloc;
-      },
-      child: Scaffold(
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                Theme.of(context).colorScheme.surface,
-              ],
-            ),
-          ),
-          child: SafeArea(
-            child: Column(
-              children: [
-                // Navigation buttons
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                        onPressed: widget.onBack,
-                        child: Text('onboarding.onboarding_back'.tr()),
-                      ),
-                      TextButton(
-                        onPressed: widget.onSkip,
-                        child: Text('onboarding.onboarding_config_later'.tr()),
-                      ),
-                    ],
-                  ),
-                ),
-                // Main content with proper state management
-                Expanded(
-                  child: BlocListener<BackupBloc, BackupState>(
-                    listener: (context, state) {
-                      debugPrint(
-                          '🔄 [DEBUG] OnboardingBlocListener recibió estado: ${state.runtimeType}');
-
-                      if (state is BackupError) {
-                        debugPrint(
-                            '❌ [DEBUG] OnboardingBackupError recibido: ${state.message}');
-                        _clearConnectingState();
-                        _showError(context, state.message);
-                      }
-                      // 🔧 AGREGADO: Manejar BackupInitial para cancelación de usuario
-                      else if (state is BackupInitial) {
-                        debugPrint(
-                            '🔄 [DEBUG] OnboardingBackupInitial recibido - usuario canceló o estado inicial');
-                        _clearConnectingState();
-                      } else if (state is BackupLoaded &&
-                          !state.isAuthenticated &&
-                          _isConnecting) {
-                        debugPrint(
-                            '🔄 [DEBUG] OnboardingBackupLoaded NO autenticado recibido - usuario canceló');
-                        _clearConnectingState();
-                      } else if (state is BackupLoaded &&
-                          state.isAuthenticated &&
-                          !_hasAutoConfigured) {
-                        _hasAutoConfigured = true;
-                        debugPrint(
-                            '✅ [DEBUG] OnboardingBackupLoaded autenticado recibido');
-                        _timeoutTimer?.cancel();
-                        _autoConfigureBackup(context);
-
-                        // Check if we need to create initial backup for new users
-                        _checkAndCreateInitialBackup(context, state);
-
-                        setState(() {
-                          _isNavigating = true;
-                        });
-                        // Delay to allow auto-configuration to complete
-                        Future.delayed(const Duration(milliseconds: 2500), () {
-                          if (mounted) {
-                            debugPrint(
-                                '🚀 [DEBUG] Navegando al siguiente paso del onboarding');
-                            widget.onNext();
-                          }
-                        });
-                      } else if (state is BackupSuccess) {
-                        debugPrint(
-                            '✅ [DEBUG] OnboardingBackupSuccess recibido: ${state.title}');
-                      } else if (state is BackupRestored) {
-                        debugPrint(
-                            '✅ [DEBUG] OnboardingBackupRestored recibido');
-                      }
-                    },
-                    child: BlocBuilder<BackupBloc, BackupState>(
-                      builder: (context, state) {
-                        if (state is BackupLoading && !_isConnecting) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                          child: _buildContent(context, state),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+              Theme.of(context).colorScheme.surface,
+            ],
           ),
         ),
-      ),
-    );
-  }
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Navigation buttons
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: widget.onBack,
+                      child: Text('onboarding.onboarding_back'.tr()),
+                    ),
+                    TextButton(
+                      onPressed: widget.onSkip,
+                      child: Text('onboarding.onboarding_config_later'.tr()),
+                    ),
+                  ],
+                ),
+              ),
+              // Main content
+              Expanded(
+                child: Consumer(
+                  builder: (context, ref, child) {
+                    final backupState = ref.watch(backupProvider);
 
-  Widget _buildContent(BuildContext context, BackupState state) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildConnectionPrompt(context),
-        const SizedBox(height: 32),
-        _buildSecurityInfo(context),
-      ],
-    );
-  }
+                    // Listen for state changes
+                    ref.listen<BackupRiverpodState>(backupProvider,
+                        (previous, next) {
+                      next.whenOrNull(
+                        error: (message) {
+                          debugPrint('🚨 [DEBUG] Error en backup: $message');
+                          _showError(context, message);
+                          _clearConnectingState();
+                        },
+                        created: (timestamp) {
+                          debugPrint('✅ [DEBUG] Backup creado exitosamente');
+                          _showSnackbar(context, 'backup_completed'.tr(),
+                              isSuccess: true);
+                        },
+                        restored: () {
+                          debugPrint(
+                              '✅ [DEBUG] Backup restaurado exitosamente');
+                          _showSnackbar(context, 'backup_restored'.tr(),
+                              isSuccess: true);
+                        },
+                        loaded: (autoBackupEnabled,
+                            backupFrequency,
+                            wifiOnlyEnabled,
+                            compressionEnabled,
+                            backupOptions,
+                            lastBackupTime,
+                            nextBackupTime,
+                            estimatedSize,
+                            storageInfo,
+                            isAuthenticated,
+                            userEmail) {
+                          debugPrint('✅ [DEBUG] Backup settings loaded');
+                          _clearConnectingState();
+                          _checkAndCreateInitialBackup(
+                              context, isAuthenticated);
+                        },
+                      );
+                    });
 
-  Widget _buildConnectionPrompt(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Column(
-      children: [
-        // Google Drive icon
-        Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.blue.withValues(alpha: 0.3),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
+                    return backupState.when(
+                      initial: () => _buildInitialContent(context),
+                      loading: () => _buildLoadingContent(context),
+                      loaded: (autoBackupEnabled,
+                              backupFrequency,
+                              wifiOnlyEnabled,
+                              compressionEnabled,
+                              backupOptions,
+                              lastBackupTime,
+                              nextBackupTime,
+                              estimatedSize,
+                              storageInfo,
+                              isAuthenticated,
+                              userEmail) =>
+                          _buildLoadedContent(context, isAuthenticated),
+                      creating: () => _buildCreatingContent(context),
+                      created: (timestamp) =>
+                          _buildLoadedContent(context, true),
+                      restoring: () => _buildRestoringContent(context),
+                      restored: () => _buildLoadedContent(context, true),
+                      settingsUpdated: () => _buildLoadedContent(
+                          context, ref.read(isAuthenticatedProvider)),
+                      success: (title, message) => _buildLoadedContent(
+                          context, ref.read(isAuthenticatedProvider)),
+                      error: (message) => _buildErrorContent(context, message),
+                    );
+                  },
+                ),
               ),
             ],
           ),
-          child: const Icon(
-            Icons.cloud,
-            color: Colors.white,
-            size: 50,
-          ),
         ),
-        const SizedBox(height: 32),
-        Text(
-          'backup.description_title'.tr(),
-          style: theme.textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'backup.description_text'.tr(),
-          style: theme.textTheme.bodyLarge?.copyWith(
-            color: colorScheme.onSurface.withValues(alpha: 0.7),
-            height: 1.5,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 48),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton.icon(
-            onPressed: (_isConnecting || _isNavigating)
-                ? null
-                : () => _connectGoogleDrive(context),
-            icon: (_isConnecting || _isNavigating)
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.add_to_drive_outlined),
-            label: Text(
-              (_isConnecting || _isNavigating)
-                  ? 'onboarding.onboarding_connecting'.tr()
-                  : 'backup.google_drive_connection'.tr(),
-              style: const TextStyle(fontSize: 16),
-            ),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 
-  Widget _buildSecurityInfo(BuildContext context) {
+  Widget _buildInitialContent(BuildContext context) {
+    return _buildContent(context, isLoading: true);
+  }
+
+  Widget _buildLoadingContent(BuildContext context) {
+    return _buildContent(context, isLoading: true);
+  }
+
+  Widget _buildLoadedContent(BuildContext context, bool isAuthenticated) {
+    return _buildContent(context, isAuthenticated: isAuthenticated);
+  }
+
+  Widget _buildErrorContent(BuildContext context, String message) {
+    return _buildContent(context, error: message);
+  }
+
+  Widget _buildCreatingContent(BuildContext context) {
+    return _buildContent(context, isCreatingBackup: true);
+  }
+
+  Widget _buildRestoringContent(BuildContext context) {
+    return _buildContent(context, isRestoring: true);
+  }
+
+  Widget _buildSigningInContent(BuildContext context) {
+    return _buildContent(context, isLoading: true);
+  }
+
+  Widget _buildContent(
+    BuildContext context, {
+    bool isLoading = false,
+    bool isAuthenticated = false,
+    bool isCreatingBackup = false,
+    bool isRestoring = false,
+    String? error,
+  }) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: colorScheme.outline.withValues(alpha: 0.2),
-        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+      child: Column(
+        children: [
+          // Title and subtitle section
+          Flexible(
+            flex: 2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'onboarding.onboarding_backup_config_title'.tr(),
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: colorScheme.onSurface,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'onboarding.onboarding_backup_config_subtitle'.tr(),
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: colorScheme.onSurface.withValues(alpha: 0.8),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+
+          // Content based on state
+          Expanded(
+            flex: 3,
+            child: _buildStateContent(
+              context,
+              isLoading: isLoading,
+              isAuthenticated: isAuthenticated,
+              isCreatingBackup: isCreatingBackup,
+              isRestoring: isRestoring,
+              error: error,
+            ),
+          ),
+
+          // Action buttons
+          _buildActionButtons(context, isAuthenticated: isAuthenticated),
+        ],
       ),
-      child: Row(
+    );
+  }
+
+  Widget _buildStateContent(
+    BuildContext context, {
+    required bool isLoading,
+    required bool isAuthenticated,
+    required bool isCreatingBackup,
+    required bool isRestoring,
+    String? error,
+  }) {
+    if (error != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: 64,
+              color: Theme.of(context).colorScheme.error,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              error,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (isLoading || isCreatingBackup || isRestoring) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+          ],
+        ),
+      );
+    }
+
+    if (isAuthenticated) {
+      return _buildAuthenticatedContent(context);
+    }
+
+    return _buildNotAuthenticatedContent(context);
+  }
+
+  Widget _buildNotAuthenticatedContent(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            Icons.security,
-            color: colorScheme.primary,
-            size: 24,
+            Icons.cloud_off_outlined,
+            size: 80,
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              'backup.security_text'.tr(),
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurface.withValues(alpha: 0.8),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed:
+                _isConnecting ? null : () => _connectGoogleDrive(context),
+            icon: _isConnecting
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.cloud),
+            label: Text(
+              _isConnecting
+                  ? 'backup.connecting'.tr()
+                  : 'backup.sign_in_to_google_drive'.tr(),
+            ),
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 12,
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAuthenticatedContent(BuildContext context) {
+    final userEmail = ref.watch(userEmailProvider);
+
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.cloud_done_outlined,
+            size: 80,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'backup.connected_as'.tr(),
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            userEmail ?? 'N/A',
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 32),
+          ElevatedButton(
+            onPressed: () => _autoConfigureBackup(context),
+            child: Text('backup.auto_configure'.tr()),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButtons(BuildContext context,
+      {required bool isAuthenticated}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 32.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (isAuthenticated)
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  if (!_isNavigating) {
+                    setState(() {
+                      _isNavigating = true;
+                    });
+                    widget.onNext();
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: Text('onboarding.continue'.tr()),
+              ),
+            ),
         ],
       ),
     );
@@ -335,8 +412,8 @@ class _OnboardingBackupConfigurationPageState
       }
     });
 
-    debugPrint('🔄 [DEBUG] Onboarding Enviando SignInToGoogleDrive event');
-    context.read<BackupBloc>().add(const SignInToGoogleDrive());
+    debugPrint('🔄 [DEBUG] Onboarding Enviando signInToGoogleDrive');
+    ref.read(backupProvider.notifier).signInToGoogleDrive();
   }
 
   void _autoConfigureBackup(BuildContext context) {
@@ -344,26 +421,31 @@ class _OnboardingBackupConfigurationPageState
         '⚙️ [DEBUG] Onboarding Auto-configurando backup con configuración óptima');
 
     // Activate automatic backup with all defaults - same as BackupSettingsPage
-    context.read<BackupBloc>().add(const ToggleAutoBackup(true));
-    context.read<BackupBloc>().add(const ToggleWifiOnly(true));
-    context.read<BackupBloc>().add(const ToggleCompression(true));
+    ref.read(backupProvider.notifier).toggleAutoBackup(true);
+    ref.read(backupProvider.notifier).toggleWifiOnly(true);
+    ref.read(backupProvider.notifier).toggleCompression(true);
 
     debugPrint('✅ [DEBUG] Onboarding Auto-configuración enviada');
   }
 
-  void _checkAndCreateInitialBackup(BuildContext context, BackupLoaded state) {
+  void _checkAndCreateInitialBackup(
+      BuildContext context, bool isAuthenticated) {
+    if (!isAuthenticated) return;
+
     // Check if this is first time connecting (same logic as BackupSettingsPage)
-    final hasConnectedBefore =
-        state.lastBackupTime != null || state.autoBackupEnabled;
+    final hasConnectedBefore = ref.read(lastBackupTimeProvider) != null ||
+        ref.read(autoBackupEnabledProvider);
 
     debugPrint('🔍 [DEBUG] hasConnectedBefore: $hasConnectedBefore');
-    debugPrint('🔍 [DEBUG] lastBackupTime: ${state.lastBackupTime}');
-    debugPrint('🔍 [DEBUG] autoBackupEnabled: ${state.autoBackupEnabled}');
+    debugPrint(
+        '🔍 [DEBUG] lastBackupTime: ${ref.read(lastBackupTimeProvider)}');
+    debugPrint(
+        '🔍 [DEBUG] autoBackupEnabled: ${ref.read(autoBackupEnabledProvider)}');
 
     if (!hasConnectedBefore) {
       debugPrint('🆕 [DEBUG] Usuario nuevo detectado - creando primer backup');
       // Create initial backup for new users
-      context.read<BackupBloc>().add(const CreateManualBackup());
+      ref.read(backupProvider.notifier).createManualBackup();
     } else {
       debugPrint('✅ [DEBUG] Usuario existente - no necesita backup inicial');
     }
@@ -387,6 +469,20 @@ class _OnboardingBackupConfigurationPageState
           content: Text(message.tr()),
           backgroundColor: Theme.of(context).colorScheme.error,
           duration: const Duration(seconds: 4),
+        ),
+      );
+    }
+  }
+
+  void _showSnackbar(BuildContext context, String message,
+      {bool isSuccess = false}) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: isSuccess
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.error,
         ),
       );
     }

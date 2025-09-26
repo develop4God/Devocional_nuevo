@@ -4,11 +4,12 @@ import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:devocional_nuevo/providers/localization_provider.dart';
 
 /// Provider for LocalizationProvider - Legacy ChangeNotifier (to be migrated)
-final localizationProvider = ChangeNotifierProvider<LocalizationProvider>((ref) {
+final localizationProvider =
+    ChangeNotifierProvider<LocalizationProvider>((ref) {
   return LocalizationProvider();
 });
 
-/// Provider for DevocionalProvider - Legacy ChangeNotifier (to be migrated)  
+/// Provider for DevocionalProvider - Legacy ChangeNotifier (to be migrated)
 final devocionalProvider = ChangeNotifierProvider<DevocionalProvider>((ref) {
   return DevocionalProvider();
 });
