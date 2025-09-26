@@ -1,53 +1,288 @@
 // lib/widgets/backup_configuration_sheet.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../blocs/backup_bloc.dart';
-import '../blocs/backup_event.dart';
-import '../blocs/backup_state.dart';
+import '../providers/backup/backup_providers.dart';
+import '../providers/backup/backup_state.dart';
 import '../extensions/string_extensions.dart';
 
-/// Modal de configuración de backup optimizado con mejoras UX
-class BackupConfigurationSheet extends StatelessWidget {
-  final BackupLoaded state;
-  final BackupBloc backupBloc;
+/// Modal de configuración de backup migrado a Riverpod
+class BackupConfigurationSheet extends ConsumerWidget {
+  final BackupRiverpodStateLoaded initialState;
 
   const BackupConfigurationSheet({
     super.key,
-    required this.state,
-    required this.backupBloc,
+    required this.initialState,
   });
 
-  static void show(BuildContext context, BackupLoaded state) {
-    final backupBloc = context.read<BackupBloc>();
+  static void show(BuildContext context, BackupRiverpodStateLoaded state) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       isDismissible: true,
       enableDrag: true,
-      builder: (context) =>
-          BackupConfigurationSheet(state: state, backupBloc: backupBloc),
+      builder: (context) => BackupConfigurationSheet(initialState: state),
     );
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return BlocProvider.value(
-      value: backupBloc,
-      child: BlocBuilder<BackupBloc, BackupState>(
-        builder: (context, currentState) {
-          final displayState =
-              currentState is BackupLoaded ? currentState : state;
+    // Watch backup options provider for real-time updates
+    final backupOptions = ref.watch(backupOptionsProvider);
 
-          return Container(
-            decoration: BoxDecoration(
-              color: colorScheme.surface.withValues(alpha: 0.98),
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(20),
+    return Container(
+      decoration: BoxDecoration(
+        color: colorScheme.surface.withValues(alpha: 0.98),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.2),
+            blurRadius: 20,
+            offset: const Offset(0, -5),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Handle bar
+              Container(
+                margin: const EdgeInsets.only(top: 8),
+                height: 4,
+                width: 40,
+                decoration: BoxDecoration(
+                  color: colorScheme.onSurface.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+
+              // Header
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.tune,
+                      color: colorScheme.primary,
+                      size: 24,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'backup.configuration_title'.tr(),
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: Icon(
+                        Icons.close,
+                        color: colorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Configuration options
+              Flexible(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'backup.select_data_to_backup'.tr(),
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: colorScheme.onSurface.withValues(alpha: 0.8),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Backup options
+                      ...backupOptions.entries.map((entry) {
+                        final key = entry.key;
+                        final value = entry.value;
+                        
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          decoration: BoxDecoration(
+                            color: colorScheme.surfaceVariant.withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: colorScheme.outline.withValues(alpha: 0.2),
+                            ),
+                          ),
+                          child: CheckboxListTile(
+                            title: Text(_getBackupOptionTitle(key)),
+                            subtitle: Text(_getBackupOptionSubtitle(key)),
+                            value: value,
+                            onChanged: (bool? newValue) {
+                              if (newValue != null) {
+                                final updatedOptions = Map<String, bool>.from(backupOptions);
+                                updatedOptions[key] = newValue;
+                                ref.read(backupProvider.notifier).updateBackupOptions(updatedOptions);
+                              }
+                            },
+                            activeColor: colorScheme.primary,
+                            checkColor: colorScheme.onPrimary,
+                            controlAffinity: ListTileControlAffinity.trailing,
+                          ),
+                        );
+                      }).toList(),
+
+                      const SizedBox(height: 20),
+
+                      // Estimated backup size
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: colorScheme.primaryContainer.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: colorScheme.primary.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.info_outline,
+                              color: colorScheme.primary,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'backup.estimated_size'.tr(),
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      color: colorScheme.onSurface,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Consumer(
+                                    builder: (context, ref, child) {
+                                      final estimatedSize = ref.watch(estimatedBackupSizeProvider);
+                                      return Text(
+                                        _formatFileSize(estimatedSize),
+                                        style: theme.textTheme.bodySmall?.copyWith(
+                                          color: colorScheme.onSurface.withValues(alpha: 0.7),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Action buttons
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: colorScheme.surface,
+                  border: Border(
+                    top: BorderSide(
+                      color: colorScheme.outline.withValues(alpha: 0.2),
+                    ),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                        ),
+                        child: Text('backup.cancel'.tr()),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          // Options are saved automatically via state management
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                        ),
+                        child: Text('backup.save'.tr()),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _getBackupOptionTitle(String key) {
+    switch (key) {
+      case 'devotionals':
+        return 'backup.option_devotionals'.tr();
+      case 'prayers':
+        return 'backup.option_prayers'.tr();
+      case 'settings':
+        return 'backup.option_settings'.tr();
+      case 'favorites':
+        return 'backup.option_favorites'.tr();
+      default:
+        return key;
+    }
+  }
+
+  String _getBackupOptionSubtitle(String key) {
+    switch (key) {
+      case 'devotionals':
+        return 'backup.option_devotionals_desc'.tr();
+      case 'prayers':
+        return 'backup.option_prayers_desc'.tr();
+      case 'settings':
+        return 'backup.option_settings_desc'.tr();
+      case 'favorites':
+        return 'backup.option_favorites_desc'.tr();
+      default:
+        return '';
+    }
+  }
+
+  String _formatFileSize(int bytes) {
+    if (bytes < 1024) return '${bytes} B';
+    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
+    if (bytes < 1024 * 1024 * 1024) return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB';
+  }
+}
               ),
               boxShadow: [
                 BoxShadow(

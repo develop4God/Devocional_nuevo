@@ -8,8 +8,6 @@ final onboardingProvider = StateNotifierProvider<OnboardingNotifier, OnboardingR
   return OnboardingNotifier(
     onboardingService: OnboardingService.instance,
     ref: ref,
-    // BackupBloc is optional and will be injected if available
-    backupBloc: null, // TODO: Get from context if needed
   );
 });
 

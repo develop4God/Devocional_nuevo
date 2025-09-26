@@ -5,16 +5,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:devocional_nuevo/providers/onboarding/onboarding_state.dart';
 import 'package:devocional_nuevo/providers/theme/theme_providers.dart';
+import 'package:devocional_nuevo/providers/backup/backup_providers.dart';
 import 'package:devocional_nuevo/services/onboarding_service.dart';
 import 'package:devocional_nuevo/models/onboarding_models.dart';
-import 'package:devocional_nuevo/blocs/backup_bloc.dart';
-import 'package:devocional_nuevo/blocs/backup_event.dart';
 
 /// StateNotifier for managing onboarding flow with Riverpod
 class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
   final OnboardingService _onboardingService;
   final Ref _ref;
-  final BackupBloc? _backupBloc;
 
   // Configuration persistence keys
   static const String _configurationKey = 'onboarding_configuration';
@@ -31,10 +29,8 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
   OnboardingNotifier({
     required OnboardingService onboardingService,
     required Ref ref,
-    BackupBloc? backupBloc,
   })  : _onboardingService = onboardingService,
         _ref = ref,
-        _backupBloc = backupBloc,
         super(const OnboardingRiverpodState.initial());
 
   /// Initialize onboarding flow and determine starting point

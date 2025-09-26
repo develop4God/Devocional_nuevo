@@ -1,103 +1,409 @@
 // lib/pages/backup_settings_page.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../blocs/backup_bloc.dart';
-import '../blocs/backup_event.dart';
-import '../blocs/backup_state.dart';
-import '../blocs/prayer_bloc.dart';
+import '../providers/backup/backup_providers.dart';
+import '../providers/backup/backup_state.dart';
 import '../extensions/string_extensions.dart';
-import '../providers/devocional_provider.dart';
-import '../services/backup_scheduler_service.dart';
-import '../services/connectivity_service.dart';
-import '../services/google_drive_auth_service.dart';
-import '../services/google_drive_backup_service.dart';
-import '../services/spiritual_stats_service.dart';
 import '../widgets/backup_configuration_sheet.dart';
 
-/// BackupSettingsPage with simplified progressive UI
-class BackupSettingsPage extends StatelessWidget {
-  final BackupBloc? bloc; // Optional bloc for testing
-
-  const BackupSettingsPage({super.key, this.bloc});
-
-  @override
-  Widget build(BuildContext context) {
-    debugPrint('🏗️ [DEBUG] BackupSettingsPage build iniciado');
-
-    // If bloc is provided (e.g., in tests), use it directly
-    if (bloc != null) {
-      return BlocProvider.value(
-        value: bloc!,
-        child: const _BackupSettingsView(),
-      );
-    }
-
-    // Otherwise, create services with dependencies (production)
-    final authService = GoogleDriveAuthService();
-    debugPrint('🔧 [DEBUG] GoogleDriveAuthService creado');
-
-    final connectivityService = ConnectivityService();
-    debugPrint('🔧 [DEBUG] ConnectivityService creado');
-
-    final statsService = SpiritualStatsService();
-    debugPrint('🔧 [DEBUG] SpiritualStatsService creado');
-
-    final backupService = GoogleDriveBackupService(
-      authService: authService,
-      connectivityService: connectivityService,
-      statsService: statsService,
-    );
-    debugPrint('🔧 [DEBUG] GoogleDriveBackupService creado con dependencias');
-
-    return BlocProvider(
-      create: (context) {
-        // 🔧 CRÍTICO: Restaurar BackupSchedulerService
-        final schedulerService = BackupSchedulerService(
-          backupService: backupService,
-          connectivityService: connectivityService,
-        );
-
-        final bloc = BackupBloc(
-          backupService: backupService,
-          schedulerService: schedulerService, // 🔧 RESTAURADO
-          devocionalProvider: Provider.of<DevocionalProvider>(
-            context,
-            listen: false,
-          ),
-          prayerBloc: context.read<PrayerBloc>(), // 🔧 RESTAURADO
-        );
-
-        bloc.add(const LoadBackupSettings());
-        return bloc;
-      },
-      child: const _BackupSettingsView(),
-    );
-  }
-}
-
-class _BackupSettingsView extends StatelessWidget {
-  const _BackupSettingsView();
+/// BackupSettingsPage migrated to Riverpod architecture
+/// Replaces BLoC pattern with modern StateNotifier approach
+class BackupSettingsPage extends ConsumerWidget {
+  const BackupSettingsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
       appBar: AppBar(title: Text('backup.title'.tr()), elevation: 0),
-      body: BlocListener<BackupBloc, BackupState>(
-        listener: (context, state) {
-          debugPrint(
-            '🔄 [DEBUG] BlocListener recibió estado: ${state.runtimeType}',
-          );
+      body: Consumer(
+        builder: (context, ref, child) {
+          // Listen to backup state changes
+          ref.listen<BackupRiverpodState>(backupProvider, (previous, next) {
+            // Handle state-based UI feedback
+            next.when(
+              initial: () {},
+              loading: () {},
+              loaded: (_) {},
+              creating: () {},
+              created: (_) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('backup.backup_created'.tr()),
+                    backgroundColor: colorScheme.primary,
+                  ),
+                );
+              },
+              restoring: () {},
+              restored: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('backup.backup_restored'.tr()),
+                    backgroundColor: colorScheme.primary,
+                  ),
+                );
+              },
+              settingsUpdated: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('backup.settings_updated'.tr()),
+                    backgroundColor: colorScheme.secondary,
+                  ),
+                );
+              },
+              success: (title, message) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(message),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              },
+              error: (message) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(message),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              },
+            );
+          });
 
-          if (state is BackupError) {
-            debugPrint('❌ [DEBUG] BackupError recibido: ${state.message}');
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message.tr()),
+          final backupState = ref.watch(backupProvider);
+
+          return backupState.when(
+            initial: () => const _InitialView(),
+            loading: () => const _LoadingView(),
+            loaded: (
+              autoBackupEnabled,
+              backupFrequency,
+              wifiOnlyEnabled,
+              compressionEnabled,
+              backupOptions,
+              lastBackupTime,
+              nextBackupTime,
+              estimatedSize,
+              storageInfo,
+              isAuthenticated,
+              userEmail,
+            ) =>
+                _LoadedView(
+              state: backupState as BackupRiverpodStateLoaded,
+            ),
+            creating: () => const _CreatingBackupView(),
+            created: (_) => const _LoadingView(), // Will transition back
+            restoring: () => const _RestoringBackupView(),
+            restored: () => const _LoadingView(), // Will transition back
+            settingsUpdated: () => const _LoadingView(), // Will transition back
+            success: (title, message) => _SuccessView(title: title, message: message),
+            error: (message) => _ErrorView(message: message),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _InitialView extends StatelessWidget {
+  const _InitialView();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+}
+
+class _LoadingView extends StatelessWidget {
+  const _LoadingView();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(),
+          SizedBox(height: 16),
+          Text('Loading backup settings...'),
+        ],
+      ),
+    );
+  }
+}
+
+class _CreatingBackupView extends StatelessWidget {
+  const _CreatingBackupView();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const CircularProgressIndicator(),
+          const SizedBox(height: 16),
+          Text('backup.creating_backup'.tr()),
+        ],
+      ),
+    );
+  }
+}
+
+class _RestoringBackupView extends StatelessWidget {
+  const _RestoringBackupView();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const CircularProgressIndicator(),
+          const SizedBox(height: 16),
+          Text('backup.restoring_backup'.tr()),
+        ],
+      ),
+    );
+  }
+}
+
+class _SuccessView extends StatelessWidget {
+  final String title;
+  final String message;
+
+  const _SuccessView({
+    required this.title,
+    required this.message,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.check_circle, size: 64, color: Colors.green),
+          const SizedBox(height: 16),
+          Text(title, style: Theme.of(context).textTheme.headlineMedium),
+          const SizedBox(height: 8),
+          Text(message),
+        ],
+      ),
+    );
+  }
+}
+
+class _ErrorView extends ConsumerWidget {
+  final String message;
+
+  const _ErrorView({required this.message});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.error_outline, size: 64, color: Colors.red),
+          const SizedBox(height: 16),
+          Text('backup.error'.tr()),
+          const SizedBox(height: 8),
+          Text(message),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () {
+              ref.read(backupProvider.notifier).loadBackupSettings();
+            },
+            child: Text('backup.retry'.tr()),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LoadedView extends ConsumerWidget {
+  final BackupRiverpodStateLoaded state;
+
+  const _LoadedView({required this.state});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        // Authentication section
+        Card(
+          child: ListTile(
+            leading: Icon(
+              state.isAuthenticated ? Icons.cloud_done : Icons.cloud_off,
+              color: state.isAuthenticated ? Colors.green : Colors.grey,
+            ),
+            title: Text(state.isAuthenticated 
+                ? 'backup.signed_in'.tr() 
+                : 'backup.sign_in_required'.tr()),
+            subtitle: state.userEmail != null 
+                ? Text(state.userEmail!) 
+                : Text('backup.sign_in_to_google_drive'.tr()),
+            trailing: TextButton(
+              onPressed: () {
+                if (state.isAuthenticated) {
+                  ref.read(backupProvider.notifier).signOutFromGoogleDrive();
+                } else {
+                  ref.read(backupProvider.notifier).signInToGoogleDrive();
+                }
+              },
+              child: Text(state.isAuthenticated 
+                  ? 'backup.sign_out'.tr() 
+                  : 'backup.sign_in'.tr()),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // Auto backup toggle
+        Card(
+          child: SwitchListTile(
+            title: Text('backup.auto_backup'.tr()),
+            subtitle: Text('backup.auto_backup_description'.tr()),
+            value: state.autoBackupEnabled,
+            onChanged: state.isAuthenticated
+                ? (value) {
+                    ref.read(backupProvider.notifier).toggleAutoBackup(value);
+                  }
+                : null,
+          ),
+        ),
+
+        // Backup frequency
+        if (state.autoBackupEnabled)
+          Card(
+            child: ListTile(
+              title: Text('backup.frequency'.tr()),
+              subtitle: Text('backup.current_frequency'.tr(args: [state.backupFrequency])),
+              trailing: DropdownButton<String>(
+                value: state.backupFrequency,
+                items: [
+                  DropdownMenuItem(value: 'daily', child: Text('backup.daily'.tr())),
+                  DropdownMenuItem(value: 'weekly', child: Text('backup.weekly'.tr())),
+                  DropdownMenuItem(value: 'monthly', child: Text('backup.monthly'.tr())),
+                ],
+                onChanged: (value) {
+                  if (value != null) {
+                    ref.read(backupProvider.notifier).changeBackupFrequency(value);
+                  }
+                },
+              ),
+            ),
+          ),
+
+        const SizedBox(height: 16),
+
+        // Manual backup options
+        Card(
+          child: Column(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.backup),
+                title: Text('backup.create_manual_backup'.tr()),
+                subtitle: state.lastBackupTime != null
+                    ? Text('backup.last_backup'.tr(args: [
+                        state.lastBackupTime.toString(),
+                      ]))
+                    : Text('backup.no_backup_yet'.tr()),
+                trailing: ElevatedButton(
+                  onPressed: state.isAuthenticated
+                      ? () {
+                          ref.read(backupProvider.notifier).createManualBackup();
+                        }
+                      : null,
+                  child: Text('backup.create_backup'.tr()),
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.restore),
+                title: Text('backup.restore_backup'.tr()),
+                subtitle: Text('backup.restore_description'.tr()),
+                trailing: ElevatedButton(
+                  onPressed: state.isAuthenticated
+                      ? () {
+                          ref.read(backupProvider.notifier).restoreFromBackup();
+                        }
+                      : null,
+                  child: Text('backup.restore'.tr()),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // Advanced settings
+        Card(
+          child: ExpansionTile(
+            title: Text('backup.advanced_settings'.tr()),
+            children: [
+              SwitchListTile(
+                title: Text('backup.wifi_only'.tr()),
+                subtitle: Text('backup.wifi_only_description'.tr()),
+                value: state.wifiOnlyEnabled,
+                onChanged: (value) {
+                  ref.read(backupProvider.notifier).toggleWifiOnly(value);
+                },
+              ),
+              SwitchListTile(
+                title: Text('backup.compression'.tr()),
+                subtitle: Text('backup.compression_description'.tr()),
+                value: state.compressionEnabled,
+                onChanged: (value) {
+                  ref.read(backupProvider.notifier).toggleCompression(value);
+                },
+              ),
+              ListTile(
+                title: Text('backup.backup_options'.tr()),
+                subtitle: Text('backup.backup_options_description'.tr()),
+                trailing: const Icon(Icons.settings),
+                onTap: () {
+                  BackupConfigurationSheet.show(context, state);
+                },
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // Storage info
+        if (state.storageInfo.isNotEmpty)
+          Card(
+            child: ListTile(
+              title: Text('backup.storage_info'.tr()),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('backup.estimated_size'.tr(args: [
+                    '${(state.estimatedSize / 1024).toStringAsFixed(1)} KB'
+                  ])),
+                  // Add more storage info display as needed
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
                 backgroundColor: colorScheme.error,
               ),
             );
