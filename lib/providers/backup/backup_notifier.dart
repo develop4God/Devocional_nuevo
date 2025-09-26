@@ -15,6 +15,11 @@ class BackupNotifier extends StateNotifier<BackupRiverpodState> {
     loadBackupSettings();
   }
 
+  /// Initialize the backup notifier (alias for loadBackupSettings)
+  Future<void> initialize() async {
+    await loadBackupSettings();
+  }
+
   /// Load all backup settings and status
   Future<void> loadBackupSettings() async {
     try {
@@ -337,6 +342,32 @@ class BackupNotifier extends StateNotifier<BackupRiverpodState> {
     } catch (e) {
       state = BackupRiverpodState.error(
         message: 'Failed to load storage information: ${e.toString()}',
+      );
+    }
+  }
+
+  /// Toggle specific backup option
+  Future<void> toggleBackupOption(String option, bool value) async {
+    try {
+      if (state is! BackupRiverpodStateLoaded) return;
+
+      final currentState = state as BackupRiverpodStateLoaded;
+      final updatedOptions = Map<String, bool>.from(currentState.backupOptions);
+      updatedOptions[option] = value;
+
+      // Save to repository
+      await _repository.saveBackupOption(option, value);
+
+      // Update state
+      state = currentState.copyWith(backupOptions: updatedOptions);
+
+      // Show feedback
+      state = const BackupRiverpodState.settingsUpdated();
+      await Future.delayed(const Duration(milliseconds: 1000));
+      state = currentState.copyWith(backupOptions: updatedOptions);
+    } catch (e) {
+      state = BackupRiverpodState.error(
+        message: 'Failed to update backup option: ${e.toString()}',
       );
     }
   }
