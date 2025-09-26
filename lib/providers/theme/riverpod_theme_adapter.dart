@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:devocional_nuevo/providers/theme/theme_adapter.dart';
 import 'package:devocional_nuevo/providers/theme/theme_providers.dart';
-import 'package:devocional_nuevo/providers/theme/theme_repository.dart';
 
 /// Riverpod implementation of ThemeAdapter
 class RiverpodThemeAdapter implements ThemeAdapter {
-  final WidgetRef _ref;
+  final Ref _ref;
 
   RiverpodThemeAdapter(this._ref);
 

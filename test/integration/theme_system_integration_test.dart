@@ -17,7 +17,6 @@ void main() {
             home: Consumer(
               builder: (context, ref, child) {
                 final themeState = ref.watch(themeProvider);
-                final themeData = ref.watch(currentThemeDataProvider);
                 
                 return Scaffold(
                   appBar: AppBar(title: const Text('Theme Test')),

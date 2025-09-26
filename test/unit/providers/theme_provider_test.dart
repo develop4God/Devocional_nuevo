@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:devocional_nuevo/providers/theme/theme_providers.dart';
 import 'package:devocional_nuevo/providers/theme/theme_repository.dart';
 import 'package:devocional_nuevo/providers/theme/theme_state.dart';
-import 'package:devocional_nuevo/providers/theme/theme_notifier.dart';
 import 'package:devocional_nuevo/utils/theme_constants.dart';
 
 // Mock classes for testing
