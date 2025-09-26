@@ -156,6 +156,17 @@ class BackupNotifier extends StateNotifier<BackupRiverpodState> {
     }
   }
 
+  /// Toggle individual backup option
+  Future<void> toggleBackupOption(String key, bool enabled) async {
+    if (state is! BackupRiverpodStateLoaded) return;
+
+    final currentState = state as BackupRiverpodStateLoaded;
+    final updatedOptions = Map<String, bool>.from(currentState.backupOptions);
+    updatedOptions[key] = enabled;
+    
+    await updateBackupOptions(updatedOptions);
+  }
+
   /// Create manual backup
   Future<void> createManualBackup() async {
     try {

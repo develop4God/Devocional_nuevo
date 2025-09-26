@@ -1,11 +1,11 @@
 import 'dart:developer' as developer;
 
-import 'package:devocional_nuevo/blocs/backup_event.dart';
 import 'package:devocional_nuevo/pages/devocionales_page.dart';
 import 'package:devocional_nuevo/pages/onboarding/onboarding_flow.dart';
 import 'package:devocional_nuevo/pages/settings_page.dart';
 import 'package:devocional_nuevo/providers/app_providers.dart';
 import 'package:devocional_nuevo/providers/theme/theme_providers.dart';
+import 'package:devocional_nuevo/providers/backup/backup_providers.dart';
 import 'package:devocional_nuevo/services/backup_scheduler_service.dart';
 import 'package:devocional_nuevo/services/notification_service.dart';
 import 'package:devocional_nuevo/services/onboarding_service.dart';
@@ -238,9 +238,6 @@ class _AppInitializerState extends ConsumerState<AppInitializer> {
   }
 
   Future<void> _initializeInBackground() async {
-    // Capturar BLoC ANTES de cualquier await
-    final backupBloc = ref.read(backupBlocProvider);
-
     // Dar tiempo para que el SplashScreen se muestre
     await Future.delayed(const Duration(milliseconds: 600));
 
@@ -248,10 +245,11 @@ class _AppInitializerState extends ConsumerState<AppInitializer> {
     await _initServices();
     await _initAppData();
 
-    // Startup backup check (non-blocking)
+    // Startup backup check (non-blocking) using Riverpod
     Future.delayed(const Duration(seconds: 2), () {
       try {
-        backupBloc.add(const CheckStartupBackup());
+        final backupNotifier = ref.read(backupProvider.notifier);
+        backupNotifier.checkStartupBackup();
         debugPrint('🌅 [MAIN] Startup backup check initiated');
       } catch (e) {
         debugPrint('❌ [MAIN] Error starting backup check: $e');

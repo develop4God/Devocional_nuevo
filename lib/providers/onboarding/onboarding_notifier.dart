@@ -249,10 +249,15 @@ class OnboardingNotifier extends StateNotifier<OnboardingRiverpodState> {
       final updatedSelections = Map<String, dynamic>.from(currentState.userSelections);
       updatedSelections['backupEnabled'] = enableBackup;
 
-      // If backup is enabled and BackupBloc is available, trigger setup
-      if (enableBackup && _backupBloc != null) {
-        _backupBloc!.add(const SignInToGoogleDrive());
-        debugPrint('🔧 [ONBOARDING_NOTIFIER] Google Drive Auth setup iniciado');
+      // If backup is enabled, trigger setup using Riverpod
+      if (enableBackup) {
+        try {
+          final backupNotifier = _ref.read(backupProvider.notifier);
+          await backupNotifier.signInToGoogleDrive();
+          debugPrint('🔧 [ONBOARDING_NOTIFIER] Google Drive Auth setup iniciado');
+        } catch (e) {
+          debugPrint('❌ [ONBOARDING_NOTIFIER] Error setting up backup: $e');
+        }
       }
 
       // Save configuration
