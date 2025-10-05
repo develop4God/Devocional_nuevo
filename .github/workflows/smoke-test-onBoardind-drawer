@@ -1,0 +1,38 @@
+name: 🧪Flutter Smoke Test - Onboarding & Drawer
+
+on:
+  workflow_dispatch:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run smoke test
+        run: flutter test test/smoke_test.dart
+
+      - name: Archive test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-test-results
+          path: build/**/test-results/**/*.xml
+
+      - name: Notify success
+        if: success()
+        run: echo "✅ Smoke test passed! Onboarding and drawer flow validated."
+
+      - name: Notify failure
+        if: failure()
+        run: echo "❌ Smoke test failed. Review actions log for details."
