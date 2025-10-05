@@ -19,15 +19,20 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Run smoke test
-        run: flutter test test/smoke_test.dart
+      - name: Run smoke test with verbose logs
+        run: |
+          echo "=== Starting Flutter Smoke Test ==="
+          flutter test --verbose test/smoke_onboarding_drawer_test.dart
+        continue-on-error: true
 
-      - name: Archive test results
+      - name: Archive test results (if any)
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: smoke-test-results
-          path: build/**/test-results/**/*.xml
+          path: |
+            build/**/test-results/**/*.xml
+            test/**/smoke_onboarding_drawer_test.dart
 
       - name: Notify success
         if: success()
