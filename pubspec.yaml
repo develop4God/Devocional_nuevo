@@ -50,6 +50,10 @@ dependencies:
   flutter_tts: ^4.1.0
   synchronized: ^3.1.0+1  # For thread safety and mutex protection
 
+  # Chat dependencies
+  google_generative_ai: ^0.4.3
+  flutter_dotenv: ^5.1.0
+
   # Google Drive Backup dependencies
   googleapis: ^13.2.0
   googleapis_auth: ^1.6.0

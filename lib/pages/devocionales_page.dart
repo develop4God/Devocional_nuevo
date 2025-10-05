@@ -17,12 +17,15 @@ import 'package:devocional_nuevo/widgets/add_prayer_modal.dart';
 import 'package:devocional_nuevo/widgets/app_bar_constants.dart'
     show CustomAppBar;
 import 'package:devocional_nuevo/widgets/app_bar_constants.dart';
+import 'package:devocional_nuevo/widgets/chat_floating_button.dart';
+import 'package:devocional_nuevo/widgets/chat_overlay.dart';
 import 'package:devocional_nuevo/widgets/devocionales_page_drawer.dart';
 import 'package:devocional_nuevo/widgets/tts_player_widget.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -31,6 +34,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../blocs/chat/chat_bloc.dart';
 import '../controllers/audio_controller.dart';
 import '../services/spiritual_stats_service.dart';
 
@@ -585,12 +589,33 @@ class _DevocionalesPageState extends State<DevocionalesPage>
       appBar: CustomAppBar(
         titleText: 'devotionals.my_intimate_space_with_god'.tr(),
       ),
-      floatingActionButton: FloatingActionButton.small(
-        onPressed: _showAddPrayerModal,
-        backgroundColor: colorScheme.primary,
-        foregroundColor: colorScheme.onPrimary,
-        tooltip: 'tooltips.add_prayer'.tr(),
-        child: const Icon(Icons.add, size: 30),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Chat floating button
+          ChatFloatingButton(
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => BlocProvider.value(
+                  value: context.read<ChatBloc>(),
+                  child: const ChatOverlay(),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 16),
+          // Prayer floating button
+          FloatingActionButton.small(
+            onPressed: _showAddPrayerModal,
+            backgroundColor: colorScheme.primary,
+            foregroundColor: colorScheme.onPrimary,
+            tooltip: 'tooltips.add_prayer'.tr(),
+            child: const Icon(Icons.add, size: 30),
+          ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Consumer<DevocionalProvider>(
