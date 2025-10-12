@@ -21,7 +21,8 @@ void main() {
       expect(BibleTextNormalizer.clean(text), 'Verse text  continues here');
     });
 
-    test('should remove bracketed references with special characters [36†]', () {
+    test('should remove bracketed references with special characters [36†]',
+        () {
       const text = 'Verse text [36†] continues here';
       expect(BibleTextNormalizer.clean(text), 'Verse text  continues here');
     });

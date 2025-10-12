@@ -89,7 +89,7 @@ class BibleReader extends _$BibleReader {
         maxChapter =
             await selectedVersion.service!.getMaxChapter(selectedBookNumber!);
         verses = await selectedVersion.service!.getChapterVerses(
-          selectedBookNumber,
+          selectedBookNumber!,
           selectedChapter!,
         );
         maxVerse = verses.isNotEmpty ? (verses.last['verse'] as int? ?? 1) : 1;
@@ -101,10 +101,10 @@ class BibleReader extends _$BibleReader {
         selectedChapter = 1;
         selectedVerse = 1;
         maxChapter =
-            await selectedVersion.service!.getMaxChapter(selectedBookNumber);
+            await selectedVersion.service!.getMaxChapter(selectedBookNumber!);
         verses = await selectedVersion.service!.getChapterVerses(
-          selectedBookNumber,
-          selectedChapter,
+          selectedBookNumber!,
+          selectedChapter!,
         );
         maxVerse = verses.isNotEmpty ? (verses.last['verse'] as int? ?? 1) : 1;
       }
@@ -116,10 +116,10 @@ class BibleReader extends _$BibleReader {
       selectedChapter = 1;
       selectedVerse = 1;
       maxChapter =
-          await selectedVersion.service!.getMaxChapter(selectedBookNumber);
+          await selectedVersion.service!.getMaxChapter(selectedBookNumber!);
       verses = await selectedVersion.service!.getChapterVerses(
-        selectedBookNumber,
-        selectedChapter,
+        selectedBookNumber!,
+        selectedChapter!,
       );
       maxVerse = verses.isNotEmpty ? (verses.last['verse'] as int? ?? 1) : 1;
     }
@@ -267,7 +267,7 @@ class BibleReader extends _$BibleReader {
       );
       if (currentBookIndex > 0) {
         final previousBook = currentState.books[currentBookIndex - 1];
-        await selectBook(previousBook, goToLastChapter: true);
+        await selectBook(book: previousBook, goToLastChapter: true);
       }
     }
   }
@@ -291,7 +291,7 @@ class BibleReader extends _$BibleReader {
       );
       if (currentBookIndex < currentState.books.length - 1) {
         final nextBook = currentState.books[currentBookIndex + 1];
-        await selectBook(nextBook, chapter: 1);
+        await selectBook(book: nextBook, chapter: 1);
       }
     }
   }
@@ -502,7 +502,7 @@ class BibleReader extends _$BibleReader {
         final maxChapter = await service.getMaxChapter(book['book_number']);
         if (chapter > 0 && chapter <= maxChapter) {
           // Navigate to book/chapter
-          await selectBook(book, chapter: chapter);
+          await selectBook(book: book, chapter: chapter);
 
           // If verse specified, scroll to it
           if (verse != null) {
@@ -543,7 +543,7 @@ class BibleReader extends _$BibleReader {
       orElse: () => currentState.books[0],
     );
 
-    await selectBook(book, chapter: chapter);
+    await selectBook(book: book, chapter: chapter);
 
     // Clear search
     state = AsyncValue.data((await future).copyWith(
