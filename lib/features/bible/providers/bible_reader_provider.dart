@@ -20,19 +20,15 @@ class BibleReader extends _$BibleReader {
   @override
   Future<BibleReaderState> build(List<BibleVersion> versions) async {
     // 1. Detect device language
-    final deviceLanguage =
-        ui.PlatformDispatcher.instance.locale.languageCode;
+    final deviceLanguage = ui.PlatformDispatcher.instance.locale.languageCode;
 
     // 2. Filter versions by language
-    var filteredVersions = versions
-        .where((v) => v.languageCode == deviceLanguage)
-        .toList();
+    var filteredVersions =
+        versions.where((v) => v.languageCode == deviceLanguage).toList();
 
     // Fallback to Spanish if empty
     if (filteredVersions.isEmpty) {
-      filteredVersions = versions
-          .where((v) => v.languageCode == 'es')
-          .toList();
+      filteredVersions = versions.where((v) => v.languageCode == 'es').toList();
     }
 
     // Fallback to all versions if still empty
@@ -90,7 +86,8 @@ class BibleReader extends _$BibleReader {
       );
 
       if (bookExists) {
-        maxChapter = await selectedVersion.service!.getMaxChapter(selectedBookNumber!);
+        maxChapter =
+            await selectedVersion.service!.getMaxChapter(selectedBookNumber!);
         verses = await selectedVersion.service!.getChapterVerses(
           selectedBookNumber,
           selectedChapter!,
@@ -103,7 +100,8 @@ class BibleReader extends _$BibleReader {
         selectedBookNumber = firstBook['book_number'];
         selectedChapter = 1;
         selectedVerse = 1;
-        maxChapter = await selectedVersion.service!.getMaxChapter(selectedBookNumber);
+        maxChapter =
+            await selectedVersion.service!.getMaxChapter(selectedBookNumber);
         verses = await selectedVersion.service!.getChapterVerses(
           selectedBookNumber,
           selectedChapter,
@@ -117,7 +115,8 @@ class BibleReader extends _$BibleReader {
       selectedBookNumber = firstBook['book_number'];
       selectedChapter = 1;
       selectedVerse = 1;
-      maxChapter = await selectedVersion.service!.getMaxChapter(selectedBookNumber);
+      maxChapter =
+          await selectedVersion.service!.getMaxChapter(selectedBookNumber);
       verses = await selectedVersion.service!.getChapterVerses(
         selectedBookNumber,
         selectedChapter,
@@ -180,12 +179,11 @@ class BibleReader extends _$BibleReader {
     final bookNumber = book['book_number'] as int;
 
     final maxChapter = await service.getMaxChapter(bookNumber);
-    final targetChapter = goToLastChapter
-        ? maxChapter
-        : (chapter ?? 1);
+    final targetChapter = goToLastChapter ? maxChapter : (chapter ?? 1);
 
     final verses = await service.getChapterVerses(bookNumber, targetChapter);
-    final maxVerse = verses.isNotEmpty ? (verses.last['verse'] as int? ?? 1) : 1;
+    final maxVerse =
+        verses.isNotEmpty ? (verses.last['verse'] as int? ?? 1) : 1;
 
     _initVerseKeys(verses);
 
@@ -221,7 +219,8 @@ class BibleReader extends _$BibleReader {
       currentState.selectedBookNumber!,
       chapter,
     );
-    final maxVerse = verses.isNotEmpty ? (verses.last['verse'] as int? ?? 1) : 1;
+    final maxVerse =
+        verses.isNotEmpty ? (verses.last['verse'] as int? ?? 1) : 1;
 
     _initVerseKeys(verses);
 
@@ -453,7 +452,8 @@ class BibleReader extends _$BibleReader {
     final bookNumber = firstBook['book_number'] as int;
     final maxChapter = await newVersion.service!.getMaxChapter(bookNumber);
     final verses = await newVersion.service!.getChapterVerses(bookNumber, 1);
-    final maxVerse = verses.isNotEmpty ? (verses.last['verse'] as int? ?? 1) : 1;
+    final maxVerse =
+        verses.isNotEmpty ? (verses.last['verse'] as int? ?? 1) : 1;
 
     _initVerseKeys(verses);
 
