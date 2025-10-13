@@ -8,7 +8,6 @@ class BibleReaderState {
   final int maxChapter;
   final int maxVerse;
   final List<Map<String, dynamic>> verses;
-  final List<Map<String, dynamic>> books;
   final Set<String> selectedVerses;
   final Set<String> bookmarkedVerses;
   final double fontSize;
@@ -24,7 +23,6 @@ class BibleReaderState {
     this.maxChapter = 1,
     this.maxVerse = 1,
     this.verses = const [],
-    this.books = const [],
     this.selectedVerses = const {},
     this.bookmarkedVerses = const {},
     this.fontSize = 18.0,
@@ -41,7 +39,6 @@ class BibleReaderState {
     int? maxChapter,
     int? maxVerse,
     List<Map<String, dynamic>>? verses,
-    List<Map<String, dynamic>>? books,
     Set<String>? selectedVerses,
     Set<String>? bookmarkedVerses,
     double? fontSize,
@@ -57,7 +54,6 @@ class BibleReaderState {
       maxChapter: maxChapter ?? this.maxChapter,
       maxVerse: maxVerse ?? this.maxVerse,
       verses: verses ?? this.verses,
-      books: books ?? this.books,
       selectedVerses: selectedVerses ?? this.selectedVerses,
       bookmarkedVerses: bookmarkedVerses ?? this.bookmarkedVerses,
       fontSize: fontSize ?? this.fontSize,

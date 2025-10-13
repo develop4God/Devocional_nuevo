@@ -115,14 +115,14 @@ void main() {
     test('should initialize with default state', () {
       expect(controller.state.isLoading, true);
       expect(controller.state.verses, isEmpty);
-      expect(controller.state.books, isEmpty);
+      expect(controller.books, isEmpty);
       expect(controller.state.fontSize, 18.0);
     });
 
     test('should load books successfully', () async {
       await controller.loadBooks();
 
-      expect(controller.state.books.length, 5);
+      expect(controller.books.length, 5);
       expect(controller.state.selectedBookName, 'Gn');
       expect(controller.state.selectedBookNumber, 1);
       expect(controller.state.selectedChapter, 1);

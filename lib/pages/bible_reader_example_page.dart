@@ -139,7 +139,7 @@ class _BibleReaderExamplePageState extends State<BibleReaderExamplePage> {
   Future<void> _showBookSelector() async {
     final book = await BookSelectorDialog.show(
       context,
-      books: _controller.state.books,
+      books: _controller.books,
       currentSelection: _controller.state.selectedBookName,
     );
 

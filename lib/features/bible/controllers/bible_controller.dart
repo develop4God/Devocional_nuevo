@@ -10,7 +10,13 @@ class BibleController extends ChangeNotifier {
   final BibleDbService _service;
   BibleReaderState _state = const BibleReaderState();
 
+  // Private cache for books
+  List<Map<String, dynamic>>? _cachedBooks;
+
   BibleReaderState get state => _state;
+
+  // Public getter for books
+  List<Map<String, dynamic>> get books => _cachedBooks ?? [];
 
   BibleController(this._service);
 
@@ -22,12 +28,13 @@ class BibleController extends ChangeNotifier {
 
   /// Initialize controller with books
   Future<void> loadBooks() async {
-    final books = await _service.getAllBooks();
+    _cachedBooks = await _service.getAllBooks();
     _updateState(_state.copyWith(
-      books: books,
-      selectedBookName: books.isNotEmpty ? books[0]['short_name'] : null,
-      selectedBookNumber: books.isNotEmpty ? books[0]['book_number'] : null,
-      selectedChapter: books.isNotEmpty ? 1 : null,
+      selectedBookName:
+          _cachedBooks!.isNotEmpty ? _cachedBooks![0]['short_name'] : null,
+      selectedBookNumber:
+          _cachedBooks!.isNotEmpty ? _cachedBooks![0]['book_number'] : null,
+      selectedChapter: _cachedBooks!.isNotEmpty ? 1 : null,
     ));
 
     if (_state.selectedBookNumber != null) {
@@ -66,6 +73,30 @@ class BibleController extends ChangeNotifier {
     ));
   }
 
+  /// Load verses for a specific chapter without notifying listeners
+  Future<void> _loadChapterSilent(int chapter) async {
+    if (_state.selectedBookNumber == null) return;
+
+    final verses = await _service.getChapterVerses(
+      _state.selectedBookNumber!,
+      chapter,
+    );
+
+    final maxVerseNum =
+        verses.isNotEmpty ? (verses.last['verse'] as int? ?? 1) : 1;
+
+    // Update state without notifying
+    _state = _state.copyWith(
+      selectedChapter: chapter,
+      verses: verses,
+      maxVerse: maxVerseNum,
+      selectedVerse:
+          (_state.selectedVerse == null || _state.selectedVerse! > maxVerseNum)
+              ? 1
+              : _state.selectedVerse,
+    );
+  }
+
   /// Navigate to a specific book
   Future<void> _navigateToBook(
     Map<String, dynamic> book, {
@@ -87,45 +118,44 @@ class BibleController extends ChangeNotifier {
 
   /// Navigate to next chapter
   Future<void> goToNextChapter() async {
-    if (_state.selectedChapter == null || _state.books.isEmpty) return;
+    if (_state.selectedChapter == null || books.isEmpty) return;
 
     if (_state.selectedChapter! < _state.maxChapter) {
       // Next chapter in same book
-      await loadChapter(_state.selectedChapter! + 1);
+      await _loadChapterSilent(_state.selectedChapter! + 1);
       _updateState(_state.copyWith(
         selectedVerse: 1,
         selectedVerses: {},
       ));
     } else {
       // Find next book
-      final currentIndex = _state.books.indexWhere(
+      final currentIndex = books.indexWhere(
         (b) => b['book_number'] == _state.selectedBookNumber,
       );
-      if (currentIndex >= 0 && currentIndex < _state.books.length - 1) {
-        await _navigateToBook(_state.books[currentIndex + 1], chapter: 1);
+      if (currentIndex >= 0 && currentIndex < books.length - 1) {
+        await _navigateToBook(books[currentIndex + 1], chapter: 1);
       }
     }
   }
 
   /// Navigate to previous chapter
   Future<void> goToPreviousChapter() async {
-    if (_state.selectedChapter == null || _state.books.isEmpty) return;
+    if (_state.selectedChapter == null || books.isEmpty) return;
 
     if (_state.selectedChapter! > 1) {
       // Previous chapter in same book
-      await loadChapter(_state.selectedChapter! - 1);
+      await _loadChapterSilent(_state.selectedChapter! - 1);
       _updateState(_state.copyWith(
         selectedVerse: 1,
         selectedVerses: {},
       ));
     } else {
       // Find previous book
-      final currentIndex = _state.books.indexWhere(
+      final currentIndex = books.indexWhere(
         (b) => b['book_number'] == _state.selectedBookNumber,
       );
       if (currentIndex > 0) {
-        await _navigateToBook(_state.books[currentIndex - 1],
-            goToLastChapter: true);
+        await _navigateToBook(books[currentIndex - 1], goToLastChapter: true);
       }
     }
   }
@@ -191,9 +221,9 @@ class BibleController extends ChangeNotifier {
     final chapter = result['chapter'] as int;
     final verse = result['verse'] as int;
 
-    final book = _state.books.firstWhere(
+    final book = books.firstWhere(
       (b) => b['book_number'] == bookNumber,
-      orElse: () => _state.books.isNotEmpty ? _state.books[0] : {},
+      orElse: () => books.isNotEmpty ? books[0] : {},
     );
 
     if (book.isNotEmpty) {
@@ -275,19 +305,14 @@ class BibleController extends ChangeNotifier {
     required int bookNumber,
     required int chapter,
   }) async {
-    final book = _state.books.firstWhere(
+    final book = books.firstWhere(
       (b) => b['short_name'] == bookName || b['book_number'] == bookNumber,
-      orElse: () => _state.books.isNotEmpty ? _state.books[0] : {},
+      orElse: () => books.isNotEmpty ? books[0] : {},
     );
 
     if (book.isNotEmpty) {
       await _navigateToBook(book, chapter: chapter);
     }
-  }
-
-  /// Update books list (for version switching)
-  void updateBooks(List<Map<String, dynamic>> books) {
-    _updateState(_state.copyWith(books: books));
   }
 
   /// Initialize with bookmarked verses
