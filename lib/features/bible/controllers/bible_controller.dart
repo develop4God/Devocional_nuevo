@@ -66,10 +66,7 @@ class BibleController extends ChangeNotifier {
       selectedChapter: chapter,
       verses: verses,
       maxVerse: maxVerseNum,
-      selectedVerse:
-          (_state.selectedVerse == null || _state.selectedVerse! > maxVerseNum)
-              ? 1
-              : _state.selectedVerse,
+      selectedVerse: 1, // Always reset to verse 1 when loading a new chapter
     ));
   }
 
@@ -90,10 +87,7 @@ class BibleController extends ChangeNotifier {
       selectedChapter: chapter,
       verses: verses,
       maxVerse: maxVerseNum,
-      selectedVerse:
-          (_state.selectedVerse == null || _state.selectedVerse! > maxVerseNum)
-              ? 1
-              : _state.selectedVerse,
+      selectedVerse: 1, // Always reset to verse 1 when loading a new chapter
     );
   }
 
@@ -107,6 +101,7 @@ class BibleController extends ChangeNotifier {
       selectedBookName: book['short_name'],
       selectedBookNumber: book['book_number'],
       selectedVerses: {},
+      selectedVerse: 1, // Reset to verse 1 when changing books
     ));
 
     final maxChapter = await _service.getMaxChapter(book['book_number']);
@@ -241,9 +236,14 @@ class BibleController extends ChangeNotifier {
     final newSelection = Set<String>.from(_state.selectedVerses);
     if (newSelection.contains(verseKey)) {
       newSelection.remove(verseKey);
+      debugPrint('📖 BibleController: Deselected verse: $verseKey');
     } else {
       newSelection.add(verseKey);
+      debugPrint('📖 BibleController: Selected verse: $verseKey');
     }
+    debugPrint(
+        '📖 BibleController: Total selected verses: ${newSelection.length}');
+    debugPrint('📖 BibleController: Selected verses: $newSelection');
     _updateState(_state.copyWith(selectedVerses: newSelection));
   }
 

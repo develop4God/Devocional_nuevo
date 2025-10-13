@@ -300,5 +300,60 @@ void main() {
       final key = controller.state.makeVerseKey('Gn', 1, 1);
       expect(key, 'Gn|1|1');
     });
+
+    test('should reset to verse 1 when changing chapters', () async {
+      await controller.loadBooks();
+
+      // Load chapter 1
+      await controller.loadChapter(1);
+      expect(controller.state.selectedVerse, 1);
+
+      // Load chapter 2 - should reset to verse 1
+      await controller.loadChapter(2);
+
+      expect(controller.state.selectedChapter, 2);
+      expect(controller.state.selectedVerse, 1);
+    });
+
+    test('should reset to chapter 1 verse 1 when changing books', () async {
+      await controller.loadBooks();
+
+      // Initially at Genesis chapter 1
+      expect(controller.state.selectedChapter, 1);
+      expect(controller.state.selectedVerse, 1);
+
+      // Navigate to chapter 5
+      await controller.loadChapter(5);
+      expect(controller.state.selectedChapter, 5);
+      expect(controller.state.selectedVerse, 1);
+
+      // Select a different book (Exodus)
+      await controller.selectBook(mockService._mockBooks[1]);
+
+      // Should be at Exodus chapter 1 verse 1
+      expect(controller.state.selectedBookNumber, 2);
+      expect(controller.state.selectedBookName, 'Éx');
+      expect(controller.state.selectedChapter, 1);
+      expect(controller.state.selectedVerse, 1);
+    });
+
+    test('should log verse selection changes with debug prints', () {
+      final verseKey = 'Gn|1|1';
+
+      // First selection
+      controller.toggleVerseSelection(verseKey);
+      expect(controller.state.selectedVerses.contains(verseKey), true);
+
+      // Deselection
+      controller.toggleVerseSelection(verseKey);
+      expect(controller.state.selectedVerses.contains(verseKey), false);
+
+      // Multiple selections
+      controller.toggleVerseSelection('Gn|1|1');
+      controller.toggleVerseSelection('Gn|1|2');
+      controller.toggleVerseSelection('Gn|1|3');
+
+      expect(controller.state.selectedVerses.length, 3);
+    });
   });
 }
