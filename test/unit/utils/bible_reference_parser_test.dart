@@ -1,4 +1,4 @@
-import 'package:devocional_nuevo/pages/bible_reader_page.dart';
+import 'package:devocional_nuevo/features/bible/utils/bible_reference_parser.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
