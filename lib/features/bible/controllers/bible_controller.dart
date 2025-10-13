@@ -52,16 +52,17 @@ class BibleController extends ChangeNotifier {
       chapter,
     );
 
-    final maxVerseNum = verses.isNotEmpty ? (verses.last['verse'] as int? ?? 1) : 1;
+    final maxVerseNum =
+        verses.isNotEmpty ? (verses.last['verse'] as int? ?? 1) : 1;
 
     _updateState(_state.copyWith(
       selectedChapter: chapter,
       verses: verses,
       maxVerse: maxVerseNum,
-      selectedVerse: (_state.selectedVerse == null ||
-              _state.selectedVerse! > maxVerseNum)
-          ? 1
-          : _state.selectedVerse,
+      selectedVerse:
+          (_state.selectedVerse == null || _state.selectedVerse! > maxVerseNum)
+              ? 1
+              : _state.selectedVerse,
     ));
   }
 
