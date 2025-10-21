@@ -66,6 +66,7 @@ dependencies:
     path: bible_reader_core
 
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
