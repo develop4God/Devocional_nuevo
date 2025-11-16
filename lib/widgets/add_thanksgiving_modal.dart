@@ -1,22 +1,22 @@
-// lib/widgets/add_prayer_modal.dart
+// lib/widgets/add_thanksgiving_modal.dart
 
-import 'package:devocional_nuevo/blocs/prayer_bloc.dart';
-import 'package:devocional_nuevo/blocs/prayer_event.dart';
+import 'package:devocional_nuevo/blocs/thanksgiving_bloc.dart';
+import 'package:devocional_nuevo/blocs/thanksgiving_event.dart';
 import 'package:devocional_nuevo/extensions/string_extensions.dart';
-import 'package:devocional_nuevo/models/prayer_model.dart';
+import 'package:devocional_nuevo/models/thanksgiving_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AddPrayerModal extends StatefulWidget {
-  final Prayer? prayerToEdit;
+class AddThanksgivingModal extends StatefulWidget {
+  final Thanksgiving? thanksgivingToEdit;
 
-  const AddPrayerModal({super.key, this.prayerToEdit});
+  const AddThanksgivingModal({super.key, this.thanksgivingToEdit});
 
   @override
-  State<AddPrayerModal> createState() => _AddPrayerModalState();
+  State<AddThanksgivingModal> createState() => _AddThanksgivingModalState();
 }
 
-class _AddPrayerModalState extends State<AddPrayerModal> {
+class _AddThanksgivingModalState extends State<AddThanksgivingModal> {
   final TextEditingController _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   bool _isLoading = false;
@@ -25,8 +25,8 @@ class _AddPrayerModalState extends State<AddPrayerModal> {
   @override
   void initState() {
     super.initState();
-    if (widget.prayerToEdit != null) {
-      _textController.text = widget.prayerToEdit!.text;
+    if (widget.thanksgivingToEdit != null) {
+      _textController.text = widget.thanksgivingToEdit!.text;
     }
     // Auto focus en el campo de texto
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -41,7 +41,7 @@ class _AddPrayerModalState extends State<AddPrayerModal> {
     super.dispose();
   }
 
-  bool get _isEditing => widget.prayerToEdit != null;
+  bool get _isEditing => widget.thanksgivingToEdit != null;
 
   @override
   Widget build(BuildContext context) {
@@ -78,8 +78,8 @@ class _AddPrayerModalState extends State<AddPrayerModal> {
               Expanded(
                 child: Text(
                   _isEditing
-                      ? 'prayer.edit_prayer'.tr()
-                      : '${'prayer.new_prayer'.tr()} 🙏',
+                      ? 'thanksgiving.edit_thanksgiving'.tr()
+                      : '${'thanksgiving.new_thanksgiving'.tr()} ☺️',
                   style: textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: colorScheme.onSurface,
@@ -115,8 +115,8 @@ class _AddPrayerModalState extends State<AddPrayerModal> {
                 Expanded(
                   child: Text(
                     _isEditing
-                        ? 'prayer.edit_prayer_description'.tr()
-                        : 'prayer.new_prayer_description'.tr(),
+                        ? 'thanksgiving.edit_thanksgiving_description'.tr()
+                        : 'thanksgiving.new_thanksgiving_description'.tr(),
                     style: textTheme.bodySmall?.copyWith(
                       color: colorScheme.primary,
                     ),
@@ -127,7 +127,7 @@ class _AddPrayerModalState extends State<AddPrayerModal> {
           ),
           const SizedBox(height: 20),
 
-          // Campo de texto para la oración
+          // Campo de texto para el agradecimiento
           TextField(
             controller: _textController,
             focusNode: _focusNode,
@@ -140,8 +140,8 @@ class _AddPrayerModalState extends State<AddPrayerModal> {
             ),
             decoration: InputDecoration(
               hintText: _isEditing
-                  ? 'prayer.edit_placeholder'.tr()
-                  : 'prayer.new_placeholder'.tr(),
+                  ? 'thanksgiving.edit_placeholder'.tr()
+                  : 'thanksgiving.new_placeholder'.tr(),
               hintStyle: textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurface.withValues(alpha: 0.5),
                 height: 1.4,
@@ -207,7 +207,7 @@ class _AddPrayerModalState extends State<AddPrayerModal> {
                     ),
                   ),
                   child: Text(
-                    'prayer.cancel'.tr(),
+                    'thanksgiving.cancel'.tr(),
                     style: textTheme.labelLarge?.copyWith(
                       color: colorScheme.onSurface,
                     ),
@@ -217,7 +217,7 @@ class _AddPrayerModalState extends State<AddPrayerModal> {
               const SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : _savePrayer,
+                  onPressed: _isLoading ? null : _saveThanksgiving,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: colorScheme.primary,
                     foregroundColor: colorScheme.onPrimary,
@@ -237,8 +237,8 @@ class _AddPrayerModalState extends State<AddPrayerModal> {
                         )
                       : Text(
                           _isEditing
-                              ? 'prayer.update_prayer'.tr()
-                              : 'prayer.create_prayer'.tr(),
+                              ? 'thanksgiving.update_thanksgiving'.tr()
+                              : 'thanksgiving.create_thanksgiving'.tr(),
                           style: textTheme.labelLarge?.copyWith(
                             color: colorScheme.onPrimary,
                             fontWeight: FontWeight.w600,
@@ -256,7 +256,7 @@ class _AddPrayerModalState extends State<AddPrayerModal> {
     );
   }
 
-  Future<void> _savePrayer() async {
+  Future<void> _saveThanksgiving() async {
     final text = _textController.text.trim();
 
     // Limpiar error previo
@@ -266,14 +266,14 @@ class _AddPrayerModalState extends State<AddPrayerModal> {
 
     if (text.isEmpty) {
       setState(() {
-        _errorMessage = 'prayer.enter_prayer_text_error'.tr();
+        _errorMessage = 'thanksgiving.enter_thanksgiving_text_error'.tr();
       });
       return;
     }
 
     if (text.length < 10) {
       setState(() {
-        _errorMessage = 'prayer.prayer_min_length_error'.tr();
+        _errorMessage = 'thanksgiving.thanksgiving_min_length_error'.tr();
       });
       return;
     }
@@ -285,12 +285,12 @@ class _AddPrayerModalState extends State<AddPrayerModal> {
     try {
       if (_isEditing) {
         context
-            .read<PrayerBloc>()
-            .add(EditPrayer(widget.prayerToEdit!.id, text));
-        _showSuccessSnackBar('prayer.prayer_updated'.tr());
+            .read<ThanksgivingBloc>()
+            .add(EditThanksgiving(widget.thanksgivingToEdit!.id, text));
+        _showSuccessSnackBar('thanksgiving.thanksgiving_updated'.tr());
       } else {
-        context.read<PrayerBloc>().add(AddPrayer(text));
-        _showSuccessSnackBar('prayer.prayer_created'.tr());
+        context.read<ThanksgivingBloc>().add(AddThanksgiving(text));
+        _showSuccessSnackBar('thanksgiving.thanksgiving_created'.tr());
       }
 
       if (mounted) {
@@ -299,7 +299,7 @@ class _AddPrayerModalState extends State<AddPrayerModal> {
     } catch (e) {
       setState(() {
         _errorMessage =
-            'Error al ${_isEditing ? 'actualizar' : 'crear'} la oración';
+            'Error al ${_isEditing ? 'actualizar' : 'crear'} el agradecimiento';
       });
     } finally {
       if (mounted) {
