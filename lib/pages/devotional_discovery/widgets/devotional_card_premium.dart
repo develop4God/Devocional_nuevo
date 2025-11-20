@@ -373,26 +373,78 @@ class DevotionalCardPremium extends StatelessWidget {
     return DateFormat('MMM dd').format(displayDate);
   }
 
-  String _extractVerseReference(String versiculo) {
-    final parts = versiculo.split(RegExp(r'\s+[A-Z]{2,}[0-9]*:'));
-    if (parts.isNotEmpty) {
-      return parts[0].trim();
+  /// Extract verse reference with comprehensive validation
+  String _extractVerseReference(String? versiculo) {
+    // Handle null, empty, or whitespace-only input
+    if (versiculo == null || versiculo.trim().isEmpty) {
+      return 'Unknown Verse';
     }
 
-    final quoteIndex = versiculo.indexOf('"');
+    final trimmed = versiculo.trim();
+
+    // Extract reference before Bible version code (e.g., "RVR1960:")
+    final parts = trimmed.split(RegExp(r'\s+[A-Z]{2,}[0-9]*:'));
+    if (parts.isNotEmpty && parts[0].trim().isNotEmpty) {
+      final reference = parts[0].trim();
+      // Validate minimum length (e.g., "Gn 1:1" is 6 chars)
+      if (reference.length >= 3) {
+        return reference;
+      }
+    }
+
+    // Extract reference before quote
+    final quoteIndex = trimmed.indexOf('"');
     if (quoteIndex > 0) {
-      return versiculo.substring(0, quoteIndex).trim();
+      final reference = trimmed.substring(0, quoteIndex).trim();
+      if (reference.length >= 3) {
+        return reference;
+      }
     }
 
-    return versiculo;
+    // If no pattern matches and input is reasonable length, return it
+    if (trimmed.length >= 3 && trimmed.length < 100) {
+      return trimmed;
+    }
+
+    return 'Unknown Verse';
   }
 
-  String _extractVerseText(String versiculo) {
-    final quoteStart = versiculo.indexOf('"');
-    final quoteEnd = versiculo.lastIndexOf('"');
-    if (quoteStart != -1 && quoteEnd != -1 && quoteEnd > quoteStart) {
-      return versiculo.substring(quoteStart + 1, quoteEnd);
+  /// Extract verse text with comprehensive validation
+  String _extractVerseText(String? versiculo) {
+    // Handle null, empty, or whitespace-only input
+    if (versiculo == null || versiculo.trim().isEmpty) {
+      return '';
     }
-    return versiculo;
+
+    final trimmed = versiculo.trim();
+
+    // Extract text between quotes
+    final quoteStart = trimmed.indexOf('"');
+    final quoteEnd = trimmed.lastIndexOf('"');
+
+    if (quoteStart != -1 && quoteEnd != -1 && quoteEnd > quoteStart) {
+      final text = trimmed.substring(quoteStart + 1, quoteEnd).trim();
+      // Validate extracted text has meaningful content (min 5 chars)
+      if (text.length >= 5) {
+        return text;
+      }
+    }
+
+    // If no quotes or invalid content, check if entire string is the text
+    // (after removing potential reference at start)
+    final parts = trimmed.split(RegExp(r'\s+[A-Z]{2,}[0-9]*:'));
+    if (parts.length > 1) {
+      final potentialText = parts.sublist(1).join(' ').trim();
+      if (potentialText.length >= 5) {
+        return potentialText;
+      }
+    }
+
+    // Fallback: return original if it's reasonable length
+    if (trimmed.length >= 5 && trimmed.length < 500) {
+      return trimmed;
+    }
+
+    return '';
   }
 }
