@@ -3,7 +3,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../../extensions/string_extensions.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../models/devocional_model.dart';
 
 /// Premium devotional card with full background image (Glorify/YouVersion style)
@@ -81,7 +81,7 @@ class DevotionalCardPremium extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Top row: Date badge and favorite button
+                        // Top row: Date badge only
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -102,30 +102,6 @@ class DevotionalCardPremium extends StatelessWidget {
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                 ),
-                              ),
-                            ),
-
-                            // Favorite button with animation
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.25),
-                                shape: BoxShape.circle,
-                              ),
-                              child: IconButton(
-                                icon: AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 200),
-                                  child: Icon(
-                                    isFavorite
-                                        ? Icons.favorite
-                                        : Icons.favorite_border,
-                                    key: ValueKey(isFavorite),
-                                    color: isFavorite
-                                        ? Colors.red[400]
-                                        : Colors.white,
-                                    size: 24,
-                                  ),
-                                ),
-                                onPressed: onFavoriteToggle,
                               ),
                             ),
                           ],
@@ -210,6 +186,56 @@ class DevotionalCardPremium extends StatelessWidget {
                       ],
                     ),
                   ),
+
+                  // Floating heart button (FAB style) - top-right
+                  Positioned(
+                    top: 16,
+                    right: 16,
+                    child: Semantics(
+                      label: isFavorite
+                          ? 'Remove from favorites'
+                          : 'Add to favorites',
+                      button: true,
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.3),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: IconButton(
+                            icon: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 250),
+                              transitionBuilder: (child, animation) {
+                                return ScaleTransition(
+                                  scale: animation,
+                                  child: child,
+                                );
+                              },
+                              child: Icon(
+                                isFavorite
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                key: ValueKey(isFavorite),
+                                color: isFavorite
+                                    ? Colors.red[500]
+                                    : Colors.grey[700],
+                                size: 24,
+                              ),
+                            ),
+                            onPressed: onFavoriteToggle,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -220,7 +246,7 @@ class DevotionalCardPremium extends StatelessWidget {
   }
 
   Widget _buildBackgroundImage() {
-    // Use CachedNetworkImage with placeholder
+    // Use CachedNetworkImage with shimmer placeholder
     // For now, we'll use a fallback gradient since we don't have image URLs
     // In production, you'd fetch image URLs from your API or use Unsplash
     final imageUrl = _getImageUrl();
@@ -229,12 +255,16 @@ class DevotionalCardPremium extends StatelessWidget {
       return CachedNetworkImage(
         imageUrl: imageUrl,
         fit: BoxFit.cover,
-        placeholder: (context, url) => Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: _getGradientColors(),
+        placeholder: (context, url) => Shimmer.fromColors(
+          baseColor: _getGradientColors()[0],
+          highlightColor: _getGradientColors()[1].withValues(alpha: 0.5),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: _getGradientColors(),
+              ),
             ),
           ),
         ),
@@ -246,17 +276,42 @@ class DevotionalCardPremium extends StatelessWidget {
               colors: _getGradientColors(),
             ),
           ),
+          child: const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.image_not_supported_outlined,
+                  color: Colors.white70,
+                  size: 48,
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'Tap to retry',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       );
     }
 
-    // Fallback gradient
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: _getGradientColors(),
+    // Fallback gradient with subtle shimmer effect
+    return Shimmer.fromColors(
+      baseColor: _getGradientColors()[0],
+      highlightColor: _getGradientColors()[1].withValues(alpha: 0.3),
+      period: const Duration(milliseconds: 2000),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: _getGradientColors(),
+          ),
         ),
       ),
     );
@@ -320,7 +375,7 @@ class DevotionalCardPremium extends StatelessWidget {
     );
 
     if (devDate == today) {
-      return 'discovery.today'.tr();
+      return 'Today';
     }
 
     DateTime displayDate = devDate;
@@ -334,7 +389,7 @@ class DevotionalCardPremium extends StatelessWidget {
 
     final tomorrow = today.add(const Duration(days: 1));
     if (displayDate == tomorrow) {
-      return 'discovery.tomorrow'.tr();
+      return 'Tomorrow';
     }
 
     final daysUntil = displayDate.difference(today).inDays;
