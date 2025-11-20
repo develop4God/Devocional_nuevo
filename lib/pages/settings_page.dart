@@ -11,6 +11,7 @@ import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:devocional_nuevo/providers/localization_provider.dart';
 import 'package:devocional_nuevo/services/tts/voice_settings_service.dart';
 import 'package:devocional_nuevo/utils/constants.dart';
+import 'package:devocional_nuevo/utils/devotional_constants.dart';
 import 'package:devocional_nuevo/widgets/app_bar_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -134,9 +135,11 @@ class _SettingsPageState extends State<SettingsPage> {
     await _launchPaypal();
   }
 
-  Future<String> _getCurrentExperience() async {
+  Future<ExperienceMode> _getCurrentExperience() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('discovery_experienceMode') ?? 'traditional';
+    return ExperienceMode.fromStorageString(
+      prefs.getString('discovery_experienceMode'),
+    );
   }
 
   Future<void> _showExperienceDialog() async {
@@ -152,15 +155,18 @@ class _SettingsPageState extends State<SettingsPage> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              RadioListTile<String>(
+              RadioListTile<ExperienceMode>(
                 title: const Text('Discovery'),
                 subtitle: const Text('Modern, visual interface with search'),
-                value: 'discovery',
+                value: ExperienceMode.discovery,
                 groupValue: currentExperience,
                 onChanged: (value) async {
                   if (value != null) {
                     final prefs = await SharedPreferences.getInstance();
-                    await prefs.setString('discovery_experienceMode', value);
+                    await prefs.setString(
+                      'discovery_experienceMode',
+                      value.toStorageString(),
+                    );
                     if (context.mounted) {
                       Navigator.pop(context);
                       setState(() {}); // Refresh display
@@ -175,15 +181,18 @@ class _SettingsPageState extends State<SettingsPage> {
                   }
                 },
               ),
-              RadioListTile<String>(
+              RadioListTile<ExperienceMode>(
                 title: const Text('Traditional'),
                 subtitle: const Text('Classic daily devotional interface'),
-                value: 'traditional',
+                value: ExperienceMode.traditional,
                 groupValue: currentExperience,
                 onChanged: (value) async {
                   if (value != null) {
                     final prefs = await SharedPreferences.getInstance();
-                    await prefs.setString('discovery_experienceMode', value);
+                    await prefs.setString(
+                      'discovery_experienceMode',
+                      value.toStorageString(),
+                    );
                     if (context.mounted) {
                       Navigator.pop(context);
                       setState(() {}); // Refresh display
@@ -348,11 +357,11 @@ class _SettingsPageState extends State<SettingsPage> {
                                 ),
                               ),
                               const SizedBox(height: 4),
-                              FutureBuilder<String>(
+                              FutureBuilder<ExperienceMode>(
                                 future: _getCurrentExperience(),
                                 builder: (context, snapshot) {
                                   return Text(
-                                    snapshot.data == 'discovery'
+                                    snapshot.data == ExperienceMode.discovery
                                         ? 'Discovery (Modern)'
                                         : 'Traditional (Classic)',
                                     style: textTheme.bodySmall?.copyWith(

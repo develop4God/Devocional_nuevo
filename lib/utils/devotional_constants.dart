@@ -1,5 +1,26 @@
 // lib/utils/devotional_constants.dart
 
+/// Experience mode enum for type-safe experience selection
+enum ExperienceMode {
+  discovery,
+  traditional;
+
+  /// Convert enum to string for storage
+  String toStorageString() => name;
+
+  /// Create enum from storage string
+  static ExperienceMode fromStorageString(String? value) {
+    switch (value) {
+      case 'discovery':
+        return ExperienceMode.discovery;
+      case 'traditional':
+        return ExperienceMode.traditional;
+      default:
+        return ExperienceMode.traditional; // Default fallback
+    }
+  }
+}
+
 /// Global constants for devotionals discovery feature
 class DevotionalConstants {
   /// URL GENERATION FUNCTIONS

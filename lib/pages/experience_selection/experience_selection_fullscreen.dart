@@ -12,17 +12,22 @@ import '../devocionales_page.dart';
 class ExperienceSelectionFullscreen extends StatelessWidget {
   const ExperienceSelectionFullscreen({super.key});
 
-  Future<void> _selectExperience(BuildContext context, String mode) async {
+  Future<void> _selectExperience(
+      BuildContext context, ExperienceMode mode) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(DevotionalConstants.prefExperienceMode, mode);
+    await prefs.setString(
+        DevotionalConstants.prefExperienceMode, mode.toStorageString());
 
     if (!context.mounted) return;
 
     Widget targetPage;
-    if (mode == 'discovery') {
-      targetPage = const DevotionalDiscoveryPage();
-    } else {
-      targetPage = const DevocionalesPage();
+    switch (mode) {
+      case ExperienceMode.discovery:
+        targetPage = const DevotionalDiscoveryPage();
+        break;
+      case ExperienceMode.traditional:
+        targetPage = const DevocionalesPage();
+        break;
     }
 
     Navigator.pushReplacement(
@@ -107,7 +112,8 @@ class ExperienceSelectionFullscreen extends StatelessWidget {
                         : [Colors.purple[600]!, Colors.deepPurple[600]!],
                   ),
                   isRecommended: true,
-                  onTap: () => _selectExperience(context, 'discovery'),
+                  onTap: () =>
+                      _selectExperience(context, ExperienceMode.discovery),
                   isDark: isDark,
                 ),
 
@@ -132,7 +138,8 @@ class ExperienceSelectionFullscreen extends StatelessWidget {
                         : [Colors.blue[600]!, Colors.indigo[600]!],
                   ),
                   isRecommended: false,
-                  onTap: () => _selectExperience(context, 'traditional'),
+                  onTap: () =>
+                      _selectExperience(context, ExperienceMode.traditional),
                   isDark: isDark,
                 ),
 
