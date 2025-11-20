@@ -11,6 +11,8 @@ import '../models/devocional_model.dart';
 import '../providers/devotional_discovery_provider.dart';
 import '../services/spiritual_stats_service.dart';
 import 'bible_reader_page.dart';
+import 'devotional_discovery/widgets/devotional_card_premium.dart';
+import 'devotional_discovery/widgets/favorites_horizontal_section.dart';
 import 'favorites_page.dart';
 
 /// Devotional Discovery Page
@@ -66,10 +68,10 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
 
   void _onSearchChanged(String value) {
     setState(() => _searchTerm = value);
-    
+
     // Cancel previous timer
     _debounceTimer?.cancel();
-    
+
     // Create new timer for 500ms debounce
     _debounceTimer = Timer(const Duration(milliseconds: 500), () {
       context.read<DevotionalDiscoveryProvider>().filterBySearch(value);
@@ -265,7 +267,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
                   ),
                 ),
 
-              // Devotional list
+              // Devotional list with favorites section
               if (!provider.isLoading && provider.errorMessage == null)
                 Expanded(
                   child: provider.filtered.isEmpty
@@ -288,15 +290,35 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
                           ),
                         )
                       : ListView.builder(
-                          itemCount: provider.filtered.length,
-                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                          itemCount: provider.filtered.length + 1,
+                          // Add 1 for favorites section
+                          padding: EdgeInsets.zero,
+                          itemExtent:
+                              null, // Variable height for favorites section
+                          cacheExtent: 1500,
                           itemBuilder: (context, index) {
-                            final devocional = provider.filtered[index];
-                            return _buildDevocionalCard(
-                              context,
-                              devocional,
-                              provider,
-                              colorScheme,
+                            // First item is favorites section
+                            if (index == 0) {
+                              return FavoritesHorizontalSection(
+                                favorites: provider.favorites,
+                                onDevocionalTap: (devocional) {
+                                  _showDevocionalDetail(
+                                      context, devocional, provider);
+                                },
+                                isDark: isDark,
+                              );
+                            }
+
+                            // Rest are devotional cards
+                            final devocional = provider.filtered[index - 1];
+                            return DevotionalCardPremium(
+                              devocional: devocional,
+                              isFavorite: provider.isFavorite(devocional.id),
+                              onTap: () => _showDevocionalDetail(
+                                  context, devocional, provider),
+                              onFavoriteToggle: () =>
+                                  provider.toggleFavorite(devocional),
+                              isDark: isDark,
                             );
                           },
                         ),
@@ -308,259 +330,259 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
     );
   }
 
-  Widget _buildDevocionalCard(
-    BuildContext context,
-    Devocional devocional,
-    DevotionalDiscoveryProvider provider,
-    ColorScheme colorScheme,
-  ) {
-    final isFavorite = provider.isFavorite(devocional.id);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final displayDate = _getDisplayDate(devocional);
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.grey[900] : Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () => _showDevocionalDetail(context, devocional, provider),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Hero image section with gradient overlay
-                Container(
-                  height: 180,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: _getGradientColors(isDark, devocional.tags),
-                    ),
-                  ),
-                  child: Stack(
-                    children: [
-                      // Decorative pattern
-                      Positioned.fill(
-                        child: Opacity(
-                          opacity: 0.1,
-                          child: CustomPaint(painter: _DotPatternPainter()),
-                        ),
-                      ),
-                      // Content
-                      Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Date and favorite
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.2),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Text(
-                                    displayDate,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.2),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: IconButton(
-                                    icon: Icon(
-                                      isFavorite
-                                          ? Icons.star
-                                          : Icons.star_border,
-                                      color: isFavorite
-                                          ? Colors.amber
-                                          : Colors.white,
-                                      size: 22,
-                                    ),
-                                    onPressed: () {
-                                      provider.toggleFavorite(devocional);
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Spacer(),
-                            // Verse reference (hero element)
-                            Text(
-                              _extractVerseReference(devocional.versiculo),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                height: 1.2,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Content section
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Verse text preview
-                      Text(
-                        _extractVerseText(devocional.versiculo),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                          color: isDark ? Colors.grey[300] : Colors.grey[800],
-                          height: 1.4,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-
-                      // Tags
-                      if (devocional.tags != null &&
-                          devocional.tags!.isNotEmpty)
-                        Wrap(
-                          spacing: 6,
-                          runSpacing: 6,
-                          children: devocional.tags!.take(2).map((tag) {
-                            return Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: isDark
-                                    ? Colors.grey[800]
-                                    : colorScheme.primaryContainer
-                                        .withValues(alpha: 0.3),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Text(
-                                tag,
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                  color: isDark
-                                      ? Colors.grey[400]
-                                      : colorScheme.primary,
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-
-                      const SizedBox(height: 16),
-
-                      // Read button
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () =>
-                              _navigateToVerse(context, devocional),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: isDark
-                                ? Colors.purple[700]
-                                : colorScheme.primary,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            elevation: 0,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.auto_stories_outlined, size: 20),
-                              const SizedBox(width: 8),
-                              Text(
-                                'discovery.read_verse_first'.tr(),
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  String _getDisplayDate(Devocional devocional) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final devDate = DateTime(
-      devocional.date.year,
-      devocional.date.month,
-      devocional.date.day,
-    );
-
-    if (devDate == today) {
-      return 'discovery.today'.tr();
-    }
-
-    DateTime displayDate = devDate;
-    while (displayDate.isBefore(today)) {
-      displayDate = DateTime(
-        displayDate.year + 1,
-        displayDate.month,
-        displayDate.day,
-      );
-    }
-
-    final tomorrow = today.add(const Duration(days: 1));
-    if (displayDate == tomorrow) {
-      return 'discovery.tomorrow'.tr();
-    }
-
-    final daysUntil = displayDate.difference(today).inDays;
-    if (daysUntil <= 7 && daysUntil > 1) {
-      return DateFormat('EEEE').format(displayDate);
-    }
-
-    return DateFormat('MMM dd').format(displayDate);
-  }
-
+//   Widget _buildDevocionalCard(
+//     BuildContext context,
+//     Devocional devocional,
+//     DevotionalDiscoveryProvider provider,
+//     ColorScheme colorScheme,
+//   ) {
+//     final isFavorite = provider.isFavorite(devocional.id);
+//     final isDark = Theme.of(context).brightness == Brightness.dark;
+//     final displayDate = _getDisplayDate(devocional);
+//
+//     return Container(
+//       margin: const EdgeInsets.only(bottom: 20),
+//       decoration: BoxDecoration(
+//         color: isDark ? Colors.grey[900] : Colors.white,
+//         borderRadius: BorderRadius.circular(24),
+//         boxShadow: [
+//           BoxShadow(
+//             color: Colors.black.withValues(alpha: 0.08),
+//             blurRadius: 20,
+//             offset: const Offset(0, 8),
+//           ),
+//         ],
+//       ),
+//       child: ClipRRect(
+//         borderRadius: BorderRadius.circular(24),
+//         child: Material(
+//           color: Colors.transparent,
+//           child: InkWell(
+//             onTap: () => _showDevocionalDetail(context, devocional, provider),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 // Hero image section with gradient overlay
+//                 Container(
+//                   height: 180,
+//                   decoration: BoxDecoration(
+//                     gradient: LinearGradient(
+//                       begin: Alignment.topLeft,
+//                       end: Alignment.bottomRight,
+//                       colors: _getGradientColors(isDark, devocional.tags),
+//                     ),
+//                   ),
+//                   child: Stack(
+//                     children: [
+//                       // Decorative pattern
+//                       Positioned.fill(
+//                         child: Opacity(
+//                           opacity: 0.1,
+//                           child: CustomPaint(painter: _DotPatternPainter()),
+//                         ),
+//                       ),
+//                       // Content
+//                       Padding(
+//                         padding: const EdgeInsets.all(20),
+//                         child: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             // Date and favorite
+//                             Row(
+//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                               children: [
+//                                 Container(
+//                                   padding: const EdgeInsets.symmetric(
+//                                     horizontal: 12,
+//                                     vertical: 6,
+//                                   ),
+//                                   decoration: BoxDecoration(
+//                                     color: Colors.white.withValues(alpha: 0.2),
+//                                     borderRadius: BorderRadius.circular(20),
+//                                   ),
+//                                   child: Text(
+//                                     displayDate,
+//                                     style: const TextStyle(
+//                                       color: Colors.white,
+//                                       fontSize: 12,
+//                                       fontWeight: FontWeight.w600,
+//                                     ),
+//                                   ),
+//                                 ),
+//                                 Container(
+//                                   decoration: BoxDecoration(
+//                                     color: Colors.white.withValues(alpha: 0.2),
+//                                     shape: BoxShape.circle,
+//                                   ),
+//                                   child: IconButton(
+//                                     icon: Icon(
+//                                       isFavorite
+//                                           ? Icons.star
+//                                           : Icons.star_border,
+//                                       color: isFavorite
+//                                           ? Colors.amber
+//                                           : Colors.white,
+//                                       size: 22,
+//                                     ),
+//                                     onPressed: () {
+//                                       provider.toggleFavorite(devocional);
+//                                     },
+//                                   ),
+//                                 ),
+//                               ],
+//                             ),
+//                             const Spacer(),
+//                             // Verse reference (hero element)
+//                             Text(
+//                               _extractVerseReference(devocional.versiculo),
+//                               style: const TextStyle(
+//                                 color: Colors.white,
+//                                 fontSize: 24,
+//                                 fontWeight: FontWeight.bold,
+//                                 height: 1.2,
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//
+//                 // Content section
+//                 Padding(
+//                   padding: const EdgeInsets.all(20),
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       // Verse text preview
+//                       Text(
+//                         _extractVerseText(devocional.versiculo),
+//                         maxLines: 2,
+//                         overflow: TextOverflow.ellipsis,
+//                         style: TextStyle(
+//                           fontSize: 15,
+//                           fontWeight: FontWeight.w500,
+//                           color: isDark ? Colors.grey[300] : Colors.grey[800],
+//                           height: 1.4,
+//                         ),
+//                       ),
+//                       const SizedBox(height: 12),
+//
+//                       // Tags
+//                       if (devocional.tags != null &&
+//                           devocional.tags!.isNotEmpty)
+//                         Wrap(
+//                           spacing: 6,
+//                           runSpacing: 6,
+//                           children: devocional.tags!.take(2).map((tag) {
+//                             return Container(
+//                               padding: const EdgeInsets.symmetric(
+//                                 horizontal: 10,
+//                                 vertical: 4,
+//                               ),
+//                               decoration: BoxDecoration(
+//                                 color: isDark
+//                                     ? Colors.grey[800]
+//                                     : colorScheme.primaryContainer
+//                                         .withValues(alpha: 0.3),
+//                                 borderRadius: BorderRadius.circular(12),
+//                               ),
+//                               child: Text(
+//                                 tag,
+//                                 style: TextStyle(
+//                                   fontSize: 11,
+//                                   fontWeight: FontWeight.w600,
+//                                   color: isDark
+//                                       ? Colors.grey[400]
+//                                       : colorScheme.primary,
+//                                 ),
+//                               ),
+//                             );
+//                           }).toList(),
+//                         ),
+//
+//                       const SizedBox(height: 16),
+//
+//                       // Read button
+//                       SizedBox(
+//                         width: double.infinity,
+//                         child: ElevatedButton(
+//                           onPressed: () =>
+//                               _navigateToVerse(context, devocional),
+//                           style: ElevatedButton.styleFrom(
+//                             backgroundColor: isDark
+//                                 ? Colors.purple[700]
+//                                 : colorScheme.primary,
+//                             foregroundColor: Colors.white,
+//                             padding: const EdgeInsets.symmetric(vertical: 14),
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(12),
+//                             ),
+//                             elevation: 0,
+//                           ),
+//                           child: Row(
+//                             mainAxisAlignment: MainAxisAlignment.center,
+//                             children: [
+//                               const Icon(Icons.auto_stories_outlined, size: 20),
+//                               const SizedBox(width: 8),
+//                               Text(
+//                                 'discovery.read_verse_first'.tr(),
+//                                 style: const TextStyle(
+//                                   fontSize: 15,
+//                                   fontWeight: FontWeight.w600,
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   String _getDisplayDate(Devocional devocional) {
+//     final now = DateTime.now();
+//     final today = DateTime(now.year, now.month, now.day);
+//     final devDate = DateTime(
+//       devocional.date.year,
+//       devocional.date.month,
+//       devocional.date.day,
+//     );
+//
+//     if (devDate == today) {
+//       return 'discovery.today'.tr();
+//     }
+//
+//     DateTime displayDate = devDate;
+//     while (displayDate.isBefore(today)) {
+//       displayDate = DateTime(
+//         displayDate.year + 1,
+//         displayDate.month,
+//         displayDate.day,
+//       );
+//     }
+//
+//     final tomorrow = today.add(const Duration(days: 1));
+//     if (displayDate == tomorrow) {
+//       return 'discovery.tomorrow'.tr();
+//     }
+//
+//     final daysUntil = displayDate.difference(today).inDays;
+//     if (daysUntil <= 7 && daysUntil > 1) {
+//       return DateFormat('EEEE').format(displayDate);
+//     }
+//
+//     return DateFormat('MMM dd').format(displayDate);
+//   }
+//
   String _extractVerseReference(String versiculo) {
     final parts = versiculo.split(RegExp(r'\s+[A-Z]{2,}[0-9]*:'));
     if (parts.isNotEmpty) {
@@ -584,33 +606,33 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
     return versiculo;
   }
 
-  List<Color> _getGradientColors(bool isDark, List<String>? tags) {
-    if (tags != null && tags.isNotEmpty) {
-      final tag = tags.first.toLowerCase();
-      if (tag.contains('love') || tag.contains('amor')) {
-        return isDark
-            ? [Colors.pink[900]!, Colors.red[800]!]
-            : [Colors.pink[400]!, Colors.red[400]!];
-      } else if (tag.contains('peace') || tag.contains('paz')) {
-        return isDark
-            ? [Colors.blue[900]!, Colors.indigo[800]!]
-            : [Colors.blue[400]!, Colors.indigo[400]!];
-      } else if (tag.contains('faith') || tag.contains('fe')) {
-        return isDark
-            ? [Colors.purple[900]!, Colors.deepPurple[800]!]
-            : [Colors.purple[400]!, Colors.deepPurple[400]!];
-      } else if (tag.contains('hope') || tag.contains('esperanza')) {
-        return isDark
-            ? [Colors.teal[900]!, Colors.cyan[800]!]
-            : [Colors.teal[400]!, Colors.cyan[400]!];
-      }
-    }
-
-    return isDark
-        ? [Colors.deepPurple[900]!, Colors.purple[800]!]
-        : [Colors.deepPurple[400]!, Colors.purple[400]!];
-  }
-
+//   List<Color> _getGradientColors(bool isDark, List<String>? tags) {
+//     if (tags != null && tags.isNotEmpty) {
+//       final tag = tags.first.toLowerCase();
+//       if (tag.contains('love') || tag.contains('amor')) {
+//         return isDark
+//             ? [Colors.pink[900]!, Colors.red[800]!]
+//             : [Colors.pink[400]!, Colors.red[400]!];
+//       } else if (tag.contains('peace') || tag.contains('paz')) {
+//         return isDark
+//             ? [Colors.blue[900]!, Colors.indigo[800]!]
+//             : [Colors.blue[400]!, Colors.indigo[400]!];
+//       } else if (tag.contains('faith') || tag.contains('fe')) {
+//         return isDark
+//             ? [Colors.purple[900]!, Colors.deepPurple[800]!]
+//             : [Colors.purple[400]!, Colors.deepPurple[400]!];
+//       } else if (tag.contains('hope') || tag.contains('esperanza')) {
+//         return isDark
+//             ? [Colors.teal[900]!, Colors.cyan[800]!]
+//             : [Colors.teal[400]!, Colors.cyan[400]!];
+//       }
+//     }
+//
+//     return isDark
+//         ? [Colors.deepPurple[900]!, Colors.purple[800]!]
+//         : [Colors.deepPurple[400]!, Colors.purple[400]!];
+//   }
+//
   void _navigateToVerse(BuildContext context, Devocional devocional) async {
     final verseRef = _extractVerseReference(devocional.versiculo);
     final parsed = BibleReferenceParser.parse(verseRef);

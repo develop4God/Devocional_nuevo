@@ -625,6 +625,9 @@
     "opening_bible": "Abriendo Biblia",
     "reflection": "Reflexión",
     "for_meditation": "Para Meditar",
-    "prayer": "Oración"
+    "prayer": "Oración",
+    "your_favorites": "Tus Favoritos",
+    "no_favorites_yet": "Sin favoritos aún",
+    "tap_heart_to_save": "Toca el corazón para guardar tus devocionales favoritos"
   }
 }
