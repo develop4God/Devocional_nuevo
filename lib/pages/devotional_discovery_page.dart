@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:devocional_nuevo/widgets/devocionales_bottom_nav_bar.dart';
 import 'package:devocional_nuevo/widgets/devocionales_page_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -47,57 +48,56 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
     if (_searchOverlayEntry != null) return;
     final overlay = Overlay.of(context);
     _searchOverlayEntry = OverlayEntry(
-      builder: (context) => GestureDetector(
-        onTap: () {
-          _hideSearchBubble();
-        },
-        child: Material(
-          color: Colors.black.withValues(alpha: 0.2),
-          child: Center(
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 24),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(32),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.15),
-                    blurRadius: 24,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _searchController,
-                      focusNode: _searchFocusNode,
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        hintText: 'Buscar devocional...',
-                        border: InputBorder.none,
-                        isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
-                      ),
-                      style: const TextStyle(fontSize: 18),
-                      onChanged: _onSearchChanged,
-                      onEditingComplete: _hideSearchBubble,
+        builder: (context) => GestureDetector(
+              onTap: () {
+                _hideSearchBubble();
+              },
+              child: Material(
+                color: Colors.black.withValues(alpha: 0.2),
+                child: Center(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(32),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.15),
+                          blurRadius: 24,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _searchController,
+                            focusNode: _searchFocusNode,
+                            autofocus: true,
+                            decoration: InputDecoration(
+                              hintText: 'Buscar devocional...',
+                              border: InputBorder.none,
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
+                            ),
+                            style: const TextStyle(fontSize: 18),
+                            onChanged: _onSearchChanged,
+                            onEditingComplete: _hideSearchBubble,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: _hideSearchBubble,
+                        ),
+                      ],
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: _hideSearchBubble,
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ),
-      ),
-    );
+            ));
     overlay.insert(_searchOverlayEntry!);
     _searchFocusNode.requestFocus();
   }
@@ -181,11 +181,60 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context); // Required for AutomaticKeepAliveClientMixin
+    super.build(context);
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Consumer<DevotionalDiscoveryProvider>(
       builder: (context, provider, child) {
-        final colorScheme = Theme.of(context).colorScheme;
-        final isDark = Theme.of(context).brightness == Brightness.dark;
+        int currentIndex = 0;
+        int totalDevotionals = provider.filtered.length;
+        bool isFavorite = totalDevotionals > 0
+            ? provider.isFavorite(provider.filtered[currentIndex].id)
+            : false;
+
+        void goToPrevious() {
+          if (currentIndex > 0) {
+            setState(() {
+              currentIndex--;
+            });
+          }
+        }
+
+        void goToNext() {
+          if (currentIndex < totalDevotionals - 1) {
+            setState(() {
+              currentIndex++;
+            });
+          }
+        }
+
+        void toggleFavorite() {
+          if (totalDevotionals > 0) {
+            provider.toggleFavorite(provider.filtered[currentIndex]);
+          }
+        }
+
+        void goToPrayers() {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const FavoritesPage()));
+        }
+
+        void goToBible() {
+          // Implementa navegación a Biblia
+        }
+
+        void shareDevotional() {
+          // Implementa compartir
+        }
+
+        void goToProgress() {
+          // Implementa navegación a progreso
+        }
+
+        void goToSettings() {
+          // Implementa navegación a ajustes
+        }
 
         return Scaffold(
           backgroundColor: isDark ? Colors.black : Colors.grey[50],
@@ -320,6 +369,23 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
                         ),
                 ),
             ],
+          ),
+          bottomNavigationBar: DevocionalesBottomNavBar(
+            currentIndex: currentIndex,
+            isFavorite: isFavorite,
+            onPrevious: goToPrevious,
+            onNext: goToNext,
+            onFavorite: toggleFavorite,
+            onPrayers: goToPrayers,
+            onBible: goToBible,
+            onShare: shareDevotional,
+            onProgress: goToProgress,
+            onSettings: goToSettings,
+            ttsPlayerWidget: const SizedBox(),
+            appBarForegroundColor: colorScheme.onPrimary,
+            appBarBackgroundColor: colorScheme.primary,
+            totalDevotionals: totalDevotionals,
+            currentDevocionalIndex: currentIndex,
           ),
         );
       },
