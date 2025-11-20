@@ -1,16 +1,21 @@
+import 'dart:convert';
+
 import 'package:devocional_nuevo/repositories/devotional_image_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import '../models/devocional_model.dart';
 
 class DevocionalModernView extends StatefulWidget {
   final Devocional devocional;
   final DevotionalImageRepository imageRepository;
+  final String? imageUrlOfDay;
 
   const DevocionalModernView({
     super.key,
     required this.devocional,
     required this.imageRepository,
+    this.imageUrlOfDay,
   });
 
   @override
@@ -20,12 +25,40 @@ class DevocionalModernView extends StatefulWidget {
 class _DevocionalModernViewState extends State<DevocionalModernView> {
   late Future<String> _imageUrlFuture;
 
+  Future<String> _getImageForToday() async {
+    final repo = widget.imageRepository;
+    debugPrint(
+        '[DEBUG] [ModernView] _getImageForToday: obteniendo lista de imágenes');
+    List<String> imageUrls = [];
+    try {
+      final response = await http.get(Uri.parse(repo.apiUrl));
+      if (response.statusCode == 200) {
+        final List<dynamic> files = json.decode(response.body);
+        imageUrls = files
+            .where((file) =>
+                file['type'] == 'file' &&
+                (file['name'].toLowerCase().endsWith('.jpg') ||
+                    file['name'].toLowerCase().endsWith('.jpeg') ||
+                    file['name'].toLowerCase().endsWith('.avif')))
+            .map<String>((file) => file['download_url'] as String)
+            .toList();
+      }
+    } catch (e) {
+      debugPrint('[DEBUG] [ModernView] Error obteniendo lista de imágenes: $e');
+    }
+    return await repo.getImageForToday(imageUrls);
+  }
+
   @override
   void initState() {
     super.initState();
-    debugPrint('[DEBUG] [ModernView] initState: solicitando imagen aleatoria');
-    _imageUrlFuture =
-        widget.imageRepository.getRandomImageUrl(width: 600, height: 400);
+    debugPrint(
+        '[DEBUG] [ModernView] initState: solicitando imagen fija para el día');
+    if (widget.imageUrlOfDay != null) {
+      _imageUrlFuture = Future.value(widget.imageUrlOfDay);
+    } else {
+      _imageUrlFuture = _getImageForToday();
+    }
   }
 
   @override

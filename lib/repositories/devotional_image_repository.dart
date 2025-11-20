@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:devocional_nuevo/services/devotional_image_normalizer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DevotionalImageRepository {
   final String apiUrl;
@@ -61,5 +62,25 @@ class DevotionalImageRepository {
     // Si no hay ninguna imagen válida, usar un placeholder genérico
     debugPrint('[DEBUG] No hay imágenes válidas, usando placeholder genérico');
     return 'https://via.placeholder.com/${width}x${height}?text=Devocional';
+  }
+
+  Future<String> getImageForToday(List<String> imageUrls) async {
+    final prefs = await SharedPreferences.getInstance();
+    final todayKey =
+        'devocional_image_${DateTime.now().toIso8601String().substring(0, 10)}';
+    final savedUrl = prefs.getString(todayKey);
+    if (savedUrl != null && imageUrls.contains(savedUrl)) {
+      debugPrint('[DEBUG] Imagen del día encontrada en cache: $savedUrl');
+      return savedUrl;
+    }
+    if (imageUrls.isNotEmpty) {
+      final random = Random();
+      final selected = imageUrls[random.nextInt(imageUrls.length)];
+      await prefs.setString(todayKey, selected);
+      debugPrint('[DEBUG] Imagen del día asignada y guardada: $selected');
+      return selected;
+    }
+    debugPrint('[DEBUG] No hay imágenes válidas, usando placeholder genérico');
+    return 'https://via.placeholder.com/600x400?text=Devocional';
   }
 }
