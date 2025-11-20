@@ -314,107 +314,178 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    debugPrint('[DEBUG] _buildHeroHeader: _imageOfDay=$_imageOfDay');
-    if (_imageOfDay == null) {
-      debugPrint(
-          '[DEBUG] [Hero] La imagen del día es null, posible error en fetch o asignación.');
-    }
-
-    return Stack(
-      children: [
-        if (_imageOfDay != null)
-          Positioned.fill(
-            child: Builder(
-              builder: (context) {
-                debugPrint('[DEBUG] Mostrando imagen en el hero: $_imageOfDay');
-                return Image.network(
-                  _imageOfDay!,
+    return FutureBuilder<String>(
+      future: _getImageOfDayFuture(),
+      builder: (context, snapshot) {
+        final imageUrl = snapshot.data;
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          debugPrint('[DEBUG] [Hero] Esperando imagen del día...');
+          return Container(
+            width: double.infinity,
+            height: 220,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: isDark
+                    ? [Colors.deepPurple[900]!, Colors.purple[800]!]
+                    : [colorScheme.primary, colorScheme.secondary],
+              ),
+            ),
+            child: const Center(child: CircularProgressIndicator()),
+          );
+        }
+        if (imageUrl != null && imageUrl.isNotEmpty) {
+          debugPrint('[DEBUG] [Hero] Imagen del día lista: $imageUrl');
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: Image.network(
+                  imageUrl,
                   fit: BoxFit.cover,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) {
-                      debugPrint(
-                          '[DEBUG] [Hero] Imagen cargada correctamente: $_imageOfDay');
-                      return child;
-                    } else {
-                      debugPrint(
-                          '[DEBUG] [Hero] Cargando imagen: $_imageOfDay, bytes: ${loadingProgress.cumulativeBytesLoaded}');
-                      return Center(child: CircularProgressIndicator());
-                    }
-                  },
                   errorBuilder: (ctx, error, stackTrace) {
-                    debugPrint('[DEBUG] Error cargando imagen en hero: $error');
+                    debugPrint('[DEBUG] [Hero] Error cargando imagen: $error');
                     return Container(
-                      color: Colors.grey[300],
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: isDark
+                              ? [Colors.deepPurple[900]!, Colors.purple[800]!]
+                              : [colorScheme.primary, colorScheme.secondary],
+                        ),
+                      ),
                       child: const Center(
                           child: Icon(Icons.image_not_supported, size: 64)),
                     );
                   },
-                );
-              },
-            ),
-          ),
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: isDark
-                  ? [Colors.deepPurple[900]!, Colors.purple[800]!]
-                  : [colorScheme.primary, colorScheme.secondary],
-            ),
-          ),
-          child: SafeArea(
-            bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 60, 24, 32),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'discovery.today'.tr(),
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.9),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      shadows: [
-                        Shadow(
-                          offset: Offset(1, 2),
-                          blurRadius: 6,
-                          color: Colors.black54,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    DateFormat('EEEE, MMMM d').format(DateTime.now()),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      shadows: [
-                        Shadow(
-                          offset: Offset(1, 2),
-                          blurRadius: 6,
-                          color: Colors.black54,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                ),
+              ),
+              _buildHeroContent(colorScheme, isDark),
+              if (_currentStreak > 0)
+                Positioned(
+                  right: 16,
+                  bottom: 16,
+                  child: _buildStreakBadge(isDark),
+                ),
+            ],
+          );
+        }
+        debugPrint('[DEBUG] [Hero] No hay imagen, fallback al gradiente');
+        return Stack(
+          children: [
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: isDark
+                      ? [Colors.deepPurple[900]!, Colors.purple[800]!]
+                      : [colorScheme.primary, colorScheme.secondary],
+                ),
               ),
             ),
+            _buildHeroContent(colorScheme, isDark),
+            if (_currentStreak > 0)
+              Positioned(
+                right: 16,
+                bottom: 16,
+                child: _buildStreakBadge(isDark),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<String> _getImageOfDayFuture() async {
+    if (_imageOfDay != null && _imageOfDay!.isNotEmpty) {
+      return _imageOfDay!;
+    }
+    final repo = DevotionalImageRepository();
+    List<String> imageUrls = [];
+    try {
+      final response = await http.get(Uri.parse(repo.apiUrl));
+      if (response.statusCode == 200) {
+        final List<dynamic> files = json.decode(response.body);
+        imageUrls = files
+            .where((file) =>
+                file['type'] == 'file' &&
+                (file['name'].toLowerCase().endsWith('.jpg') ||
+                    file['name'].toLowerCase().endsWith('.jpeg') ||
+                    file['name'].toLowerCase().endsWith('.avif')))
+            .map<String>((file) => file['download_url'] as String)
+            .toList();
+      }
+    } catch (e) {
+      debugPrint('[DEBUG] [Hero] Error obteniendo lista de imágenes: $e');
+    }
+    final url = await repo.getImageForToday(imageUrls);
+    _imageOfDay = url;
+    return url;
+  }
+
+  Widget _buildHeroContent(ColorScheme colorScheme, bool isDark) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: isDark
+              ? [
+                  Colors.deepPurple[900]!.withValues(alpha: 0.7),
+                  Colors.purple[800]!.withValues(alpha: 0.7)
+                ]
+              : [
+                  colorScheme.primary.withValues(alpha: 0.7),
+                  colorScheme.secondary.withValues(alpha: 0.7)
+                ],
+        ),
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 60, 24, 32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'discovery.today'.tr(),
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  shadows: [
+                    Shadow(
+                      offset: Offset(1, 2),
+                      blurRadius: 6,
+                      color: Colors.black54,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                DateFormat('EEEE, MMMM d').format(DateTime.now()),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  shadows: [
+                    Shadow(
+                      offset: Offset(1, 2),
+                      blurRadius: 6,
+                      color: Colors.black54,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
-        // Streak badge in bottom-right
-        if (_currentStreak > 0)
-          Positioned(
-            right: 16,
-            bottom: 16,
-            child: _buildStreakBadge(isDark),
-          ),
-      ],
+      ),
     );
   }
 
