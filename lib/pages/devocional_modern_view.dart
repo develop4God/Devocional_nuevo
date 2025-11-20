@@ -1,19 +1,16 @@
-import 'dart:convert';
-import 'dart:math';
-
+import 'package:devocional_nuevo/repositories/devotional_image_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import '../models/devocional_model.dart';
 
 class DevocionalModernView extends StatefulWidget {
   final Devocional devocional;
-  final String? imageUrl;
+  final DevotionalImageRepository imageRepository;
 
   const DevocionalModernView({
     super.key,
     required this.devocional,
-    this.imageUrl,
+    required this.imageRepository,
   });
 
   @override
@@ -26,44 +23,9 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
   @override
   void initState() {
     super.initState();
-    _imageUrlFuture = _fetchRandomImageUrl();
-  }
-
-  Future<String> _fetchRandomImageUrl() async {
-    debugPrint('[DEBUG] Iniciando fetch de imágenes desde GitHub');
-    try {
-      final response = await http.get(Uri.parse(
-          'https://api.github.com/repos/develop4God/Devocionales-assets/contents/images'));
-      debugPrint('[DEBUG] Respuesta status: ${response.statusCode}');
-      if (response.statusCode == 200) {
-        final List<dynamic> files = json.decode(response.body);
-        debugPrint('[DEBUG] Archivos recibidos: ${files.length}');
-        final List<String> imageUrls = files
-            .where((file) =>
-                file['type'] == 'file' &&
-                (file['name'].toLowerCase().endsWith('.jpg') ||
-                    file['name'].toLowerCase().endsWith('.jpeg') ||
-                    file['name'].toLowerCase().endsWith('.avif')))
-            .map<String>((file) => file['download_url'] as String)
-            .toList();
-        debugPrint('[DEBUG] Imágenes filtradas: ${imageUrls.length}');
-        if (imageUrls.isNotEmpty) {
-          final random = Random();
-          final selected = imageUrls[random.nextInt(imageUrls.length)];
-          debugPrint('[DEBUG] Imagen seleccionada: $selected');
-          return selected;
-        } else {
-          debugPrint('[DEBUG] No se encontraron imágenes válidas.');
-        }
-      } else {
-        debugPrint('[DEBUG] Error en la respuesta HTTP: ${response.body}');
-      }
-    } catch (e) {
-      debugPrint('[DEBUG] Error obteniendo imágenes: $e');
-    }
-    // Fallback
-    debugPrint('[DEBUG] Usando imagen por defecto.');
-    return 'https://raw.githubusercontent.com/develop4God/Devocionales-assets/main/images/devocional_default.jpg';
+    debugPrint('[DEBUG] [ModernView] initState: solicitando imagen aleatoria');
+    _imageUrlFuture =
+        widget.imageRepository.getRandomImageUrl(width: 600, height: 400);
   }
 
   @override
@@ -75,8 +37,11 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
       body: FutureBuilder<String>(
         future: _imageUrlFuture,
         builder: (context, snapshot) {
+          debugPrint(
+              '[DEBUG] [ModernView] FutureBuilder: snapshot.connectionState=${snapshot.connectionState}');
           final imageUrl = snapshot.data ??
               'https://raw.githubusercontent.com/develop4God/Devocionales-assets/main/images/devocional_default.jpg';
+          debugPrint('[DEBUG] [ModernView] URL final para mostrar: $imageUrl');
           return CustomScrollView(
             slivers: [
               SliverAppBar(

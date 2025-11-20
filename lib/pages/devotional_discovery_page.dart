@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../extensions/string_extensions.dart';
 import '../models/devocional_model.dart';
 import '../providers/devotional_discovery_provider.dart';
+import '../repositories/devotional_image_repository.dart';
 import '../services/spiritual_stats_service.dart';
 import 'devocional_modern_view.dart';
 import 'devotional_discovery/widgets/devotional_card_premium.dart';
@@ -371,15 +372,13 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
 
   void _showDevocionalDetail(BuildContext context, Devocional devocional,
       DevotionalDiscoveryProvider provider) {
-    // Ejemplo: usa la primera imagen disponible, puedes personalizar la lógica
-    final imageUrl =
-        'https://raw.githubusercontent.com/develop4God/Devocionales-assets/main/images/devocional_default.jpg';
+    final imageRepository = DevotionalImageRepository();
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (ctx) => DevocionalModernView(
           devocional: devocional,
-          imageUrl: imageUrl,
+          imageRepository: imageRepository,
         ),
       ),
     );
