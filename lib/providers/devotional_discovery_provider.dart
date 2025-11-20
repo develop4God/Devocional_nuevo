@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +16,7 @@ class DevotionalDiscoveryProvider extends ChangeNotifier {
   List<Devocional> _filtered = [];
   List<Devocional> _favorites = [];
   bool _isLoading = false;
+  bool _isInitialized = false;
   String? _errorMessage;
   String _selectedLanguage = 'es';
   String _selectedVersion = 'RVR1960';
@@ -25,6 +27,7 @@ class DevotionalDiscoveryProvider extends ChangeNotifier {
   List<Devocional> get filtered => _filtered;
   List<Devocional> get favorites => _favorites;
   bool get isLoading => _isLoading;
+  bool get isInitialized => _isInitialized;
   String? get errorMessage => _errorMessage;
   String get selectedLanguage => _selectedLanguage;
   String get selectedVersion => _selectedVersion;
@@ -32,7 +35,11 @@ class DevotionalDiscoveryProvider extends ChangeNotifier {
 
   /// Initialize devotional data
   Future<void> initialize() async {
+    // Concurrency guard: prevent multiple simultaneous initializations
     if (_isLoading) return;
+
+    // Skip re-initialization if already loaded (unless explicitly refreshed)
+    if (_isInitialized && _all.isNotEmpty) return;
 
     _isLoading = true;
     _errorMessage = null;
@@ -130,20 +137,43 @@ class DevotionalDiscoveryProvider extends ChangeNotifier {
         },
       );
 
-      if (response.statusCode != 200) {
-        throw Exception('Failed to load from API: ${response.statusCode}');
+      // Check HTTP status codes and provide specific error messages
+      if (response.statusCode == 404) {
+        throw HttpException('Devotionals not found for this language/version');
+      } else if (response.statusCode >= 500) {
+        throw HttpException('Server error. Please try again later.');
+      } else if (response.statusCode != 200) {
+        throw HttpException(
+          'Failed to load from API: ${response.statusCode}',
+        );
       }
 
       final Map<String, dynamic> data = json.decode(response.body);
       await _processDevocionalData(data);
     } on TimeoutException catch (e) {
       debugPrint('Timeout error fetching devotionals: $e');
-      _errorMessage = 'Network timeout - check your connection';
+      _errorMessage =
+          'Network connection timeout. Please check your internet and retry.';
+      _isLoading = false;
+      notifyListeners();
+    } on SocketException catch (e) {
+      debugPrint('Network error fetching devotionals: $e');
+      _errorMessage = 'No internet connection. Please check your network.';
+      _isLoading = false;
+      notifyListeners();
+    } on HttpException catch (e) {
+      debugPrint('HTTP error fetching devotionals: $e');
+      _errorMessage = e.message;
+      _isLoading = false;
+      notifyListeners();
+    } on FormatException catch (e) {
+      debugPrint('JSON parse error fetching devotionals: $e');
+      _errorMessage = 'Data format error. Please try again.';
       _isLoading = false;
       notifyListeners();
     } catch (e) {
-      debugPrint('Error fetching devotionals: $e');
-      _errorMessage = 'Error al cargar los devocionales: $e';
+      debugPrint('Unexpected error fetching devotionals: $e');
+      _errorMessage = 'An unexpected error occurred. Please try again.';
       _isLoading = false;
       notifyListeners();
     }
@@ -205,6 +235,7 @@ class DevotionalDiscoveryProvider extends ChangeNotifier {
       _all = loadedDevocionales;
       _filtered = loadedDevocionales;
       _isLoading = false;
+      _isInitialized = true;
       notifyListeners();
 
       debugPrint(
@@ -212,7 +243,7 @@ class DevotionalDiscoveryProvider extends ChangeNotifier {
       );
     } catch (e) {
       debugPrint('Error processing devotional data: $e');
-      _errorMessage = 'Error al procesar los devocionales: $e';
+      _errorMessage = 'Data format error. Please try again.';
       _isLoading = false;
       notifyListeners();
     }
