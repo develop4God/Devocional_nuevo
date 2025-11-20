@@ -7,6 +7,8 @@ import 'package:devocional_nuevo/extensions/string_extensions.dart';
 import 'package:devocional_nuevo/pages/about_page.dart';
 import 'package:devocional_nuevo/pages/application_language_page.dart';
 import 'package:devocional_nuevo/pages/contact_page.dart';
+import 'package:devocional_nuevo/pages/devocionales_page.dart';
+import 'package:devocional_nuevo/pages/devotional_discovery_page.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:devocional_nuevo/providers/localization_provider.dart';
 import 'package:devocional_nuevo/services/tts/voice_settings_service.dart';
@@ -155,11 +157,14 @@ class _SettingsPageState extends State<SettingsPage> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // ignore: deprecated_member_use
               RadioListTile<ExperienceMode>(
                 title: const Text('Discovery'),
                 subtitle: const Text('Modern, visual interface with search'),
                 value: ExperienceMode.discovery,
+                // ignore: deprecated_member_use
                 groupValue: currentExperience,
+                // ignore: deprecated_member_use
                 onChanged: (value) async {
                   if (value != null) {
                     final prefs = await SharedPreferences.getInstance();
@@ -168,24 +173,27 @@ class _SettingsPageState extends State<SettingsPage> {
                       value.toStorageString(),
                     );
                     if (context.mounted) {
+                      debugPrint(
+                          '[DEBUG] Cambio a modo Discovery, navegando a DevotionalDiscoveryPage');
                       Navigator.pop(context);
-                      setState(() {}); // Refresh display
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                              'Experience changed. Restart app to see changes.'),
-                          duration: Duration(seconds: 3),
-                        ),
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const DevotionalDiscoveryPage()),
+                        (route) => false,
                       );
                     }
                   }
                 },
               ),
+              // ignore: deprecated_member_use
               RadioListTile<ExperienceMode>(
                 title: const Text('Traditional'),
                 subtitle: const Text('Classic daily devotional interface'),
                 value: ExperienceMode.traditional,
+                // ignore: deprecated_member_use
                 groupValue: currentExperience,
+                // ignore: deprecated_member_use
                 onChanged: (value) async {
                   if (value != null) {
                     final prefs = await SharedPreferences.getInstance();
@@ -195,13 +203,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     );
                     if (context.mounted) {
                       Navigator.pop(context);
-                      setState(() {}); // Refresh display
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                              'Experience changed. Restart app to see changes.'),
-                          duration: Duration(seconds: 3),
-                        ),
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => const DevocionalesPage()),
+                        (route) => false,
                       );
                     }
                   }
