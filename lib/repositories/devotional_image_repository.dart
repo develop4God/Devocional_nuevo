@@ -69,18 +69,26 @@ class DevotionalImageRepository {
     final todayKey =
         'devocional_image_${DateTime.now().toIso8601String().substring(0, 10)}';
     final savedUrl = prefs.getString(todayKey);
-    if (savedUrl != null && imageUrls.contains(savedUrl)) {
-      debugPrint('[DEBUG] Imagen del día encontrada en cache: $savedUrl');
-      return savedUrl;
+    debugPrint('[DEBUG] [ImageRepo] Imagen en cache para hoy: $savedUrl');
+    if (savedUrl != null) {
+      if (imageUrls.contains(savedUrl)) {
+        debugPrint('[DEBUG] [ImageRepo] Imagen en cache es válida: $savedUrl');
+        return savedUrl;
+      } else {
+        debugPrint(
+            '[DEBUG] [ImageRepo] Imagen en cache no es válida, seleccionando nueva.');
+      }
     }
     if (imageUrls.isNotEmpty) {
       final random = Random();
       final selected = imageUrls[random.nextInt(imageUrls.length)];
       await prefs.setString(todayKey, selected);
-      debugPrint('[DEBUG] Imagen del día asignada y guardada: $selected');
+      debugPrint(
+          '[DEBUG] [ImageRepo] Imagen del día asignada y guardada: $selected');
       return selected;
     }
-    debugPrint('[DEBUG] No hay imágenes válidas, usando placeholder genérico');
+    debugPrint(
+        '[DEBUG] [ImageRepo] No hay imágenes válidas, usando placeholder genérico');
     return 'https://via.placeholder.com/600x400?text=Devocional';
   }
 }

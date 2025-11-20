@@ -1,8 +1,11 @@
 // lib/pages/devotional_discovery_page.dart
 
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:devocional_nuevo/widgets/devocionales_page_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -36,6 +39,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
   String _searchTerm = '';
   Timer? _debounceTimer;
   int _currentStreak = 0;
+  String? _imageOfDay;
 
   @override
   bool get wantKeepAlive => true;
@@ -43,11 +47,35 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
   @override
   void initState() {
     super.initState();
+    _loadImageOfDay();
     // Initialize devotionals on first load
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<DevotionalDiscoveryProvider>().initialize();
       _loadStreak();
     });
+  }
+
+  Future<void> _loadImageOfDay() async {
+    final repo = DevotionalImageRepository();
+    List<String> imageUrls = [];
+    try {
+      final response = await http.get(Uri.parse(repo.apiUrl));
+      if (response.statusCode == 200) {
+        final List<dynamic> files = json.decode(response.body);
+        imageUrls = files
+            .where((file) =>
+                file['type'] == 'file' &&
+                (file['name'].toLowerCase().endsWith('.jpg') ||
+                    file['name'].toLowerCase().endsWith('.jpeg') ||
+                    file['name'].toLowerCase().endsWith('.avif')))
+            .map<String>((file) => file['download_url'] as String)
+            .toList();
+      }
+    } catch (e) {
+      debugPrint('[DEBUG] [Discovery] Error obteniendo lista de imágenes: $e');
+    }
+    _imageOfDay = await repo.getImageForToday(imageUrls);
+    setState(() {});
   }
 
   Future<void> _loadStreak() async {
@@ -90,6 +118,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
         return Scaffold(
           backgroundColor: isDark ? Colors.black : Colors.grey[50],
           extendBodyBehindAppBar: true,
+          drawer: const DevocionalesDrawer(),
           appBar: AppBar(
             elevation: 0,
             backgroundColor: Colors.transparent,
@@ -134,57 +163,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
           body: Column(
             children: [
               // Hero header with gradient and streak badge
-              Stack(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: isDark
-                            ? [Colors.deepPurple[900]!, Colors.purple[800]!]
-                            : [colorScheme.primary, colorScheme.secondary],
-                      ),
-                    ),
-                    child: SafeArea(
-                      bottom: false,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(24, 60, 24, 32),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'discovery.today'.tr(),
-                              style: TextStyle(
-                                color: Colors.white.withValues(alpha: 0.9),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              DateFormat('EEEE, MMMM d').format(DateTime.now()),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Streak badge in bottom-right
-                  if (_currentStreak > 0)
-                    Positioned(
-                      right: 16,
-                      bottom: 16,
-                      child: _buildStreakBadge(isDark),
-                    ),
-                ],
-              ),
+              _buildHeroHeader(),
 
               // Search bar
               Padding(
@@ -331,6 +310,99 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
     );
   }
 
+  Widget _buildHeroHeader() {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    debugPrint('[DEBUG] _buildHeroHeader: _imageOfDay=$_imageOfDay');
+
+    return Stack(
+      children: [
+        if (_imageOfDay != null)
+          Positioned.fill(
+            child: Builder(
+              builder: (context) {
+                debugPrint('[DEBUG] Mostrando imagen en el hero: $_imageOfDay');
+                return Image.network(
+                  _imageOfDay!,
+                  fit: BoxFit.cover,
+                  errorBuilder: (ctx, error, stackTrace) {
+                    debugPrint('[DEBUG] Error cargando imagen en hero: $error');
+                    return Container(
+                      color: Colors.grey[300],
+                      child: const Center(
+                          child: Icon(Icons.image_not_supported, size: 64)),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: isDark
+                  ? [Colors.deepPurple[900]!, Colors.purple[800]!]
+                  : [colorScheme.primary, colorScheme.secondary],
+            ),
+          ),
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 60, 24, 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'discovery.today'.tr(),
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.9),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(1, 2),
+                          blurRadius: 6,
+                          color: Colors.black54,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    DateFormat('EEEE, MMMM d').format(DateTime.now()),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(1, 2),
+                          blurRadius: 6,
+                          color: Colors.black54,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        // Streak badge in bottom-right
+        if (_currentStreak > 0)
+          Positioned(
+            right: 16,
+            bottom: 16,
+            child: _buildStreakBadge(isDark),
+          ),
+      ],
+    );
+  }
+
   Widget _buildStreakBadge(bool isDark) {
     final textColor = isDark ? Colors.black87 : Colors.white;
     final backgroundColor = isDark ? Colors.white24 : Colors.black12;
@@ -379,6 +451,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
         builder: (ctx) => DevocionalModernView(
           devocional: devocional,
           imageRepository: imageRepository,
+          imageUrlOfDay: _imageOfDay,
         ),
       ),
     );
