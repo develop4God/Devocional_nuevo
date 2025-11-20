@@ -315,6 +315,10 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     debugPrint('[DEBUG] _buildHeroHeader: _imageOfDay=$_imageOfDay');
+    if (_imageOfDay == null) {
+      debugPrint(
+          '[DEBUG] [Hero] La imagen del día es null, posible error en fetch o asignación.');
+    }
 
     return Stack(
       children: [
@@ -326,6 +330,17 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
                 return Image.network(
                   _imageOfDay!,
                   fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      debugPrint(
+                          '[DEBUG] [Hero] Imagen cargada correctamente: $_imageOfDay');
+                      return child;
+                    } else {
+                      debugPrint(
+                          '[DEBUG] [Hero] Cargando imagen: $_imageOfDay, bytes: ${loadingProgress.cumulativeBytesLoaded}');
+                      return Center(child: CircularProgressIndicator());
+                    }
+                  },
                   errorBuilder: (ctx, error, stackTrace) {
                     debugPrint('[DEBUG] Error cargando imagen en hero: $error');
                     return Container(

@@ -70,14 +70,15 @@ class DevotionalImageRepository {
         'devocional_image_${DateTime.now().toIso8601String().substring(0, 10)}';
     final savedUrl = prefs.getString(todayKey);
     debugPrint('[DEBUG] [ImageRepo] Imagen en cache para hoy: $savedUrl');
-    if (savedUrl != null) {
-      if (imageUrls.contains(savedUrl)) {
-        debugPrint('[DEBUG] [ImageRepo] Imagen en cache es válida: $savedUrl');
-        return savedUrl;
-      } else {
-        debugPrint(
-            '[DEBUG] [ImageRepo] Imagen en cache no es válida, seleccionando nueva.');
-      }
+    // Validar que la imagen en cache existe en la lista y no es 'devocional_default.jpg'
+    if (savedUrl != null &&
+        imageUrls.contains(savedUrl) &&
+        !savedUrl.contains('devocional_default.jpg')) {
+      debugPrint('[DEBUG] [ImageRepo] Imagen en cache es válida: $savedUrl');
+      return savedUrl;
+    } else {
+      debugPrint(
+          '[DEBUG] [ImageRepo] Imagen en cache no es válida o es default, seleccionando nueva.');
     }
     if (imageUrls.isNotEmpty) {
       final random = Random();
