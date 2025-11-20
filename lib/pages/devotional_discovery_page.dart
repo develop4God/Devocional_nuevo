@@ -1,5 +1,7 @@
 // lib/pages/devotional_discovery_page.dart
 
+import 'dart:async';
+
 import 'package:bible_reader_core/bible_reader_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -24,9 +26,14 @@ class DevotionalDiscoveryPage extends StatefulWidget {
       _DevotionalDiscoveryPageState();
 }
 
-class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage> {
+class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
+    with AutomaticKeepAliveClientMixin {
   final TextEditingController _searchController = TextEditingController();
   String _searchTerm = '';
+  Timer? _debounceTimer;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -40,11 +47,25 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage> {
   @override
   void dispose() {
     _searchController.dispose();
+    _debounceTimer?.cancel();
     super.dispose();
+  }
+
+  void _onSearchChanged(String value) {
+    setState(() => _searchTerm = value);
+    
+    // Cancel previous timer
+    _debounceTimer?.cancel();
+    
+    // Create new timer for 500ms debounce
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+      context.read<DevotionalDiscoveryProvider>().filterBySearch(value);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Required for AutomaticKeepAliveClientMixin
     return Consumer<DevotionalDiscoveryProvider>(
       builder: (context, provider, child) {
         final colorScheme = Theme.of(context).colorScheme;
@@ -65,14 +86,16 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage> {
               ),
             ),
             actions: [
-              // Language selector
+              // Search icon
               IconButton(
                 icon: Icon(
-                  Icons.language,
+                  Icons.search,
                   color: isDark ? Colors.white : Colors.black87,
                 ),
-                tooltip: 'discovery.select_language'.tr(),
-                onPressed: () => _showLanguageSelector(context, provider),
+                tooltip: 'discovery.search_hint'.tr(),
+                onPressed: () {
+                  // Focus search field or scroll to it
+                },
               ),
               // Favorites page
               IconButton(
@@ -167,6 +190,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage> {
                               icon: const Icon(Icons.clear),
                               onPressed: () {
                                 _searchController.clear();
+                                _debounceTimer?.cancel();
                                 setState(() => _searchTerm = '');
                                 provider.filterBySearch('');
                               },
@@ -178,10 +202,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage> {
                         vertical: 16,
                       ),
                     ),
-                    onChanged: (value) {
-                      setState(() => _searchTerm = value);
-                      provider.filterBySearch(value);
-                    },
+                    onChanged: _onSearchChanged,
                   ),
                 ),
               ),
@@ -564,64 +585,6 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage> {
     return isDark
         ? [Colors.deepPurple[900]!, Colors.purple[800]!]
         : [Colors.deepPurple[400]!, Colors.purple[400]!];
-  }
-
-  void _showLanguageSelector(
-    BuildContext context,
-    DevotionalDiscoveryProvider provider,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'discovery.select_language'.tr(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge
-                      ?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 20),
-                _buildLanguageOption(
-                    context, provider, 'es', 'Español', '🇪🇸'),
-                _buildLanguageOption(
-                    context, provider, 'en', 'English', '🇺🇸'),
-                _buildLanguageOption(
-                    context, provider, 'pt', 'Português', '🇧🇷'),
-                _buildLanguageOption(
-                    context, provider, 'fr', 'Français', '🇫🇷'),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildLanguageOption(
-    BuildContext context,
-    DevotionalDiscoveryProvider provider,
-    String code,
-    String name,
-    String flag,
-  ) {
-    return ListTile(
-      leading: Text(flag, style: const TextStyle(fontSize: 24)),
-      title: Text(name),
-      onTap: () {
-        Navigator.pop(context);
-        provider.changeLanguage(code);
-      },
-    );
   }
 
   void _navigateToVerse(BuildContext context, Devocional devocional) async {
