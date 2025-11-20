@@ -1,5 +1,6 @@
 // lib/providers/devotional_discovery_provider.dart
 
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -118,7 +119,16 @@ class DevotionalDiscoveryProvider extends ChangeNotifier {
       );
 
       debugPrint('🔍 Fetching devotionals from: $url');
-      final response = await http.get(Uri.parse(url));
+
+      // Add 15-second timeout to prevent indefinite hangs
+      final response = await http.get(Uri.parse(url)).timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          throw TimeoutException(
+            'Network request timed out after 15 seconds',
+          );
+        },
+      );
 
       if (response.statusCode != 200) {
         throw Exception('Failed to load from API: ${response.statusCode}');
@@ -126,6 +136,11 @@ class DevotionalDiscoveryProvider extends ChangeNotifier {
 
       final Map<String, dynamic> data = json.decode(response.body);
       await _processDevocionalData(data);
+    } on TimeoutException catch (e) {
+      debugPrint('Timeout error fetching devotionals: $e');
+      _errorMessage = 'Network timeout - check your connection';
+      _isLoading = false;
+      notifyListeners();
     } catch (e) {
       debugPrint('Error fetching devotionals: $e');
       _errorMessage = 'Error al cargar los devocionales: $e';
