@@ -610,5 +610,20 @@
     "no_thanksgivings_description": "Créez votre première action de grâces pour exprimer votre gratitude à Dieu.",
     "days_old_single": "({days} jour)",
     "days_old_plural": "({days} jours)"
+  },
+  "discovery": {
+    "title": "Découvrir les Dévotions",
+    "today": "Aujourd'hui",
+    "tomorrow": "Demain",
+    "search_hint": "Rechercher des dévotions...",
+    "select_language": "Sélectionner la langue",
+    "favorites": "Favoris",
+    "retry": "Réessayer",
+    "no_devotionals": "Aucune dévotion trouvée",
+    "read_verse_first": "Lire d'abord le Verset",
+    "opening_bible": "Ouverture de la Bible",
+    "reflection": "Réflexion",
+    "for_meditation": "Pour Méditer",
+    "prayer": "Prière"
   }
 }

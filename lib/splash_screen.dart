@@ -2,9 +2,11 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:devocional_nuevo/extensions/string_extensions.dart';
-import 'package:devocional_nuevo/pages/devocionales_page.dart'; // CAMBIADO: Importar página principal
+import 'package:devocional_nuevo/pages/experience_selection_page.dart';
+import 'package:devocional_nuevo/utils/devotional_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -65,16 +67,22 @@ class _SplashScreenState extends State<SplashScreen>
   Future<void> _navigateToNextScreen() async {
     await Future.delayed(const Duration(milliseconds: 9000));
 
-    if (mounted) {
+    // Check if user has already selected an experience mode
+    final prefs = await SharedPreferences.getInstance();
+    final selectedMode =
+        prefs.getString(DevotionalConstants.prefExperienceMode);
+
+    if (!mounted) return;
+
+    // If no mode selected, show the experience selection page
+    if (selectedMode == null) {
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
           transitionDuration: const Duration(milliseconds: 800),
           pageBuilder: (context, animation, secondaryAnimation) =>
-              const DevocionalesPage(),
-          // Added fade transition as requested
+              const ExperienceSelectionPage(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            // Fade transition from splash to devotionals
             return FadeTransition(
               opacity: animation,
               child: child,
@@ -82,6 +90,10 @@ class _SplashScreenState extends State<SplashScreen>
           },
         ),
       );
+    } else {
+      // Navigate to previously selected experience
+      // This will be handled by main.dart logic
+      Navigator.pushReplacementNamed(context, '/devocionales');
     }
   }
 

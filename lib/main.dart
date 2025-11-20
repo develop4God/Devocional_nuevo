@@ -12,6 +12,7 @@ import 'package:devocional_nuevo/pages/devocionales_page.dart';
 import 'package:devocional_nuevo/pages/onboarding/onboarding_flow.dart';
 import 'package:devocional_nuevo/pages/settings_page.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
+import 'package:devocional_nuevo/providers/devotional_discovery_provider.dart';
 import 'package:devocional_nuevo/providers/localization_provider.dart';
 import 'package:devocional_nuevo/services/connectivity_service.dart';
 import 'package:devocional_nuevo/services/google_drive_auth_service.dart';
@@ -130,6 +131,9 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => LocalizationProvider()),
         ChangeNotifierProvider(create: (context) => DevocionalProvider()),
+        ChangeNotifierProvider(
+          create: (context) => DevotionalDiscoveryProvider(),
+        ),
         BlocProvider(create: (context) => PrayerBloc()),
         BlocProvider(create: (context) => ThanksgivingBloc()),
         BlocProvider(
