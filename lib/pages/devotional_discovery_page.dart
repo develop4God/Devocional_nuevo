@@ -36,10 +36,12 @@ class DevotionalDiscoveryPage extends StatefulWidget {
 class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
     with AutomaticKeepAliveClientMixin {
   final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
   String _searchTerm = '';
   Timer? _debounceTimer;
   int _currentStreak = 0;
   String? _imageOfDay;
+  bool _showSearchBar = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -91,6 +93,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
   @override
   void dispose() {
     _searchController.dispose();
+    _searchFocusNode.dispose();
     _debounceTimer?.cancel();
     super.dispose();
   }
@@ -139,7 +142,12 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
                 ),
                 tooltip: 'discovery.search_hint'.tr(),
                 onPressed: () {
-                  // Focus search field or scroll to it
+                  setState(() {
+                    _showSearchBar = !_showSearchBar;
+                  });
+                  if (_showSearchBar) {
+                    FocusScope.of(context).requestFocus(_searchFocusNode);
+                  }
                 },
               ),
               // Favorites page
@@ -166,52 +174,54 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
               _buildHeroHeader(),
 
               // Search bar
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: isDark ? Colors.grey[900] : Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'discovery.search_hint'.tr(),
-                      hintStyle: TextStyle(
-                        color: isDark ? Colors.grey[600] : Colors.grey[400],
-                      ),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: isDark ? Colors.grey[600] : Colors.grey[400],
-                      ),
-                      suffixIcon: _searchTerm.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear),
-                              onPressed: () {
-                                _searchController.clear();
-                                _debounceTimer?.cancel();
-                                setState(() => _searchTerm = '');
-                                provider.filterBySearch('');
-                              },
-                            )
-                          : null,
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 16,
-                      ),
+              if (_showSearchBar)
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: isDark ? Colors.grey[900] : Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                    onChanged: _onSearchChanged,
+                    child: TextField(
+                      controller: _searchController,
+                      focusNode: _searchFocusNode,
+                      decoration: InputDecoration(
+                        hintText: 'discovery.search_hint'.tr(),
+                        hintStyle: TextStyle(
+                          color: isDark ? Colors.grey[600] : Colors.grey[400],
+                        ),
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: isDark ? Colors.grey[600] : Colors.grey[400],
+                        ),
+                        suffixIcon: _searchTerm.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  _debounceTimer?.cancel();
+                                  setState(() => _searchTerm = '');
+                                  provider.filterBySearch('');
+                                },
+                              )
+                            : null,
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 16,
+                        ),
+                      ),
+                      onChanged: _onSearchChanged,
+                    ),
                   ),
                 ),
-              ),
 
               // Loading indicator
               if (provider.isLoading)
@@ -426,7 +436,26 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
     return url;
   }
 
+  DateFormat _getLocalizedDateFormat(BuildContext context) {
+    final locale = Localizations.localeOf(context).languageCode;
+    switch (locale) {
+      case 'es':
+        return DateFormat("EEEE, d 'de' MMMM", 'es');
+      case 'en':
+        return DateFormat('EEEE, MMMM d', 'en');
+      case 'fr':
+        return DateFormat('EEEE d MMMM', 'fr');
+      case 'pt':
+        return DateFormat("EEEE, d 'de' MMMM", 'pt');
+      case 'ja':
+        return DateFormat('y年M月d日 EEEE', 'ja');
+      default:
+        return DateFormat('EEEE, MMMM d', 'en');
+    }
+  }
+
   Widget _buildHeroContent(ColorScheme colorScheme, bool isDark) {
+    final dateFormat = _getLocalizedDateFormat(context);
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -451,24 +480,9 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'discovery.today'.tr(),
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.9),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  shadows: [
-                    Shadow(
-                      offset: Offset(1, 2),
-                      blurRadius: 6,
-                      color: Colors.black54,
-                    ),
-                  ],
-                ),
-              ),
               const SizedBox(height: 4),
               Text(
-                DateFormat('EEEE, MMMM d').format(DateTime.now()),
+                dateFormat.format(DateTime.now()),
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 28,
