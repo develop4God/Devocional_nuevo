@@ -125,14 +125,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
           appBar: AppBar(
             elevation: 0,
             backgroundColor: Colors.transparent,
-            title: Text(
-              'discovery.title'.tr(),
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 20,
-                color: isDark ? Colors.white : Colors.black87,
-              ),
-            ),
+            title: const SizedBox.shrink(),
             actions: [
               // Search icon
               IconButton(
