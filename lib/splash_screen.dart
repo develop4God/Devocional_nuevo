@@ -73,11 +73,14 @@ class _SplashScreenState extends State<SplashScreen>
     final prefs = await SharedPreferences.getInstance();
     final selectedMode =
         prefs.getString(DevotionalConstants.prefExperienceMode);
+    debugPrint('[SplashScreen] selectedMode: $selectedMode');
 
     if (!mounted) return;
 
     // If no mode selected, show the experience selection page
     if (selectedMode == null) {
+      debugPrint(
+          '[SplashScreen] No experience mode seleccionado, mostrando selector');
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
@@ -93,6 +96,8 @@ class _SplashScreenState extends State<SplashScreen>
         ),
       );
     } else if (selectedMode == 'discovery') {
+      debugPrint(
+          '[SplashScreen] Modo discovery seleccionado, navegando a Discovery');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -100,6 +105,8 @@ class _SplashScreenState extends State<SplashScreen>
         ),
       );
     } else {
+      debugPrint(
+          '[SplashScreen] Modo clásico seleccionado, navegando a DevocionalesPage');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
