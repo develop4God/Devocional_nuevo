@@ -56,6 +56,7 @@ class _DevocionalesPageState extends State<DevocionalesPage>
   final DevocionalesTracking _tracking = DevocionalesTracking();
   final FlutterTts _flutterTts = FlutterTts();
   AudioController? _audioController;
+  PageRoute? _modalRoute;
   bool _routeSubscribed = false;
 
   // Font control variables
@@ -144,14 +145,13 @@ class _DevocionalesPageState extends State<DevocionalesPage>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (!_routeSubscribed) {
-      final route = ModalRoute.of(context);
-      if (route is PageRoute) {
-        routeObserver.subscribe(this, route);
-        debugPrint(
-            '🔄 [DEBUG] Global RouteObserver subscribed for DevocionalesPage');
-        _routeSubscribed = true;
-      }
+    final route = ModalRoute.of(context);
+    if (route is PageRoute && !_routeSubscribed) {
+      _modalRoute = route;
+      routeObserver.subscribe(this, route);
+      _routeSubscribed = true;
+      debugPrint(
+          '🟢 [DEBUG] Global RouteObserver subscribed for DevocionalesPage');
     }
   }
 
@@ -192,8 +192,7 @@ class _DevocionalesPageState extends State<DevocionalesPage>
 
   @override
   void dispose() {
-    final route = ModalRoute.of(context);
-    if (_routeSubscribed && route is PageRoute) {
+    if (_routeSubscribed && _modalRoute != null) {
       routeObserver.unsubscribe(this);
       debugPrint(
           '🗑️ [DEBUG] Global RouteObserver unsubscribed for DevocionalesPage');
