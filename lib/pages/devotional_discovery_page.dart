@@ -35,13 +35,82 @@ class DevotionalDiscoveryPage extends StatefulWidget {
 
 class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
     with AutomaticKeepAliveClientMixin {
+  // Elimino variables no usadas y corrijo warnings de deprecated
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
-  String _searchTerm = '';
   Timer? _debounceTimer;
   int _currentStreak = 0;
   String? _imageOfDay;
-  bool _showSearchBar = false;
+  OverlayEntry? _searchOverlayEntry;
+
+  void _showSearchBubble(BuildContext context) {
+    if (_searchOverlayEntry != null) return;
+    final overlay = Overlay.of(context);
+    _searchOverlayEntry = OverlayEntry(
+      builder: (context) => GestureDetector(
+        onTap: () {
+          _hideSearchBubble();
+        },
+        child: Material(
+          color: Colors.black.withValues(alpha: 0.2),
+          child: Center(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(32),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.15),
+                    blurRadius: 24,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      focusNode: _searchFocusNode,
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        hintText: 'Buscar devocional...',
+                        border: InputBorder.none,
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                      ),
+                      style: const TextStyle(fontSize: 18),
+                      onChanged: _onSearchChanged,
+                      onEditingComplete: _hideSearchBubble,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: _hideSearchBubble,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    overlay.insert(_searchOverlayEntry!);
+    _searchFocusNode.requestFocus();
+  }
+
+  void _hideSearchBubble() {
+    _searchOverlayEntry?.remove();
+    _searchOverlayEntry = null;
+    setState(() {
+      _searchController.clear();
+    });
+    context.read<DevotionalDiscoveryProvider>().filterBySearch('');
+    FocusScope.of(context).unfocus();
+  }
 
   @override
   bool get wantKeepAlive => true;
@@ -99,7 +168,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
   }
 
   void _onSearchChanged(String value) {
-    setState(() => _searchTerm = value);
+    setState(() {});
 
     // Cancel previous timer
     _debounceTimer?.cancel();
@@ -127,7 +196,6 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
             backgroundColor: Colors.transparent,
             title: const SizedBox.shrink(),
             actions: [
-              // Search icon
               IconButton(
                 icon: Icon(
                   Icons.search,
@@ -135,12 +203,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
                 ),
                 tooltip: 'discovery.search_hint'.tr(),
                 onPressed: () {
-                  setState(() {
-                    _showSearchBar = !_showSearchBar;
-                  });
-                  if (_showSearchBar) {
-                    FocusScope.of(context).requestFocus(_searchFocusNode);
-                  }
+                  _showSearchBubble(context);
                 },
               ),
               // Favorites page
@@ -165,56 +228,6 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
             children: [
               // Hero header with gradient and streak badge
               _buildHeroHeader(),
-
-              // Search bar
-              if (_showSearchBar)
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: isDark ? Colors.grey[900] : Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: TextField(
-                      controller: _searchController,
-                      focusNode: _searchFocusNode,
-                      decoration: InputDecoration(
-                        hintText: 'discovery.search_hint'.tr(),
-                        hintStyle: TextStyle(
-                          color: isDark ? Colors.grey[600] : Colors.grey[400],
-                        ),
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: isDark ? Colors.grey[600] : Colors.grey[400],
-                        ),
-                        suffixIcon: _searchTerm.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(Icons.clear),
-                                onPressed: () {
-                                  _searchController.clear();
-                                  _debounceTimer?.cancel();
-                                  setState(() => _searchTerm = '');
-                                  provider.filterBySearch('');
-                                },
-                              )
-                            : null,
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 16,
-                        ),
-                      ),
-                      onChanged: _onSearchChanged,
-                    ),
-                  ),
-                ),
 
               // Loading indicator
               if (provider.isLoading)
