@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../extensions/string_extensions.dart';
 import '../models/devocional_model.dart';
 import '../providers/devotional_discovery_provider.dart';
+import '../services/spiritual_stats_service.dart';
 import 'bible_reader_page.dart';
 import 'favorites_page.dart';
 
@@ -31,6 +32,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
   final TextEditingController _searchController = TextEditingController();
   String _searchTerm = '';
   Timer? _debounceTimer;
+  int _currentStreak = 0;
 
   @override
   bool get wantKeepAlive => true;
@@ -41,7 +43,18 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
     // Initialize devotionals on first load
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<DevotionalDiscoveryProvider>().initialize();
+      _loadStreak();
     });
+  }
+
+  Future<void> _loadStreak() async {
+    final statsService = SpiritualStatsService();
+    final stats = await statsService.getStats();
+    if (mounted) {
+      setState(() {
+        _currentStreak = stats.currentStreak;
+      });
+    }
   }
 
   @override
@@ -117,46 +130,57 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
           ),
           body: Column(
             children: [
-              // Hero header with gradient
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: isDark
-                        ? [Colors.deepPurple[900]!, Colors.purple[800]!]
-                        : [colorScheme.primary, colorScheme.secondary],
-                  ),
-                ),
-                child: SafeArea(
-                  bottom: false,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 60, 24, 32),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'discovery.today'.tr(),
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.9),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
+              // Hero header with gradient and streak badge
+              Stack(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: isDark
+                            ? [Colors.deepPurple[900]!, Colors.purple[800]!]
+                            : [colorScheme.primary, colorScheme.secondary],
+                      ),
+                    ),
+                    child: SafeArea(
+                      bottom: false,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 60, 24, 32),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'discovery.today'.tr(),
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.9),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              DateFormat('EEEE, MMMM d').format(DateTime.now()),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          DateFormat('EEEE, MMMM d').format(DateTime.now()),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                  // Streak badge in bottom-right
+                  if (_currentStreak > 0)
+                    Positioned(
+                      right: 16,
+                      bottom: 16,
+                      child: _buildStreakBadge(isDark),
+                    ),
+                ],
               ),
 
               // Search bar
@@ -783,6 +807,50 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
                   .textTheme
                   .bodyLarge
                   ?.copyWith(fontStyle: FontStyle.italic),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Build streak badge widget
+  Widget _buildStreakBadge(bool isDark) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.orange[600]!,
+            Colors.deepOrange[700]!,
+          ],
+        ),
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.orange.withValues(alpha: 0.5),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            '🔥',
+            style: TextStyle(fontSize: 28),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            '$_currentStreak',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              height: 1.0,
             ),
           ),
         ],
