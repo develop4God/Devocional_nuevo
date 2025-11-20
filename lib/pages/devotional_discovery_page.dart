@@ -403,7 +403,8 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage> {
                       const SizedBox(height: 12),
 
                       // Tags
-                      if (devocional.tags != null && devocional.tags!.isNotEmpty)
+                      if (devocional.tags != null &&
+                          devocional.tags!.isNotEmpty)
                         Wrap(
                           spacing: 6,
                           runSpacing: 6,
@@ -590,11 +591,14 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage> {
                       ?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
-                _buildLanguageOption(context, provider, 'es', 'Español', '🇪🇸'),
-                _buildLanguageOption(context, provider, 'en', 'English', '🇺🇸'),
+                _buildLanguageOption(
+                    context, provider, 'es', 'Español', '🇪🇸'),
+                _buildLanguageOption(
+                    context, provider, 'en', 'English', '🇺🇸'),
                 _buildLanguageOption(
                     context, provider, 'pt', 'Português', '🇧🇷'),
-                _buildLanguageOption(context, provider, 'fr', 'Français', '🇫🇷'),
+                _buildLanguageOption(
+                    context, provider, 'fr', 'Français', '🇫🇷'),
               ],
             ),
           ),

@@ -122,10 +122,11 @@ class ExperienceSelectionPage extends StatelessWidget {
                     // Title
                     Text(
                       'Choose Your Experience',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: isDark ? Colors.white : Colors.black87,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: isDark ? Colors.white : Colors.black87,
+                              ),
                       textAlign: TextAlign.center,
                     ),
 
@@ -304,7 +305,8 @@ class _ExperienceCard extends StatelessWidget {
                       Text(
                         description,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: isDark ? Colors.grey[400] : Colors.grey[600],
+                              color:
+                                  isDark ? Colors.grey[400] : Colors.grey[600],
                               height: 1.5,
                             ),
                       ),
@@ -316,14 +318,17 @@ class _ExperienceCard extends StatelessWidget {
                             'Select',
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
-                              color: isDark ? Colors.purple[300] : Colors.deepPurple,
+                              color: isDark
+                                  ? Colors.purple[300]
+                                  : Colors.deepPurple,
                             ),
                           ),
                           const SizedBox(width: 4),
                           Icon(
                             Icons.arrow_forward,
                             size: 18,
-                            color: isDark ? Colors.purple[300] : Colors.deepPurple,
+                            color:
+                                isDark ? Colors.purple[300] : Colors.deepPurple,
                           ),
                         ],
                       ),

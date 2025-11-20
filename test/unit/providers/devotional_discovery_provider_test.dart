@@ -32,31 +32,8 @@ void main() {
     });
 
     test('filterBySearch filters devotionals correctly', () {
-      // Setup test data
-      final devotionals = [
-        Devocional(
-          id: '1',
-          versiculo: 'Juan 3:16 RVR1960: "Porque de tal manera amó Dios"',
-          reflexion: 'Test reflection about love',
-          paraMeditar: [],
-          oracion: 'Test prayer',
-          date: DateTime.now(),
-          tags: ['love', 'grace'],
-        ),
-        Devocional(
-          id: '2',
-          versiculo: 'Mateo 5:9 RVR1960: "Bienaventurados los pacificadores"',
-          reflexion: 'Test reflection about peace',
-          paraMeditar: [],
-          oracion: 'Test prayer',
-          date: DateTime.now(),
-          tags: ['peace', 'blessing'],
-        ),
-      ];
-
-      // Manually set internal state for testing
-      // Since we can't directly set _all and _filtered, we need to test through public methods
       // For now, we'll just verify the method doesn't crash
+      // since we can't directly set internal state
       expect(() => provider.filterBySearch('love'), returnsNormally);
       expect(() => provider.filterBySearch(''), returnsNormally);
     });
@@ -201,16 +178,7 @@ void main() {
 
   group('DevotionalDiscoveryProvider - Persistence', () {
     test('loads favorites from SharedPreferences on init', () async {
-      // Setup saved favorites
-      final savedDevotional = Devocional(
-        id: 'saved-1',
-        versiculo: 'Saved verse',
-        reflexion: 'Saved reflection',
-        paraMeditar: [],
-        oracion: 'Saved prayer',
-        date: DateTime(2024, 1, 1),
-      );
-
+      // Setup saved favorites in SharedPreferences
       SharedPreferences.setMockInitialValues({
         'discovery_favorites':
             '[{"id":"saved-1","versiculo":"Saved verse","reflexion":"Saved reflection","para_meditar":[],"oracion":"Saved prayer","date":"2024-01-01"}]',
@@ -222,7 +190,7 @@ void main() {
       // Note: Due to HTTP call in initialize, this might fail
       // but we're testing that favorites loading doesn't crash
       expect(() => provider.favorites, returnsNormally);
-      
+
       provider.dispose();
     });
 

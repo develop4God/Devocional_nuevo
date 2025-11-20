@@ -56,8 +56,7 @@ void main() {
       expect(find.text('NEW'), findsOneWidget);
     });
 
-    testWidgets('discovery card has correct icon',
-        (WidgetTester tester) async {
+    testWidgets('discovery card has correct icon', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: ExperienceSelectionPage(),
@@ -86,8 +85,8 @@ void main() {
         ),
       );
 
-      expect(find.text('You can change this later in settings'),
-          findsOneWidget);
+      expect(
+          find.text('You can change this later in settings'), findsOneWidget);
     });
 
     testWidgets('both experience cards are tappable',
@@ -115,8 +114,7 @@ void main() {
               'Browse devotionals by date, search, and read verses directly'),
           findsOneWidget);
       expect(
-          find.text(
-              'Continue with the familiar daily devotional experience'),
+          find.text('Continue with the familiar daily devotional experience'),
           findsOneWidget);
     });
 
@@ -248,8 +246,7 @@ void main() {
 
       // Note: We can't fully test navigation without mocking Navigator
       // but we can verify the page renders and cards are tappable
-      final discoveryCard =
-          find.text('New Discovery Experience').hitTestable();
+      final discoveryCard = find.text('New Discovery Experience').hitTestable();
       expect(discoveryCard, findsOneWidget);
     });
 

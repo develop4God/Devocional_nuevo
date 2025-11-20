@@ -11,7 +11,8 @@ void main() {
       expect(url, startsWith('https://raw.githubusercontent.com'));
     });
 
-    test('getDevocionalesApiUrlMultilingual returns backward compatible URL for Spanish RVR1960',
+    test(
+        'getDevocionalesApiUrlMultilingual returns backward compatible URL for Spanish RVR1960',
         () {
       final url = DevotionalConstants.getDevocionalesApiUrlMultilingual(
         2024,
@@ -21,7 +22,8 @@ void main() {
       expect(url, DevotionalConstants.getDevocionalesApiUrl(2024));
     });
 
-    test('getDevocionalesApiUrlMultilingual returns new format for other languages',
+    test(
+        'getDevocionalesApiUrlMultilingual returns new format for other languages',
         () {
       final url = DevotionalConstants.getDevocionalesApiUrlMultilingual(
         2024,
@@ -29,7 +31,8 @@ void main() {
         'KJV',
       );
       expect(url, contains('Devocional_year_2024_en_KJV.json'));
-      expect(url, isNot(equals(DevotionalConstants.getDevocionalesApiUrl(2024))));
+      expect(
+          url, isNot(equals(DevotionalConstants.getDevocionalesApiUrl(2024))));
     });
 
     test('getDevocionalesApiUrlMultilingual handles Portuguese', () {
@@ -85,7 +88,7 @@ void main() {
     test('bibleVersionsByLanguage contains all supported languages', () {
       final languageCodes = DevotionalConstants.supportedLanguages.keys;
       final versionKeys = DevotionalConstants.bibleVersionsByLanguage.keys;
-      
+
       for (final code in languageCodes) {
         expect(versionKeys, contains(code));
       }
@@ -121,7 +124,7 @@ void main() {
     test('defaultVersionByLanguage contains all supported languages', () {
       final languageCodes = DevotionalConstants.supportedLanguages.keys;
       final defaultKeys = DevotionalConstants.defaultVersionByLanguage.keys;
-      
+
       for (final code in languageCodes) {
         expect(defaultKeys, contains(code));
       }
@@ -152,7 +155,8 @@ void main() {
         final versions = DevotionalConstants.bibleVersionsByLanguage[lang];
         if (versions != null && versions.isNotEmpty) {
           expect(versions, contains(defaultVer),
-              reason: 'Default version $defaultVer for $lang should be in version list');
+              reason:
+                  'Default version $defaultVer for $lang should be in version list');
         }
       });
     });
@@ -164,15 +168,18 @@ void main() {
     });
 
     test('prefSelectedLanguage has unique key', () {
-      expect(DevotionalConstants.prefSelectedLanguage, 'discovery_selectedLanguage');
+      expect(DevotionalConstants.prefSelectedLanguage,
+          'discovery_selectedLanguage');
     });
 
     test('prefSelectedVersion has unique key', () {
-      expect(DevotionalConstants.prefSelectedVersion, 'discovery_selectedVersion');
+      expect(
+          DevotionalConstants.prefSelectedVersion, 'discovery_selectedVersion');
     });
 
     test('prefExperienceMode has unique key', () {
-      expect(DevotionalConstants.prefExperienceMode, 'discovery_experienceMode');
+      expect(
+          DevotionalConstants.prefExperienceMode, 'discovery_experienceMode');
     });
 
     test('all preference keys are unique', () {
@@ -198,7 +205,8 @@ void main() {
 
       for (final key in keys) {
         expect(key, startsWith('discovery_'),
-            reason: 'All keys should have discovery_ prefix to avoid conflicts');
+            reason:
+                'All keys should have discovery_ prefix to avoid conflicts');
       }
     });
   });
@@ -236,15 +244,18 @@ void main() {
 
   group('DevotionalConstants - Constants are immutable', () {
     test('supportedLanguages is const', () {
-      expect(DevotionalConstants.supportedLanguages, isA<Map<String, String>>());
+      expect(
+          DevotionalConstants.supportedLanguages, isA<Map<String, String>>());
     });
 
     test('bibleVersionsByLanguage is const', () {
-      expect(DevotionalConstants.bibleVersionsByLanguage, isA<Map<String, List<String>>>());
+      expect(DevotionalConstants.bibleVersionsByLanguage,
+          isA<Map<String, List<String>>>());
     });
 
     test('defaultVersionByLanguage is const', () {
-      expect(DevotionalConstants.defaultVersionByLanguage, isA<Map<String, String>>());
+      expect(DevotionalConstants.defaultVersionByLanguage,
+          isA<Map<String, String>>());
     });
 
     test('preference keys are const strings', () {
