@@ -134,6 +134,83 @@ class _SettingsPageState extends State<SettingsPage> {
     await _launchPaypal();
   }
 
+  Future<String> _getCurrentExperience() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('discovery_experienceMode') ?? 'traditional';
+  }
+
+  Future<void> _showExperienceDialog() async {
+    final currentExperience = await _getCurrentExperience();
+
+    if (!mounted) return;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Choose Experience Mode'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RadioListTile<String>(
+                title: const Text('Discovery'),
+                subtitle: const Text('Modern, visual interface with search'),
+                value: 'discovery',
+                groupValue: currentExperience,
+                onChanged: (value) async {
+                  if (value != null) {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setString('discovery_experienceMode', value);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                      setState(() {}); // Refresh display
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              'Experience changed. Restart app to see changes.'),
+                          duration: Duration(seconds: 3),
+                        ),
+                      );
+                    }
+                  }
+                },
+              ),
+              RadioListTile<String>(
+                title: const Text('Traditional'),
+                subtitle: const Text('Classic daily devotional interface'),
+                value: 'traditional',
+                groupValue: currentExperience,
+                onChanged: (value) async {
+                  if (value != null) {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setString('discovery_experienceMode', value);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                      setState(() {}); // Refresh display
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              'Experience changed. Restart app to see changes.'),
+                          duration: Duration(seconds: 3),
+                        ),
+                      );
+                    }
+                  }
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _showErrorSnackBar(String message) {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -237,6 +314,61 @@ class _SettingsPageState extends State<SettingsPage> {
                               // Mostrar solo el idioma, sin versión bíblica
                             ],
                           ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // Experience Selection
+                InkWell(
+                  onTap: () => _showExperienceDialog(),
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 4,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.explore, color: colorScheme.primary),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Experience Mode',
+                                style: textTheme.bodyMedium?.copyWith(
+                                  fontSize: 16,
+                                  color: colorScheme.onSurface,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              FutureBuilder<String>(
+                                future: _getCurrentExperience(),
+                                builder: (context, snapshot) {
+                                  return Text(
+                                    snapshot.data == 'discovery'
+                                        ? 'Discovery (Modern)'
+                                        : 'Traditional (Classic)',
+                                    style: textTheme.bodySmall?.copyWith(
+                                      color: colorScheme.onSurface
+                                          .withValues(alpha: 0.7),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 16,
+                          color: colorScheme.onSurface.withValues(alpha: 0.5),
                         ),
                       ],
                     ),
