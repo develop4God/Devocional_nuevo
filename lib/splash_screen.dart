@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:devocional_nuevo/extensions/string_extensions.dart';
+import 'package:devocional_nuevo/pages/devocionales_page.dart';
+import 'package:devocional_nuevo/pages/devotional_discovery_page.dart';
 import 'package:devocional_nuevo/pages/experience_selection/experience_selection_fullscreen.dart';
 import 'package:devocional_nuevo/utils/devotional_constants.dart';
 import 'package:flutter/material.dart';
@@ -90,10 +92,20 @@ class _SplashScreenState extends State<SplashScreen>
           },
         ),
       );
+    } else if (selectedMode == 'discovery') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DevotionalDiscoveryPage(),
+        ),
+      );
     } else {
-      // Navigate to previously selected experience
-      // This will be handled by main.dart logic
-      Navigator.pushReplacementNamed(context, '/devocionales');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DevocionalesPage(),
+        ),
+      );
     }
   }
 
