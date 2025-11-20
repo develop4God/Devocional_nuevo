@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
+
 import '../../../models/devocional_model.dart';
 import '../../../utils/devotional_constants.dart';
 
@@ -111,27 +112,31 @@ class DevotionalCardPremium extends StatelessWidget {
                         const Spacer(),
 
                         // Bottom content
-                        // Theme tag chip
+                        // Theme tag chips (muestra hasta 2 tags)
                         if (devocional.tags != null &&
                             devocional.tags!.isNotEmpty)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: _getTagColor(devocional.tags!.first),
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Text(
-                              devocional.tags!.first,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
+                          Row(
+                            children: devocional.tags!
+                                .take(2)
+                                .map((tag) => Container(
+                                      margin: const EdgeInsets.only(right: 8),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 6),
+                                      decoration: BoxDecoration(
+                                        color: _getTagColor(tag),
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child: Text(
+                                        tag,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w700,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ))
+                                .toList(),
                           ),
 
                         const SizedBox(height: 12),
