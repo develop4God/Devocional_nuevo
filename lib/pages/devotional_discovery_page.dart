@@ -2,7 +2,6 @@
 
 import 'dart:async';
 
-import 'package:bible_reader_core/bible_reader_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +10,7 @@ import '../extensions/string_extensions.dart';
 import '../models/devocional_model.dart';
 import '../providers/devotional_discovery_provider.dart';
 import '../services/spiritual_stats_service.dart';
-import 'bible_reader_page.dart';
+import 'devocionales_page.dart';
 import 'devotional_discovery/widgets/devotional_card_premium.dart';
 import 'devotional_discovery/widgets/favorites_horizontal_section.dart';
 import 'favorites_page.dart';
@@ -372,26 +371,13 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
 
   void _showDevocionalDetail(BuildContext context, Devocional devocional,
       DevotionalDiscoveryProvider provider) {
-    final navigator = Navigator.of(context);
-    final language = provider.selectedLanguage;
-    // Ejecutar la lógica async fuera del contexto
-    Future(() async {
-      List<BibleVersion> versions =
-          await BibleVersionRegistry.getVersionsForLanguage(language);
-      if (versions.isEmpty) {
-        versions = await BibleVersionRegistry.getVersionsForLanguage('es');
-      }
-      if (versions.isEmpty) {
-        versions = await BibleVersionRegistry.getAllVersions();
-      }
-      if (!mounted) return;
-      navigator.push(
-        MaterialPageRoute(
-          builder: (ctx) => BibleReaderPage(
-            versions: versions,
-          ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (ctx) => DevocionalesPage(
+          initialDevocionalId: devocional.id,
         ),
-      );
-    });
+      ),
+    );
   }
 }
