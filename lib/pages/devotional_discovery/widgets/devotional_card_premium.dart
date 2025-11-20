@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../models/devocional_model.dart';
+import '../../../utils/devotional_constants.dart';
 
 /// Premium devotional card with full background image (Glorify/YouVersion style)
 class DevotionalCardPremium extends StatelessWidget {
@@ -324,45 +325,17 @@ class DevotionalCardPremium extends StatelessWidget {
     return null;
   }
 
+  /// Get gradient colors using centralized TagColorMapper
   List<Color> _getGradientColors() {
-    if (devocional.tags != null && devocional.tags!.isNotEmpty) {
-      final tag = devocional.tags!.first.toLowerCase();
-      if (tag.contains('love') || tag.contains('amor')) {
-        return isDark
-            ? [Colors.pink[900]!, Colors.red[800]!]
-            : [Colors.pink[600]!, Colors.red[600]!];
-      } else if (tag.contains('peace') || tag.contains('paz')) {
-        return isDark
-            ? [Colors.blue[900]!, Colors.indigo[800]!]
-            : [Colors.blue[600]!, Colors.indigo[600]!];
-      } else if (tag.contains('faith') || tag.contains('fe')) {
-        return isDark
-            ? [Colors.purple[900]!, Colors.deepPurple[800]!]
-            : [Colors.purple[600]!, Colors.deepPurple[600]!];
-      } else if (tag.contains('hope') || tag.contains('esperanza')) {
-        return isDark
-            ? [Colors.teal[900]!, Colors.cyan[800]!]
-            : [Colors.teal[600]!, Colors.cyan[600]!];
-      }
-    }
-
-    return isDark
-        ? [Colors.deepPurple[900]!, Colors.purple[800]!]
-        : [Colors.deepPurple[600]!, Colors.purple[600]!];
+    final tag = devocional.tags != null && devocional.tags!.isNotEmpty
+        ? devocional.tags!.first
+        : null;
+    return TagColorMapper.getTagGradient(tag);
   }
 
+  /// Get tag chip color using centralized TagColorMapper
   Color _getTagColor(String tag) {
-    final tagLower = tag.toLowerCase();
-    if (tagLower.contains('love') || tagLower.contains('amor')) {
-      return Colors.red[600]!;
-    } else if (tagLower.contains('peace') || tagLower.contains('paz')) {
-      return Colors.blue[600]!;
-    } else if (tagLower.contains('faith') || tagLower.contains('fe')) {
-      return Colors.purple[600]!;
-    } else if (tagLower.contains('hope') || tagLower.contains('esperanza')) {
-      return Colors.teal[600]!;
-    }
-    return Colors.deepPurple[600]!;
+    return TagColorMapper.getTagChipColor(tag);
   }
 
   String _getDisplayDate() {

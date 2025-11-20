@@ -1,5 +1,7 @@
 // lib/utils/devotional_constants.dart
 
+import 'package:flutter/material.dart';
+
 /// Experience mode enum for type-safe experience selection
 enum ExperienceMode {
   discovery,
@@ -18,6 +20,67 @@ enum ExperienceMode {
       default:
         return ExperienceMode.traditional; // Default fallback
     }
+  }
+}
+
+/// Centralized tag-to-color mapping for devotional cards
+/// Single source of truth for tag colors across the app
+class TagColorMapper {
+  // Private constructor to prevent instantiation
+  TagColorMapper._();
+
+  /// Map of tag keywords to gradient color pairs [light, dark]
+  static const Map<String, List<int>> _tagColorMap = {
+    // Love/Amor - Pink to Red
+    'love': [0xFFE91E63, 0xFFF44336],
+    'amor': [0xFFE91E63, 0xFFF44336],
+
+    // Peace/Paz - Blue to Indigo
+    'peace': [0xFF2196F3, 0xFF3F51B5],
+    'paz': [0xFF2196F3, 0xFF3F51B5],
+
+    // Faith/Fe - Purple to Deep Purple
+    'faith': [0xFF9C27B0, 0xFF673AB7],
+    'fe': [0xFF9C27B0, 0xFF673AB7],
+
+    // Hope/Esperanza - Teal to Cyan
+    'hope': [0xFF009688, 0xFF00BCD4],
+    'esperanza': [0xFF009688, 0xFF00BCD4],
+
+    // Joy/Alegría - Orange to Deep Orange
+    'joy': [0xFFFF9800, 0xFFFF5722],
+    'alegria': [0xFFFF9800, 0xFFFF5722],
+    'alegría': [0xFFFF9800, 0xFFFF5722],
+  };
+
+  /// Default gradient colors for tags not in the map
+  static const List<int> _defaultColors = [0xFF607D8B, 0xFF455A64]; // Blue Grey
+
+  /// Get gradient colors for a tag
+  /// Returns [startColor, endColor] for use in LinearGradient
+  static List<Color> getTagGradient(String? tag) {
+    if (tag == null || tag.isEmpty) {
+      return _defaultColors.map((c) => Color(c)).toList();
+    }
+
+    final tagLower = tag.toLowerCase();
+
+    // Find matching color pair
+    for (final entry in _tagColorMap.entries) {
+      if (tagLower.contains(entry.key)) {
+        return entry.value.map((c) => Color(c)).toList();
+      }
+    }
+
+    // Return default if no match
+    return _defaultColors.map((c) => Color(c)).toList();
+  }
+
+  /// Get single chip color for a tag
+  /// Returns the darker (second) color from the gradient pair
+  static Color getTagChipColor(String? tag) {
+    final colors = getTagGradient(tag);
+    return colors[1]; // Return darker color for chip
   }
 }
 
