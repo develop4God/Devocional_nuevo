@@ -66,7 +66,7 @@ class _AnimatedFavoriteButtonState extends State<AnimatedFavoriteButton>
     final colorScheme = Theme.of(context).colorScheme;
     final activeColor = widget.activeColor ?? Colors.red;
     final inactiveColor =
-        widget.inactiveColor ?? colorScheme.onSurface.withOpacity(0.5);
+        widget.inactiveColor ?? colorScheme.onSurface.withValues(alpha: 0.5);
 
     return ScaleTransition(
       scale: _scaleAnimation,

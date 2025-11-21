@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:share_plus/share_plus.dart' show ShareParams, SharePlus;
 import 'package:devocional_nuevo/models/devocional_model.dart';
 import 'package:devocional_nuevo/blocs/prayer_bloc.dart';
 import 'package:devocional_nuevo/blocs/prayer_event.dart';
@@ -20,7 +20,7 @@ class DiscoveryActionBar extends StatelessWidget {
     this.isComplete = false,
   });
 
-  void _shareDevocional(BuildContext context) {
+  void _shareDevocional(BuildContext context) async {
     HapticFeedback.lightImpact();
 
     final verse = devocional.paraMeditar.isNotEmpty
@@ -38,10 +38,9 @@ ${devocional.reflexion}
 ${LocalizationService.instance.translate('discovery.shared_from_app')}
 ''';
 
-    Share.share(
-      shareText,
-      subject: 'Devocional',
-    );
+    await SharePlus.instance.share(ShareParams(text: shareText));
+
+    if (!context.mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

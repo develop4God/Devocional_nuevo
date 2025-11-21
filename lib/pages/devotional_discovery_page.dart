@@ -47,11 +47,9 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
   String? _imageOfDay;
   OverlayEntry? _searchOverlayEntry;
 
-  // Local search and pagination state (view-specific, not provider)
+  // Local search state (view-specific, not provider)
   String _searchTerm = '';
   List<Devocional> _searchResults = [];
-  int _pageIndex = 0;
-  final int _itemsPerPage = 20;
 
   void _showSearchBubble(BuildContext context) {
     if (_searchOverlayEntry != null) return;
@@ -195,13 +193,12 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
   void _performLocalSearch(String term) {
     final provider = context.read<DevocionalProvider>();
     _searchTerm = term.toLowerCase();
-    _pageIndex = 0; // Reset pagination on new search
 
     if (_searchTerm.isEmpty) {
       _searchResults = provider.devocionales;
     } else {
       _searchResults = provider.devocionales.where((d) {
-        final paraMeditarText = (d.paraMeditar ?? []).join(' ').toLowerCase();
+        final paraMeditarText = d.paraMeditar.join(' ').toLowerCase();
         return d.versiculo.toLowerCase().contains(_searchTerm) ||
             d.reflexion.toLowerCase().contains(_searchTerm) ||
             paraMeditarText.contains(_searchTerm);
@@ -209,12 +206,6 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
     }
 
     setState(() {});
-  }
-
-  /// Get current page items for pagination
-  List<Devocional> get _currentPageItems {
-    final start = _pageIndex * _itemsPerPage;
-    return _searchResults.skip(start).take(_itemsPerPage).toList();
   }
 
   @override

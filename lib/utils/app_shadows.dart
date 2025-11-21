@@ -12,7 +12,7 @@ class AppShadows {
       // Subtle elevation in dark mode
       return [
         BoxShadow(
-          color: Colors.black.withOpacity(0.3),
+          color: Colors.black.withValues(alpha: 0.3),
           blurRadius: 16,
           offset: const Offset(0, 8),
         ),
@@ -21,12 +21,12 @@ class AppShadows {
       // More prominent shadow in light mode
       return [
         BoxShadow(
-          color: Colors.black.withOpacity(0.08),
+          color: Colors.black.withValues(alpha: 0.08),
           blurRadius: 24,
           offset: const Offset(0, 12),
         ),
         BoxShadow(
-          color: Colors.black.withOpacity(0.04),
+          color: Colors.black.withValues(alpha: 0.04),
           blurRadius: 8,
           offset: const Offset(0, 4),
         ),
@@ -40,7 +40,7 @@ class AppShadows {
 
     return [
       BoxShadow(
-        color: Colors.black.withOpacity(isDark ? 0.2 : 0.1),
+        color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.1),
         blurRadius: 8,
         offset: const Offset(0, 4),
       ),
@@ -53,7 +53,7 @@ class AppShadows {
 
     return [
       BoxShadow(
-        color: Colors.black.withOpacity(isDark ? 0.4 : 0.15),
+        color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.15),
         blurRadius: 32,
         offset: const Offset(0, 16),
       ),

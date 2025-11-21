@@ -61,7 +61,7 @@ class DevotionalImageRepository {
     }
     // Si no hay ninguna imagen válida, usar un placeholder genérico
     debugPrint('[DEBUG] No hay imágenes válidas, usando placeholder genérico');
-    return 'https://via.placeholder.com/${width}x${height}?text=Devocional';
+    return 'https://via.placeholder.com/${width}x$height?text=Devocional';
   }
 
   Future<String> getImageForToday(List<String> imageUrls) async {
