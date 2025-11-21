@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:devocional_nuevo/widgets/devocionales_bottom_nav_bar.dart';
 import 'package:devocional_nuevo/widgets/devocionales_page_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +16,8 @@ import '../models/devocional_model.dart';
 import '../providers/devocional_provider.dart';
 import '../repositories/devotional_image_repository.dart';
 import '../services/spiritual_stats_service.dart';
+import '../utils/page_transitions.dart';
+import '../widgets/devotional_card_skeleton.dart';
 import 'devotional_modern_view.dart';
 import 'devotional_discovery/widgets/devotional_card_premium.dart';
 import 'devotional_discovery/widgets/favorites_horizontal_section.dart';
@@ -256,8 +259,11 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
         }
 
         void goToPrayers() {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const FavoritesPage()));
+          HapticFeedback.selectionClick();
+          Navigator.push(
+            context,
+            PageTransitions.fadeSlide(const FavoritesPage()),
+          );
         }
 
         void goToBible() {
@@ -302,11 +308,10 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
                   color: isDark ? Colors.white : Colors.black87,
                 ),
                 onPressed: () {
+                  HapticFeedback.selectionClick();
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const FavoritesPage(),
-                    ),
+                    PageTransitions.fadeSlide(const FavoritesPage()),
                   );
                 },
                 tooltip: 'discovery.favorites'.tr(),
@@ -318,10 +323,15 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
               // Hero header with gradient and streak badge
               _buildHeroHeader(),
 
-              // Loading indicator
+              // Loading indicator - skeleton loaders
               if (provider.isLoading)
-                const Expanded(
-                  child: Center(child: CircularProgressIndicator()),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: 3,
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    itemBuilder: (context, index) =>
+                        const DevotionalCardSkeleton(),
+                  ),
                 ),
 
               // Error message
@@ -355,7 +365,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
                   ),
                 ),
 
-              // Devotional list with favorites section
+              // Devotional list with favorites section and pull-to-refresh
               if (!provider.isLoading && provider.errorMessage == null)
                 Expanded(
                   child: _searchResults.isEmpty
@@ -377,38 +387,54 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
                             ],
                           ),
                         )
-                      : ListView.builder(
-                          itemCount: _searchResults.length + 1,
-                          // Add 1 for favorites section
-                          padding: EdgeInsets.zero,
-                          itemExtent: null,
-                          // Variable height for favorites section
-                          cacheExtent: 1500,
-                          itemBuilder: (context, index) {
-                            // First item is favorites section
-                            if (index == 0) {
-                              return FavoritesHorizontalSection(
-                                favorites: provider.favoriteDevocionales,
-                                onDevocionalTap: (devocional) {
-                                  _showDevocionalDetail(
-                                      context, devocional, provider);
-                                },
-                                isDark: isDark,
-                              );
-                            }
-
-                            // Rest are devotional cards
-                            final devocional = _searchResults[index - 1];
-                            return DevotionalCardPremium(
-                              devocional: devocional,
-                              isFavorite: provider.isFavorite(devocional),
-                              onTap: () => _showDevocionalDetail(
-                                  context, devocional, provider),
-                              onFavoriteToggle: () =>
-                                  provider.toggleFavorite(devocional, context),
-                              isDark: isDark,
-                            );
+                      : RefreshIndicator(
+                          onRefresh: () async {
+                            HapticFeedback.mediumImpact();
+                            await provider.initializeData();
+                            _performLocalSearch(''); // Refresh search results
                           },
+                          color: colorScheme.primary,
+                          strokeWidth: 3,
+                          child: ListView.builder(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            itemCount: _searchResults.length + 1,
+                            // Add 1 for favorites section
+                            padding: EdgeInsets.zero,
+                            itemExtent: null,
+                            // Variable height for favorites section
+                            cacheExtent: 1500,
+                            itemBuilder: (context, index) {
+                              // First item is favorites section
+                              if (index == 0) {
+                                return FavoritesHorizontalSection(
+                                  favorites: provider.favoriteDevocionales,
+                                  onDevocionalTap: (devocional) {
+                                    _showDevocionalDetail(
+                                        context, devocional, provider);
+                                  },
+                                  isDark: isDark,
+                                );
+                              }
+
+                              // Rest are devotional cards with Hero tags
+                              final devocional = _searchResults[index - 1];
+                              return Hero(
+                                tag: 'devotional_${devocional.id}',
+                                child: Material(
+                                  type: MaterialType.transparency,
+                                  child: DevotionalCardPremium(
+                                    devocional: devocional,
+                                    isFavorite: provider.isFavorite(devocional),
+                                    onTap: () => _showDevocionalDetail(
+                                        context, devocional, provider),
+                                    onFavoriteToggle: () => provider
+                                        .toggleFavorite(devocional, context),
+                                    isDark: isDark,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         ),
                 ),
             ],
@@ -660,13 +686,17 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
   void _showDevocionalDetail(BuildContext context, Devocional devocional,
       DevocionalProvider provider) {
     final imageRepository = DevotionalImageRepository();
+    HapticFeedback.mediumImpact();
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (ctx) => DevocionalModernView(
-          devocional: devocional,
-          imageRepository: imageRepository,
-          imageUrlOfDay: _imageOfDay,
+      PageTransitions.fadeSlide(
+        Hero(
+          tag: 'devotional_${devocional.id}',
+          child: DevocionalModernView(
+            devocional: devocional,
+            imageRepository: imageRepository,
+            imageUrlOfDay: _imageOfDay,
+          ),
         ),
       ),
     );

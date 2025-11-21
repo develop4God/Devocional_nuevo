@@ -17,6 +17,7 @@ import 'package:devocional_nuevo/services/devocionales_tracking.dart';
 import 'package:devocional_nuevo/services/update_service.dart';
 import 'package:devocional_nuevo/utils/bubble_constants.dart';
 import 'package:devocional_nuevo/utils/copyright_utils.dart';
+import 'package:devocional_nuevo/utils/page_transitions.dart';
 import 'package:devocional_nuevo/widgets/add_prayer_modal.dart';
 import 'package:devocional_nuevo/widgets/add_thanksgiving_modal.dart';
 import 'package:devocional_nuevo/widgets/app_bar_constants.dart'
@@ -647,13 +648,15 @@ class _DevocionalesPageState extends State<DevocionalesPage>
   // }
 
   void _goToPrayers() {
+    HapticFeedback.selectionClick();
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const PrayersPage()),
+      PageTransitions.fadeSlide(const PrayersPage()),
     );
   }
 
   void _goToBible() async {
+    HapticFeedback.selectionClick();
     final devocionalProvider =
         Provider.of<DevocionalProvider>(context, listen: false);
     final appLanguage = devocionalProvider.selectedLanguage;
@@ -678,8 +681,8 @@ class _DevocionalesPageState extends State<DevocionalesPage>
 
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => BibleReaderPage(
+      PageTransitions.fadeSlide(
+        BibleReaderPage(
           versions: versions,
         ),
       ),
@@ -1148,6 +1151,7 @@ class _DevocionalesPageState extends State<DevocionalesPage>
                 );
               },
               onSettings: () async {
+                HapticFeedback.selectionClick();
                 await BubbleUtils.markAsShown(
                   BubbleUtils.getIconBubbleId(
                       Icons.app_settings_alt_outlined, 'new'),
@@ -1155,7 +1159,7 @@ class _DevocionalesPageState extends State<DevocionalesPage>
                 if (!context.mounted) return;
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const SettingsPage()),
+                  PageTransitions.fadeSlide(const SettingsPage()),
                 );
               },
               ttsPlayerWidget: currentDevocional != null
