@@ -153,115 +153,86 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
                 ],
               ),
             ),
-            body: Column(
+            body: ListView(
+              padding: EdgeInsets.zero,
               children: [
                 _buildHeroHeader(),
-                if (provider.isLoading)
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: 3,
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                      itemBuilder: (context, index) =>
-                          const DevotionalCardSkeleton(),
-                    ),
-                  ),
+                if (provider.isLoading) ...[
+                  for (int i = 0; i < 3; i++) DevotionalCardSkeleton()
+                ],
                 if (provider.errorMessage != null && !provider.isLoading)
-                  Expanded(
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.error_outline,
-                            size: 64,
-                            color: colorScheme.error,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            provider.errorMessage!,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: colorScheme.error),
-                          ),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: () {
-                              provider.initializeData();
-                              _performLocalSearch('');
-                            },
-                            child: Text('discovery.retry'.tr()),
-                          ),
-                        ],
-                      ),
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          size: 64,
+                          color: colorScheme.error,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          provider.errorMessage!,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: colorScheme.error),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            provider.initializeData();
+                            _performLocalSearch('');
+                          },
+                          child: Text('discovery.retry'.tr()),
+                        ),
+                      ],
                     ),
                   ),
                 if (!provider.isLoading && provider.errorMessage == null)
-                  Expanded(
-                    child: _searchResults.isEmpty
-                        ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.book_outlined,
-                                  size: 64,
-                                  color: colorScheme.onSurface
-                                      .withValues(alpha: 0.5),
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  'discovery.no_devotionals'.tr(),
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                              ],
-                            ),
-                          )
-                        : RefreshIndicator(
-                            onRefresh: () async {
-                              HapticFeedback.mediumImpact();
-                              await provider.initializeData();
-                              _performLocalSearch('');
-                            },
-                            color: colorScheme.primary,
-                            strokeWidth: 3,
-                            child: ListView.builder(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              itemCount: _searchResults.length + 1,
-                              padding: EdgeInsets.zero,
-                              itemExtent: null,
-                              cacheExtent: 1500,
-                              itemBuilder: (context, index) {
-                                if (index == 0) {
-                                  return FavoritesHorizontalSection(
-                                    favorites: provider.favoriteDevocionales,
-                                    onDevocionalTap: (devocional) {
-                                      _showDevocionalDetail(
-                                          context, devocional, provider);
-                                    },
-                                    isDark: isDark,
-                                  );
-                                }
-                                final devocional = _searchResults[index - 1];
-                                return Hero(
-                                  tag: 'devotional_${devocional.id}',
-                                  child: Material(
-                                    type: MaterialType.transparency,
-                                    child: DevotionalCardPremium(
-                                      devocional: devocional,
-                                      isFavorite:
-                                          provider.isFavorite(devocional),
-                                      onTap: () => _showDevocionalDetail(
-                                          context, devocional, provider),
-                                      onFavoriteToggle: () => provider
-                                          .toggleFavorite(devocional, context),
-                                      isDark: isDark,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
+                  _searchResults.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.book_outlined,
+                                size: 64,
+                                color: colorScheme.onSurface
+                                    .withValues(alpha: 0.5),
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'discovery.no_devotionals'.tr(),
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                            ],
                           ),
-                  ),
+                        )
+                      : FavoritesHorizontalSection(
+                          favorites: provider.favoriteDevocionales,
+                          onDevocionalTap: (devocional) {
+                            _showDevocionalDetail(
+                                context, devocional, provider);
+                          },
+                          isDark: isDark,
+                        ),
+                if (!provider.isLoading &&
+                    provider.errorMessage == null &&
+                    _searchResults.isNotEmpty)
+                  ..._searchResults.map((devocional) => Hero(
+                        tag: 'devotional_${devocional.id}',
+                        child: Material(
+                          type: MaterialType.transparency,
+                          child: DevotionalCardPremium(
+                            devocional: devocional,
+                            isFavorite: provider.isFavorite(devocional),
+                            onTap: () => _showDevocionalDetail(
+                                context, devocional, provider),
+                            onFavoriteToggle: () =>
+                                provider.toggleFavorite(devocional, context),
+                            isDark: isDark,
+                          ),
+                        ),
+                      ))
               ],
             ),
             bottomNavigationBar: Builder(
@@ -452,12 +423,12 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
           end: Alignment.bottomRight,
           colors: isDark
               ? [
-                  Colors.deepPurple[900]!.withValues(alpha: 0.7),
-                  Colors.purple[800]!.withValues(alpha: 0.7)
+                  colorScheme.primary.withValues(alpha: 0.85),
+                  colorScheme.secondary.withValues(alpha: 0.85)
                 ]
               : [
-                  colorScheme.primary.withValues(alpha: 0.7),
-                  colorScheme.secondary.withValues(alpha: 0.7)
+                  colorScheme.primary.withValues(alpha: 0.85),
+                  colorScheme.secondary.withValues(alpha: 0.85)
                 ],
         ),
       ),
