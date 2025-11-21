@@ -105,6 +105,8 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
         currentDevocional.id,
         _scrollController,
       );
+      // Log de progreso cada vez que inicia tracking
+      _logTrackingProgress();
     }
   }
 
@@ -131,6 +133,8 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
   }
 
   Future<void> _speakDevotional() async {
+    debugPrint(
+        '[ModernView] TTS: Iniciando lectura para índice $_currentDevocionalIndex');
     if (_isPlaying) {
       await _flutterTts.pause();
       if (mounted) {
@@ -138,39 +142,33 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
           _isPlaying = false;
         });
       }
+      debugPrint('[ModernView] TTS: Pausado');
     } else {
-      // Build text to speak: verse + title + body
+      final devocional = widget.devocionales[_currentDevocionalIndex];
       String textToSpeak = '';
-
-      // Add verse if available
-      if (widget.devocionales[_currentDevocionalIndex].paraMeditar.isNotEmpty) {
-        final verse =
-            widget.devocionales[_currentDevocionalIndex].paraMeditar.first;
+      // Versículo principal
+      if (devocional.paraMeditar.isNotEmpty) {
+        final verse = devocional.paraMeditar.first;
         textToSpeak += '${verse.texto}. ${verse.cita}. ';
       }
-
-      // Add title
-      textToSpeak +=
-          '${widget.devocionales[_currentDevocionalIndex].versiculo}. ';
-
-      // Add reflection
-      if (widget.devocionales[_currentDevocionalIndex].reflexion.isNotEmpty) {
-        textToSpeak +=
-            '${widget.devocionales[_currentDevocionalIndex].reflexion}. ';
+      // Título
+      textToSpeak += '${devocional.versiculo}. ';
+      // Reflexión
+      if (devocional.reflexion.isNotEmpty) {
+        textToSpeak += '${devocional.reflexion}. ';
       }
-
-      // Add prayer
-      if (widget.devocionales[_currentDevocionalIndex].oracion.isNotEmpty) {
-        textToSpeak += widget.devocionales[_currentDevocionalIndex].oracion;
+      // Oración
+      if (devocional.oracion.isNotEmpty) {
+        textToSpeak += devocional.oracion;
       }
-
+      debugPrint('[ModernView] TTS: Texto a leer: $textToSpeak');
       if (mounted) {
         setState(() {
           _isPlaying = true;
         });
       }
-
       await _flutterTts.speak(textToSpeak);
+      debugPrint('[ModernView] TTS: Comenzó a hablar');
     }
   }
 
@@ -184,46 +182,54 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
   }
 
   Future<void> _goToNextDevocional() async {
+    debugPrint('[ModernView] Swipe NEXT iniciado');
+    final devocionalProvider =
+        Provider.of<DevocionalProvider>(context, listen: false);
     if (_currentDevocionalIndex < widget.devocionales.length - 1) {
+      await _stopSpeaking();
       setState(() {
         _currentDevocionalIndex++;
       });
       _scrollToTop();
-      _startTrackingCurrentDevocional();
-      _recordDevotionalRead();
-      _saveCurrentDevocionalIndex();
-      final devocionalProvider =
-          Provider.of<DevocionalProvider>(context, listen: false);
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (devocionalProvider.showInvitationDialog &&
-            widget.devocionales[_currentDevocionalIndex].tags != null &&
-            widget.devocionales[_currentDevocionalIndex].tags!
-                .contains('salvation')) {
+        _startTrackingCurrentDevocional();
+      });
+      if (devocionalProvider.showInvitationDialog &&
+          widget.devocionales[_currentDevocionalIndex].tags != null &&
+          widget.devocionales[_currentDevocionalIndex].tags!
+              .contains('salvation')) {
+        if (mounted) {
           _showInvitation(context);
         }
-      });
+      }
+      await _saveCurrentDevocionalIndex();
+      _recordDevotionalRead();
     }
   }
 
   Future<void> _goToPreviousDevocional() async {
+    debugPrint('[ModernView] Swipe PREV iniciado');
+    final devocionalProvider =
+        Provider.of<DevocionalProvider>(context, listen: false);
     if (_currentDevocionalIndex > 0) {
+      await _stopSpeaking();
       setState(() {
         _currentDevocionalIndex--;
       });
       _scrollToTop();
-      _startTrackingCurrentDevocional();
-      _recordDevotionalRead();
-      _saveCurrentDevocionalIndex();
-      final devocionalProvider =
-          Provider.of<DevocionalProvider>(context, listen: false);
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (devocionalProvider.showInvitationDialog &&
-            widget.devocionales[_currentDevocionalIndex].tags != null &&
-            widget.devocionales[_currentDevocionalIndex].tags!
-                .contains('salvation')) {
+        _startTrackingCurrentDevocional();
+      });
+      if (devocionalProvider.showInvitationDialog &&
+          widget.devocionales[_currentDevocionalIndex].tags != null &&
+          widget.devocionales[_currentDevocionalIndex].tags!
+              .contains('salvation')) {
+        if (mounted) {
           _showInvitation(context);
         }
-      });
+      }
+      await _saveCurrentDevocionalIndex();
+      _recordDevotionalRead();
     }
   }
 
@@ -354,6 +360,16 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
         );
       }
     });
+  }
+
+  void _logTrackingProgress() {
+    final devocionalProvider =
+        Provider.of<DevocionalProvider>(context, listen: false);
+    final seconds = devocionalProvider.currentReadingSeconds;
+    final scroll = devocionalProvider.currentScrollPercentage;
+    debugPrint('⏱️ Segundos de lectura: $seconds');
+    debugPrint(
+        '📜 Porcentaje de scroll: ${(scroll * 100).toStringAsFixed(1)}%');
   }
 
   @override
