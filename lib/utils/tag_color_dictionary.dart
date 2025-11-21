@@ -25,7 +25,7 @@ class TagColorDictionary {
     'tag.sacrifice': [Color(0xFFD32F2F), Color(0xFFFF5722)],
     // Dark Red, Orange
     // Humility: Brown to Dark Brown
-    'tag.humility': [Color(0xFFA1887F), Color(0xFF795548)],
+    'tag.humility': [Color(0xFFA188FF), Color(0xFF7955F8)],
     // Brown, Dark Brown
     // Prayer: Blue to Indigo
     'tag.prayer': [Color(0xFF2196F3), Color(0xFF3F51B5)],
