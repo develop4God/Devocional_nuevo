@@ -200,6 +200,7 @@ class _DevocionalesPageState extends State<DevocionalesPage>
           '🗑️ [DEBUG] Global RouteObserver unsubscribed for DevocionalesPage');
       _routeSubscribed = false;
     }
+    _tracking.clearContext(); // Limpia el contexto antes de dispose
     _tracking.dispose();
     _stopSpeaking();
     WidgetsBinding.instance.removeObserver(this);
