@@ -18,9 +18,9 @@ class TagColorDictionary {
     // Grace: Light Blue to Lavender
     'tag.grace': [Color(0xFF81D4FA), Color(0xFFE1BEE7)],
     // Light Blue, Lavender
-    // Obedience: Orange to Yellow
-    'tag.obedience': [Color(0xFFFF9800), Color(0xFFFFF176)],
-    // Orange, Yellow
+    // Obedience: Orange to Amber (mejor contraste)
+    'tag.obedience': [Color(0xFFFF9800), Color(0xFFFFC107)],
+    // Orange, Amber
     // Sacrifice: Dark Red to Orange
     'tag.sacrifice': [Color(0xFFD32F2F), Color(0xFFFF5722)],
     // Dark Red, Orange
