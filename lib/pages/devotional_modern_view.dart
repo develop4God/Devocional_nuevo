@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:devocional_nuevo/repositories/devotional_image_repository.dart';
+import 'package:devocional_nuevo/widgets/discovery_action_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,6 +25,7 @@ class DevocionalModernView extends StatefulWidget {
 
 class _DevocionalModernViewState extends State<DevocionalModernView> {
   late Future<String> _imageUrlFuture;
+  bool _isComplete = false;
 
   Future<String> _getImageForToday() async {
     final repo = widget.imageRepository;
@@ -256,6 +258,15 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
               ),
             ],
           );
+        },
+      ),
+      bottomNavigationBar: DiscoveryActionBar(
+        devocional: widget.devocional,
+        isComplete: _isComplete,
+        onMarkComplete: () {
+          setState(() {
+            _isComplete = !_isComplete;
+          });
         },
       ),
     );

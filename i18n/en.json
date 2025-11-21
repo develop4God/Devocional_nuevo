@@ -627,6 +627,19 @@
     "prayer": "Prayer",
     "your_favorites": "Your Favorites",
     "no_favorites_yet": "No favorites yet",
-    "tap_heart_to_save": "Tap the heart to save your favorite devotionals"
+    "tap_heart_to_save": "Tap the heart to save your favorite devotionals",
+    "streak": "Streak",
+    "share": "Share",
+    "add_prayer": "Add Prayer",
+    "mark_complete": "Complete",
+    "completed": "Completed",
+    "share_success": "Devotional shared successfully",
+    "added_to_prayers": "Added to your prayers",
+    "marked_complete": "Marked as complete",
+    "marked_incomplete": "Marked as incomplete",
+    "shared_from_app": "Shared from Christian Devotionals app"
+  },
+  "common": {
+    "undo": "Undo"
   }
 }

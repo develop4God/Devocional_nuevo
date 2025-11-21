@@ -627,6 +627,19 @@
     "prayer": "Prière",
     "your_favorites": "Vos Favoris",
     "no_favorites_yet": "Pas encore de favoris",
-    "tap_heart_to_save": "Touchez le cœur pour sauvegarder vos dévotions préférées"
+    "tap_heart_to_save": "Touchez le cœur pour sauvegarder vos dévotions préférées",
+    "streak": "Série",
+    "share": "Partager",
+    "add_prayer": "Ajouter Prière",
+    "mark_complete": "Terminer",
+    "completed": "Terminé",
+    "share_success": "Dévotion partagée avec succès",
+    "added_to_prayers": "Ajouté à vos prières",
+    "marked_complete": "Marqué comme terminé",
+    "marked_incomplete": "Marqué comme incomplet",
+    "shared_from_app": "Partagé depuis l'application Dévotions Chrétiennes"
+  },
+  "common": {
+    "undo": "Annuler"
   }
 }

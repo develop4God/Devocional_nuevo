@@ -627,6 +627,19 @@
     "prayer": "Oração",
     "your_favorites": "Seus Favoritos",
     "no_favorites_yet": "Ainda sem favoritos",
-    "tap_heart_to_save": "Toque no coração para salvar seus devocionais favoritos"
+    "tap_heart_to_save": "Toque no coração para salvar seus devocionais favoritos",
+    "streak": "Sequência",
+    "share": "Compartilhar",
+    "add_prayer": "Adicionar Oração",
+    "mark_complete": "Completar",
+    "completed": "Concluído",
+    "share_success": "Devocional compartilhado com sucesso",
+    "added_to_prayers": "Adicionado às suas orações",
+    "marked_complete": "Marcado como concluído",
+    "marked_incomplete": "Marcado como incompleto",
+    "shared_from_app": "Compartilhado do app Devocionais Cristãos"
+  },
+  "common": {
+    "undo": "Desfazer"
   }
 }
