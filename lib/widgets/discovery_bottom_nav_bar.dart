@@ -1,6 +1,11 @@
+import 'package:bible_reader_core/bible_reader_core.dart';
+import 'package:devocional_nuevo/pages/bible_reader_page.dart';
 import 'package:devocional_nuevo/pages/progress_page.dart';
 import 'package:devocional_nuevo/pages/settings_page.dart';
+import 'package:devocional_nuevo/providers/devocional_provider.dart';
+import 'package:devocional_nuevo/utils/page_transitions.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DiscoveryBottomNavBar extends StatelessWidget {
   final VoidCallback? onPrayers;
@@ -62,7 +67,32 @@ class DiscoveryBottomNavBar extends StatelessWidget {
                   IconButton(
                     key: const Key('bottom_appbar_bible_icon'),
                     tooltip: 'Biblia',
-                    onPressed: onBible,
+                    onPressed: () async {
+                      final devocionalProvider =
+                          Provider.of<DevocionalProvider>(context,
+                              listen: false);
+                      final appLanguage = devocionalProvider.selectedLanguage;
+                      List<BibleVersion> versions =
+                          await BibleVersionRegistry.getVersionsForLanguage(
+                              appLanguage);
+                      if (versions.isEmpty) {
+                        versions =
+                            await BibleVersionRegistry.getVersionsForLanguage(
+                                'es');
+                      }
+                      if (versions.isEmpty) {
+                        versions = await BibleVersionRegistry.getAllVersions();
+                      }
+                      if (!context.mounted) return;
+                      Navigator.push(
+                        context,
+                        PageTransitions.fadeSlide(
+                          BibleReaderPage(
+                            versions: versions,
+                          ),
+                        ),
+                      );
+                    },
                     icon: const Icon(Icons.auto_stories_outlined,
                         color: Colors.white, size: 32),
                   ),
