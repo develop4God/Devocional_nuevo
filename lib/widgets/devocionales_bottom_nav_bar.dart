@@ -49,69 +49,10 @@ class DevocionalesBottomNavBar extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                flex: 2,
-                child: SizedBox(
-                  height: 45,
-                  child: ElevatedButton.icon(
-                    key: const Key('bottom_nav_previous_button'),
-                    onPressed: currentDevocionalIndex > 0 ? onPrevious : null,
-                    icon: const Icon(Icons.arrow_back_ios, size: 16),
-                    label: Text(
-                      'Anterior',
-                      style: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.w600),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: currentDevocionalIndex > 0
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.outline.withAlpha(30),
-                      foregroundColor: currentDevocionalIndex > 0
-                          ? Colors.white
-                          : Theme.of(context).colorScheme.outline,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(22)),
-                      elevation: currentDevocionalIndex > 0 ? 2 : 0,
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
                 flex: 1,
                 child: Center(
                     child: ttsPlayerWidget ??
                         const SizedBox(width: 56, height: 56)),
-              ),
-              Expanded(
-                flex: 2,
-                child: SizedBox(
-                  height: 45,
-                  child: ElevatedButton.icon(
-                    key: const Key('bottom_nav_next_button'),
-                    onPressed: currentDevocionalIndex < totalDevotionals - 1
-                        ? onNext
-                        : null,
-                    label: const Icon(Icons.arrow_forward_ios, size: 16),
-                    icon: Text(
-                      'Siguiente',
-                      style: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.w600),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: currentDevocionalIndex <
-                              totalDevotionals - 1
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.outline.withAlpha(30),
-                      foregroundColor:
-                          currentDevocionalIndex < totalDevotionals - 1
-                              ? Colors.white
-                              : Theme.of(context).colorScheme.outline,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(22)),
-                      elevation:
-                          currentDevocionalIndex < totalDevotionals - 1 ? 2 : 0,
-                    ),
-                  ),
-                ),
               ),
             ],
           ),
