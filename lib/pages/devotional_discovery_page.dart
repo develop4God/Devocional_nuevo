@@ -15,7 +15,7 @@ import '../models/devocional_model.dart';
 import '../providers/devocional_provider.dart';
 import '../repositories/devotional_image_repository.dart';
 import '../services/spiritual_stats_service.dart';
-import 'devocional_modern_view.dart';
+import 'devotional_modern_view.dart';
 import 'devotional_discovery/widgets/devotional_card_premium.dart';
 import 'devotional_discovery/widgets/favorites_horizontal_section.dart';
 import 'favorites_page.dart';
