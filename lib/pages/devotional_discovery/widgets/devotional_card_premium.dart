@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../../models/devocional_model.dart';
-import '../../../utils/devotional_constants.dart';
+import '../../../utils/tag_color_dictionary.dart';
 
 /// Premium devotional card with full background image (Glorify/YouVersion style)
 class DevotionalCardPremium extends StatelessWidget {
@@ -127,12 +127,15 @@ class DevotionalCardPremium extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(16),
                                       ),
                                       child: Text(
-                                        tag,
+                                        TagColorDictionary.getTagTranslation(
+                                          tag,
+                                          Localizations.localeOf(context)
+                                              .languageCode,
+                                        ),
                                         style: const TextStyle(
                                           color: Colors.white,
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w700,
-                                          letterSpacing: 0.5,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 13,
                                         ),
                                       ),
                                     ))
@@ -330,17 +333,19 @@ class DevotionalCardPremium extends StatelessWidget {
     return null;
   }
 
-  /// Get gradient colors using centralized TagColorMapper
-  List<Color> _getGradientColors() {
-    final tag = devocional.tags != null && devocional.tags!.isNotEmpty
-        ? devocional.tags!.first
-        : null;
-    return TagColorMapper.getTagGradient(tag);
+  // Reemplaza el metodo _getTagColor para usar el diccionario centralizado
+  Color _getTagColor(String tagKey) {
+    return TagColorDictionary.getGradientForTag(tagKey).last;
   }
 
-  /// Get tag chip color using centralized TagColorMapper
-  Color _getTagColor(String tag) {
-    return TagColorMapper.getTagChipColor(tag);
+  // Reemplaza el metodo _getGradientColors para usar el diccionario centralizado
+  List<Color> _getGradientColors() {
+    final tagKey = devocional.tags != null && devocional.tags!.isNotEmpty
+        ? devocional.tags!.first
+        : null;
+    return tagKey != null
+        ? TagColorDictionary.getGradientForTag(tagKey)
+        : [Color(0xFF607D8B), Color(0xFF455A64)];
   }
 
   String _getDisplayDate() {
