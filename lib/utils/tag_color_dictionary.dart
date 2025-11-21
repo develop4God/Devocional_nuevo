@@ -26,7 +26,7 @@ class TagColorDictionary {
     // Dark Red, Orange
     // Humility: Brown to Dark Brown
     'tag.humility': [Color(0xFFA188FF), Color(0xFF7955F8)],
-    // Brown, Dark Brown
+    // Violet, Dark Violet
     // Prayer: Blue to Indigo
     'tag.prayer': [Color(0xFF2196F3), Color(0xFF3F51B5)],
     // Blue, Indigo
