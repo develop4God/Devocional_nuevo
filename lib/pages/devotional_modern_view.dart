@@ -175,13 +175,8 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        widget.devocional.reflexion,
-                        style: textTheme.bodyLarge?.copyWith(
-                          fontSize: 18,
-                          color: colorScheme.onSurface,
-                        ),
-                      ),
+                      _buildEnhancedBody(
+                          widget.devocional.reflexion, colorScheme),
                       const SizedBox(height: 24),
                       if (widget.devocional.paraMeditar.isNotEmpty) ...[
                         Text(
@@ -223,13 +218,8 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
-                          child: Text(
-                            widget.devocional.oracion,
-                            style: textTheme.bodyLarge?.copyWith(
-                              fontSize: 18,
-                              color: colorScheme.onSurface,
-                            ),
-                          ),
+                          child: _buildEnhancedBody(
+                              widget.devocional.oracion, colorScheme),
                         ),
                       ),
                       const SizedBox(height: 32),
@@ -346,5 +336,33 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
         ),
       );
     }
+  }
+
+  /// Builds enhanced body text with Lora font and first paragraph emphasis
+  Widget _buildEnhancedBody(String text, ColorScheme colorScheme) {
+    // Split text into paragraphs
+    final paragraphs = text.split('\n\n');
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.grey.shade200 : Colors.grey.shade800;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (int i = 0; i < paragraphs.length; i++) ...[
+          if (paragraphs[i].trim().isNotEmpty)
+            Text(
+              paragraphs[i].trim(),
+              style: GoogleFonts.lora(
+                fontSize: i == 0 ? 20.0 : 18.5, // First paragraph larger
+                height: 1.88,
+                letterSpacing: 0.15,
+                fontWeight: i == 0 ? FontWeight.w500 : FontWeight.w400,
+                color: textColor,
+              ),
+            ),
+          if (i < paragraphs.length - 1) const SizedBox(height: 16),
+        ],
+      ],
+    );
   }
 }
