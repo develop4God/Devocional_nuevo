@@ -53,7 +53,6 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
   // Local search state (view-specific, not provider)
   String _searchTerm = '';
   List<Devocional> _searchResults = [];
-  int _currentIndex = 0;
 
   @override
   bool get wantKeepAlive => true;
@@ -309,7 +308,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return SizedBox(
       width: double.infinity,
-      height: 340, // Aumenta el alto del hero
+      height: 280, // Aumenta el alto del hero
       child: FutureBuilder<String>(
         future: _getImageOfDayFuture(),
         builder: (context, snapshot) {
@@ -535,19 +534,38 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
       DevocionalProvider provider) {
     final imageRepository = DevotionalImageRepository();
     HapticFeedback.mediumImpact();
-    Navigator.push(
-      context,
-      PageTransitions.fadeSlide(
-        Hero(
-          tag: 'devotional_${devocional.id}',
-          child: DevocionalModernView(
-            devocionales: provider.devocionales,
-            initialIndex: provider.devocionales.indexOf(devocional),
-            imageRepository: imageRepository,
-            imageUrlOfDay: _imageOfDay,
+    final index = provider.devocionales.indexOf(devocional);
+    if (index < 0 && provider.devocionales.isNotEmpty) {
+      // Devocional no encontrado, navega al primero válido
+      Navigator.push(
+        context,
+        PageTransitions.fadeSlide(
+          Hero(
+            tag: 'devotional_${provider.devocionales.first.id}',
+            child: DevocionalModernView(
+              devocionales: provider.devocionales,
+              initialIndex: 0,
+              imageRepository: imageRepository,
+              imageUrlOfDay: _imageOfDay,
+            ),
           ),
         ),
-      ),
-    );
+      );
+    } else if (index >= 0) {
+      Navigator.push(
+        context,
+        PageTransitions.fadeSlide(
+          Hero(
+            tag: 'devotional_${devocional.id}',
+            child: DevocionalModernView(
+              devocionales: provider.devocionales,
+              initialIndex: index,
+              imageRepository: imageRepository,
+              imageUrlOfDay: _imageOfDay,
+            ),
+          ),
+        ),
+      );
+    }
   }
 }
