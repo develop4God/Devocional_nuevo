@@ -3,6 +3,8 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:devocional_nuevo/pages/bible_reader_page.dart';
+import 'package:devocional_nuevo/pages/prayers_page.dart';
 import 'package:devocional_nuevo/widgets/devocionales_bottom_nav_bar.dart';
 import 'package:devocional_nuevo/widgets/devocionales_page_drawer.dart';
 import 'package:flutter/material.dart';
@@ -11,17 +13,19 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../blocs/theme/theme_bloc.dart';
+import '../blocs/theme/theme_state.dart';
 import '../extensions/string_extensions.dart';
 import '../models/devocional_model.dart';
 import '../providers/devocional_provider.dart';
 import '../repositories/devotional_image_repository.dart';
 import '../services/spiritual_stats_service.dart';
 import '../utils/page_transitions.dart';
+import '../widgets/app_bar_constants.dart';
 import '../widgets/devotional_card_skeleton.dart';
 import 'devotional_discovery/widgets/devotional_card_premium.dart';
 import 'devotional_discovery/widgets/favorites_horizontal_section.dart';
 import 'devotional_modern_view.dart';
-import 'favorites_page.dart';
 
 /// Devotional Discovery Page
 ///
@@ -45,79 +49,11 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
   Timer? _debounceTimer;
   int _currentStreak = 0;
   String? _imageOfDay;
-  OverlayEntry? _searchOverlayEntry;
 
   // Local search state (view-specific, not provider)
   String _searchTerm = '';
   List<Devocional> _searchResults = [];
-
-  void _showSearchBubble(BuildContext context) {
-    if (_searchOverlayEntry != null) return;
-    final overlay = Overlay.of(context);
-    _searchOverlayEntry = OverlayEntry(
-        builder: (context) => GestureDetector(
-              onTap: () {
-                _hideSearchBubble();
-              },
-              child: Material(
-                color: Colors.black.withValues(alpha: 0.2),
-                child: Center(
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 24),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor,
-                      borderRadius: BorderRadius.circular(32),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.15),
-                          blurRadius: 24,
-                          offset: const Offset(0, 8),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _searchController,
-                            focusNode: _searchFocusNode,
-                            autofocus: true,
-                            decoration: InputDecoration(
-                              hintText: 'Buscar devocional...',
-                              border: InputBorder.none,
-                              isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 8),
-                            ),
-                            style: const TextStyle(fontSize: 18),
-                            onChanged: _onSearchChanged,
-                            onEditingComplete: _hideSearchBubble,
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.close),
-                          onPressed: _hideSearchBubble,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ));
-    overlay.insert(_searchOverlayEntry!);
-    _searchFocusNode.requestFocus();
-  }
-
-  void _hideSearchBubble() {
-    _searchOverlayEntry?.remove();
-    _searchOverlayEntry = null;
-    setState(() {
-      _searchController.clear();
-    });
-    _performLocalSearch('');
-    FocusScope.of(context).unfocus();
-  }
+  int _currentIndex = 0;
 
   @override
   bool get wantKeepAlive => true;
@@ -177,18 +113,6 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
     super.dispose();
   }
 
-  void _onSearchChanged(String value) {
-    setState(() {});
-
-    // Cancel previous timer
-    _debounceTimer?.cancel();
-
-    // Create new timer for 500ms debounce
-    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
-      _performLocalSearch(value);
-    });
-  }
-
   /// Perform local search on devotionals (view-specific logic)
   void _performLocalSearch(String term) {
     final provider = context.read<DevocionalProvider>();
@@ -210,245 +134,192 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Consumer<DevocionalProvider>(
-      builder: (context, provider, child) {
-        // Update search results when provider data changes
-        if (_searchResults.isEmpty && provider.devocionales.isNotEmpty) {
-          _searchResults = provider.devocionales;
-        }
-
-        int currentIndex = 0;
-        int totalDevotionals = _searchResults.length;
-        bool isFavorite = totalDevotionals > 0
-            ? provider.isFavorite(_searchResults[currentIndex])
-            : false;
-
-        void goToPrevious() {
-          if (currentIndex > 0) {
-            setState(() {
-              currentIndex--;
-            });
-          }
-        }
-
-        void goToNext() {
-          if (currentIndex < totalDevotionals - 1) {
-            setState(() {
-              currentIndex++;
-            });
-          }
-        }
-
-        void toggleFavorite() {
-          if (totalDevotionals > 0) {
-            provider.toggleFavorite(_searchResults[currentIndex], context);
-          }
-        }
-
-        void goToPrayers() {
-          HapticFeedback.selectionClick();
-          Navigator.push(
-            context,
-            PageTransitions.fadeSlide(const FavoritesPage()),
-          );
-        }
-
-        void goToBible() {
-          // Implementa navegación a Biblia
-        }
-
-        void shareDevotional() {
-          // Implementa compartir
-        }
-
-        void goToProgress() {
-          // Implementa navegación a progreso
-        }
-
-        void goToSettings() {
-          // Implementa navegación a ajustes
-        }
-
-        return Scaffold(
-          backgroundColor: isDark ? Colors.black : Colors.grey[50],
-          extendBodyBehindAppBar: true,
-          drawer: const DevocionalesDrawer(),
-          appBar: AppBar(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            title: const SizedBox.shrink(),
-            actions: [
-              IconButton(
-                icon: Icon(
-                  Icons.search,
-                  color: isDark ? Colors.white : Colors.black87,
-                ),
-                tooltip: 'discovery.search_hint'.tr(),
-                onPressed: () {
-                  _showSearchBubble(context);
-                },
-              ),
-              // Favorites page
-              IconButton(
-                icon: Icon(
-                  Icons.star_border,
-                  color: isDark ? Colors.white : Colors.black87,
-                ),
-                onPressed: () {
-                  HapticFeedback.selectionClick();
-                  Navigator.push(
-                    context,
-                    PageTransitions.fadeSlide(const FavoritesPage()),
-                  );
-                },
-                tooltip: 'discovery.favorites'.tr(),
-              ),
-            ],
-          ),
-          body: Column(
-            children: [
-              // Hero header with gradient and streak badge
-              _buildHeroHeader(),
-
-              // Loading indicator - skeleton loaders
-              if (provider.isLoading)
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: 3,
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                    itemBuilder: (context, index) =>
-                        const DevotionalCardSkeleton(),
+    super.build(context); // Requerido por AutomaticKeepAliveClientMixin
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final themeState = context.watch<ThemeBloc>().state as ThemeLoaded;
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: themeState.systemUiOverlayStyle,
+      child: Consumer<DevocionalProvider>(
+        builder: (context, provider, child) {
+          final bool isDark = Theme.of(context).brightness == Brightness.dark;
+          return Scaffold(
+            drawer: const DevocionalesDrawer(),
+            appBar: PreferredSize(
+              preferredSize: const Size.fromHeight(kToolbarHeight),
+              child: Stack(
+                children: [
+                  CustomAppBar(
+                    titleText: 'devotionals.my_intimate_space_with_god'.tr(),
                   ),
-                ),
-
-              // Error message
-              if (provider.errorMessage != null && !provider.isLoading)
-                Expanded(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.error_outline,
-                          size: 64,
-                          color: colorScheme.error,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          provider.errorMessage!,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: colorScheme.error),
-                        ),
-                        const SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: () {
-                            provider.initializeData();
-                            _performLocalSearch(''); // Refresh search results
-                          },
-                          child: Text('discovery.retry'.tr()),
-                        ),
-                      ],
+                ],
+              ),
+            ),
+            body: Column(
+              children: [
+                _buildHeroHeader(),
+                if (provider.isLoading)
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: 3,
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                      itemBuilder: (context, index) =>
+                          const DevotionalCardSkeleton(),
                     ),
                   ),
-                ),
-
-              // Devotional list with favorites section and pull-to-refresh
-              if (!provider.isLoading && provider.errorMessage == null)
-                Expanded(
-                  child: _searchResults.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.book_outlined,
-                                size: 64,
-                                color: colorScheme.onSurface
-                                    .withValues(alpha: 0.5),
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                'discovery.no_devotionals'.tr(),
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                            ],
+                if (provider.errorMessage != null && !provider.isLoading)
+                  Expanded(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            size: 64,
+                            color: colorScheme.error,
                           ),
-                        )
-                      : RefreshIndicator(
-                          onRefresh: () async {
-                            HapticFeedback.mediumImpact();
-                            await provider.initializeData();
-                            _performLocalSearch(''); // Refresh search results
-                          },
-                          color: colorScheme.primary,
-                          strokeWidth: 3,
-                          child: ListView.builder(
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            itemCount: _searchResults.length + 1,
-                            // Add 1 for favorites section
-                            padding: EdgeInsets.zero,
-                            itemExtent: null,
-                            // Variable height for favorites section
-                            cacheExtent: 1500,
-                            itemBuilder: (context, index) {
-                              // First item is favorites section
-                              if (index == 0) {
-                                return FavoritesHorizontalSection(
-                                  favorites: provider.favoriteDevocionales,
-                                  onDevocionalTap: (devocional) {
-                                    _showDevocionalDetail(
-                                        context, devocional, provider);
-                                  },
-                                  isDark: isDark,
-                                );
-                              }
-
-                              // Rest are devotional cards with Hero tags
-                              final devocional = _searchResults[index - 1];
-                              return Hero(
-                                tag: 'devotional_${devocional.id}',
-                                child: Material(
-                                  type: MaterialType.transparency,
-                                  child: DevotionalCardPremium(
-                                    devocional: devocional,
-                                    isFavorite: provider.isFavorite(devocional),
-                                    onTap: () => _showDevocionalDetail(
-                                        context, devocional, provider),
-                                    onFavoriteToggle: () => provider
-                                        .toggleFavorite(devocional, context),
-                                    isDark: isDark,
-                                  ),
-                                ),
-                              );
+                          const SizedBox(height: 16),
+                          Text(
+                            provider.errorMessage!,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: colorScheme.error),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              provider.initializeData();
+                              _performLocalSearch('');
                             },
+                            child: Text('discovery.retry'.tr()),
                           ),
-                        ),
-                ),
-            ],
-          ),
-          bottomNavigationBar: DevocionalesBottomNavBar(
-            currentIndex: currentIndex,
-            isFavorite: isFavorite,
-            onPrevious: goToPrevious,
-            onNext: goToNext,
-            onFavorite: toggleFavorite,
-            onPrayers: goToPrayers,
-            onBible: goToBible,
-            onShare: shareDevotional,
-            onProgress: goToProgress,
-            onSettings: goToSettings,
-            ttsPlayerWidget: const SizedBox(),
-            appBarForegroundColor: colorScheme.onPrimary,
-            appBarBackgroundColor: colorScheme.primary,
-            totalDevotionals: totalDevotionals,
-            currentDevocionalIndex: currentIndex,
-          ),
-        );
-      },
+                        ],
+                      ),
+                    ),
+                  ),
+                if (!provider.isLoading && provider.errorMessage == null)
+                  Expanded(
+                    child: _searchResults.isEmpty
+                        ? Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.book_outlined,
+                                  size: 64,
+                                  color: colorScheme.onSurface
+                                      .withValues(alpha: 0.5),
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'discovery.no_devotionals'.tr(),
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
+                                ),
+                              ],
+                            ),
+                          )
+                        : RefreshIndicator(
+                            onRefresh: () async {
+                              HapticFeedback.mediumImpact();
+                              await provider.initializeData();
+                              _performLocalSearch('');
+                            },
+                            color: colorScheme.primary,
+                            strokeWidth: 3,
+                            child: ListView.builder(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              itemCount: _searchResults.length + 1,
+                              padding: EdgeInsets.zero,
+                              itemExtent: null,
+                              cacheExtent: 1500,
+                              itemBuilder: (context, index) {
+                                if (index == 0) {
+                                  return FavoritesHorizontalSection(
+                                    favorites: provider.favoriteDevocionales,
+                                    onDevocionalTap: (devocional) {
+                                      _showDevocionalDetail(
+                                          context, devocional, provider);
+                                    },
+                                    isDark: isDark,
+                                  );
+                                }
+                                final devocional = _searchResults[index - 1];
+                                return Hero(
+                                  tag: 'devotional_${devocional.id}',
+                                  child: Material(
+                                    type: MaterialType.transparency,
+                                    child: DevotionalCardPremium(
+                                      devocional: devocional,
+                                      isFavorite:
+                                          provider.isFavorite(devocional),
+                                      onTap: () => _showDevocionalDetail(
+                                          context, devocional, provider),
+                                      onFavoriteToggle: () => provider
+                                          .toggleFavorite(devocional, context),
+                                      isDark: isDark,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                  ),
+              ],
+            ),
+            bottomNavigationBar: Builder(
+              builder: (context) {
+                final List<Devocional> devocionales = _searchResults;
+                final int currentIndex =
+                    devocionales.isNotEmpty ? _currentIndex : 0;
+                final Color appBarForegroundColor =
+                    Theme.of(context).appBarTheme.foregroundColor ??
+                        Theme.of(context).colorScheme.onPrimary;
+                final Color? appBarBackgroundColor =
+                    Theme.of(context).appBarTheme.backgroundColor;
+                return DevocionalesBottomNavBar(
+                  currentIndex: currentIndex,
+                  isFavorite: false,
+                  onFavorite: null,
+                  onPrayers: () {
+                    HapticFeedback.selectionClick();
+                    Navigator.push(
+                      context,
+                      PageTransitions.fadeSlide(const PrayersPage()),
+                    );
+                  },
+                  onBible: () {
+                    Navigator.push(
+                      context,
+                      PageTransitions.fadeSlide(BibleReaderPage(versions: [])),
+                    );
+                  },
+                  onShare: null,
+                  onProgress: null,
+                  onSettings: null,
+                  ttsPlayerWidget: const SizedBox(),
+                  appBarForegroundColor: appBarForegroundColor,
+                  appBarBackgroundColor: appBarBackgroundColor,
+                  totalDevotionals: devocionales.length,
+                  currentDevocionalIndex: currentIndex,
+                  onPrevious: currentIndex > 0
+                      ? () {
+                          setState(() {
+                            _currentIndex--;
+                          });
+                        }
+                      : null,
+                  onNext: currentIndex < devocionales.length - 1
+                      ? () {
+                          setState(() {
+                            _currentIndex++;
+                          });
+                        }
+                      : null,
+                );
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 
