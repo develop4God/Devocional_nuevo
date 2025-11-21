@@ -307,52 +307,81 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
   Widget _buildHeroHeader() {
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return FutureBuilder<String>(
-      future: _getImageOfDayFuture(),
-      builder: (context, snapshot) {
-        final imageUrl = snapshot.data;
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          debugPrint('[DEBUG] [Hero] Esperando imagen del día...');
-          return Container(
-            width: double.infinity,
-            height: 220,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: isDark
-                    ? [Colors.deepPurple[900]!, Colors.purple[800]!]
-                    : [colorScheme.primary, colorScheme.secondary],
+    return SizedBox(
+      width: double.infinity,
+      height: 340, // Aumenta el alto del hero
+      child: FutureBuilder<String>(
+        future: _getImageOfDayFuture(),
+        builder: (context, snapshot) {
+          final imageUrl = snapshot.data;
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            debugPrint('[DEBUG] [Hero] Esperando imagen del día...');
+            return Container(
+              width: double.infinity,
+              height: 340,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: isDark
+                      ? [Colors.deepPurple[900]!, Colors.purple[800]!]
+                      : [colorScheme.primary, colorScheme.secondary],
+                ),
               ),
-            ),
-            child: const Center(child: CircularProgressIndicator()),
-          );
-        }
-        if (imageUrl != null && imageUrl.isNotEmpty) {
-          debugPrint('[DEBUG] [Hero] Imagen del día lista: $imageUrl');
+              child: const Center(child: CircularProgressIndicator()),
+            );
+          }
+          if (imageUrl != null && imageUrl.isNotEmpty) {
+            debugPrint('[DEBUG] [Hero] Imagen del día lista: $imageUrl');
+            return Stack(
+              children: [
+                Positioned.fill(
+                  child: Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (ctx, error, stackTrace) {
+                      debugPrint(
+                          '[DEBUG] [Hero] Error cargando imagen: $error');
+                      return Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: isDark
+                                ? [Colors.deepPurple[900]!, Colors.purple[800]!]
+                                : [colorScheme.primary, colorScheme.secondary],
+                          ),
+                        ),
+                        child: const Center(
+                            child: Icon(Icons.image_not_supported, size: 64)),
+                      );
+                    },
+                  ),
+                ),
+                _buildHeroContent(colorScheme, isDark),
+                if (_currentStreak > 0)
+                  Positioned(
+                    right: 16,
+                    bottom: 16,
+                    child: _buildStreakBadge(isDark),
+                  ),
+              ],
+            );
+          }
+          debugPrint('[DEBUG] [Hero] No hay imagen, fallback al gradiente');
           return Stack(
             children: [
-              Positioned.fill(
-                child: Image.network(
-                  imageUrl,
-                  fit: BoxFit.cover,
-                  errorBuilder: (ctx, error, stackTrace) {
-                    debugPrint('[DEBUG] [Hero] Error cargando imagen: $error');
-                    return Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: isDark
-                              ? [Colors.deepPurple[900]!, Colors.purple[800]!]
-                              : [colorScheme.primary, colorScheme.secondary],
-                        ),
-                      ),
-                      child: const Center(
-                          child: Icon(Icons.image_not_supported, size: 64)),
-                    );
-                  },
+              Container(
+                width: double.infinity,
+                height: 340,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: isDark
+                        ? [Colors.deepPurple[900]!, Colors.purple[800]!]
+                        : [colorScheme.primary, colorScheme.secondary],
+                  ),
                 ),
               ),
               _buildHeroContent(colorScheme, isDark),
@@ -364,32 +393,8 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
                 ),
             ],
           );
-        }
-        debugPrint('[DEBUG] [Hero] No hay imagen, fallback al gradiente');
-        return Stack(
-          children: [
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: isDark
-                      ? [Colors.deepPurple[900]!, Colors.purple[800]!]
-                      : [colorScheme.primary, colorScheme.secondary],
-                ),
-              ),
-            ),
-            _buildHeroContent(colorScheme, isDark),
-            if (_currentStreak > 0)
-              Positioned(
-                right: 16,
-                bottom: 16,
-                child: _buildStreakBadge(isDark),
-              ),
-          ],
-        );
-      },
+        },
+      ),
     );
   }
 
