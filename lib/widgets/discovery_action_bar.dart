@@ -55,8 +55,14 @@ ${LocalizationService.instance.translate('discovery.shared_from_app')}
   void _addToPrayers(BuildContext context) {
     HapticFeedback.mediumImpact();
 
-    final prayerText =
-        'Devocional: ${devocional.reflexion.substring(0, devocional.reflexion.length > 100 ? 100 : devocional.reflexion.length)}...';
+    if (devocional.reflexion.isEmpty) {
+      return;
+    }
+
+    final reflexionSnippet = devocional.reflexion.length > 100
+        ? devocional.reflexion.substring(0, 100)
+        : devocional.reflexion;
+    final prayerText = 'Devocional: $reflexionSnippet...';
 
     context.read<PrayerBloc>().add(AddPrayer(prayerText));
 
@@ -65,12 +71,6 @@ ${LocalizationService.instance.translate('discovery.shared_from_app')}
         content: Text(LocalizationService.instance
             .translate('discovery.added_to_prayers')),
         duration: const Duration(seconds: 3),
-        action: SnackBarAction(
-          label: LocalizationService.instance.translate('common.undo'),
-          onPressed: () {
-            // Undo functionality could be implemented by storing the prayer ID
-          },
-        ),
       ),
     );
   }
@@ -174,7 +174,7 @@ class _ActionButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: color.withValues(alpha: 0.1 * 255),
+            backgroundColor: color.withValues(alpha: 0.1),
             foregroundColor: color,
             elevation: 0,
             padding: const EdgeInsets.symmetric(vertical: 12),
