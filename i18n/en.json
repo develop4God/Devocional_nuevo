@@ -610,5 +610,36 @@
     "no_thanksgivings_description": "Create your first thanksgiving to express your gratitude to God.",
     "days_old_single": "({days} day)",
     "days_old_plural": "({days} days)"
+  },
+  "discovery": {
+    "title": "Discover Devotionals",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "search_hint": "Search devotionals...",
+    "select_language": "Select Language",
+    "favorites": "Favorites",
+    "retry": "Retry",
+    "no_devotionals": "No devotionals found",
+    "read_verse_first": "Read Verse First",
+    "opening_bible": "Opening Bible",
+    "reflection": "Reflection",
+    "for_meditation": "For Meditation",
+    "prayer": "Prayer",
+    "your_favorites": "Your Favorites",
+    "no_favorites_yet": "No favorites yet",
+    "tap_heart_to_save": "Tap the heart to save your favorite devotionals",
+    "streak": "Streak",
+    "share": "Share",
+    "add_prayer": "Add Prayer",
+    "mark_complete": "Complete",
+    "completed": "Completed",
+    "share_success": "Devotional shared successfully",
+    "added_to_prayers": "Added to your prayers",
+    "marked_complete": "Marked as complete",
+    "marked_incomplete": "Marked as incomplete",
+    "shared_from_app": "Shared from Christian Devotionals app"
+  },
+  "common": {
+    "undo": "Undo"
   }
 }

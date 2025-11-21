@@ -610,5 +610,36 @@
     "no_thanksgivings_description": "Crie sua primeira ação de graças para expressar sua gratidão a Deus.",
     "days_old_single": "({days} dia)",
     "days_old_plural": "({days} dias)"
+  },
+  "discovery": {
+    "title": "Descobrir Devocionais",
+    "today": "Hoje",
+    "tomorrow": "Amanhã",
+    "search_hint": "Pesquisar devocionais...",
+    "select_language": "Selecionar Idioma",
+    "favorites": "Favoritos",
+    "retry": "Tentar Novamente",
+    "no_devotionals": "Nenhum devocional encontrado",
+    "read_verse_first": "Ler Versículo Primeiro",
+    "opening_bible": "Abrindo Bíblia",
+    "reflection": "Reflexão",
+    "for_meditation": "Para Meditar",
+    "prayer": "Oração",
+    "your_favorites": "Seus Favoritos",
+    "no_favorites_yet": "Ainda sem favoritos",
+    "tap_heart_to_save": "Toque no coração para salvar seus devocionais favoritos",
+    "streak": "Sequência",
+    "share": "Compartilhar",
+    "add_prayer": "Adicionar Oração",
+    "mark_complete": "Completar",
+    "completed": "Concluído",
+    "share_success": "Devocional compartilhado com sucesso",
+    "added_to_prayers": "Adicionado às suas orações",
+    "marked_complete": "Marcado como concluído",
+    "marked_incomplete": "Marcado como incompleto",
+    "shared_from_app": "Compartilhado do app Devocionais Cristãos"
+  },
+  "common": {
+    "undo": "Desfazer"
   }
 }

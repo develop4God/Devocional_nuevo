@@ -7,10 +7,13 @@ import 'package:devocional_nuevo/extensions/string_extensions.dart';
 import 'package:devocional_nuevo/pages/about_page.dart';
 import 'package:devocional_nuevo/pages/application_language_page.dart';
 import 'package:devocional_nuevo/pages/contact_page.dart';
+import 'package:devocional_nuevo/pages/devocionales_page.dart';
+import 'package:devocional_nuevo/pages/devotional_discovery_page.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:devocional_nuevo/providers/localization_provider.dart';
 import 'package:devocional_nuevo/services/tts/voice_settings_service.dart';
 import 'package:devocional_nuevo/utils/constants.dart';
+import 'package:devocional_nuevo/utils/devotional_constants.dart';
 import 'package:devocional_nuevo/widgets/app_bar_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -134,6 +137,94 @@ class _SettingsPageState extends State<SettingsPage> {
     await _launchPaypal();
   }
 
+  Future<ExperienceMode> _getCurrentExperience() async {
+    final prefs = await SharedPreferences.getInstance();
+    return ExperienceMode.fromStorageString(
+      prefs.getString('discovery_experienceMode'),
+    );
+  }
+
+  Future<void> _showExperienceDialog() async {
+    final currentExperience = await _getCurrentExperience();
+
+    if (!mounted) return;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Choose Experience Mode'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // ignore: deprecated_member_use
+              RadioListTile<ExperienceMode>(
+                title: const Text('Discovery'),
+                subtitle: const Text('Modern, visual interface with search'),
+                value: ExperienceMode.discovery,
+                // ignore: deprecated_member_use
+                groupValue: currentExperience,
+                // ignore: deprecated_member_use
+                onChanged: (value) async {
+                  if (value != null) {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setString(
+                      'discovery_experienceMode',
+                      value.toStorageString(),
+                    );
+                    if (context.mounted) {
+                      debugPrint(
+                          '[DEBUG] Cambio a modo Discovery, navegando a DevotionalDiscoveryPage');
+                      Navigator.pop(context);
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const DevotionalDiscoveryPage()),
+                        (route) => false,
+                      );
+                    }
+                  }
+                },
+              ),
+              // ignore: deprecated_member_use
+              RadioListTile<ExperienceMode>(
+                title: const Text('Traditional'),
+                subtitle: const Text('Classic daily devotional interface'),
+                value: ExperienceMode.traditional,
+                // ignore: deprecated_member_use
+                groupValue: currentExperience,
+                // ignore: deprecated_member_use
+                onChanged: (value) async {
+                  if (value != null) {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setString(
+                      'discovery_experienceMode',
+                      value.toStorageString(),
+                    );
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => const DevocionalesPage()),
+                        (route) => false,
+                      );
+                    }
+                  }
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _showErrorSnackBar(String message) {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -237,6 +328,61 @@ class _SettingsPageState extends State<SettingsPage> {
                               // Mostrar solo el idioma, sin versión bíblica
                             ],
                           ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // Experience Selection
+                InkWell(
+                  onTap: () => _showExperienceDialog(),
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 4,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.explore, color: colorScheme.primary),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Experience Mode',
+                                style: textTheme.bodyMedium?.copyWith(
+                                  fontSize: 16,
+                                  color: colorScheme.onSurface,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              FutureBuilder<ExperienceMode>(
+                                future: _getCurrentExperience(),
+                                builder: (context, snapshot) {
+                                  return Text(
+                                    snapshot.data == ExperienceMode.discovery
+                                        ? 'Discovery (Modern)'
+                                        : 'Traditional (Classic)',
+                                    style: textTheme.bodySmall?.copyWith(
+                                      color: colorScheme.onSurface
+                                          .withValues(alpha: 0.7),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 16,
+                          color: colorScheme.onSurface.withValues(alpha: 0.5),
                         ),
                       ],
                     ),

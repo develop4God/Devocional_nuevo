@@ -244,4 +244,10 @@ class DevocionalesTracking {
     _context = null;
     debugPrint('🗑️ DevocionalesTracking disposed');
   }
+
+  /// Limpia el contexto guardado para evitar errores de acceso tras dispose
+  void clearContext() {
+    _context = null;
+    debugPrint('🧹 DevocionalesTracking context cleared');
+  }
 }
