@@ -5,7 +5,6 @@ import 'dart:convert';
 
 import 'package:devocional_nuevo/pages/bible_reader_page.dart';
 import 'package:devocional_nuevo/pages/prayers_page.dart';
-import 'package:devocional_nuevo/widgets/devocionales_bottom_nav_bar.dart';
 import 'package:devocional_nuevo/widgets/devocionales_page_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,6 +22,7 @@ import '../services/spiritual_stats_service.dart';
 import '../utils/page_transitions.dart';
 import '../widgets/app_bar_constants.dart';
 import '../widgets/devotional_card_skeleton.dart';
+import '../widgets/discovery_bottom_nav_bar.dart';
 import 'devotional_discovery/widgets/devotional_card_premium.dart';
 import 'devotional_discovery/widgets/favorites_horizontal_section.dart';
 import 'devotional_modern_view.dart';
@@ -267,18 +267,12 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
             ),
             bottomNavigationBar: Builder(
               builder: (context) {
-                final List<Devocional> devocionales = _searchResults;
-                final int currentIndex =
-                    devocionales.isNotEmpty ? _currentIndex : 0;
                 final Color appBarForegroundColor =
                     Theme.of(context).appBarTheme.foregroundColor ??
                         Theme.of(context).colorScheme.onPrimary;
                 final Color? appBarBackgroundColor =
                     Theme.of(context).appBarTheme.backgroundColor;
-                return DevocionalesBottomNavBar(
-                  currentIndex: currentIndex,
-                  isFavorite: false,
-                  onFavorite: null,
+                return DiscoveryBottomNavBar(
                   onPrayers: () {
                     HapticFeedback.selectionClick();
                     Navigator.push(
@@ -292,28 +286,15 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
                       PageTransitions.fadeSlide(BibleReaderPage(versions: [])),
                     );
                   },
-                  onShare: null,
-                  onProgress: null,
-                  onSettings: null,
+                  onProgress: () {
+                    // Navegación a la página de estadísticas si existe
+                  },
+                  onSettings: () {
+                    // Navegación a la página de configuración si existe
+                  },
                   ttsPlayerWidget: const SizedBox(),
                   appBarForegroundColor: appBarForegroundColor,
                   appBarBackgroundColor: appBarBackgroundColor,
-                  totalDevotionals: devocionales.length,
-                  currentDevocionalIndex: currentIndex,
-                  onPrevious: currentIndex > 0
-                      ? () {
-                          setState(() {
-                            _currentIndex--;
-                          });
-                        }
-                      : null,
-                  onNext: currentIndex < devocionales.length - 1
-                      ? () {
-                          setState(() {
-                            _currentIndex++;
-                          });
-                        }
-                      : null,
                 );
               },
             ),
