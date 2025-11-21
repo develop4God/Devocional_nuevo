@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bible_reader_core/bible_reader_core.dart';
+import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:devocional_nuevo/repositories/devotional_image_repository.dart';
 import 'package:devocional_nuevo/utils/page_transitions.dart';
 import 'package:devocional_nuevo/widgets/discovery_action_bar.dart';
@@ -9,10 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../extensions/string_extensions.dart';
 import '../models/devocional_model.dart';
+import '../services/devocionales_tracking.dart';
 import '../services/spiritual_stats_service.dart';
 import 'bible_reader_page.dart';
 
@@ -39,7 +42,10 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
   late Future<String> _imageUrlFuture;
   late FlutterTts _flutterTts;
   bool _isPlaying = false;
+  bool _ttsInitialized = false;
   static const String _lastDevocionalIndexKey = 'lastDevocionalIndex';
+  final ScrollController _scrollController = ScrollController();
+  final DevocionalesTracking _tracking = DevocionalesTracking();
 
   Future<String> _getImageForToday() async {
     final repo = widget.imageRepository;
@@ -72,13 +78,34 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
     _imageUrlFuture = widget.imageUrlOfDay != null
         ? Future.value(widget.imageUrlOfDay)
         : _getImageForToday();
-    // Initialize TTS
     _flutterTts = FlutterTts();
-    _initializeTts();
+    _tracking.initialize(context);
+    _startTrackingCurrentDevocional();
     _recordDevotionalRead();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkShowInvitation();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_ttsInitialized) {
+      _initializeTts();
+      _ttsInitialized = true;
+    }
+  }
+
+  void _startTrackingCurrentDevocional() {
+    if (widget.devocionales.isNotEmpty &&
+        _currentDevocionalIndex < widget.devocionales.length) {
+      final currentDevocional = widget.devocionales[_currentDevocionalIndex];
+      _tracking.clearAutoCompletedExcept(currentDevocional.id);
+      _tracking.startDevocionalTracking(
+        currentDevocional.id,
+        _scrollController,
+      );
+    }
   }
 
   @override
@@ -161,10 +188,19 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
       setState(() {
         _currentDevocionalIndex++;
       });
+      _scrollToTop();
+      _startTrackingCurrentDevocional();
       _recordDevotionalRead();
       _saveCurrentDevocionalIndex();
+      final devocionalProvider =
+          Provider.of<DevocionalProvider>(context, listen: false);
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _checkShowInvitation();
+        if (devocionalProvider.showInvitationDialog &&
+            widget.devocionales[_currentDevocionalIndex].tags != null &&
+            widget.devocionales[_currentDevocionalIndex].tags!
+                .contains('salvation')) {
+          _showInvitation(context);
+        }
       });
     }
   }
@@ -174,10 +210,19 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
       setState(() {
         _currentDevocionalIndex--;
       });
+      _scrollToTop();
+      _startTrackingCurrentDevocional();
       _recordDevotionalRead();
       _saveCurrentDevocionalIndex();
+      final devocionalProvider =
+          Provider.of<DevocionalProvider>(context, listen: false);
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _checkShowInvitation();
+        if (devocionalProvider.showInvitationDialog &&
+            widget.devocionales[_currentDevocionalIndex].tags != null &&
+            widget.devocionales[_currentDevocionalIndex].tags!
+                .contains('salvation')) {
+          _showInvitation(context);
+        }
       });
     }
   }
@@ -299,6 +344,18 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
     );
   }
 
+  void _scrollToTop() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients && mounted) {
+        _scrollController.animateTo(
+          0.0,
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeOutQuart,
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -330,6 +387,7 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
             return Stack(
               children: [
                 CustomScrollView(
+                  controller: _scrollController,
                   slivers: [
                     SliverAppBar(
                       expandedHeight: 260,
@@ -501,30 +559,6 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
                       ),
                     ),
                   ],
-                ),
-                Positioned(
-                  bottom: 80,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: Opacity(
-                      opacity: 0.18,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.swipe_left,
-                              size: 32, color: colorScheme.primary),
-                          const SizedBox(width: 8),
-                          Text('Desliza para cambiar',
-                              style: textTheme.bodyMedium
-                                  ?.copyWith(fontWeight: FontWeight.bold)),
-                          const SizedBox(width: 8),
-                          Icon(Icons.swipe_right,
-                              size: 32, color: colorScheme.primary),
-                        ],
-                      ),
-                    ),
-                  ),
                 ),
               ],
             );
