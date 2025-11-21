@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../blocs/theme/theme_bloc.dart';
@@ -333,6 +334,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
                   Positioned(
                     right: 16,
                     bottom: 16,
+                    // Ajusta la posición vertical para que esté más arriba
                     child: _buildStreakBadge(isDark),
                   ),
               ],
@@ -358,7 +360,8 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
               if (_currentStreak > 0)
                 Positioned(
                   right: 16,
-                  bottom: 16,
+                  top: 32,
+                  // Ajusta la posición vertical para que esté más arriba
                   child: _buildStreakBadge(isDark),
                 ),
             ],
@@ -423,12 +426,12 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
           end: Alignment.bottomRight,
           colors: isDark
               ? [
-                  colorScheme.primary.withValues(alpha: 0.85),
-                  colorScheme.secondary.withValues(alpha: 0.85)
+                  colorScheme.primary.withValues(alpha: 0.6),
+                  colorScheme.secondary.withValues(alpha: 0.6)
                 ]
               : [
-                  colorScheme.primary.withValues(alpha: 0.85),
-                  colorScheme.secondary.withValues(alpha: 0.85)
+                  colorScheme.primary.withValues(alpha: 0.6),
+                  colorScheme.secondary.withValues(alpha: 0.6)
                 ],
         ),
       ),
@@ -482,10 +485,17 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.star,
-            color: isDark ? Colors.amber : Colors.orange,
-            size: 20,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 6), // Subir la llama
+            child: SizedBox(
+              width: 28,
+              height: 28,
+              child: Lottie.asset(
+                'assets/lottie/fire.json',
+                repeat: true,
+                animate: true,
+              ),
+            ),
           ),
           const SizedBox(width: 4),
           Text(
