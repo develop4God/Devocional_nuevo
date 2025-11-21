@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 
 import '../extensions/string_extensions.dart';
 import '../models/devocional_model.dart';
-import '../providers/devotional_discovery_provider.dart';
+import '../providers/devocional_provider.dart';
 import '../repositories/devotional_image_repository.dart';
 import '../services/spiritual_stats_service.dart';
 import 'devocional_modern_view.dart';
@@ -36,13 +36,19 @@ class DevotionalDiscoveryPage extends StatefulWidget {
 
 class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
     with AutomaticKeepAliveClientMixin {
-  // Elimino variables no usadas y corrijo warnings de deprecated
+  // UI state
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
   Timer? _debounceTimer;
   int _currentStreak = 0;
   String? _imageOfDay;
   OverlayEntry? _searchOverlayEntry;
+
+  // Local search and pagination state (view-specific, not provider)
+  String _searchTerm = '';
+  List<Devocional> _searchResults = [];
+  int _pageIndex = 0;
+  final int _itemsPerPage = 20;
 
   void _showSearchBubble(BuildContext context) {
     if (_searchOverlayEntry != null) return;
@@ -108,7 +114,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
     setState(() {
       _searchController.clear();
     });
-    context.read<DevotionalDiscoveryProvider>().filterBySearch('');
+    _performLocalSearch('');
     FocusScope.of(context).unfocus();
   }
 
@@ -119,9 +125,12 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
   void initState() {
     super.initState();
     _loadImageOfDay();
-    // Initialize devotionals on first load
+    // Initialize devotionals on first load using DevocionalProvider
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<DevotionalDiscoveryProvider>().initialize();
+      final provider = context.read<DevocionalProvider>();
+      // Initialize search results with all devotionals
+      _searchResults = provider.devocionales;
+      setState(() {});
       _loadStreak();
     });
   }
@@ -175,8 +184,34 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
 
     // Create new timer for 500ms debounce
     _debounceTimer = Timer(const Duration(milliseconds: 500), () {
-      context.read<DevotionalDiscoveryProvider>().filterBySearch(value);
+      _performLocalSearch(value);
     });
+  }
+
+  /// Perform local search on devotionals (view-specific logic)
+  void _performLocalSearch(String term) {
+    final provider = context.read<DevocionalProvider>();
+    _searchTerm = term.toLowerCase();
+    _pageIndex = 0; // Reset pagination on new search
+
+    if (_searchTerm.isEmpty) {
+      _searchResults = provider.devocionales;
+    } else {
+      _searchResults = provider.devocionales.where((d) {
+        final paraMeditarText = (d.paraMeditar ?? []).join(' ').toLowerCase();
+        return d.versiculo.toLowerCase().contains(_searchTerm) ||
+            d.reflexion.toLowerCase().contains(_searchTerm) ||
+            paraMeditarText.contains(_searchTerm);
+      }).toList();
+    }
+
+    setState(() {});
+  }
+
+  /// Get current page items for pagination
+  List<Devocional> get _currentPageItems {
+    final start = _pageIndex * _itemsPerPage;
+    return _searchResults.skip(start).take(_itemsPerPage).toList();
   }
 
   @override
@@ -185,12 +220,17 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Consumer<DevotionalDiscoveryProvider>(
+    return Consumer<DevocionalProvider>(
       builder: (context, provider, child) {
+        // Update search results when provider data changes
+        if (_searchResults.isEmpty && provider.devocionales.isNotEmpty) {
+          _searchResults = provider.devocionales;
+        }
+
         int currentIndex = 0;
-        int totalDevotionals = provider.filtered.length;
+        int totalDevotionals = _searchResults.length;
         bool isFavorite = totalDevotionals > 0
-            ? provider.isFavorite(provider.filtered[currentIndex].id)
+            ? provider.isFavorite(_searchResults[currentIndex])
             : false;
 
         void goToPrevious() {
@@ -211,7 +251,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
 
         void toggleFavorite() {
           if (totalDevotionals > 0) {
-            provider.toggleFavorite(provider.filtered[currentIndex]);
+            provider.toggleFavorite(_searchResults[currentIndex], context);
           }
         }
 
@@ -304,7 +344,10 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
                         ),
                         const SizedBox(height: 16),
                         ElevatedButton(
-                          onPressed: () => provider.initialize(),
+                          onPressed: () {
+                            provider.initializeData();
+                            _performLocalSearch(''); // Refresh search results
+                          },
                           child: Text('discovery.retry'.tr()),
                         ),
                       ],
@@ -315,7 +358,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
               // Devotional list with favorites section
               if (!provider.isLoading && provider.errorMessage == null)
                 Expanded(
-                  child: provider.filtered.isEmpty
+                  child: _searchResults.isEmpty
                       ? Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -335,7 +378,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
                           ),
                         )
                       : ListView.builder(
-                          itemCount: provider.filtered.length + 1,
+                          itemCount: _searchResults.length + 1,
                           // Add 1 for favorites section
                           padding: EdgeInsets.zero,
                           itemExtent: null,
@@ -345,7 +388,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
                             // First item is favorites section
                             if (index == 0) {
                               return FavoritesHorizontalSection(
-                                favorites: provider.favorites,
+                                favorites: provider.favoriteDevocionales,
                                 onDevocionalTap: (devocional) {
                                   _showDevocionalDetail(
                                       context, devocional, provider);
@@ -355,14 +398,14 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
                             }
 
                             // Rest are devotional cards
-                            final devocional = provider.filtered[index - 1];
+                            final devocional = _searchResults[index - 1];
                             return DevotionalCardPremium(
                               devocional: devocional,
-                              isFavorite: provider.isFavorite(devocional.id),
+                              isFavorite: provider.isFavorite(devocional),
                               onTap: () => _showDevocionalDetail(
                                   context, devocional, provider),
                               onFavoriteToggle: () =>
-                                  provider.toggleFavorite(devocional),
+                                  provider.toggleFavorite(devocional, context),
                               isDark: isDark,
                             );
                           },
@@ -615,7 +658,7 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
   }
 
   void _showDevocionalDetail(BuildContext context, Devocional devocional,
-      DevotionalDiscoveryProvider provider) {
+      DevocionalProvider provider) {
     final imageRepository = DevotionalImageRepository();
     Navigator.push(
       context,
