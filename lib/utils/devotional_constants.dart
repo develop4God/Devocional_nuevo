@@ -51,6 +51,72 @@ class TagColorMapper {
     'joy': [0xFFFF9800, 0xFFFF5722],
     'alegria': [0xFFFF9800, 0xFFFF5722],
     'alegría': [0xFFFF9800, 0xFFFF5722],
+
+    // Gratitude/Gratitud - Gold to Yellow
+    'gratitude': [0xFFFFD700, 0xFFFFF176],
+    'gratitud': [0xFFFFD700, 0xFFFFF176],
+
+    // Wisdom/Sabiduría - Indigo to Blue Grey
+    'wisdom': [0xFF3F51B5, 0xFF607D8B],
+    'sabiduria': [0xFF3F51B5, 0xFF607D8B],
+    'sabiduría': [0xFF3F51B5, 0xFF607D8B],
+
+    // Forgiveness/Perdón - Light Green to Green
+    'forgiveness': [0xFF8BC34A, 0xFF388E3C],
+    'perdon': [0xFF8BC34A, 0xFF388E3C],
+    'perdón': [0xFF8BC34A, 0xFF388E3C],
+
+    // Strength/Fuerza - Red to Deep Orange
+    'strength': [0xFFD32F2F, 0xFFFF5722],
+    'fuerza': [0xFFD32F2F, 0xFFFF5722],
+
+    // Humility/Humildad - Light Brown to Brown
+    'humility': [0xFFA1887F, 0xFF795548],
+    'humildad': [0xFFA1887F, 0xFF795548],
+
+    // Blessing/Bendición - Gold to Light Blue
+    'blessing': [0xFFFFD700, 0xFF81D4FA],
+    'bendicion': [0xFFFFD700, 0xFF81D4FA],
+    'bendición': [0xFFFFD700, 0xFF81D4FA],
+
+    // Light/Luz - Yellow to White
+    'light': [0xFFFFF176, 0xFFFFFFFF],
+    'luz': [0xFFFFF176, 0xFFFFFFFF],
+
+    // Victory/Victoria - Gold to Green
+    'victory': [0xFFFFD700, 0xFF388E3C],
+    'victoria': [0xFFFFD700, 0xFF388E3C],
+
+    // Glory/Gloria - Gold to Purple
+    'glory': [0xFFFFD700, 0xFF9C27B0],
+    'gloria': [0xFFFFD700, 0xFF9C27B0],
+
+    // Trust/Confianza - Blue to Teal
+    'trust': [0xFF2196F3, 0xFF009688],
+    'confianza': [0xFF2196F3, 0xFF009688],
+
+    // Mercy/Misericordia - Pink to Light Blue
+    'mercy': [0xFFE91E63, 0xFF81D4FA],
+    'misericordia': [0xFFE91E63, 0xFF81D4FA],
+
+    // Obedience/Obediencia - Orange to Yellow
+    'obedience': [0xFFFF9800, 0xFFFFF176],
+    'obediencia': [0xFFFF9800, 0xFFFFF176],
+
+    // Patience/Paciencia - Blue Grey to Light Blue
+    'patience': [0xFF607D8B, 0xFF81D4FA],
+    'paciencia': [0xFF607D8B, 0xFF81D4FA],
+
+    // Service/Servicio - Teal to Green
+    'service': [0xFF009688, 0xFF388E3C],
+    'servicio': [0xFF009688, 0xFF388E3C],
+
+    // Family/Familia - Deep Orange to Amber
+    'family': [0xFFFF5722, 0xFFFFC107],
+    'familia': [0xFFFF5722, 0xFFFFC107],
+
+    // Peace/Paz (extra tono)
+    'shalom': [0xFF81D4FA, 0xFF2196F3],
   };
 
   /// Default gradient colors for tags not in the map
