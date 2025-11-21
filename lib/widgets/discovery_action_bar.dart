@@ -7,17 +7,21 @@ import 'package:devocional_nuevo/blocs/prayer_bloc.dart';
 import 'package:devocional_nuevo/blocs/prayer_event.dart';
 import 'package:devocional_nuevo/services/localization_service.dart';
 
-/// Bottom action bar for Discovery detail modal with Share, Add to Prayers, and Mark Complete actions
+/// Bottom action bar for Discovery detail modal with Share, Add to Prayers, TTS, and Mark Complete actions
 class DiscoveryActionBar extends StatelessWidget {
   final Devocional devocional;
   final VoidCallback? onMarkComplete;
   final bool isComplete;
+  final VoidCallback? onPlayPause;
+  final bool isPlaying;
 
   const DiscoveryActionBar({
     super.key,
     required this.devocional,
     this.onMarkComplete,
     this.isComplete = false,
+    this.onPlayPause,
+    this.isPlaying = false,
   });
 
   void _shareDevocional(BuildContext context) async {
@@ -124,6 +128,12 @@ ${LocalizationService.instance.translate('discovery.shared_from_app')}
                     LocalizationService.instance.translate('discovery.share'),
                 onPressed: () => _shareDevocional(context),
                 color: theme.colorScheme.primary,
+              ),
+              _ActionButton(
+                icon: isPlaying ? Icons.pause : Icons.play_arrow,
+                label: isPlaying ? 'Pause' : 'Play',
+                onPressed: onPlayPause ?? () {},
+                color: Colors.deepPurple,
               ),
               _ActionButton(
                 icon: Icons.favorite_border,

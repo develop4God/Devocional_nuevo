@@ -5,6 +5,7 @@ import 'package:devocional_nuevo/widgets/discovery_action_bar.dart';
 import 'package:devocional_nuevo/utils/page_transitions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:bible_reader_core/bible_reader_core.dart';
@@ -31,6 +32,8 @@ class DevocionalModernView extends StatefulWidget {
 class _DevocionalModernViewState extends State<DevocionalModernView> {
   late Future<String> _imageUrlFuture;
   bool _isComplete = false;
+  late FlutterTts _flutterTts;
+  bool _isPlaying = false;
 
   Future<String> _getImageForToday() async {
     final repo = widget.imageRepository;
@@ -65,6 +68,82 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
       _imageUrlFuture = Future.value(widget.imageUrlOfDay);
     } else {
       _imageUrlFuture = _getImageForToday();
+    }
+
+    // Initialize TTS
+    _flutterTts = FlutterTts();
+    _initializeTts();
+  }
+
+  @override
+  void dispose() {
+    _stopSpeaking();
+    _flutterTts.stop();
+    super.dispose();
+  }
+
+  Future<void> _initializeTts() async {
+    await _flutterTts.setLanguage(Localizations.localeOf(context).languageCode);
+    await _flutterTts.setSpeechRate(0.5);
+    await _flutterTts.setVolume(1.0);
+    await _flutterTts.setPitch(1.0);
+
+    _flutterTts.setCompletionHandler(() {
+      if (mounted) {
+        setState(() {
+          _isPlaying = false;
+        });
+      }
+    });
+  }
+
+  Future<void> _speakDevotional() async {
+    if (_isPlaying) {
+      await _flutterTts.pause();
+      if (mounted) {
+        setState(() {
+          _isPlaying = false;
+        });
+      }
+    } else {
+      // Build text to speak: verse + title + body
+      String textToSpeak = '';
+
+      // Add verse if available
+      if (widget.devocional.paraMeditar.isNotEmpty) {
+        final verse = widget.devocional.paraMeditar.first;
+        textToSpeak += '${verse.texto}. ${verse.cita}. ';
+      }
+
+      // Add title
+      textToSpeak += '${widget.devocional.versiculo}. ';
+
+      // Add reflection
+      if (widget.devocional.reflexion.isNotEmpty) {
+        textToSpeak += '${widget.devocional.reflexion}. ';
+      }
+
+      // Add prayer
+      if (widget.devocional.oracion.isNotEmpty) {
+        textToSpeak += widget.devocional.oracion;
+      }
+
+      if (mounted) {
+        setState(() {
+          _isPlaying = true;
+        });
+      }
+
+      await _flutterTts.speak(textToSpeak);
+    }
+  }
+
+  Future<void> _stopSpeaking() async {
+    await _flutterTts.stop();
+    if (mounted) {
+      setState(() {
+        _isPlaying = false;
+      });
     }
   }
 
@@ -257,6 +336,8 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
             _isComplete = !_isComplete;
           });
         },
+        isPlaying: _isPlaying,
+        onPlayPause: _speakDevotional,
       ),
     );
   }
