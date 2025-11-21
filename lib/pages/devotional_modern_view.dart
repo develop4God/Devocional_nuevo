@@ -2,10 +2,15 @@ import 'dart:convert';
 
 import 'package:devocional_nuevo/repositories/devotional_image_repository.dart';
 import 'package:devocional_nuevo/widgets/discovery_action_bar.dart';
+import 'package:devocional_nuevo/utils/page_transitions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:http/http.dart' as http;
+import 'package:google_fonts/google_fonts.dart';
+import 'package:bible_reader_core/bible_reader_core.dart';
 
 import '../models/devocional_model.dart';
+import 'bible_reader_page.dart';
 
 class DevocionalModernView extends StatefulWidget {
   final Devocional devocional;
@@ -186,24 +191,18 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 16),
                         ...widget.devocional.paraMeditar.map((item) => Padding(
                               padding:
-                                  const EdgeInsets.symmetric(vertical: 4.0),
+                                  const EdgeInsets.symmetric(vertical: 8.0),
                               child: Card(
                                 elevation: 2,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Text(
-                                    '${item.cita}: ${item.texto}',
-                                    style: textTheme.bodyMedium?.copyWith(
-                                      fontSize: 16,
-                                      color: colorScheme.onSurface,
-                                    ),
-                                  ),
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: _buildPremiumVerse(item, colorScheme),
                                 ),
                               ),
                             )),
@@ -270,5 +269,82 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
         },
       ),
     );
+  }
+
+  /// Builds premium verse with SelectableText.rich and Bible navigation
+  Widget _buildPremiumVerse(ParaMeditar item, ColorScheme colorScheme) {
+    return SelectableText.rich(
+      TextSpan(
+        children: [
+          // Verse text with Playfair Display
+          TextSpan(
+            text: '${item.texto}\n\n',
+            style: GoogleFonts.playfairDisplay(
+              fontSize: 32,
+              fontWeight: FontWeight.w600,
+              letterSpacing: -0.5,
+              height: 1.3,
+              color: colorScheme.onSurface,
+            ),
+          ),
+          // Bible reference (tappable)
+          TextSpan(
+            text: item.cita,
+            style: GoogleFonts.playfairDisplay(
+              fontSize: 28,
+              fontWeight: FontWeight.w400,
+              color: colorScheme.primary,
+              decoration: TextDecoration.underline,
+            ),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () => _navigateToBible(item.cita),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Navigates to Bible reader with parsed reference
+  Future<void> _navigateToBible(String reference) async {
+    final parsed = BibleReferenceParser.parse(reference);
+    if (parsed != null) {
+      try {
+        // Load Bible versions
+        final versions = await BibleVersionRegistry.getAllVersions();
+
+        if (!mounted) return;
+
+        // Navigate to BibleReaderPage
+        Navigator.push(
+          context,
+          PageTransitions.fadeSlide(
+            BibleReaderPage(
+              versions: versions,
+            ),
+          ),
+        );
+
+        // TODO: In future, BibleReaderPage should accept initialBook/chapter/verse
+        // For now, user will need to navigate manually once in the Bible reader
+      } catch (e) {
+        debugPrint('[DevotionalModernView] Error loading Bible versions: $e');
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al cargar la Biblia: $e'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    } else {
+      // Show error if reference couldn't be parsed
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No se pudo interpretar la referencia: $reference'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
   }
 }
