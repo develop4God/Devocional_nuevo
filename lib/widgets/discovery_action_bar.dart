@@ -1,11 +1,11 @@
+import 'package:devocional_nuevo/blocs/prayer_bloc.dart';
+import 'package:devocional_nuevo/blocs/prayer_event.dart';
+import 'package:devocional_nuevo/models/devocional_model.dart';
+import 'package:devocional_nuevo/services/localization_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart' show ShareParams, SharePlus;
-import 'package:devocional_nuevo/models/devocional_model.dart';
-import 'package:devocional_nuevo/blocs/prayer_bloc.dart';
-import 'package:devocional_nuevo/blocs/prayer_event.dart';
-import 'package:devocional_nuevo/services/localization_service.dart';
 
 /// Bottom action bar for Discovery detail modal with Share, Add to Prayers, TTS, and Mark Complete actions
 class DiscoveryActionBar extends StatelessWidget {
@@ -14,6 +14,8 @@ class DiscoveryActionBar extends StatelessWidget {
   final bool isComplete;
   final VoidCallback? onPlayPause;
   final bool isPlaying;
+  final VoidCallback? onNext;
+  final VoidCallback? onPrevious;
 
   const DiscoveryActionBar({
     super.key,
@@ -22,6 +24,8 @@ class DiscoveryActionBar extends StatelessWidget {
     this.isComplete = false,
     this.onPlayPause,
     this.isPlaying = false,
+    this.onNext,
+    this.onPrevious,
   });
 
   void _shareDevocional(BuildContext context) async {
@@ -122,6 +126,13 @@ ${LocalizationService.instance.translate('discovery.shared_from_app')}
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              if (onPrevious != null)
+                _ActionButton(
+                  icon: Icons.arrow_back_ios,
+                  label: 'Anterior',
+                  onPressed: onPrevious!,
+                  color: Colors.blueGrey,
+                ),
               _ActionButton(
                 icon: Icons.share,
                 label:
@@ -154,6 +165,13 @@ ${LocalizationService.instance.translate('discovery.shared_from_app')}
                 onPressed: () => _markAsComplete(context),
                 color: isComplete ? Colors.green : theme.colorScheme.secondary,
               ),
+              if (onNext != null)
+                _ActionButton(
+                  icon: Icons.arrow_forward_ios,
+                  label: 'Siguiente',
+                  onPressed: onNext!,
+                  color: Colors.blueGrey,
+                ),
             ],
           ),
         ),

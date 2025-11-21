@@ -18,9 +18,9 @@ import '../repositories/devotional_image_repository.dart';
 import '../services/spiritual_stats_service.dart';
 import '../utils/page_transitions.dart';
 import '../widgets/devotional_card_skeleton.dart';
-import 'devotional_modern_view.dart';
 import 'devotional_discovery/widgets/devotional_card_premium.dart';
 import 'devotional_discovery/widgets/favorites_horizontal_section.dart';
+import 'devotional_modern_view.dart';
 import 'favorites_page.dart';
 
 /// Devotional Discovery Page
@@ -684,7 +684,8 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
         Hero(
           tag: 'devotional_${devocional.id}',
           child: DevocionalModernView(
-            devocional: devocional,
+            devocionales: provider.devocionales,
+            initialIndex: provider.devocionales.indexOf(devocional),
             imageRepository: imageRepository,
             imageUrlOfDay: _imageOfDay,
           ),
