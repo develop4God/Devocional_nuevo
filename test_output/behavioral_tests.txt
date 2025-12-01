@@ -1,0 +1,1878 @@
+
+::group::✅ test/integration/thanksgiving_integration_test.dart: Thanksgiving Integration Tests - Real User Scenarios User creates multiple thanksgivings and they persist
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+::endgroup::
+::group::✅ test/integration/thanksgiving_integration_test.dart: Thanksgiving Integration Tests - Real User Scenarios User edits a thanksgiving after creating it
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+::endgroup::
+::group::✅ test/integration/thanksgiving_integration_test.dart: Thanksgiving Integration Tests - Real User Scenarios User deletes an old thanksgiving
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+::endgroup::
+✅ test/integration/thanksgiving_integration_test.dart: Thanksgiving Integration Tests - Real User Scenarios User tries to create empty thanksgiving and sees error
+::group::✅ test/integration/thanksgiving_integration_test.dart: Thanksgiving Integration Tests - Real User Scenarios User refreshes their thanksgiving list
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+::endgroup::
+::group::✅ test/integration/thanksgiving_integration_test.dart: Thanksgiving Integration Tests - Real User Scenarios User journey: create, view, edit, then delete
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+::endgroup::
+✅ test/integration/thanksgiving_integration_test.dart: Thanksgiving Integration Tests - Real User Scenarios Multiple users scenario - data isolation
+✅ test/integration/thanksgiving_integration_test.dart: Thanksgiving Integration Tests - Real User Scenarios Heavy usage scenario - 20 thanksgivings
+✅ test/integration/thanksgiving_integration_test.dart: Thanksgiving Integration Tests - Real User Scenarios Days old calculation changes over time
+✅ test/integration/tts_di_integration_test.dart: TTS DI Integration Tests ServiceLocator provides ITtsService instance
+✅ test/integration/tts_di_integration_test.dart: TTS DI Integration Tests ServiceLocator returns same singleton instance on multiple calls
+::group::✅ test/integration/tts_di_integration_test.dart: TTS DI Integration Tests AudioController works with injected ITtsService
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:10.044842
+AudioController: Reactive proxy disposed
+✅ TTS: Stop completed at 2025-12-01 03:46:10.049760
+🧹 TTS: Service disposed at 2025-12-01 03:46:10.050920
+::endgroup::
+::group::✅ test/integration/tts_di_integration_test.dart: TTS DI Integration Tests AudioController can play devotional through DI
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+🎵 AudioController: playDevotional(di-test-1) called
+🎵 Current state before play: currentId=null, state=TtsState.idle, isActive=false
+AudioController: Starting operation: playDevotional
+🎤 TTS: Starting devotional di-test-1 at 2025-12-01 03:46:10.058043
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+[BibleTextFormatter] formatBibleBook called with reference="Test reflection", language="es"
+📝 TTS: Speaking: Test reflection
+AudioController: Ignorando progress update - estado idle (local: TtsState.idle, service: TtsState.idle)
+AudioController: TtsService.speakDevotional() completed
+AudioController: Sync attempt 1: service=TtsState.idle, local=TtsState.idle
+AudioController: Sync attempt 2: service=TtsState.idle, local=TtsState.idle
+AudioController: Sync attempt 3: service=TtsState.idle, local=TtsState.idle
+AudioController: Sync attempt 4: service=TtsState.idle, local=TtsState.idle
+AudioController: Sync attempt 5: service=TtsState.idle, local=TtsState.idle
+AudioController: Stop requested (state: TtsState.idle)
+AudioController: Applying IMMEDIATE stop...
+AudioController: Immediate stop applied - calling service async
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:11.040143
+AudioController: Immediate stop completed
+✅ TTS: Stop completed at 2025-12-01 03:46:11.041032
+AudioController: Service stop completed asynchronously
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.stopping) at 2025-12-01 03:46:11.041848
+AudioController: Reactive proxy disposed
+✅ TTS: Stop completed at 2025-12-01 03:46:11.042675
+🧹 TTS: Service disposed at 2025-12-01 03:46:11.043310
+::endgroup::
+::group::✅ test/integration/tts_di_integration_test.dart: TTS DI Integration Tests DevocionalProvider retrieves TTS from service locator
+🏗️ Provider: Constructor iniciado
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+✅ Provider: Constructor completado
+Error loading from local storage: PathAccessException: Creation failed, path = '/mock_documents' (OS Error: Permission denied, errno = 13)
+Loading from API for language: en, version: KJV
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025_en_KJV.json
+Error en _fetchAllDevocionalesForLanguage: Exception: Failed to load from API: 400
+🧹 Provider: Disposing...
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:11.088904
+AudioController: Reactive proxy disposed
+✅ Provider: Disposed
+✅ TTS: Stop completed at 2025-12-01 03:46:11.090714
+🧹 TTS: Service disposed at 2025-12-01 03:46:11.091297
+::endgroup::
+::group::✅ test/integration/tts_di_integration_test.dart: TTS DI Integration Tests Multiple AudioControllers share same TTS singleton
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:11.094563
+AudioController: Reactive proxy disposed
+AudioController: Disposing reactive proxy...
+AudioController: Reactive proxy disposed
+AudioController: Disposing reactive proxy...
+AudioController: Reactive proxy disposed
+✅ TTS: Stop completed at 2025-12-01 03:46:11.096080
+🧹 TTS: Service disposed at 2025-12-01 03:46:11.096706
+::endgroup::
+✅ test/integration/tts_di_integration_test.dart: TTS DI Integration Tests Concurrent access to service locator returns same instance
+✅ test/integration/tts_di_integration_test.dart: TTS DI Integration Tests ServiceLocator throws clear error when service not registered
+::group::✅ test/integration/tts_di_integration_test.dart: TTS DI Integration Tests ServiceLocator can be reset and re-initialized
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:11.111871
+✅ TTS: Stop completed at 2025-12-01 03:46:11.112313
+🧹 TTS: Service disposed at 2025-12-01 03:46:11.112590
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:11.112852
+✅ TTS: Stop completed at 2025-12-01 03:46:11.113261
+🧹 TTS: Service disposed at 2025-12-01 03:46:11.113711
+::endgroup::
+::group::✅ test/integration/tts_di_integration_test.dart: TTS DI Integration Tests TTS service lifecycle works through DI
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+🔊 TTS: Speaking single text chunk at 2025-12-01 03:46:11.119339
+[BibleTextFormatter] formatBibleBook called with reference="Integration test", language="es"
+📝 TTS: Speaking: Integration test
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:11.173702
+✅ TTS: Stop completed at 2025-12-01 03:46:11.174504
+🧹 TTS: Service disposed at 2025-12-01 03:46:11.174790
+::endgroup::
+::group::✅ test/integration/tts_di_integration_test.dart: TTS DI Integration Tests Factory constructor creates functional TTS instance
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:11.179899
+✅ TTS: Stop completed at 2025-12-01 03:46:11.180229
+🧹 TTS: Service disposed at 2025-12-01 03:46:11.180462
+::endgroup::
+✅ test/integration/system_navigation_bar_integration_test.dart: System Navigation Bar Integration Tests App should have AnnotatedRegion with systemUiOverlayStyle
+✅ test/integration/system_navigation_bar_integration_test.dart: System Navigation Bar Integration Tests System UI overlay style should persist through navigation
+✅ test/integration/system_navigation_bar_integration_test.dart: System Navigation Bar Integration Tests System UI overlay style should work with theme changes
+✅ test/integration/system_navigation_bar_integration_test.dart: System Navigation Bar Integration Tests System UI overlay style values are correct for all scenarios
+✅ test/integration/system_navigation_bar_integration_test.dart: System Navigation Bar Integration Tests System UI overlay style should not interfere with app functionality
+✅ test/integration/system_navigation_bar_integration_test.dart: System Navigation Bar Color Validation Navigation bar color should be Material Grey 800
+✅ test/integration/system_navigation_bar_integration_test.dart: System Navigation Bar Color Validation Navigation bar color should provide sufficient contrast
+✅ test/integration/system_navigation_bar_integration_test.dart: System Navigation Bar Color Validation Navigation bar color should be consistent across themes
+::group::✅ test/integration/tts_di_integration_test.dart: TTS DI Integration Tests Integration: Full user flow with DI
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+🎵 AudioController: playDevotional(integration-flow) called
+🎵 Current state before play: currentId=null, state=TtsState.idle, isActive=false
+AudioController: Starting operation: playDevotional
+🎤 TTS: Starting devotional integration-flow at 2025-12-01 03:46:11.183877
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+[BibleTextFormatter] formatBibleBook called with reference="Una reflexión sobre el amor de Dios que es profunda y significativa.", language="es"
+📝 TTS: Speaking: Una reflexión sobre el amor de Dios que es profund...
+AudioController: Ignorando progress update - estado idle (local: TtsState.idle, service: TtsState.idle)
+AudioController: TtsService.speakDevotional() completed
+AudioController: Sync attempt 1: service=TtsState.idle, local=TtsState.idle
+AudioController: Sync attempt 2: service=TtsState.idle, local=TtsState.idle
+AudioController: Sync attempt 3: service=TtsState.idle, local=TtsState.idle
+AudioController: Sync attempt 4: service=TtsState.idle, local=TtsState.idle
+AudioController: Sync attempt 5: service=TtsState.idle, local=TtsState.idle
+AudioController: Cannot pause - not playing (state: TtsState.idle)
+AudioController: Cannot resume - not paused (state: TtsState.idle)
+AudioController: Stop requested (state: TtsState.idle)
+AudioController: Applying IMMEDIATE stop...
+AudioController: Immediate stop applied - calling service async
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:12.199325
+AudioController: Immediate stop completed
+✅ TTS: Stop completed at 2025-12-01 03:46:12.200141
+AudioController: Service stop completed asynchronously
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.stopping) at 2025-12-01 03:46:12.251900
+AudioController: Reactive proxy disposed
+✅ TTS: Stop completed at 2025-12-01 03:46:12.252664
+🧹 TTS: Service disposed at 2025-12-01 03:46:12.253187
+::endgroup::
+::group::✅ test/controllers/tts_audio_controller_test.dart: TtsAudioController initial state is idle
+Estado inicial: TtsPlayerState.idle
+::endgroup::
+✅ test/progress_page_overflow_test.dart: Progress Page Responsive Layout Tests - Real User Behavior Responsive layout adapts to small screen (320x568)
+✅ test/progress_page_overflow_test.dart: Progress Page Responsive Layout Tests - Real User Behavior Responsive layout adapts to medium screen (375x667)
+✅ test/progress_page_overflow_test.dart: Progress Page Responsive Layout Tests - Real User Behavior Responsive layout adapts to large screen (414x896)
+✅ test/progress_page_overflow_test.dart: Progress Page Responsive Layout Tests - Real User Behavior Layout scrolls when content exceeds screen height
+::group::✅ test/controllers/tts_audio_controller_test.dart: TtsAudioController play sets state to loading then playing when text is set
+Antes de play: TtsPlayerState.idle
+[TTS Controller] play() llamado, estado previo: [33mTtsPlayerState.idle[0m
+[TTS Controller] Aplicando velocidad TTS: 0.5
+[TTS Controller] estado actual: [32mTtsPlayerState.playing[0m
+Después de play: TtsPlayerState.playing
+::endgroup::
+::group::✅ test/controllers/tts_audio_controller_test.dart: TtsAudioController play sets state to error when no text is set
+Antes de play sin texto: TtsPlayerState.idle
+[TTS Controller] play() llamado, estado previo: [33mTtsPlayerState.idle[0m
+Después de play sin texto: TtsPlayerState.error
+::endgroup::
+::group::✅ test/controllers/tts_audio_controller_test.dart: TtsAudioController pause sets state to paused
+[TTS Controller] play() llamado, estado previo: [33mTtsPlayerState.idle[0m
+[TTS Controller] Aplicando velocidad TTS: 0.5
+[TTS Controller] estado actual: [32mTtsPlayerState.playing[0m
+Antes de pause: TtsPlayerState.playing
+[TTS Controller] pause() llamado, estado previo: [33mTtsPlayerState.playing[0m
+[TTS Controller] estado actual: [32mTtsPlayerState.paused[0m
+Después de pause: TtsPlayerState.paused
+::endgroup::
+::group::✅ test/controllers/tts_audio_controller_test.dart: TtsAudioController stop sets state to idle
+[TTS Controller] play() llamado, estado previo: [33mTtsPlayerState.idle[0m
+[TTS Controller] Aplicando velocidad TTS: 0.5
+[TTS Controller] estado actual: [32mTtsPlayerState.playing[0m
+Antes de stop: TtsPlayerState.playing
+[TTS Controller] stop() llamado, estado previo: [33mTtsPlayerState.playing[0m
+[TTS Controller] estado actual: [32mTtsPlayerState.idle[0m
+Después de stop: TtsPlayerState.idle
+::endgroup::
+::group::✅ test/services/tts_service_test.dart: speakDevotional llama a speak en FlutterTts con el texto normalizado
+🎤 TTS: Starting devotional test at 2025-12-01 03:46:15.224625
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+[BibleTextFormatter] formatBibleBook called with reference="Texto de prueba", language="es"
+📝 TTS: Speaking: Texto de prueba
+::endgroup::
+::group::✅ test/services/tts_service_test.dart: speakDevotional speaks the devotional reflection text
+🎤 TTS: Starting devotional test at 2025-12-01 03:46:15.251779
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+[BibleTextFormatter] formatBibleBook called with reference="Texto de prueba", language="es"
+📝 TTS: Speaking: Texto de prueba
+::endgroup::
+::group::✅ test/services/tts_service_test.dart: speakDevotional lanza error si el texto está vacío
+🎤 TTS: Starting devotional test at 2025-12-01 03:46:15.257234
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+[BibleTextFormatter] formatBibleBook called with reference="", language="es"
+❌ TTS: speakDevotional failed: TtsException: No valid text content to speak at 2025-12-01 03:46:15.261951
+::endgroup::
+::group::✅ test/services/tts_service_test.dart: setLanguage y setSpeechRate no lanzan error y configuran correctamente
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+::endgroup::
+::group::✅ test/controllers/tts_audio_controller_test.dart: TtsAudioController complete sets state to completed
+[TTS Controller] play() llamado, estado previo: [33mTtsPlayerState.idle[0m
+[TTS Controller] Aplicando velocidad TTS: 0.5
+[TTS Controller] estado actual: [32mTtsPlayerState.playing[0m
+Antes de complete: TtsPlayerState.playing
+[TTS Controller] complete() llamado, estado previo: [33mTtsPlayerState.playing[0m
+[TTS Controller] estado actual: [32mTtsPlayerState.completed[0m
+Después de complete: TtsPlayerState.completed
+::endgroup::
+::group::✅ test/controllers/tts_audio_controller_test.dart: TtsAudioController error sets state to error
+[TTS Controller] play() llamado, estado previo: [33mTtsPlayerState.idle[0m
+[TTS Controller] Aplicando velocidad TTS: 0.5
+[TTS Controller] estado actual: [32mTtsPlayerState.playing[0m
+Antes de error: TtsPlayerState.playing
+[TTS Controller] error() llamado, estado previo: [33mTtsPlayerState.playing[0m
+[TTS Controller] estado actual: [31mTtsPlayerState.error[0m
+Después de error: TtsPlayerState.error
+::endgroup::
+::group::✅ test/devocional_reading_logic_test.dart: Devotional Reading Logic Tests DevocionalProvider recordDevocionalRead works correctly
+Devotional read attempt: test_devotional_123
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Achievement unlocked: achievements.first_read_title
+Error creating auto-backup: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: test_devotional_123, total: 1
+::endgroup::
+::group::✅ test/devocional_reading_logic_test.dart: Devotional Reading Logic Tests Empty devotional ID is handled gracefully
+Empty devotional ID provided, not recording
+::endgroup::
+::group::✅ test/devocional_reading_logic_test.dart: Devotional Reading Logic Tests Real usage pattern: unique consecutive tracking
+Devotional read attempt: devotional_2025_01_01
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Achievement unlocked: achievements.first_read_title
+Error creating auto-backup: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: devotional_2025_01_01, total: 1
+Devotional read attempt: devotional_2025_01_02
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Recorded devotional for statistics: devotional_2025_01_02, total: 2
+Devotional read attempt: devotional_2025_01_03
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Recorded devotional for statistics: devotional_2025_01_03, total: 3
+::endgroup::
+::group::✅ test/devocional_reading_logic_test.dart: Devotional Reading Logic Tests Rapid tapping prevention works
+Devotional read attempt: rapid_tap_test
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Achievement unlocked: achievements.first_read_title
+Error creating auto-backup: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: rapid_tap_test, total: 1
+Devotional read attempt: rapid_tap_test
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Devotional rapid_tap_test already counted in statistics
+Devotional read attempt: rapid_tap_test
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Devotional rapid_tap_test already counted in statistics
+Devotional read attempt: rapid_tap_test
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Devotional rapid_tap_test already counted in statistics
+::endgroup::
+::group::✅ test/devocional_reading_logic_test.dart: Devotional Reading Logic Tests Legitimate re-reading after time delay is not prevented
+Devotional read attempt: time_test
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Achievement unlocked: achievements.first_read_title
+Error creating auto-backup: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: time_test, total: 1
+::endgroup::
+::group::✅ test/devocional_reading_logic_test.dart: Devotional Reading Logic Tests Favorites count integration with devotional reading
+Devotional read attempt: favorites_integration_test
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Achievement unlocked: achievements.first_read_title
+Achievement unlocked: achievements.first_favorite_title
+Error creating auto-backup: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: favorites_integration_test, total: 1
+::endgroup::
+::group::✅ test/devocional_reading_logic_test.dart: Devotional Reading Logic Tests Achievement unlocking during devotional reading
+Devotional read attempt: achievement_test_1
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Achievement unlocked: achievements.first_read_title
+Error creating auto-backup: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: achievement_test_1, total: 1
+::endgroup::
+::group::✅ test/devocional_reading_logic_test.dart: Devotional Reading Logic Tests Streak calculation across multiple days simulation
+Devotional read attempt: day_1_devotional
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Achievement unlocked: achievements.first_read_title
+Error creating auto-backup: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: day_1_devotional, total: 1
+Devotional read attempt: day_1_devotional_2
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Recorded devotional for statistics: day_1_devotional_2, total: 2
+::endgroup::
+::group::✅ test/devocional_reading_logic_test.dart: Devotional Reading Logic Tests Service handles malformed data gracefully
+Empty devotional ID provided, not recording
+::endgroup::
+::group::✅ test/devocional_reading_logic_test.dart: Devotional Reading Logic Tests Multiple achievements unlock correctly
+Devotional read attempt: devotional_1
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Achievement unlocked: achievements.first_read_title
+Error creating auto-backup: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: devotional_1, total: 1
+Devotional read attempt: devotional_2
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Recorded devotional for statistics: devotional_2, total: 2
+Devotional read attempt: devotional_3
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Recorded devotional for statistics: devotional_3, total: 3
+Devotional read attempt: devotional_4
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Recorded devotional for statistics: devotional_4, total: 4
+Devotional read attempt: devotional_5
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Recorded devotional for statistics: devotional_5, total: 5
+Devotional read attempt: devotional_6
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Recorded devotional for statistics: devotional_6, total: 6
+Devotional read attempt: devotional_7
+Reading time: 60s, Scroll: 80.0%
+Meets criteria: true
+Achievement unlocked: achievements.week_reader_title
+Recorded devotional for statistics: devotional_7, total: 7
+::endgroup::
+✅ test/critical_coverage/notification_service_working_test.dart: NotificationService Critical Business Logic Tests should validate notification time format correctly
+✅ test/critical_coverage/notification_service_working_test.dart: NotificationService Critical Business Logic Tests should validate time range business logic
+✅ test/critical_coverage/notification_service_working_test.dart: NotificationService Critical Business Logic Tests should handle timezone validation correctly
+✅ test/critical_coverage/notification_service_working_test.dart: NotificationService Critical Business Logic Tests should validate background handler function exists
+✅ test/critical_coverage/notification_service_working_test.dart: NotificationService Critical Business Logic Tests should handle notification callback execution correctly
+✅ test/critical_coverage/notification_service_working_test.dart: NotificationService Critical Business Logic Tests should validate notification payload structure
+✅ test/critical_coverage/notification_service_working_test.dart: NotificationService Critical Business Logic Tests should validate FCM message data structures
+✅ test/critical_coverage/notification_service_working_test.dart: NotificationService Critical Business Logic Tests should validate permission states correctly
+✅ test/critical_coverage/notification_service_working_test.dart: NotificationService Critical Business Logic Tests should validate notification scheduling parameters
+✅ test/critical_coverage/notification_service_working_test.dart: NotificationService Critical Business Logic Tests should validate daily notification frequency logic
+✅ test/critical_coverage/notification_service_working_test.dart: NotificationService Critical Business Logic Tests should handle notification cancellation logic
+✅ test/critical_coverage/devocional_model_working_test.dart: DevocionalModel Critical Coverage Tests should serialize/deserialize JSON correctly
+✅ test/critical_coverage/devocional_model_working_test.dart: DevocionalModel Critical Coverage Tests should validate required fields properly
+✅ test/critical_coverage/devocional_model_working_test.dart: DevocionalModel Critical Coverage Tests should handle ParaMeditar component data
+✅ test/critical_coverage/devocional_model_working_test.dart: DevocionalModel Critical Coverage Tests should manage model equality and hashCode
+✅ test/critical_coverage/devocional_model_working_test.dart: DevocionalModel Critical Coverage Tests should handle optional fields correctly
+✅ test/critical_coverage/devocional_model_working_test.dart: DevocionalModel Critical Coverage Tests should handle malformed JSON gracefully
+✅ test/critical_coverage/prayer_bloc_working_test.dart: PrayerBloc Critical Coverage Tests should have correct initial state
+✅ test/critical_coverage/prayer_bloc_working_test.dart: PrayerBloc Critical Coverage Tests should emit loading then loaded when loading prayers from empty storage
+✅ test/critical_coverage/prayer_bloc_working_test.dart: PrayerBloc Critical Coverage Tests should handle prayer filtering correctly in state
+✅ test/critical_coverage/prayer_bloc_working_test.dart: PrayerBloc Critical Coverage Tests should validate prayer model creation
+✅ test/critical_coverage/prayer_bloc_working_test.dart: PrayerBloc Critical Coverage Tests should handle prayer status correctly
+✅ test/critical_coverage/prayer_bloc_working_test.dart: PrayerBloc Critical Coverage Tests should handle prayer copyWith functionality
+✅ test/critical_coverage/prayer_bloc_working_test.dart: PrayerBloc Critical Coverage Tests should handle prayer serialization
+✅ test/critical_coverage/prayer_bloc_working_test.dart: PrayerBloc Critical Coverage Tests should handle empty prayer list state correctly
+✅ test/critical_coverage/prayer_bloc_working_test.dart: PrayerBloc Critical Coverage Tests should handle prayer state counting correctly
+::group::✅ test/critical_coverage/devocional_provider_working_test.dart: DevocionalProvider Robust Tests initial state validation
+🏗️ Provider: Constructor iniciado
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+✅ Provider: Constructor completado
+Error loading from local storage: PathAccessException: Creation failed, path = '/mock_documents' (OS Error: Permission denied, errno = 13)
+Loading from API for language: en, version: KJV
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025_en_KJV.json
+Error en _fetchAllDevocionalesForLanguage: Exception: Failed to load from API: 400
+🧹 Provider: Disposing...
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:20.631989
+AudioController: Reactive proxy disposed
+✅ Provider: Disposed
+✅ TTS: Stop completed at 2025-12-01 03:46:20.636511
+🧹 TTS: Service disposed at 2025-12-01 03:46:20.637306
+::endgroup::
+::group::✅ test/critical_coverage/devocional_provider_working_test.dart: DevocionalProvider Robust Tests supported languages and fallback behavior
+🏗️ Provider: Constructor iniciado
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+✅ Provider: Constructor completado
+Error loading from local storage: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Loading from API for language: en, version: KJV
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025_en_KJV.json
+Error en _fetchAllDevocionalesForLanguage: Exception: Failed to load from API: 400
+[PROVIDER] setLanguageContext: idioma=es, version=RVR1960
+🌐 TTS: Language context set to es (RVR1960)
+⚠️ TTS: Cannot update language - service not initialized
+Language unsupported not available, using es
+Error loading from local storage: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Loading from API for language: es, version: RVR1960
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025.json
+Error en _fetchAllDevocionalesForLanguage: Exception: Failed to load from API: 400
+[PROVIDER] setLanguageContext: idioma=en, version=KJV
+🌐 TTS: Language context set to en (KJV)
+⚠️ TTS: Cannot update language - service not initialized
+Error loading from local storage: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Loading from API for language: en, version: KJV
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025_en_KJV.json
+Error en _fetchAllDevocionalesForLanguage: Exception: Failed to load from API: 400
+🧹 Provider: Disposing...
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:21.047533
+AudioController: Reactive proxy disposed
+✅ Provider: Disposed
+::endgroup::
+⚠️ TTS: Stop error (continuing with reset): MissingPluginException(No implementation found for method stop on channel flutter_tts)
+✅ TTS: Stop completed at 2025-12-01 03:46:21.049873
+🧹 TTS: Service disposed at 2025-12-01 03:46:21.050220
+::group::✅ test/critical_coverage/devocional_provider_working_test.dart: DevocionalProvider Robust Tests changing language updates data and version defaults
+🏗️ Provider: Constructor iniciado
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+✅ Provider: Constructor completado
+Error loading from local storage: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Loading from API for language: en, version: KJV
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025_en_KJV.json
+Error en _fetchAllDevocionalesForLanguage: Exception: Failed to load from API: 400
+🧹 Provider: Disposing...
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:21.059812
+AudioController: Reactive proxy disposed
+✅ Provider: Disposed
+::endgroup::
+⚠️ TTS: Stop error (continuing with reset): MissingPluginException(No implementation found for method stop on channel flutter_tts)
+✅ TTS: Stop completed at 2025-12-01 03:46:21.061926
+🧹 TTS: Service disposed at 2025-12-01 03:46:21.062277
+::group::✅ test/critical_coverage/devocional_provider_working_test.dart: DevocionalProvider Robust Tests changing version updates data
+🏗️ Provider: Constructor iniciado
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+✅ Provider: Constructor completado
+Error loading from local storage: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Loading from API for language: en, version: KJV
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025_en_KJV.json
+Error en _fetchAllDevocionalesForLanguage: Exception: Failed to load from API: 400
+🌐 TTS: Language context set to en (NVI)
+⚠️ TTS: Cannot update language - service not initialized
+Error loading from local storage: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Loading from API for language: en, version: NVI
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025_en_NVI.json
+Error en _fetchAllDevocionalesForLanguage: Exception: Failed to load from API: 400
+🧹 Provider: Disposing...
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:21.169563
+AudioController: Reactive proxy disposed
+✅ Provider: Disposed
+::endgroup::
+⚠️ TTS: Stop error (continuing with reset): MissingPluginException(No implementation found for method stop on channel flutter_tts)
+✅ TTS: Stop completed at 2025-12-01 03:46:21.171760
+🧹 TTS: Service disposed at 2025-12-01 03:46:21.172077
+✅ test/critical_coverage/spiritual_stats_service_working_test.dart: SpiritualStatsService Working Tests should create service instance correctly
+✅ test/critical_coverage/spiritual_stats_service_working_test.dart: SpiritualStatsService Working Tests should initialize stats with default values
+::group::✅ test/critical_coverage/spiritual_stats_service_working_test.dart: SpiritualStatsService Working Tests should record devotional read with proper API
+Devotional read attempt: test_devotional_001
+Reading time: 60s, Scroll: 8000.0%
+Meets criteria: true
+Achievement unlocked: achievements.first_read_title
+Error creating auto-backup: PathNotFoundException: Cannot open file, path = '/mock_documents/spiritual_stats_auto_1764560781313.json' (OS Error: No such file or directory, errno = 2)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: test_devotional_001, total: 1
+::endgroup::
+::group::✅ test/critical_coverage/spiritual_stats_service_working_test.dart: SpiritualStatsService Working Tests should handle duplicate devotional reads correctly
+Devotional read attempt: duplicate_test
+Reading time: 60s, Scroll: 8000.0%
+Meets criteria: true
+Achievement unlocked: achievements.first_read_title
+Error creating auto-backup: PathNotFoundException: Cannot open file, path = '/mock_documents/spiritual_stats_auto_1764560781337.json' (OS Error: No such file or directory, errno = 2)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: duplicate_test, total: 1
+Devotional read attempt: duplicate_test
+Reading time: 60s, Scroll: 8000.0%
+Meets criteria: true
+Devotional duplicate_test already counted in statistics
+::endgroup::
+::group::✅ test/critical_coverage/spiritual_stats_service_working_test.dart: SpiritualStatsService Working Tests should validate reading criteria - minimum 30s and 70% scroll
+Devotional read attempt: criteria_test_short_time
+Reading time: 25s, Scroll: 8000.0%
+Meets criteria: false
+Devotional read but not counting for statistics (criteria not met)
+Devotional read attempt: criteria_test_low_scroll
+Reading time: 60s, Scroll: 6500.0%
+Meets criteria: true
+Achievement unlocked: achievements.first_read_title
+Error creating auto-backup: PathNotFoundException: Cannot open file, path = '/mock_documents/spiritual_stats_auto_1764560781349.json' (OS Error: No such file or directory, errno = 2)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: criteria_test_low_scroll, total: 1
+Devotional read attempt: criteria_test_valid
+Reading time: 60s, Scroll: 8000.0%
+Meets criteria: true
+Recorded devotional for statistics: criteria_test_valid, total: 2
+::endgroup::
+::group::✅ test/critical_coverage/spiritual_stats_service_working_test.dart: SpiritualStatsService Working Tests should handle edge cases for reading thresholds
+Devotional read attempt: edge_cases_exact_30s
+Reading time: 30s, Scroll: 7000.0%
+Meets criteria: false
+Devotional read but not counting for statistics (criteria not met)
+Devotional read attempt: edge_cases_just_above
+Reading time: 31s, Scroll: 7010.0%
+Meets criteria: false
+Devotional read but not counting for statistics (criteria not met)
+Devotional read attempt: edge_cases_just_below
+Reading time: 29s, Scroll: 6990.0%
+Meets criteria: false
+Devotional read but not counting for statistics (criteria not met)
+::endgroup::
+::group::✅ test/critical_coverage/spiritual_stats_service_working_test.dart: SpiritualStatsService Working Tests should handle consecutive daily readings for streak calculation
+Devotional read attempt: streak_day_1
+Reading time: 60s, Scroll: 8000.0%
+Meets criteria: true
+Achievement unlocked: achievements.first_read_title
+Error creating auto-backup: PathNotFoundException: Cannot open file, path = '/mock_documents/spiritual_stats_auto_1764560781365.json' (OS Error: No such file or directory, errno = 2)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: streak_day_1, total: 1
+Devotional read attempt: streak_day_2
+Reading time: 60s, Scroll: 8000.0%
+Meets criteria: true
+Recorded devotional for statistics: streak_day_2, total: 2
+::endgroup::
+::group::✅ test/critical_coverage/spiritual_stats_service_working_test.dart: SpiritualStatsService Working Tests should handle concurrent reading operations correctly
+Devotional read attempt: concurrent_test_1
+Reading time: 60s, Scroll: 8000.0%
+Meets criteria: true
+Devotional read attempt: concurrent_test_2
+Reading time: 60s, Scroll: 8000.0%
+Meets criteria: true
+Devotional read attempt: concurrent_test_3
+Reading time: 60s, Scroll: 8000.0%
+Meets criteria: true
+Devotional read attempt: concurrent_test_4
+Reading time: 60s, Scroll: 8000.0%
+Meets criteria: true
+Devotional read attempt: concurrent_test_0
+Reading time: 60s, Scroll: 8000.0%
+Meets criteria: true
+Achievement unlocked: achievements.first_read_title
+Achievement unlocked: achievements.first_read_title
+Achievement unlocked: achievements.first_read_title
+Achievement unlocked: achievements.first_read_title
+Achievement unlocked: achievements.first_read_title
+Error creating auto-backup: PathNotFoundException: Cannot open file, path = '/mock_documents/spiritual_stats_auto_1764560781378.json' (OS Error: No such file or directory, errno = 2)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: concurrent_test_1, total: 1
+Error creating auto-backup: PathNotFoundException: Cannot open file, path = '/mock_documents/spiritual_stats_auto_1764560781378.json' (OS Error: No such file or directory, errno = 2)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: concurrent_test_2, total: 1
+Error creating auto-backup: PathNotFoundException: Cannot open file, path = '/mock_documents/spiritual_stats_auto_1764560781379.json' (OS Error: No such file or directory, errno = 2)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: concurrent_test_3, total: 1
+Error creating auto-backup: PathNotFoundException: Cannot open file, path = '/mock_documents/spiritual_stats_auto_1764560781379.json' (OS Error: No such file or directory, errno = 2)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: concurrent_test_4, total: 1
+Error creating auto-backup: PathNotFoundException: Cannot open file, path = '/mock_documents/spiritual_stats_auto_1764560781379.json' (OS Error: No such file or directory, errno = 2)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: concurrent_test_0, total: 1
+::endgroup::
+::group::✅ test/critical_coverage/spiritual_stats_service_working_test.dart: SpiritualStatsService Working Tests should handle backup information retrieval
+Error getting backup info: PathNotFoundException: Directory listing failed, path = '/mock_documents/' (OS Error: No such file or directory, errno = 2)
+::endgroup::
+✅ test/critical_coverage/spiritual_stats_service_working_test.dart: SpiritualStatsService Working Tests should validate reading threshold business rules
+::group::✅ test/critical_coverage/spiritual_stats_service_working_test.dart: SpiritualStatsService Working Tests should handle favorites count tracking
+Devotional read attempt: favorites_test
+Reading time: 60s, Scroll: 8000.0%
+Meets criteria: true
+Achievement unlocked: achievements.first_read_title
+Achievement unlocked: achievements.first_favorite_title
+Error creating auto-backup: PathNotFoundException: Cannot open file, path = '/mock_documents/spiritual_stats_auto_1764560781406.json' (OS Error: No such file or directory, errno = 2)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: favorites_test, total: 1
+::endgroup::
+::group::✅ test/critical_coverage/spiritual_stats_service_working_test.dart: SpiritualStatsService Working Tests should handle auto backup settings
+Error creating auto-backup: PathNotFoundException: Cannot open file, path = '/mock_documents/spiritual_stats_auto_1764560781411.json' (OS Error: No such file or directory, errno = 2)
+Auto-backup enabled
+Auto-backup disabled
+::endgroup::
+::group::✅ test/critical_coverage/spiritual_stats_service_working_test.dart: SpiritualStatsService Working Tests should handle JSON backup settings
+Error creating manual JSON backup: PathNotFoundException: Cannot open file, path = '/mock_documents/spiritual_stats_backup.json' (OS Error: No such file or directory, errno = 2)
+::endgroup::
+::group::✅ test/critical_coverage/spiritual_stats_service_working_test.dart: SpiritualStatsService Working Tests should record daily app visits correctly
+Error creating auto-backup: PathNotFoundException: Cannot open file, path = '/mock_documents/spiritual_stats_auto_1764560781437.json' (OS Error: No such file or directory, errno = 2)
+Auto-backup created (490155.8 hours since last)
+Nueva visita diaria registrada. Racha: 1
+::endgroup::
+::group::✅ test/critical_coverage/spiritual_stats_service_working_test.dart: SpiritualStatsService Working Tests should save and load stats properly
+Error creating auto-backup: PathNotFoundException: Cannot open file, path = '/mock_documents/spiritual_stats_auto_1764560781446.json' (OS Error: No such file or directory, errno = 2)
+Auto-backup created (490155.8 hours since last)
+::endgroup::
+::group::✅ test/critical_coverage/spiritual_stats_service_working_test.dart: SpiritualStatsService Working Tests should persist data across service instances
+Devotional read attempt: persistence_test
+Reading time: 60s, Scroll: 8000.0%
+Meets criteria: true
+Achievement unlocked: achievements.first_read_title
+Error creating auto-backup: PathNotFoundException: Cannot open file, path = '/mock_documents/spiritual_stats_auto_1764560781451.json' (OS Error: No such file or directory, errno = 2)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: persistence_test, total: 1
+::endgroup::
+::group::✅ test/critical_coverage/spiritual_stats_service_working_test.dart: SpiritualStatsService Working Tests should handle reading time and scroll tracking
+Devotional read attempt: tracking_test
+Reading time: 120s, Scroll: 9550.0%
+Meets criteria: true
+Achievement unlocked: achievements.first_read_title
+Error creating auto-backup: PathNotFoundException: Cannot open file, path = '/mock_documents/spiritual_stats_auto_1764560781456.json' (OS Error: No such file or directory, errno = 2)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: tracking_test, total: 1
+::endgroup::
+::group::✅ test/critical_coverage/spiritual_stats_service_working_test.dart: SpiritualStatsService Working Tests should handle multiple devotional readings
+Devotional read attempt: multi_test_0
+Reading time: 60s, Scroll: 8000.0%
+Meets criteria: true
+Achievement unlocked: achievements.first_read_title
+Error creating auto-backup: PathNotFoundException: Cannot open file, path = '/mock_documents/spiritual_stats_auto_1764560781462.json' (OS Error: No such file or directory, errno = 2)
+Auto-backup created (490155.8 hours since last)
+Recorded devotional for statistics: multi_test_0, total: 1
+Devotional read attempt: multi_test_1
+Reading time: 70s, Scroll: 8100.0%
+Meets criteria: true
+Recorded devotional for statistics: multi_test_1, total: 2
+Devotional read attempt: multi_test_2
+Reading time: 80s, Scroll: 8200.0%
+Meets criteria: true
+Recorded devotional for statistics: multi_test_2, total: 3
+Devotional read attempt: multi_test_3
+Reading time: 90s, Scroll: 8300.0%
+Meets criteria: true
+Recorded devotional for statistics: multi_test_3, total: 4
+Devotional read attempt: multi_test_4
+Reading time: 100s, Scroll: 8400.0%
+Meets criteria: true
+Recorded devotional for statistics: multi_test_4, total: 5
+::endgroup::
+::group::✅ test/critical_coverage/devocional_provider_working_test.dart: DevocionalProvider Robust Tests favorite management works correctly
+🏗️ Provider: Constructor iniciado
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+✅ Provider: Constructor completado
+Error loading from local storage: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Loading from API for language: en, version: KJV
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025_en_KJV.json
+Error en _fetchAllDevocionalesForLanguage: Exception: Failed to load from API: 400
+Achievement unlocked: achievements.first_favorite_title
+🧹 Provider: Disposing...
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:21.887504
+AudioController: Reactive proxy disposed
+✅ Provider: Disposed
+::endgroup::
+⚠️ TTS: Stop error (continuing with reset): MissingPluginException(No implementation found for method stop on channel flutter_tts)
+✅ TTS: Stop completed at 2025-12-01 03:46:21.900119
+🧹 TTS: Service disposed at 2025-12-01 03:46:21.900482
+::group::✅ test/critical_coverage/devocional_provider_working_test.dart: DevocionalProvider Robust Tests audio methods delegate without error
+🏗️ Provider: Constructor iniciado
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+✅ Provider: Constructor completado
+Error loading from local storage: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Loading from API for language: en, version: KJV
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025_en_KJV.json
+Error en _fetchAllDevocionalesForLanguage: Exception: Failed to load from API: 400
+🎵 Provider: playDevotional llamado para audio_test
+🌐 TTS: Language context set to en (KJV)
+⚠️ TTS: Cannot update language - service not initialized
+🎵 AudioController: playDevotional(audio_test) called
+🎵 Current state before play: currentId=null, state=TtsState.idle, isActive=false
+AudioController: Starting operation: playDevotional
+🎤 TTS: Starting devotional audio_test at 2025-12-01 03:46:21.905930
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: en-US, Rate: 0.5
+❌ TTS: Initialization failed: MissingPluginException(No implementation found for method setLanguage on channel flutter_tts)
+❌ TTS: speakDevotional failed: MissingPluginException(No implementation found for method setLanguage on channel flutter_tts) at 2025-12-01 03:46:21.908822
+AudioController: Error playing devotional: MissingPluginException(No implementation found for method setLanguage on channel flutter_tts)
+AudioController: Resetting operationInProgress
+AudioController: Cannot pause - not playing (state: TtsState.idle)
+AudioController: Cannot resume - not paused (state: TtsState.idle)
+AudioController: Stop requested (state: TtsState.idle)
+AudioController: Applying IMMEDIATE stop...
+AudioController: Immediate stop applied - calling service async
+⏹️ TTS: Stop requested (current state: TtsState.error) at 2025-12-01 03:46:21.913994
+AudioController: Immediate stop completed
+AudioController: Toggle for audio_test (current: null, state: TtsState.idle)
+AudioController: Different devotional or idle state - starting new
+🎵 AudioController: playDevotional(audio_test) called
+🎵 Current state before play: currentId=null, state=TtsState.idle, isActive=false
+AudioController: Starting operation: playDevotional
+🎤 TTS: Starting devotional audio_test at 2025-12-01 03:46:21.916314
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: en-US, Rate: 0.5
+⚠️ TTS: Stop error (continuing with reset): MissingPluginException(No implementation found for method stop on channel flutter_tts)
+✅ TTS: Stop completed at 2025-12-01 03:46:21.917706
+AudioController: Service stop completed asynchronously
+❌ TTS: Initialization failed: MissingPluginException(No implementation found for method setLanguage on channel flutter_tts)
+❌ TTS: speakDevotional failed: MissingPluginException(No implementation found for method setLanguage on channel flutter_tts) at 2025-12-01 03:46:21.918404
+AudioController: Error playing devotional: MissingPluginException(No implementation found for method setLanguage on channel flutter_tts)
+AudioController: Resetting operationInProgress
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: en-US, Rate: 0.5
+❌ TTS: Initialization failed: MissingPluginException(No implementation found for method setLanguage on channel flutter_tts)
+AudioController: Error getting languages: MissingPluginException(No implementation found for method setLanguage on channel flutter_tts)
+❌ VoiceSettings: Failed to get available voices: MissingPluginException(No implementation found for method getVoices on channel flutter_tts)
+❌ VoiceSettings: Failed to get voices for es: MissingPluginException(No implementation found for method getVoices on channel flutter_tts)
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: en-US, Rate: 0.5
+❌ TTS: Initialization failed: MissingPluginException(No implementation found for method setLanguage on channel flutter_tts)
+AudioController: Error setting language: MissingPluginException(No implementation found for method setLanguage on channel flutter_tts)
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: en-US, Rate: 0.5
+❌ TTS: Initialization failed: MissingPluginException(No implementation found for method setLanguage on channel flutter_tts)
+AudioController: Error setting voice: MissingPluginException(No implementation found for method setLanguage on channel flutter_tts)
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: en-US, Rate: 0.5
+❌ TTS: Initialization failed: MissingPluginException(No implementation found for method setLanguage on channel flutter_tts)
+AudioController: Error setting speech rate: MissingPluginException(No implementation found for method setLanguage on channel flutter_tts)
+🧹 Provider: Disposing...
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.error) at 2025-12-01 03:46:21.930863
+AudioController: Reactive proxy disposed
+✅ Provider: Disposed
+::endgroup::
+⚠️ TTS: Stop error (continuing with reset): MissingPluginException(No implementation found for method stop on channel flutter_tts)
+✅ TTS: Stop completed at 2025-12-01 03:46:21.932794
+🧹 TTS: Service disposed at 2025-12-01 03:46:21.933034
+::group::✅ test/critical_coverage/devocional_provider_working_test.dart: DevocionalProvider Robust Tests reading tracking and recording works correctly
+🏗️ Provider: Constructor iniciado
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+✅ Provider: Constructor completado
+Error loading from local storage: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Loading from API for language: en, version: KJV
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025_en_KJV.json
+Error en _fetchAllDevocionalesForLanguage: Exception: Failed to load from API: 400
+[TRACKER] pause() - acumulado: 0 segundos, session: 0, startTime: 2025-12-01 03:46:21.940443, pausedTime: 2025-12-01 03:46:21.941264
+[TRACKER] resume() - acumulado antes de reanudar: 0 segundos, pausedTime: 2025-12-01 03:46:21.941264
+Devotional read attempt: track_id
+Reading time: 0s, Scroll: 0.0%
+Meets criteria: false
+Devotional read but not counting for statistics (criteria not met)
+Error creating auto-backup: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Auto-backup created (490155.8 hours since last)
+✅ Recorded devotional read: track_id
+🧹 Provider: Disposing...
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:21.947652
+AudioController: Reactive proxy disposed
+✅ Provider: Disposed
+::endgroup::
+⚠️ TTS: Stop error (continuing with reset): MissingPluginException(No implementation found for method stop on channel flutter_tts)
+✅ TTS: Stop completed at 2025-12-01 03:46:21.949436
+🧹 TTS: Service disposed at 2025-12-01 03:46:21.949679
+::group::✅ test/critical_coverage/devocional_provider_working_test.dart: DevocionalProvider Robust Tests offline download and storage lifecycle
+🏗️ Provider: Constructor iniciado
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+✅ Provider: Constructor completado
+Error loading from local storage: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Loading from API for language: en, version: KJV
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025_en_KJV.json
+Error en _fetchAllDevocionalesForLanguage: Exception: Failed to load from API: 400
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025_en_KJV.json
+🔍 Language: en, Version: KJV
+❌ HTTP Error 400: 
+❌ Error in downloadAndStoreDevocionales: Exception: HTTP Error 400: 
+🔄 Trying version fallback for en KJV
+🔄 Available versions for en: [KJV, NIV]
+🔄 Versions to try in order: [NIV]
+🔄 Trying fallback version: NIV
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025_en_NIV.json
+🔍 Language: en, Version: NIV
+❌ HTTP Error 400: 
+❌ Error in downloadAndStoreDevocionales: Exception: HTTP Error 400: 
+❌ All version fallbacks failed for en
+Error checking local file: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025_en_KJV.json
+🔍 Language: en, Version: KJV
+❌ HTTP Error 400: 
+❌ Error in downloadAndStoreDevocionales: Exception: HTTP Error 400: 
+Error deleting local files: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Error checking local file: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+🧹 Provider: Disposing...
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:21.967146
+AudioController: Reactive proxy disposed
+✅ Provider: Disposed
+::endgroup::
+⚠️ TTS: Stop error (continuing with reset): MissingPluginException(No implementation found for method stop on channel flutter_tts)
+✅ TTS: Stop completed at 2025-12-01 03:46:21.968764
+🧹 TTS: Service disposed at 2025-12-01 03:46:21.968990
+::group::✅ test/critical_coverage/devocional_provider_working_test.dart: DevocionalProvider Robust Tests error handling in loading data
+🏗️ Provider: Constructor iniciado
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+✅ Provider: Constructor completado
+Error loading from local storage: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Loading from API for language: en, version: KJV
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025_en_KJV.json
+Error en _fetchAllDevocionalesForLanguage: Exception: Failed to load from API: 400
+🏗️ Provider: Constructor iniciado
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+✅ Provider: Constructor completado
+Error loading from local storage: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Loading from API for language: es, version: bad_version
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025_es_bad_version.json
+Error en _fetchAllDevocionalesForLanguage: Exception: Failed to load from API: 400
+🧹 Provider: Disposing...
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:21.982950
+AudioController: Reactive proxy disposed
+✅ Provider: Disposed
+::endgroup::
+⚠️ TTS: Stop error (continuing with reset): MissingPluginException(No implementation found for method stop on channel flutter_tts)
+✅ TTS: Stop completed at 2025-12-01 03:46:21.984648
+🧹 TTS: Service disposed at 2025-12-01 03:46:21.985496
+::group::✅ test/critical_coverage/devocional_provider_working_test.dart: DevocionalProvider Robust Tests invitation dialog preference management
+🏗️ Provider: Constructor iniciado
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+✅ Provider: Constructor completado
+Error loading from local storage: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Loading from API for language: en, version: KJV
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025_en_KJV.json
+Error en _fetchAllDevocionalesForLanguage: Exception: Failed to load from API: 400
+🧹 Provider: Disposing...
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:22.003650
+AudioController: Reactive proxy disposed
+✅ Provider: Disposed
+::endgroup::
+⚠️ TTS: Stop error (continuing with reset): MissingPluginException(No implementation found for method stop on channel flutter_tts)
+✅ TTS: Stop completed at 2025-12-01 03:46:22.005296
+🧹 TTS: Service disposed at 2025-12-01 03:46:22.005561
+::group::✅ test/critical_coverage/devocional_provider_working_test.dart: DevocionalProvider Robust Tests utility methods behave correctly
+🏗️ Provider: Constructor iniciado
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+✅ Provider: Constructor completado
+Error loading from local storage: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Loading from API for language: en, version: KJV
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025_en_KJV.json
+Error en _fetchAllDevocionalesForLanguage: Exception: Failed to load from API: 400
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2025_en_KJV.json
+🔍 Language: en, Version: KJV
+❌ HTTP Error 400: 
+❌ Error in downloadAndStoreDevocionales: Exception: HTTP Error 400: 
+🔍 Requesting URL: https://raw.githubusercontent.com/develop4God/Devocionales-json/refs/heads/main/Devocional_year_2026_en_KJV.json
+🔍 Language: en, Version: KJV
+❌ HTTP Error 400: 
+❌ Error in downloadAndStoreDevocionales: Exception: HTTP Error 400: 
+🧹 Provider: Disposing...
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:22.013274
+AudioController: Reactive proxy disposed
+✅ Provider: Disposed
+::endgroup::
+⚠️ TTS: Stop error (continuing with reset): MissingPluginException(No implementation found for method stop on channel flutter_tts)
+✅ TTS: Stop completed at 2025-12-01 03:46:22.014870
+🧹 TTS: Service disposed at 2025-12-01 03:46:22.015087
+✅ test/critical_coverage/thanksgiving_bloc_working_test.dart: ThanksgivingBloc Tests initial state should be ThanksgivingInitial
+✅ test/critical_coverage/thanksgiving_bloc_working_test.dart: ThanksgivingBloc Tests should load empty list when no thanksgivings exist
+::group::✅ test/critical_coverage/thanksgiving_bloc_working_test.dart: ThanksgivingBloc Tests should add a new thanksgiving
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+::endgroup::
+✅ test/critical_coverage/thanksgiving_bloc_working_test.dart: ThanksgivingBloc Tests should not add thanksgiving with empty text
+::group::✅ test/critical_coverage/thanksgiving_bloc_working_test.dart: ThanksgivingBloc Tests should edit an existing thanksgiving
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+::endgroup::
+::group::✅ test/critical_coverage/thanksgiving_bloc_working_test.dart: ThanksgivingBloc Tests should delete a thanksgiving
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+::endgroup::
+::group::✅ test/critical_coverage/thanksgiving_bloc_working_test.dart: ThanksgivingBloc Tests should refresh thanksgivings
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+::endgroup::
+✅ test/critical_coverage/thanksgiving_bloc_working_test.dart: ThanksgivingBloc Tests should clear error message
+::group::✅ test/critical_coverage/thanksgiving_bloc_working_test.dart: ThanksgivingBloc Tests should sort thanksgivings by creation date (newest first)
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+::endgroup::
+::group::✅ test/critical_coverage/thanksgiving_bloc_working_test.dart: ThanksgivingBloc Tests should persist thanksgivings to storage
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+::endgroup::
+✅ test/critical_coverage/backup_bloc_working_test.dart: Backup Feature Flag Tests Backup feature debe estar deshabilitada por defecto
+✅ test/critical_coverage/backup_bloc_working_test.dart: Backup Feature Flag Tests La bandera de funcionalidad debe prevenir la inicialización de backup
+::group::✅ test/critical_coverage/backup_bloc_working_test.dart: BackupBloc Critical Coverage Tests debe emitir estado de carga y cargado al cargar configuración de backup
+🔄 [BLOC] === INICIANDO LoadBackupSettings ===
+📊 [BLOC] Autenticado: false
+📊 [BLOC] Configuraciones cargadas:
+📊 [BLOC] - Auto backup: false
+📊 [BLOC] - Frecuencia: deactivated
+📊 [BLOC] - Último backup: null
+📊 [BLOC] - Próximo backup: null
+✅ [BLOC] BackupLoaded emitido exitosamente
+🏁 [BLOC] === FIN LoadBackupSettings ===
+::endgroup::
+::group::✅ test/critical_coverage/backup_bloc_working_test.dart: BackupBloc Critical Coverage Tests no debe ejecutar lógica de backup si el flag está en false
+🔄 [BLOC] === INICIANDO LoadBackupSettings ===
+📊 [BLOC] Autenticado: false
+📊 [BLOC] Configuraciones cargadas:
+📊 [BLOC] - Auto backup: false
+📊 [BLOC] - Frecuencia: deactivated
+📊 [BLOC] - Último backup: null
+📊 [BLOC] - Próximo backup: null
+✅ [BLOC] BackupLoaded emitido exitosamente
+🏁 [BLOC] === FIN LoadBackupSettings ===
+::endgroup::
+✅ test/critical_coverage/backup_bloc_working_test.dart: BackupBloc Critical Coverage Tests debe ejecutar flujo de backup si el flag está en true
+::group::✅ test/critical_coverage/audio_controller_working_test.dart: AudioController - Peripheral Behavior Tests should initialize with idle state and inactive flags
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:27.484472
+AudioController: Reactive proxy disposed
+✅ TTS: Stop completed at 2025-12-01 03:46:27.488819
+🧹 TTS: Service disposed at 2025-12-01 03:46:27.489774
+::endgroup::
+::group::✅ test/critical_coverage/audio_controller_working_test.dart: AudioController - Peripheral Behavior Tests should start with null devotional and zero progress
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:27.494006
+AudioController: Reactive proxy disposed
+✅ TTS: Stop completed at 2025-12-01 03:46:27.494789
+🧹 TTS: Service disposed at 2025-12-01 03:46:27.495112
+::endgroup::
+::group::✅ test/critical_coverage/audio_controller_working_test.dart: AudioController - Peripheral Behavior Tests should be mounted after initialization
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:27.498443
+AudioController: Reactive proxy disposed
+✅ TTS: Stop completed at 2025-12-01 03:46:27.499165
+🧹 TTS: Service disposed at 2025-12-01 03:46:27.499504
+::endgroup::
+::group::✅ test/critical_coverage/audio_controller_working_test.dart: AudioController - Peripheral Behavior Tests should maintain mutually exclusive playing/paused states
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:27.502364
+AudioController: Reactive proxy disposed
+✅ TTS: Stop completed at 2025-12-01 03:46:27.503146
+🧹 TTS: Service disposed at 2025-12-01 03:46:27.503505
+::endgroup::
+::group::✅ test/critical_coverage/audio_controller_working_test.dart: AudioController - Peripheral Behavior Tests should have isActive consistent with playing/paused states
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:27.506720
+AudioController: Reactive proxy disposed
+✅ TTS: Stop completed at 2025-12-01 03:46:27.508801
+🧹 TTS: Service disposed at 2025-12-01 03:46:27.509343
+::endgroup::
+::group::✅ test/critical_coverage/audio_controller_working_test.dart: AudioController - Peripheral Behavior Tests should maintain progress within valid bounds [0.0, 1.0]
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:27.513731
+AudioController: Reactive proxy disposed
+✅ TTS: Stop completed at 2025-12-01 03:46:27.514588
+🧹 TTS: Service disposed at 2025-12-01 03:46:27.514952
+::endgroup::
+::group::✅ test/critical_coverage/audio_controller_working_test.dart: AudioController - Peripheral Behavior Tests should map error state to hasError property correctly
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:27.518915
+AudioController: Reactive proxy disposed
+✅ TTS: Stop completed at 2025-12-01 03:46:27.519798
+🧹 TTS: Service disposed at 2025-12-01 03:46:27.520124
+::endgroup::
+::group::✅ test/critical_coverage/audio_controller_working_test.dart: AudioController - Peripheral Behavior Tests should provide access to TTS configuration methods
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+🔧 TTS: Initializing service...
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:27.563930
+AudioController: Reactive proxy disposed
+✅ TTS: Stop completed at 2025-12-01 03:46:27.564931
+🧹 TTS: Service disposed at 2025-12-01 03:46:27.565355
+::endgroup::
+::group::✅ test/critical_coverage/audio_controller_working_test.dart: AudioController - Peripheral Behavior Tests should have isDevocionalPlaying return false for any ID initially
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+AudioController: isDevocionalPlaying(any_id) - Checking...
+  Local: currentId=null, state=TtsState.idle, isActive=false, operationInProgress=false
+  Service: currentId=null, state=TtsState.idle
+AudioController: isDevocionalPlaying(any_id) = FALSE - SERVICE state is IDLE
+AudioController: isDevocionalPlaying(test_123) - Checking...
+  Local: currentId=null, state=TtsState.idle, isActive=false, operationInProgress=false
+  Service: currentId=null, state=TtsState.idle
+AudioController: isDevocionalPlaying(test_123) = FALSE - SERVICE state is IDLE
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:27.571342
+AudioController: Reactive proxy disposed
+✅ TTS: Stop completed at 2025-12-01 03:46:27.571978
+🧹 TTS: Service disposed at 2025-12-01 03:46:27.572367
+::endgroup::
+::group::✅ test/critical_coverage/audio_controller_working_test.dart: AudioController - Peripheral Behavior Tests should accept playDevotional call without throwing immediately
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+🎵 AudioController: playDevotional(test_1) called
+🎵 Current state before play: currentId=null, state=TtsState.idle, isActive=false
+AudioController: Starting operation: playDevotional
+🎤 TTS: Starting devotional test_1 at 2025-12-01 03:46:27.577101
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+[BibleTextFormatter] formatBibleBook called with reference="Test reflection", language="es"
+📝 TTS: Speaking: Test reflection
+AudioController: Ignorando progress update - estado idle (local: TtsState.idle, service: TtsState.idle)
+AudioController: TtsService.speakDevotional() completed
+AudioController: Sync attempt 1: service=TtsState.idle, local=TtsState.idle
+AudioController: Sync attempt 2: service=TtsState.idle, local=TtsState.idle
+AudioController: Sync attempt 3: service=TtsState.idle, local=TtsState.idle
+AudioController: Sync attempt 4: service=TtsState.idle, local=TtsState.idle
+AudioController: Sync attempt 5: service=TtsState.idle, local=TtsState.idle
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:28.344365
+AudioController: Reactive proxy disposed
+✅ TTS: Stop completed at 2025-12-01 03:46:28.345234
+🧹 TTS: Service disposed at 2025-12-01 03:46:28.345601
+::endgroup::
+::group::✅ test/critical_coverage/audio_controller_working_test.dart: AudioController - Peripheral Behavior Tests should accept pause/resume/stop calls in any state
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+AudioController: Cannot pause - not playing (state: TtsState.idle)
+AudioController: Cannot resume - not paused (state: TtsState.idle)
+AudioController: Stop requested (state: TtsState.idle)
+AudioController: Applying IMMEDIATE stop...
+AudioController: Immediate stop applied - calling service async
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:28.351159
+AudioController: Immediate stop completed
+✅ TTS: Stop completed at 2025-12-01 03:46:28.351735
+AudioController: Service stop completed asynchronously
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.stopping) at 2025-12-01 03:46:28.352593
+AudioController: Reactive proxy disposed
+✅ TTS: Stop completed at 2025-12-01 03:46:28.353214
+🧹 TTS: Service disposed at 2025-12-01 03:46:28.353531
+::endgroup::
+::group::✅ test/critical_coverage/audio_controller_working_test.dart: AudioController - Peripheral Behavior Tests should transition to unmounted state after dispose
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:28.356594
+AudioController: Reactive proxy disposed
+✅ TTS: Stop completed at 2025-12-01 03:46:28.357449
+🧹 TTS: Service disposed at 2025-12-01 03:46:28.357968
+::endgroup::
+::group::✅ test/critical_coverage/audio_controller_working_test.dart: AudioController - Peripheral Behavior Tests should not throw when accessing properties after dispose
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:28.361156
+AudioController: Reactive proxy disposed
+✅ TTS: Stop completed at 2025-12-01 03:46:28.362743
+🧹 TTS: Service disposed at 2025-12-01 03:46:28.363279
+::endgroup::
+✅ test/widget/add_thanksgiving_modal_test.dart: AddThanksgivingModal Widget Tests should display title for new thanksgiving
+✅ test/widget/add_thanksgiving_modal_test.dart: AddThanksgivingModal Widget Tests should display close button
+✅ test/widget/add_thanksgiving_modal_test.dart: AddThanksgivingModal Widget Tests should display cancel and create buttons
+✅ test/widget/add_thanksgiving_modal_test.dart: AddThanksgivingModal Widget Tests should populate text field when editing
+✅ test/widget/add_thanksgiving_modal_test.dart: AddThanksgivingModal Widget Tests should close modal when close button is tapped
+✅ test/widget/add_thanksgiving_modal_test.dart: AddThanksgivingModal Widget Tests should close modal when cancel button is tapped
+✅ test/widget/add_thanksgiving_modal_test.dart: AddThanksgivingModal Widget Tests should show error when submitting empty text
+✅ test/widget/add_thanksgiving_modal_test.dart: AddThanksgivingModal Widget Tests should show error when text is too short
+✅ test/widget/add_thanksgiving_modal_test.dart: AddThanksgivingModal Widget Tests should allow entering valid text and create thanksgiving
+Error backing up thanksgivings to file: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+✅ test/widget/add_thanksgiving_modal_test.dart: AddThanksgivingModal Widget Tests should respect max length of 500 characters
+✅ test/widget/add_thanksgiving_modal_test.dart: AddThanksgivingModal Widget Tests should have 6 lines for text input
+✅ test/widget/add_thanksgiving_modal_test.dart: AddThanksgivingModal Widget Tests should auto-focus on text field when opened
+✅ test/widget/answer_prayer_modal_test.dart: AnswerPrayerModal allows up to 400 characters
+✅ test/unit/models/bible_version_test.dart: BibleVersion Model Tests should create BibleVersion with all required fields
+✅ test/unit/models/bible_version_test.dart: BibleVersion Model Tests should create BibleVersion with service
+✅ test/unit/models/bible_version_test.dart: BibleVersion Model Tests should allow service to be assigned after creation
+✅ test/unit/models/bible_version_test.dart: BibleVersion Model Tests should create BibleVersion with isDownloaded flag
+✅ test/unit/models/prayer_model_test.dart: Prayer Model Tests should create prayer with required fields
+✅ test/unit/models/prayer_model_test.dart: Prayer Model Tests should serialize and deserialize prayer correctly
+✅ test/unit/models/prayer_model_test.dart: Prayer Model Tests should copy prayer with updated fields
+✅ test/unit/models/thanksgiving_model_test.dart: Thanksgiving Model Tests should create thanksgiving with required fields
+✅ test/unit/models/thanksgiving_model_test.dart: Thanksgiving Model Tests should serialize and deserialize thanksgiving correctly
+✅ test/unit/models/thanksgiving_model_test.dart: Thanksgiving Model Tests should copy thanksgiving with updated fields
+✅ test/unit/models/thanksgiving_model_test.dart: Thanksgiving Model Tests should calculate daysOld correctly
+✅ test/unit/models/thanksgiving_model_test.dart: Thanksgiving Model Tests should calculate daysOld correctly for today
+::group::✅ test/unit/models/thanksgiving_model_test.dart: Thanksgiving Model Tests should handle malformed date gracefully in fromJson
+Error parsing created date: invalid-date, using DateTime.now(). Error: FormatException: Invalid date format
+invalid-date
+::endgroup::
+✅ test/unit/models/thanksgiving_model_test.dart: Thanksgiving Model Tests should handle missing date in fromJson
+✅ test/unit/models/thanksgiving_model_test.dart: Thanksgiving Model Tests should handle missing fields with defaults
+✅ test/unit/models/spiritual_stats_model_test.dart: SpiritualStats Model Tests should create and serialize SpiritualStats correctly
+✅ test/unit/models/spiritual_stats_model_test.dart: SpiritualStats Model Tests should create SpiritualStats with default values
+✅ test/unit/models/spiritual_stats_model_test.dart: SpiritualStats Model Tests should copy SpiritualStats with updated values
+✅ test/unit/models/devocional_model_test.dart: DevocionalModel Simple Tests should create devotional model with required fields
+✅ test/unit/models/devocional_model_test.dart: DevocionalModel Simple Tests should handle optional fields correctly
+✅ test/unit/models/devocional_model_test.dart: DevocionalModel Simple Tests should create JSON representation
+✅ test/unit/models/devocional_model_test.dart: DevocionalModel Simple Tests should create from JSON with basic data
+✅ test/unit/models/devocional_model_test.dart: DevocionalModel Simple Tests should handle ParaMeditar creation and serialization
+✅ test/unit/models/devocional_model_test.dart: DevocionalModel Simple Tests should handle missing JSON fields gracefully
+✅ test/unit/utils/bible_text_normalizer_test.dart: BibleTextNormalizer Tests should return empty string for null input
+✅ test/unit/utils/bible_text_normalizer_test.dart: BibleTextNormalizer Tests should return empty string for empty input
+✅ test/unit/utils/bible_text_normalizer_test.dart: BibleTextNormalizer Tests should remove simple bracketed references [1]
+✅ test/unit/utils/bible_text_normalizer_test.dart: BibleTextNormalizer Tests should remove letter bracketed references [a]
+✅ test/unit/utils/bible_text_normalizer_test.dart: BibleTextNormalizer Tests should remove bracketed references with special characters [36†]
+✅ test/unit/utils/bible_text_normalizer_test.dart: BibleTextNormalizer Tests should remove bracketed references with mixed content [a1]
+✅ test/unit/utils/bible_text_normalizer_test.dart: BibleTextNormalizer Tests should remove bracketed references with words [note]
+✅ test/unit/utils/bible_text_normalizer_test.dart: BibleTextNormalizer Tests should remove multiple bracketed references
+✅ test/unit/utils/bible_text_normalizer_test.dart: BibleTextNormalizer Tests should remove HTML tags <pb/>
+✅ test/unit/utils/bible_text_normalizer_test.dart: BibleTextNormalizer Tests should remove HTML tags <f>
+✅ test/unit/utils/bible_text_normalizer_test.dart: BibleTextNormalizer Tests should remove both HTML tags and bracketed references
+✅ test/unit/utils/bible_text_normalizer_test.dart: BibleTextNormalizer Tests should trim whitespace from result
+✅ test/unit/utils/bible_text_normalizer_test.dart: BibleTextNormalizer Tests should handle text with no tags or references
+✅ test/unit/utils/system_ui_overlay_style_test.dart: System UI Overlay Style Configuration systemUiOverlayStyle should be defined
+✅ test/unit/utils/system_ui_overlay_style_test.dart: System UI Overlay Style Configuration Status bar should be transparent
+✅ test/unit/utils/system_ui_overlay_style_test.dart: System UI Overlay Style Configuration Status bar icons should be light (white)
+✅ test/unit/utils/system_ui_overlay_style_test.dart: System UI Overlay Style Configuration Status bar brightness should be dark for iOS
+✅ test/unit/utils/system_ui_overlay_style_test.dart: System UI Overlay Style Configuration Navigation bar should be dark gray (Material grey 800)
+✅ test/unit/utils/system_ui_overlay_style_test.dart: System UI Overlay Style Configuration Navigation bar icons should be light (white buttons)
+✅ test/unit/utils/system_ui_overlay_style_test.dart: System UI Overlay Style Configuration Navigation bar divider should be transparent
+✅ test/unit/utils/system_ui_overlay_style_test.dart: System UI Overlay Style Configuration Dark gray navigation bar provides good contrast with white icons
+✅ test/unit/utils/system_ui_overlay_style_test.dart: System UI Overlay Style Configuration System UI overlay style is consistent across all app configurations
+✅ test/unit/utils/system_ui_overlay_style_test.dart: System UI Overlay Style Configuration Configuration matches Android 15 edge-to-edge requirements
+✅ test/unit/utils/system_ui_overlay_style_test.dart: System UI Overlay Style Integration AnnotatedRegion applies system UI overlay style correctly
+✅ test/unit/utils/system_ui_overlay_style_test.dart: System UI Overlay Style Integration System UI overlay style works with different themes
+✅ test/unit/utils/theme_outlined_button_border_test.dart: OutlinedButtonTheme Border Color Tests Deep Purple light theme should have black border
+✅ test/unit/utils/theme_outlined_button_border_test.dart: OutlinedButtonTheme Border Color Tests Deep Purple dark theme should have white border
+✅ test/unit/utils/theme_outlined_button_border_test.dart: OutlinedButtonTheme Border Color Tests Green light theme should have black border
+✅ test/unit/utils/theme_outlined_button_border_test.dart: OutlinedButtonTheme Border Color Tests Green dark theme should have white border
+✅ test/unit/utils/theme_outlined_button_border_test.dart: OutlinedButtonTheme Border Color Tests Pink light theme should have black border
+✅ test/unit/utils/theme_outlined_button_border_test.dart: OutlinedButtonTheme Border Color Tests Pink dark theme should have white border
+✅ test/unit/utils/theme_outlined_button_border_test.dart: OutlinedButtonTheme Border Color Tests Cyan light theme should have black border
+✅ test/unit/utils/theme_outlined_button_border_test.dart: OutlinedButtonTheme Border Color Tests Cyan dark theme should have white border
+✅ test/unit/utils/theme_outlined_button_border_test.dart: OutlinedButtonTheme Border Color Tests Light Blue light theme should have black border
+✅ test/unit/utils/theme_outlined_button_border_test.dart: OutlinedButtonTheme Border Color Tests Light Blue dark theme should have white border
+✅ test/unit/utils/theme_outlined_button_border_test.dart: OutlinedButtonTheme Border Color Tests All themes should have border radius of 25
+✅ test/unit/utils/theme_outlined_button_border_test.dart: OutlinedButtonTheme Border Color Tests All themes should match inputDecorationTheme border properties
+✅ test/unit/utils/constants_validation_test.dart: Constants Configuration Validation all supported languages have default versions
+✅ test/unit/utils/constants_validation_test.dart: Constants Configuration Validation all supported languages have Bible versions
+✅ test/unit/utils/constants_validation_test.dart: Constants Configuration Validation default versions exist in available versions
+✅ test/unit/utils/constants_validation_test.dart: Constants Configuration Validation should maintain backward compatibility - original method unchanged
+✅ test/unit/utils/constants_validation_test.dart: Constants Configuration Validation getDevocionalesApiUrlMultilingual generates correct URLs
+✅ test/unit/utils/constants_validation_test.dart: Constants Configuration Validation constants data consistency
+✅ test/unit/utils/constants_validation_test.dart: Constants Configuration Validation multilingual URL generation handles edge cases
+✅ test/unit/utils/constants_validation_test.dart: Constants Configuration Validation supported languages structure is valid
+✅ test/unit/utils/constants_validation_test.dart: Constants Configuration Validation Bible versions structure is valid
+✅ test/unit/utils/bible_version_registry_test.dart: BibleVersionRegistry Tests should get supported languages
+✅ test/unit/utils/bible_version_registry_test.dart: BibleVersionRegistry Tests should get language name
+✅ test/unit/utils/bible_version_registry_test.dart: BibleVersionRegistry Tests should get versions for Spanish language
+✅ test/unit/utils/bible_version_registry_test.dart: BibleVersionRegistry Tests should get versions for English language
+✅ test/unit/utils/bible_version_registry_test.dart: BibleVersionRegistry Tests should get versions for Portuguese language
+✅ test/unit/utils/bible_version_registry_test.dart: BibleVersionRegistry Tests should get versions for French language
+✅ test/unit/utils/bible_version_registry_test.dart: BibleVersionRegistry Tests should return empty list for unsupported language
+✅ test/unit/utils/bible_version_registry_test.dart: BibleVersionRegistry Tests should get all versions
+✅ test/unit/utils/bible_version_registry_test.dart: BibleVersionRegistry Tests all versions should have proper metadata
+✅ test/unit/utils/bible_reference_parser_test.dart: BibleReferenceParser Tests should parse reference with verse in Spanish (Juan 3:16)
+✅ test/unit/utils/bible_reference_parser_test.dart: BibleReferenceParser Tests should parse reference with verse in English (John 3:16)
+✅ test/unit/utils/bible_reference_parser_test.dart: BibleReferenceParser Tests should parse reference with verse and book number (1 Juan 3:16)
+✅ test/unit/utils/bible_reference_parser_test.dart: BibleReferenceParser Tests should parse reference without verse (Juan 3)
+✅ test/unit/utils/bible_reference_parser_test.dart: BibleReferenceParser Tests should parse reference with accented names (Génesis 1:1)
+✅ test/unit/utils/bible_reference_parser_test.dart: BibleReferenceParser Tests should parse Genesis abbreviation (Gn 9:4)
+✅ test/unit/utils/bible_reference_parser_test.dart: BibleReferenceParser Tests should parse Genesis in English (Genesis 1:1)
+✅ test/unit/utils/bible_reference_parser_test.dart: BibleReferenceParser Tests should parse multi-word book name (1 Corintios 13:4)
+✅ test/unit/utils/bible_reference_parser_test.dart: BibleReferenceParser Tests should return null for plain text search
+✅ test/unit/utils/bible_reference_parser_test.dart: BibleReferenceParser Tests should return null for invalid format
+✅ test/unit/utils/bible_reference_parser_test.dart: BibleReferenceParser Tests should handle extra whitespace
+✅ test/unit/utils/bible_reference_parser_test.dart: BibleReferenceParser Tests should be case-insensitive
+✅ test/unit/utils/bible_reference_parser_test.dart: BibleReferenceParser Tests should parse S. Juan format (S.Juan 3:16)
+✅ test/unit/utils/bible_reference_parser_test.dart: BibleReferenceParser Tests should parse 2 Samuel format (2 Samuel 7:12)
+✅ test/unit/extensions/string_extensions_test.dart: String Extensions Tests should translate simple keys
+✅ test/unit/extensions/string_extensions_test.dart: String Extensions Tests should translate with parameters
+✅ test/unit/extensions/string_extensions_test.dart: String Extensions Tests should return key when translation not found
+✅ test/unit/extensions/string_extensions_test.dart: String Extensions Tests should handle nested keys
+✅ test/unit/extensions/string_extensions_test.dart: String Extensions Tests should work with empty string
+✅ test/unit/extensions/string_extensions_test.dart: String Extensions Tests should work across different languages
+::group::✅ test/unit/services/tts_service_behavior_test.dart: TTS Service - Real User Behavior Tests User Scenario: Service initializes successfully
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:41.061091
+✅ TTS: Stop completed at 2025-12-01 03:46:41.063339
+🧹 TTS: Service disposed at 2025-12-01 03:46:41.064707
+::endgroup::
+::group::✅ test/unit/services/tts_service_behavior_test.dart: TTS Service - Real User Behavior Tests User Scenario: User plays a devotional
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+🎤 TTS: Starting devotional test-1 at 2025-12-01 03:46:41.071895
+[BibleTextFormatter] formatBibleBook called with reference="Esta es una reflexión sobre el amor de Dios.", language="es"
+📝 TTS: Speaking: Esta es una reflexión sobre el amor de Dios.
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:41.182198
+✅ TTS: Stop completed at 2025-12-01 03:46:41.183061
+🧹 TTS: Service disposed at 2025-12-01 03:46:41.183420
+::endgroup::
+::group::✅ test/unit/services/tts_service_behavior_test.dart: TTS Service - Real User Behavior Tests User Scenario: User pauses playback
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+🎤 TTS: Starting devotional test-2 at 2025-12-01 03:46:41.188753
+[BibleTextFormatter] formatBibleBook called with reference="El Señor es mi pastor.", language="es"
+📝 TTS: Speaking: El Señor es mi pastor.
+⏸️ TTS: Pause requested (current state: TtsState.idle) at 2025-12-01 03:46:41.290924
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:41.392937
+✅ TTS: Stop completed at 2025-12-01 03:46:41.393856
+🧹 TTS: Service disposed at 2025-12-01 03:46:41.394202
+::endgroup::
+::group::✅ test/unit/services/tts_service_behavior_test.dart: TTS Service - Real User Behavior Tests User Scenario: User resumes after pause
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+🎤 TTS: Starting devotional test-3 at 2025-12-01 03:46:41.413810
+[BibleTextFormatter] formatBibleBook called with reference="Todo lo puedo en Cristo.", language="es"
+📝 TTS: Speaking: Todo lo puedo en Cristo.
+⏸️ TTS: Pause requested (current state: TtsState.idle) at 2025-12-01 03:46:41.517618
+▶️ TTS: Resume requested (current state: TtsState.idle) at 2025-12-01 03:46:41.619999
+⚠️ TTS: Cannot resume - not paused (current: TtsState.idle) at 2025-12-01 03:46:41.622089
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:41.724924
+✅ TTS: Stop completed at 2025-12-01 03:46:41.725911
+🧹 TTS: Service disposed at 2025-12-01 03:46:41.726356
+::endgroup::
+✅ test/unit/services/bible_db_service_test.dart: BibleDbService Tests should create BibleDbService instance
+✅ test/unit/services/bible_db_service_test.dart: BibleDbService Tests should have initDb method
+✅ test/unit/services/bible_db_service_test.dart: BibleDbService Tests should have getAllBooks method
+✅ test/unit/services/bible_db_service_test.dart: BibleDbService Tests should have getMaxChapter method
+✅ test/unit/services/bible_db_service_test.dart: BibleDbService Tests should have getChapterVerses method
+✅ test/unit/services/bible_db_service_test.dart: BibleDbService Tests should have getChapter method
+::group::✅ test/unit/services/tts_service_behavior_test.dart: TTS Service - Real User Behavior Tests User Scenario: User stops playback completely
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+🎤 TTS: Starting devotional test-4 at 2025-12-01 03:46:41.732566
+[BibleTextFormatter] formatBibleBook called with reference="Confía en el Señor.", language="es"
+📝 TTS: Speaking: Confía en el Señor.
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:41.834618
+✅ TTS: Stop completed at 2025-12-01 03:46:41.835301
+⏹️ TTS: Stop requested (current state: TtsState.stopping) at 2025-12-01 03:46:41.937004
+✅ TTS: Stop completed at 2025-12-01 03:46:41.937901
+🧹 TTS: Service disposed at 2025-12-01 03:46:41.938250
+::endgroup::
+::group::✅ test/unit/services/tts_service_behavior_test.dart: TTS Service - Real User Behavior Tests User Scenario: Multiple rapid commands handled gracefully
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+🎤 TTS: Starting devotional test-5 at 2025-12-01 03:46:41.945607
+[BibleTextFormatter] formatBibleBook called with reference="Yo estoy con vosotros todos los días.", language="es"
+📝 TTS: Speaking: Yo estoy con vosotros todos los días.
+⏸️ TTS: Pause requested (current state: TtsState.idle) at 2025-12-01 03:46:41.946683
+▶️ TTS: Resume requested (current state: TtsState.idle) at 2025-12-01 03:46:41.946960
+⚠️ TTS: Cannot resume - not paused (current: TtsState.idle) at 2025-12-01 03:46:41.947363
+⏸️ TTS: Pause requested (current state: TtsState.idle) at 2025-12-01 03:46:41.947649
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:41.947903
+✅ TTS: Stop completed at 2025-12-01 03:46:41.948314
+⏹️ TTS: Stop requested (current state: TtsState.stopping) at 2025-12-01 03:46:42.050040
+✅ TTS: Stop completed at 2025-12-01 03:46:42.051032
+🧹 TTS: Service disposed at 2025-12-01 03:46:42.051481
+::endgroup::
+::group::✅ test/unit/services/tts_service_behavior_test.dart: TTS Service - Real User Behavior Tests User Scenario: Language context changes
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+🌐 TTS: Language context set to es (RVR1960)
+🔧 TTS: Changing voice language to es-ES for context es
+🌐 TTS: Language context set to en (NIV)
+🔧 TTS: Changing voice language to en-US for context en
+🌐 TTS: Language context set to pt (NVI)
+🔧 TTS: Changing voice language to pt-BR for context pt
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:42.061549
+✅ TTS: Stop completed at 2025-12-01 03:46:42.062283
+✅ TTS: Voice language successfully updated to es-ES
+✅ TTS: Voice language successfully updated to en-US
+✅ TTS: Voice language successfully updated to pt-BR
+🧹 TTS: Service disposed at 2025-12-01 03:46:42.063333
+::endgroup::
+::group::✅ test/unit/services/tts_service_behavior_test.dart: TTS Service - Real User Behavior Tests User Scenario: TTS plays full devotional content
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+🎤 TTS: Starting devotional test-6 at 2025-12-01 03:46:42.069033
+[BibleTextFormatter] formatBibleBook called with reference="Esta es una reflexión larga sobre el amor de Dios. El propósito es probar que el...", language="es"
+📝 TTS: Speaking: Esta es una reflexión larga sobre el amor de Dios....
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:42.171009
+✅ TTS: Stop completed at 2025-12-01 03:46:42.171959
+🧹 TTS: Service disposed at 2025-12-01 03:46:42.172316
+::endgroup::
+::group::✅ test/unit/services/tts_service_behavior_test.dart: TTS Service - Real User Behavior Tests User Scenario: Service properly disposes
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:42.179016
+✅ TTS: Stop completed at 2025-12-01 03:46:42.179514
+🧹 TTS: Service disposed at 2025-12-01 03:46:42.179850
+🔊 TTS: Speaking single text chunk at 2025-12-01 03:46:42.181148
+::endgroup::
+::group::✅ test/unit/services/tts_service_behavior_test.dart: TTS Service - Real User Behavior Tests User Scenario: Speech rate can be adjusted
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:42.193541
+✅ TTS: Stop completed at 2025-12-01 03:46:42.194176
+🧹 TTS: Service disposed at 2025-12-01 03:46:42.194552
+::endgroup::
+::group::✅ test/unit/services/tts_service_behavior_test.dart: TTS Service - Real User Behavior Tests User Scenario: Service handles empty devotional gracefully
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+🎤 TTS: Starting devotional test-empty at 2025-12-01 03:46:42.201673
+[BibleTextFormatter] formatBibleBook called with reference="", language="es"
+❌ TTS: speakDevotional failed: TtsException: No valid text content to speak at 2025-12-01 03:46:42.202547
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:42.203460
+✅ TTS: Stop completed at 2025-12-01 03:46:42.204054
+🧹 TTS: Service disposed at 2025-12-01 03:46:42.204404
+::endgroup::
+::group::✅ test/unit/services/tts_service_behavior_test.dart: TTS Service - Real User Behavior Tests Integration: State stream broadcasts changes
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+🎤 TTS: Starting devotional test-stream at 2025-12-01 03:46:42.210572
+[BibleTextFormatter] formatBibleBook called with reference="Test reflection", language="es"
+📝 TTS: Speaking: Test reflection
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:42.363640
+✅ TTS: Stop completed at 2025-12-01 03:46:42.364742
+⏹️ TTS: Stop requested (current state: TtsState.stopping) at 2025-12-01 03:46:42.416998
+✅ TTS: Stop completed at 2025-12-01 03:46:42.417823
+🧹 TTS: Service disposed at 2025-12-01 03:46:42.418128
+::endgroup::
+::group::✅ test/unit/services/tts_service_behavior_test.dart: TTS Service - Real User Behavior Tests Integration: Progress stream tracks playback progress
+🔧 TTS: Initializing service...
+🔧 TTS: Loading config - Language: es-US, Rate: 0.5
+[TTS] Voz por defecto asignada para idioma: es (es-US)
+🔧 TTS: Setting language to es-US
+🔧 TTS: Setting speech rate to 0.5
+✅ TTS: Native event handlers configured
+✅ TTS: Service initialized successfully
+🎤 TTS: Starting devotional test-progress at 2025-12-01 03:46:42.423622
+[BibleTextFormatter] formatBibleBook called with reference="Progress test reflection", language="es"
+📝 TTS: Speaking: Progress test reflection
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:42.625597
+✅ TTS: Stop completed at 2025-12-01 03:46:42.626345
+⏹️ TTS: Stop requested (current state: TtsState.stopping) at 2025-12-01 03:46:42.677900
+✅ TTS: Stop completed at 2025-12-01 03:46:42.678681
+🧹 TTS: Service disposed at 2025-12-01 03:46:42.678943
+::endgroup::
+::group::✅ test/unit/services/tts_service_behavior_test.dart: TTS Service - Dependency Injection Validation Service can be registered and retrieved from service locator
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:42.682832
+⚠️ TTS: Stop error (continuing with reset): MissingPluginException(No implementation found for method stop on channel flutter_tts)
+✅ TTS: Stop completed at 2025-12-01 03:46:42.684341
+🧹 TTS: Service disposed at 2025-12-01 03:46:42.684657
+::endgroup::
+::group::✅ test/unit/services/tts_service_behavior_test.dart: TTS Service - Dependency Injection Validation Multiple retrievals return same instance (lazy singleton)
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:42.687226
+⚠️ TTS: Stop error (continuing with reset): MissingPluginException(No implementation found for method stop on channel flutter_tts)
+✅ TTS: Stop completed at 2025-12-01 03:46:42.687977
+🧹 TTS: Service disposed at 2025-12-01 03:46:42.688220
+::endgroup::
+::group::✅ test/unit/services/tts_service_behavior_test.dart: TTS Service - Dependency Injection Validation Service can be injected into AudioController
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 03:46:42.690565
+✅ TTS: Stop completed at 2025-12-01 03:46:42.690955
+🧹 TTS: Service disposed at 2025-12-01 03:46:42.691193
+::endgroup::
+✅ test/unit/services/bible_reading_position_service_test.dart: BibleReadingPositionService Tests should save reading position
+✅ test/unit/services/bible_reading_position_service_test.dart: BibleReadingPositionService Tests should return null when no position is saved
+✅ test/unit/services/bible_reading_position_service_test.dart: BibleReadingPositionService Tests should clear saved position
+✅ test/unit/services/bible_reading_position_service_test.dart: BibleReadingPositionService Tests should update position when saved multiple times
+✅ test/unit/services/bible_multiword_search_test.dart: Multi-Word Search Tests SQL exclusion list should handle empty results
+✅ test/unit/services/bible_multiword_search_test.dart: Multi-Word Search Tests SQL exclusion list should handle non-empty results
+✅ test/unit/services/bible_multiword_search_test.dart: Multi-Word Search Tests Combined exclusion list should handle mixed results
+✅ test/unit/services/bible_multiword_search_test.dart: Multi-Word Search Tests Combined exclusion list should handle all empty results
+✅ test/unit/services/bible_multiword_search_test.dart: Multi-Word Search Tests Multi-word query formatting should preserve spaces
+✅ test/unit/services/bible_multiword_search_test.dart: Multi-Word Search Tests LIKE patterns should handle multi-word queries
+✅ test/unit/services/bible_multiword_search_test.dart: Multi-Word Search Tests Search should handle queries with multiple spaces
+✅ test/unit/services/bible_multiword_search_test.dart: Multi-Word Search Tests Search results should merge correctly
+✅ test/unit/services/bible_multiword_search_test.dart: Multi-Word Search Tests Empty search query should return empty results
+✅ test/unit/services/bible_multiword_search_test.dart: Multi-Word Search Tests Search query with special characters should be preserved
+✅ test/unit/services/bible_multiword_search_test.dart: Multi-Word Search Tests Rowid extraction should work correctly
+✅ test/unit/services/bible_multiword_search_test.dart: Multi-Word Search Tests Search should handle long multi-word queries
+✅ test/unit/services/bible_multiword_search_test.dart: Multi-Word Search Tests Priority ordering should be maintained
+✅ test/unit/services/bible_multiword_search_test.dart: Multi-Word Search Tests SQL NOT IN clause should work with -1 placeholder
+✅ test/unit/services/bible_multiword_search_test.dart: Multi-Word Search Tests SQL NOT IN clause should work with real IDs
+✅ test/unit/services/onboarding_service_test.dart: Onboarding Feature Flag Tests Onboarding feature should be disabled by default
+✅ test/unit/services/onboarding_service_test.dart: Onboarding Feature Flag Tests Feature flag should prevent onboarding check
+✅ test/unit/services/onboarding_service_test.dart: Onboarding Feature Flag Tests Onboarding service should return false when disabled
+✅ test/unit/services/onboarding_service_test.dart: Onboarding Feature Flag Tests Feature flag is compile-time constant
+✅ test/unit/services/localization_service_test.dart: LocalizationService Tests should initialize with default locale
+✅ test/unit/services/localization_service_test.dart: LocalizationService Tests should load translations correctly for each language
+✅ test/unit/services/localization_service_test.dart: LocalizationService Tests should return correct TTS locale mappings
+✅ test/unit/services/localization_service_test.dart: LocalizationService Tests should return correct native language names
+✅ test/unit/services/localization_service_test.dart: LocalizationService Tests should return key when translation not found
+✅ test/unit/services/localization_service_test.dart: LocalizationService Tests should support all required locales
+✅ test/unit/services/tts_language_initialization_test.dart: TTS Language Initialization Tests - Persistence Validation Language preference should persist correctly in SharedPreferences
+✅ test/unit/services/tts_language_initialization_test.dart: TTS Language Initialization Tests - Persistence Validation Language preference should support all app languages - Portuguese
+✅ test/unit/services/tts_language_initialization_test.dart: TTS Language Initialization Tests - Persistence Validation Language preference should support all app languages - French
+✅ test/unit/services/tts_language_initialization_test.dart: TTS Language Initialization Tests - Persistence Validation Language preference should support all app languages - Japanese
+✅ test/unit/services/tts_language_initialization_test.dart: TTS Language Initialization Tests - Persistence Validation Language preference should persist correctly across app restart simulation
+✅ test/unit/services/tts_language_initialization_test.dart: TTS Language Initialization Tests - Persistence Validation Language preference can be updated during app session
+✅ test/unit/services/tts_language_initialization_test.dart: TTS Language Initialization Tests - Persistence Validation Default Spanish language should not override user selection
+✅ test/unit/android/android_15_edge_to_edge_test.dart: Android 15 Edge-to-Edge Configuration Tests Android SDK version constants are properly defined
+✅ test/unit/android/android_15_edge_to_edge_test.dart: Android 15 Edge-to-Edge Configuration Tests Edge-to-edge should be enabled on all API levels using WindowCompat
+✅ test/unit/android/android_15_edge_to_edge_test.dart: Android 15 Edge-to-Edge Configuration Tests Edge-to-edge configuration backward compatibility
+✅ test/unit/android/android_15_edge_to_edge_test.dart: Android 15 Edge-to-Edge Configuration Tests WindowCompat API availability check
+✅ test/unit/android/android_15_edge_to_edge_test.dart: Android 15 Edge-to-Edge Configuration Tests Edge-to-edge setup happens BEFORE Flutter initialization
+✅ test/unit/android/android_15_edge_to_edge_test.dart: Android 15 Edge-to-Edge Configuration Tests Edge-to-edge configuration should handle Game Loop tests
+✅ test/unit/android/android_15_edge_to_edge_test.dart: Android 15 Deprecated API Migration Tests Deprecated status bar APIs should not be used
+✅ test/unit/android/android_15_edge_to_edge_test.dart: Android 15 Deprecated API Migration Tests Modern WindowCompat API should be used for insets
+✅ test/unit/android/android_15_edge_to_edge_test.dart: Android 15 Deprecated API Migration Tests AndroidX Core dependency version should support WindowCompat
+✅ test/unit/android/android_15_edge_to_edge_test.dart: Android 15 Edge-to-Edge Edge Cases Edge-to-edge should handle screen rotation
+✅ test/unit/android/android_15_edge_to_edge_test.dart: Android 15 Edge-to-Edge Edge Cases Edge-to-edge should handle different display cutouts
+✅ test/unit/android/android_15_edge_to_edge_test.dart: Android 15 Edge-to-Edge Edge Cases Edge-to-edge should not affect fullscreen mode
+✅ test/unit/android/android_15_edge_to_edge_test.dart: Android 15 Edge-to-Edge Edge Cases Edge-to-edge should handle fold/unfold on foldable devices
+✅ test/unit/android/android_15_edge_to_edge_test.dart: Android 15 Edge-to-Edge Edge Cases Edge-to-edge should maintain touch target areas
+✅ test/unit/android/android_15_edge_to_edge_test.dart: Android 15 Compatibility Verification Target SDK should support Android 15
+✅ test/unit/android/android_15_edge_to_edge_test.dart: Android 15 Compatibility Verification Compile SDK should be sufficient for Android 15 APIs
+✅ test/unit/android/android_15_edge_to_edge_test.dart: Android 15 Compatibility Verification Min SDK backward compatibility is maintained
+✅ test/unit/pages/bible_reader_enhancements_test.dart: Bible Reader Font Size Tests should save and load font size preference
+✅ test/unit/pages/bible_reader_enhancements_test.dart: Bible Reader Font Size Tests should use default font size when not set
+✅ test/unit/pages/bible_reader_enhancements_test.dart: Bible Reader Font Size Tests should increase font size within bounds
+✅ test/unit/pages/bible_reader_enhancements_test.dart: Bible Reader Font Size Tests should not increase font size above maximum
+✅ test/unit/pages/bible_reader_enhancements_test.dart: Bible Reader Font Size Tests should decrease font size within bounds
+✅ test/unit/pages/bible_reader_enhancements_test.dart: Bible Reader Font Size Tests should not decrease font size below minimum
+✅ test/unit/pages/bible_reader_enhancements_test.dart: Bible Reader Marked Verses Tests should save and load marked verses
+✅ test/unit/pages/bible_reader_enhancements_test.dart: Bible Reader Marked Verses Tests should return empty list when no marked verses
+✅ test/unit/pages/bible_reader_enhancements_test.dart: Bible Reader Marked Verses Tests should toggle verse marking
+✅ test/unit/pages/bible_reader_enhancements_test.dart: Bible Reader Marked Verses Tests should handle multiple marked verses from different books
+✅ test/unit/pages/bible_reader_enhancements_test.dart: Bible Reader Marked Verses Tests should preserve marked verses across sessions
+✅ test/unit/pages/bible_reader_enhancements_test.dart: Bible Reader Position Persistence Tests should save reading position
+✅ test/unit/pages/bible_reader_enhancements_test.dart: Bible Reader Position Persistence Tests should load reading position
+✅ test/unit/pages/bible_reader_enhancements_test.dart: Bible Reader Position Persistence Tests should update position when navigating to different chapter
+✅ test/unit/pages/bible_reader_enhancements_test.dart: Bible Reader Position Persistence Tests should update position when navigating to different book
+✅ test/unit/pages/bible_reader_enhancements_test.dart: Bible Reader Position Persistence Tests should return null when no position is saved
+✅ test/unit/pages/bible_chapter_navigation_test.dart: Bible Chapter Navigation Tests Verse navigation works consecutively (20+ times)
+✅ test/unit/pages/bible_chapter_navigation_test.dart: Bible Chapter Navigation Tests Chapter change resets to verse 1
+✅ test/unit/pages/bible_chapter_navigation_test.dart: Bible Chapter Navigation Tests Previous chapter navigation within same book
+✅ test/unit/pages/bible_chapter_navigation_test.dart: Bible Chapter Navigation Tests Next chapter navigation within same book
+✅ test/unit/pages/bible_chapter_navigation_test.dart: Bible Chapter Navigation Tests Previous chapter at book boundary goes to previous book
+✅ test/unit/pages/bible_chapter_navigation_test.dart: Bible Chapter Navigation Tests Next chapter at book boundary goes to next book
+✅ test/unit/pages/bible_chapter_navigation_test.dart: Bible Chapter Navigation Tests Scroll calculation with verse index
+✅ test/unit/pages/bible_chapter_navigation_test.dart: Bible Chapter Navigation Tests Scroll position clamping to valid range
+✅ test/unit/pages/bible_chapter_navigation_test.dart: Bible Chapter Navigation Tests Scroll to top when changing chapters
+✅ test/unit/pages/bible_chapter_navigation_test.dart: Bible Chapter Navigation Tests Verse keys map creation for Psalm 119
+✅ test/unit/pages/bible_chapter_navigation_test.dart: Bible Chapter Navigation Tests Verse reset maintains selected verse within bounds
+✅ test/unit/pages/bible_chapter_navigation_test.dart: Bible Chapter Navigation Tests Book navigation boundary check
+✅ test/unit/pages/bible_chapter_navigation_test.dart: Bible Chapter Navigation Tests Chapter title format for navigation bar
+✅ test/unit/pages/bible_chapter_navigation_test.dart: Bible Chapter Navigation Tests Forward navigation sequence Psalm 119
+✅ test/unit/pages/bible_chapter_navigation_test.dart: Bible Chapter Navigation Tests Backward navigation sequence Psalm 119
+✅ test/unit/pages/progress_page_tip_test.dart: Progress Page Tip Banner Logic Tests Tip banner only shows twice maximum
+✅ test/unit/pages/progress_page_tip_test.dart: Progress Page Tip Banner Logic Tests Tip counter increments correctly
+✅ test/unit/pages/progress_page_tip_test.dart: Progress Page Tip Banner Logic Tests Tip banner shows when count is less than 2
+✅ test/unit/pages/progress_page_tip_test.dart: Progress Page Tip Banner Logic Tests Tip banner does not show when count is 2 or more
+✅ test/unit/pages/progress_page_tip_test.dart: Progress Page Tip Banner Logic Tests Tip banner counter initializes to 0 by default
+✅ test/unit/pages/progress_page_tip_test.dart: Progress Page Dispose Behavior Tests ScaffoldMessenger hideCurrentSnackBar should be callable
+✅ test/unit/pages/progress_page_tip_test.dart: Progress Page Dispose Behavior Tests Progress page should clean up resources on dispose
+✅ test/unit/pages/bible_reader_page_test.dart: BibleReaderPage Widget Tests should create BibleReaderPage with versions
+✅ test/unit/pages/bible_reader_page_test.dart: BibleReaderPage Widget Tests should show loading indicator initially
+✅ test/unit/pages/bible_reader_page_test.dart: BibleReaderPage Widget Tests should have AppBar with title
+✅ test/unit/pages/bible_reader_page_test.dart: BibleReaderPage Widget Tests should accept empty versions list
+✅ test/unit/pages/bible_reader_page_border_theme_test.dart: BibleReaderPage Border Theme Integration Tests OutlinedButton respects theme border color in light mode
+✅ test/unit/pages/bible_reader_page_border_theme_test.dart: BibleReaderPage Border Theme Integration Tests OutlinedButton respects theme border color in dark mode
+✅ test/unit/pages/bible_reader_page_border_theme_test.dart: BibleReaderPage Border Theme Integration Tests Theme border color can be extracted for custom containers
+✅ test/unit/pages/bible_reader_page_border_theme_test.dart: BibleReaderPage Border Theme Integration Tests Container can use theme border color via Theme.of(context)
+✅ test/unit/pages/bible_reader_page_border_theme_test.dart: BibleReaderPage Border Theme Integration Tests All themes provide correct border color
+✅ test/unit/pages/bible_reader_fixes_test.dart: Bible Search Priority Tests search should prioritize exact word matches
+✅ test/unit/pages/bible_reader_fixes_test.dart: Bible Search Priority Tests search should handle word at start of text
+✅ test/unit/pages/bible_reader_fixes_test.dart: Bible Search Priority Tests search should handle partial matches as lowest priority
+✅ test/unit/pages/bible_reader_fixes_test.dart: Bible Verse Selector Tests should validate verse number within chapter range
+✅ test/unit/pages/bible_reader_fixes_test.dart: Bible Verse Selector Tests should initialize verse to 1 when changing chapters
+✅ test/unit/pages/bible_reader_fixes_test.dart: Book Search Filter Tests should filter books by partial name match
+✅ test/unit/pages/bible_reader_fixes_test.dart: Book Search Filter Tests should require minimum 2 characters for filtering
+✅ test/unit/pages/bible_reader_fixes_test.dart: Book Search Filter Tests should filter books case-insensitively
+✅ test/unit/pages/bible_reader_fixes_test.dart: Font Size Controls Tests font controls should be hideable
+✅ test/unit/pages/bible_reader_fixes_test.dart: Font Size Controls Tests font size should stay within bounds
+✅ test/unit/pages/bible_reader_fixes_test.dart: Marked Verses Persistence Tests marked verses should persist in set
+✅ test/unit/pages/bible_reader_fixes_test.dart: Marked Verses Persistence Tests marked verses should use correct key format
+✅ test/unit/pages/bible_reader_fixes_test.dart: Marked Verses Persistence Tests should toggle verse marking correctly
+✅ test/unit/pages/bible_reader_fixes_test.dart: BibleDbService Tests should create BibleDbService instance
+✅ test/unit/pages/bible_reader_fixes_test.dart: BibleDbService Tests should have searchVerses method
+✅ test/unit/pages/bible_reader_fixes_test.dart: BibleDbService Tests should have findBookByName method
+✅ test/unit/pages/bible_consecutive_verse_navigation_test.dart: Consecutive Verse Navigation Tests Verse keys should be created for all verses in chapter
+✅ test/unit/pages/bible_consecutive_verse_navigation_test.dart: Consecutive Verse Navigation Tests Verse keys should persist across multiple selections
+✅ test/unit/pages/bible_consecutive_verse_navigation_test.dart: Consecutive Verse Navigation Tests Consecutive forward navigation (Psalm 119 verses 1-15)
+✅ test/unit/pages/bible_consecutive_verse_navigation_test.dart: Consecutive Verse Navigation Tests Consecutive backward navigation (Psalm 119 verses 176-160)
+✅ test/unit/pages/bible_consecutive_verse_navigation_test.dart: Consecutive Verse Navigation Tests Random verse navigation (10 consecutive selections)
+✅ test/unit/pages/bible_consecutive_verse_navigation_test.dart: Consecutive Verse Navigation Tests Verse navigation with state updates
+✅ test/unit/pages/bible_consecutive_verse_navigation_test.dart: Consecutive Verse Navigation Tests Mixed chapter and verse navigation
+✅ test/unit/pages/bible_consecutive_verse_navigation_test.dart: Consecutive Verse Navigation Tests Verse dropdown value should update correctly
+✅ test/unit/pages/bible_consecutive_verse_navigation_test.dart: Consecutive Verse Navigation Tests GlobalKey context should be available after build
+✅ test/unit/pages/bible_consecutive_verse_navigation_test.dart: Consecutive Verse Navigation Tests Psalm 119 full navigation test (10+ consecutive)
+✅ test/unit/pages/bible_reader_navigation_test.dart: Bible Verse Navigation Tests should calculate scroll position for verse
+✅ test/unit/pages/bible_reader_navigation_test.dart: Bible Verse Navigation Tests should handle verse index 0 (first verse)
+✅ test/unit/pages/bible_reader_navigation_test.dart: Bible Verse Navigation Tests should handle last verse in chapter
+✅ test/unit/pages/bible_reader_navigation_test.dart: Marked Verses Save Functionality Tests should add selected verses to persistent marked verses
+✅ test/unit/pages/bible_reader_navigation_test.dart: Marked Verses Save Functionality Tests should not duplicate verses when saving
+✅ test/unit/pages/bible_reader_navigation_test.dart: Marked Verses Save Functionality Tests should clear selected verses after save
+✅ test/unit/pages/bible_reader_navigation_test.dart: Translation Keys Tests should have all required bible translation keys
+✅ test/unit/pages/bible_reader_navigation_test.dart: Translation Keys Tests should follow translation key naming convention
+✅ test/unit/pages/bible_reader_navigation_test.dart: ScrollController Integration Tests should handle scrolling to verse number
+✅ test/unit/pages/bible_reader_navigation_test.dart: ScrollController Integration Tests should return -1 for non-existent verse
+✅ test/unit/pages/bible_reader_navigation_test.dart: Search Result Navigation Tests should extract verse number from search result
+✅ test/unit/pages/bible_reader_navigation_test.dart: Search Result Navigation Tests should handle search result with all required fields
+✅ test/unit/pages/devocionales_page_share_test.dart: Devotional Sharing Logic Tests Devotional model should have all required fields
+✅ test/unit/pages/devocionales_page_share_test.dart: Devotional Sharing Logic Tests Meditations should be formatted correctly for sharing
+✅ test/unit/pages/devocionales_page_share_test.dart: Devotional Sharing Logic Tests Share text should not duplicate app invitation message
+✅ test/unit/pages/devocionales_page_share_test.dart: Devotional Sharing Logic Tests Divider length validation - should be 20 characters
+✅ test/unit/pages/devocionales_page_share_test.dart: Devotional Sharing Logic Tests Share text edge case: empty meditations
+✅ test/unit/pages/devocionales_page_share_test.dart: Devotional Sharing Logic Tests Share text edge case: very long content
+✅ test/unit/pages/devocionales_page_share_test.dart: Devotional Sharing Logic Tests Share text edge case: special characters in content
+✅ test/unit/pages/devocionales_page_share_test.dart: Devotional Sharing Logic Tests Share text edge case: null optional fields
+✅ test/unit/pages/devocionales_page_share_test.dart: ParaMeditar Model Tests ParaMeditar should store citation and text correctly
+✅ test/unit/pages/devocionales_page_share_test.dart: ParaMeditar Model Tests Multiple meditations should be independent
+✅ test/unit/pages/devocionales_page_share_test.dart: Sharing Functionality Integration Tests ShareAsText should only include devotional content
+✅ test/unit/pages/devocionales_page_share_test.dart: Sharing Functionality Integration Tests Drawer share message should be separate
+✅ test/unit/pages/devocionales_page_share_test.dart: Direct Share Behavior Tests Share button should trigger text share directly
+✅ test/unit/pages/devocionales_page_share_test.dart: Direct Share Behavior Tests Share as image functionality should be commented out
+✅ test/unit/pages/devocionales_page_share_test.dart: Direct Share Behavior Tests Share options dialog should be commented out
+✅ test/unit/pages/devocionales_page_share_test.dart: Direct Share Behavior Tests Direct share behavior matches user flow
+✅ test/unit/pages/prayers_page_tabs_test.dart: Prayers Page Tab Logic Tests Tab labels are properly formatted with line breaks
+✅ test/unit/pages/prayers_page_tabs_test.dart: Prayers Page Tab Logic Tests Prayers page should have 3 tabs
+✅ test/unit/pages/prayers_page_tabs_test.dart: Prayers Page Tab Logic Tests Tab labels use FittedBox for auto-scaling
+✅ test/unit/pages/prayers_page_tabs_test.dart: Prayers Page Tab Logic Tests Tabs should be scrollable to accommodate all options
+✅ test/unit/pages/prayers_page_tabs_test.dart: Prayers Page Tab Logic Tests Active tab icon is schedule icon
+✅ test/unit/pages/prayers_page_tabs_test.dart: Prayers Page Tab Logic Tests Answered tab icon is check circle icon
+✅ test/unit/pages/prayers_page_tabs_test.dart: Prayers Page Tab Logic Tests Thanksgiving tab uses emoji icon
+✅ test/unit/pages/prayers_page_tabs_test.dart: Prayers Page Tab Logic Tests Tab padding allows proper fitting
+✅ test/unit/pages/prayers_page_tabs_test.dart: Prayers Page Tab User Behavior Tests User can view active prayers
+✅ test/unit/pages/prayers_page_tabs_test.dart: Prayers Page Tab User Behavior Tests User can view answered prayers
+✅ test/unit/pages/prayers_page_tabs_test.dart: Prayers Page Tab User Behavior Tests User can view thanksgivings
+✅ test/unit/pages/prayers_page_tabs_test.dart: Prayers Page Tab User Behavior Tests Tab controller manages 3 tabs
+✅ test/unit/pages/bible_reader_scroll_precision_test.dart: Bible Verse Scroll Precision Tests should calculate accurate scroll position based on text length
+✅ test/unit/pages/bible_reader_scroll_precision_test.dart: Bible Verse Scroll Precision Tests should calculate accurate scroll position for long verse (Psalm 119)
+✅ test/unit/pages/bible_reader_scroll_precision_test.dart: Bible Verse Scroll Precision Tests should accumulate height correctly for multiple verses
+✅ test/unit/pages/bible_reader_scroll_precision_test.dart: Bible Verse Scroll Precision Tests should handle Psalm 119 navigation (176 verses)
+✅ test/unit/pages/bible_reader_scroll_precision_test.dart: Bible Verse Scroll Precision Tests should clamp scroll position to max scroll extent
+✅ test/unit/pages/bible_reader_scroll_precision_test.dart: Bible Verse Scroll Precision Tests should not scroll below 0
+✅ test/unit/pages/bible_reader_scroll_precision_test.dart: Bible Verse Scroll Precision Tests should center verse on screen with offset
+✅ test/unit/pages/bible_reader_scroll_precision_test.dart: Bible Verse Scroll Precision Tests should handle different font sizes
+✅ test/unit/pages/bible_reader_scroll_precision_test.dart: Bible Verse Scroll Precision Tests should handle verse 1 (first verse)
+✅ test/unit/pages/bible_reader_scroll_precision_test.dart: Bible Verse Scroll Precision Tests should find correct verse index for verse 119 in Psalm 119
+✅ test/unit/pages/bible_reader_scroll_precision_test.dart: Bible Verse Scroll Precision Tests should handle mid-chapter verse navigation
+✅ test/unit/pages/bible_reader_scroll_precision_test.dart: Bottom Sheet Modal Tests should format single verse reference correctly
+✅ test/unit/pages/bible_reader_scroll_precision_test.dart: Bottom Sheet Modal Tests should format verse range reference correctly
+✅ test/unit/pages/bible_reader_scroll_precision_test.dart: Bottom Sheet Modal Tests should handle non-contiguous verses
+✅ test/unit/pages/bible_simplified_scroll_test.dart: Simplified Verse Scroll Tests GlobalKey approach uses Scrollable.ensureVisible
+✅ test/unit/pages/bible_simplified_scroll_test.dart: Simplified Verse Scroll Tests should scroll to exact verse regardless of text length
+✅ test/unit/pages/bible_simplified_scroll_test.dart: Simplified Verse Scroll Tests should scroll accurately with different font sizes
+✅ test/unit/pages/bible_simplified_scroll_test.dart: Simplified Verse Scroll Tests should handle Psalm 119 navigation accurately
+✅ test/unit/pages/bible_simplified_scroll_test.dart: Simplified Verse Scroll Tests should position verse at 20% from top
+✅ test/unit/pages/bible_simplified_scroll_test.dart: Simplified Verse Scroll Tests GlobalKey map should be cleared when loading new chapter
+✅ test/unit/pages/bible_simplified_scroll_test.dart: Simplified Verse Scroll Tests should create unique GlobalKey for each verse
+✅ test/unit/pages/bible_simplified_scroll_test.dart: Simplified Verse Scroll Tests should handle verse not found gracefully
+✅ test/unit/pages/bible_simplified_scroll_test.dart: Search Results Message Tests should show helpful retry message when no results
+✅ test/unit/pages/bible_simplified_scroll_test.dart: Search Results Message Tests should keep user on search screen when no results
+✅ test/unit/pages/bible_simplified_scroll_test.dart: Text Normalization in Sharing Tests BibleTextNormalizer should remove HTML tags
+✅ test/unit/pages/bible_simplified_scroll_test.dart: Text Normalization in Sharing Tests shared verse text should not contain brackets
+✅ test/unit/pages/bible_simplified_scroll_test.dart: Text Normalization in Sharing Tests shared verse text should not contain angle brackets
+✅ test/unit/language_initialization_test.dart: Language Initialization and Feature Flags Tests Feature flags should be properly defined
+✅ test/unit/language_initialization_test.dart: Language Initialization and Feature Flags Tests Feature flags should be compile-time constants
+✅ test/unit/widgets/bible_verse_grid_selector_test.dart: Bible Verse Grid Selector Tests Should display grid with correct number of verses
+✅ test/unit/widgets/bible_verse_grid_selector_test.dart: Bible Verse Grid Selector Tests Should highlight selected verse
+✅ test/unit/widgets/bible_verse_grid_selector_test.dart: Bible Verse Grid Selector Tests Should handle Psalm 119 (176 verses)
+✅ test/unit/widgets/bible_verse_grid_selector_test.dart: Bible Verse Grid Selector Tests Should call callback when verse is tapped
+✅ test/unit/widgets/bible_verse_grid_selector_test.dart: Bible Verse Grid Selector Tests Should display book and chapter info in header
+✅ test/unit/widgets/bible_verse_grid_selector_test.dart: Bible Verse Grid Selector Tests Should handle single verse chapter
+✅ test/unit/widgets/prayers_page_badges_test.dart: Prayers Page Count Badges should display count badge for active prayers
+✅ test/unit/widgets/prayers_page_badges_test.dart: Prayers Page Count Badges should display count badge for answered prayers
+✅ test/unit/widgets/bible_verse_grid_selector_test.dart: Bible Verse Grid Selector Tests Should close dialog when close button is tapped
+✅ test/unit/widgets/prayers_page_badges_test.dart: Prayers Page Count Badges should display count badge for thanksgivings
+✅ test/unit/widgets/prayers_page_badges_test.dart: Prayers Page Count Badges should not display badge when count is zero
+✅ test/unit/widgets/bible_verse_grid_selector_test.dart: Bible Verse Grid Selector Tests Should display scrollbar for long chapters
+✅ test/unit/widgets/bible_verse_grid_selector_test.dart: Bible Verse Grid Selector Tests Grid should arrange verses in 8 columns
+✅ test/unit/widgets/prayers_page_badges_test.dart: Prayers Page Count Badges should display 99+ for counts over 99
+✅ test/unit/widgets/prayers_page_badges_test.dart: Prayers Page Count Badges should display multiple badges for different tabs
+✅ test/unit/widgets/bible_verse_grid_selector_test.dart: Bible Verse Grid Selector Tests Should navigate multiple verses in sequence
+✅ test/unit/widgets/bible_verse_grid_selector_test.dart: Bible Verse Grid Selector Tests Should handle rapid verse selections
+✅ test/unit/widgets/bible_verse_grid_selector_test.dart: Bible Verse Grid Selector Tests Should work with different book names
+✅ test/unit/widgets/bible_verse_grid_selector_test.dart: Verse Grid Edge Cases Should handle first verse selection
+✅ test/unit/widgets/bible_verse_grid_selector_test.dart: Verse Grid Edge Cases Should handle last verse selection
+✅ test/unit/widgets/bible_verse_grid_selector_test.dart: Verse Grid Edge Cases Should handle middle verse selection
+✅ test/unit/widgets/bible_chapter_grid_selector_test.dart: Bible Chapter Grid Selector Tests Should display grid with correct number of chapters
+✅ test/unit/translations/drawer_and_url_test.dart: Drawer Translation Tests Spanish drawer label should say "Oraciones y agradecimientos"
+✅ test/unit/translations/drawer_and_url_test.dart: Drawer Translation Tests English drawer label should say "Prayers and thanksgivings"
+✅ test/unit/translations/drawer_and_url_test.dart: Drawer Translation Tests French drawer label should say "Prières et remerciements"
+✅ test/unit/translations/drawer_and_url_test.dart: Drawer Translation Tests Portuguese drawer label should say "Orações e agradecimentos"
+✅ test/unit/translations/drawer_and_url_test.dart: Drawer Translation Tests Japanese drawer label should say "祈りと感謝"
+✅ test/unit/widgets/bible_chapter_grid_selector_test.dart: Bible Chapter Grid Selector Tests Should highlight selected chapter
+✅ test/unit/translations/drawer_and_url_test.dart: Drawer Translation Tests All 5 languages have updated drawer labels
+✅ test/unit/translations/drawer_and_url_test.dart: Website URL Tests About page should have correct website URL without trailing slash
+✅ test/unit/translations/drawer_and_url_test.dart: Website URL Tests Website URL appears in both display text and launchURL call
+✅ test/unit/widgets/bible_chapter_grid_selector_test.dart: Bible Chapter Grid Selector Tests Should handle Psalms (150 chapters)
+✅ test/unit/widgets/bible_chapter_grid_selector_test.dart: Bible Chapter Grid Selector Tests Should call callback when chapter is tapped
+✅ test/unit/widgets/bible_chapter_grid_selector_test.dart: Bible Chapter Grid Selector Tests Should display book name in header
+✅ test/unit/widgets/bible_chapter_grid_selector_test.dart: Bible Chapter Grid Selector Tests Should handle single chapter book
+✅ test/unit/widgets/bible_chapter_grid_selector_test.dart: Bible Chapter Grid Selector Tests Should close dialog when close button is tapped
+✅ test/unit/widgets/bible_chapter_grid_selector_test.dart: Bible Chapter Grid Selector Tests Should display scrollbar for long books
+✅ test/unit/widgets/bible_chapter_grid_selector_test.dart: Bible Chapter Grid Selector Tests Grid should arrange chapters in 6 columns
+✅ test/unit/widgets/bible_chapter_grid_selector_test.dart: Bible Chapter Grid Selector Tests Should navigate multiple chapters in sequence
+✅ test/unit/widgets/bible_chapter_grid_selector_test.dart: Bible Chapter Grid Selector Tests Should handle rapid chapter selections
+✅ test/unit/features/thanksgiving_user_flow_test.dart: Thanksgiving Feature User Behavior Tests User can tap FAB to show prayer/thanksgiving choice
+✅ test/unit/features/thanksgiving_user_flow_test.dart: Thanksgiving Feature User Behavior Tests Thanksgiving option shows correct emoji and label
+✅ test/unit/features/thanksgiving_user_flow_test.dart: Thanksgiving Feature User Behavior Tests User can add a new thanksgiving
+✅ test/unit/features/thanksgiving_user_flow_test.dart: Thanksgiving Feature User Behavior Tests Thanksgiving modal allows text input
+✅ test/unit/features/thanksgiving_user_flow_test.dart: Thanksgiving Feature User Behavior Tests User flow: Complete thanksgiving creation
+✅ test/unit/features/thanksgiving_user_flow_test.dart: Thanksgiving Feature User Behavior Tests Thanksgiving feature is accessible from devocionales page
+✅ test/unit/features/thanksgiving_user_flow_test.dart: Thanksgiving Feature User Behavior Tests Thanksgiving can have long text content
+✅ test/unit/features/thanksgiving_user_flow_test.dart: Thanksgiving Feature User Behavior Tests Multiple thanksgivings can be added
+✅ test/unit/features/thanksgiving_user_flow_test.dart: Thanksgiving Feature User Behavior Tests Thanksgiving date is captured correctly
+✅ test/unit/widgets/bible_chapter_grid_selector_test.dart: Bible Chapter Grid Selector Tests Should work with different book names
+✅ test/unit/widgets/bible_chapter_grid_selector_test.dart: Chapter Grid Edge Cases Should handle first chapter selection
+✅ test/unit/widgets/bible_chapter_grid_selector_test.dart: Chapter Grid Edge Cases Should handle last chapter selection
+✅ test/unit/widgets/bible_chapter_grid_selector_test.dart: Chapter Grid Edge Cases Should handle middle chapter selection
+::group::✅ test/bible_text_formatter_test.dart: Bible Text Formatter Tests should format Bible books correctly for all supported languages
+[BibleTextFormatter] formatBibleBook called with reference="1 Juan", language="es"
+[BibleTextFormatter] formatBibleBook called with reference="2 Corintios", language="es"
+[BibleTextFormatter] formatBibleBook called with reference="3 Juan", language="es"
+[BibleTextFormatter] formatBibleBook called with reference="Génesis", language="es"
+[BibleTextFormatter] formatBibleBook called with reference="1 John", language="en"
+[BibleTextFormatter] formatBibleBook called with reference="2 Corinthians", language="en"
+[BibleTextFormatter] formatBibleBook called with reference="3 John", language="en"
+[BibleTextFormatter] formatBibleBook called with reference="Genesis", language="en"
+[BibleTextFormatter] formatBibleBook called with reference="1 João", language="pt"
+[BibleTextFormatter] formatBibleBook called with reference="2 Coríntios", language="pt"
+[BibleTextFormatter] formatBibleBook called with reference="3 João", language="pt"
+[BibleTextFormatter] formatBibleBook called with reference="Gênesis", language="pt"
+[BibleTextFormatter] formatBibleBook called with reference="1 Jean", language="fr"
+[BibleTextFormatter] formatBibleBook called with reference="2 Corinthiens", language="fr"
+[BibleTextFormatter] formatBibleBook called with reference="3 Jean", language="fr"
+[BibleTextFormatter] formatBibleBook called with reference="Genèse", language="fr"
+::endgroup::
+::group::✅ test/bible_text_formatter_test.dart: Bible Text Formatter Tests should format Bible books in middle of sentence for all languages
+[BibleTextFormatter] formatBibleBook called with reference="En la reflexión, 2 Pedro nos enseña", language="es"
+[BibleTextFormatter] formatBibleBook called with reference="Como dice 1 Juan sobre el amor", language="es"
+[BibleTextFormatter] formatBibleBook called with reference="In the reflection, 2 Peter teaches us", language="en"
+[BibleTextFormatter] formatBibleBook called with reference="As 1 John says about love", language="en"
+[BibleTextFormatter] formatBibleBook called with reference="Na reflexão, 2 Pedro nos ensina", language="pt"
+[BibleTextFormatter] formatBibleBook called with reference="Dans la réflexion, 2 Pierre nous enseigne", language="fr"
+::endgroup::
+::group::✅ test/bible_text_formatter_test.dart: Bible Text Formatter Tests should format multiple Bible books in same text
+[BibleTextFormatter] formatBibleBook called with reference="1 Juan y 2 Pedro hablan del amor", language="es"
+[BibleTextFormatter] formatBibleBook called with reference="1 John and 2 Peter speak about love", language="en"
+::endgroup::
+✅ test/bible_text_formatter_test.dart: Bible Text Formatter Tests should return Bible version expansions for all languages
+::group::✅ test/bible_text_formatter_test.dart: Bible Text Formatter Tests should default to Spanish for unknown languages
+[BibleTextFormatter] formatBibleBook called with reference="1 Juan", language="unknown"
+[BibleTextFormatter] Unknown language "unknown", using Spanish as default
+::endgroup::
+
+🎉 524 tests passed.
