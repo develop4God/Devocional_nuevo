@@ -1,0 +1,32 @@
+
+✅ test/integration/tts_di_integration_test.dart: TTS DI Integration Tests ServiceLocator provides ITtsService instance
+✅ test/integration/tts_di_integration_test.dart: TTS DI Integration Tests ServiceLocator returns same singleton instance on multiple calls
+::group::✅ test/integration/tts_di_integration_test.dart: TTS DI Integration Tests AudioController works with injected ITtsService
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-01 05:27:27.811290
+AudioController: Reactive proxy disposed
+✅ TTS: Stop completed at 2025-12-01 05:27:27.817896
+🧹 TTS: Service disposed at 2025-12-01 05:27:27.819142
+::endgroup::
+::group::✅ test/integration/thanksgiving_integration_test.dart: Thanksgiving Integration Tests - Real User Scenarios User creates multiple thanksgivings and they persist
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+::endgroup::
+::group::✅ test/integration/thanksgiving_integration_test.dart: Thanksgiving Integration Tests - Real User Scenarios User edits a thanksgiving after creating it
+Error backing up thanksgivings to file: Binding has not yet been initialized.
+The "instance
