@@ -53,6 +53,17 @@ class _BibleReaderPageState extends State<BibleReaderPage> {
     super.dispose();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final bibleProvider =
+        Provider.of<BibleSelectedVersionProvider>(context, listen: false);
+    if (bibleProvider.state == BibleProviderState.loading) {
+      // Inicializar solo si está en loading
+      bibleProvider.initialize();
+    }
+  }
+
   // UI helper methods
   void _scrollToVerse(int verseNumber) async {
     final verses = _controller!.state.verses;
