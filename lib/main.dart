@@ -131,10 +131,8 @@ void main() async {
   // Inicializar providers con idioma correcto antes de runApp
   final localizationProvider = LocalizationProvider();
   await localizationProvider.initialize();
-  final initialLocale = localizationProvider.currentLocale;
   final bibleVersionProvider = BibleSelectedVersionProvider();
-  await bibleVersionProvider.initialize(
-      languageCode: initialLocale.languageCode);
+  // No inicializar aquí, solo crear la instancia. La inicialización se hará en BibleReaderPage.
 
   runApp(
     MultiProvider(
