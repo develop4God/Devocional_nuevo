@@ -14,6 +14,7 @@
 /// and testing.
 library;
 
+import 'dart:developer' as developer;
 import 'package:bible_reader_core/bible_reader_core.dart';
 import 'package:devocional_nuevo/adapters/http_client_adapter.dart';
 import 'package:devocional_nuevo/adapters/storage_adapter.dart';
@@ -128,15 +129,31 @@ void setupServiceLocator() {
     ),
   );
 
-  // Register ChurnPredictionService as a factory (NOT singleton)
-  // Each call creates a new instance for better testability and to avoid state issues
-  // Note: NotificationService is a singleton, so we get the same instance
-  locator.registerFactory<ChurnPredictionService>(
-    () => ChurnPredictionService(
-      statsService: locator.get<SpiritualStatsService>(),
-      notificationService: NotificationService(),
-    ),
-  );
+  // GAP-6: Feature flag for churn prediction (compile-time)
+  // Can be controlled via --dart-define=CHURN_ENABLED=true
+  const bool isChurnFeatureEnabled =
+      bool.fromEnvironment('CHURN_ENABLED', defaultValue: true);
+
+  if (isChurnFeatureEnabled) {
+    // Register ChurnPredictionService as a factory (NOT singleton)
+    // Each call creates a new instance for better testability and to avoid state issues
+    // Note: NotificationService is a singleton, so we get the same instance
+    locator.registerFactory<ChurnPredictionService>(
+      () => ChurnPredictionService(
+        statsService: locator.get<SpiritualStatsService>(),
+        notificationService: NotificationService(),
+      ),
+    );
+    developer.log(
+      'ChurnPredictionService registered (feature enabled)',
+      name: 'ServiceLocator',
+    );
+  } else {
+    developer.log(
+      'ChurnPredictionService NOT registered (feature disabled)',
+      name: 'ServiceLocator',
+    );
+  }
 
   // Register SpiritualStatsService as a lazy singleton
   locator.registerLazySingleton<SpiritualStatsService>(

@@ -150,7 +150,10 @@
     "paypal_no_app_error": "No se pudo abrir PayPal. Asegúrate de tener un navegador web o la app de PayPal instalada.",
     "backup_option": "Copia de seguridad",
     "backup_subtitle": "Respalda y restaura tus datos de forma segura",
-    "voice_sample_text": "Toca para escuchar una muestra de audio. Luego guarde su preferencia."
+    "voice_sample_text": "Toca para escuchar una muestra de audio. Luego guarde su preferencia.",
+    "churn_notifications_enabled": "Recordatorios de Re-enganche",
+    "churn_notifications_subtitle": "Recibe notificaciones cuando has estado ausente",
+    "churn_notifications_disabled": "No recibirás recordatorios de inactividad"
   },
   "notifications_config_page": {
     "notifications_config": "Configuración de notificaciones",

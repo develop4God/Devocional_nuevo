@@ -30,6 +30,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   double _ttsSpeed = 0.4;
+  bool _churnNotificationsEnabled = true; // Default: ON
 
   // Get VoiceSettingsService instance from the Service Locator
   late final VoiceSettingsService _voiceSettingsService =
@@ -46,6 +47,7 @@ class _SettingsPageState extends State<SettingsPage> {
     _loadTtsSettings();
     _loadFeatureFlags();
     _loadSavedVoices();
+    _loadChurnNotificationPreference();
   }
 
   Future<void> _loadTtsSettings() async {
@@ -97,6 +99,61 @@ class _SettingsPageState extends State<SettingsPage> {
     final prefs = await SharedPreferences.getInstance();
     // Load saved voice name for the current language (used by VoiceSelectorDialog)
     prefs.getString('tts_voice_name_$language');
+  }
+
+  Future<void> _loadChurnNotificationPreference() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final enabled =
+          prefs.getBool('churn_notifications_enabled') ?? true; // Default: ON
+      if (mounted) {
+        setState(() {
+          _churnNotificationsEnabled = enabled;
+        });
+      }
+    } catch (e) {
+      developer.log('Error loading churn notification preference: $e');
+    }
+  }
+
+  Future<void> _updateChurnNotifications(bool value) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('churn_notifications_enabled', value);
+
+      if (mounted) {
+        setState(() {
+          _churnNotificationsEnabled = value;
+        });
+
+        // Show feedback to user
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              value
+                  ? 'settings.churn_notifications_enabled'.tr()
+                  : 'settings.churn_notifications_disabled'.tr(),
+            ),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+
+      developer.log(
+        'Churn notifications ${value ? "enabled" : "disabled"}',
+        name: 'SettingsPage',
+      );
+    } catch (e) {
+      developer.log('Error updating churn notification preference: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error updating notification preference: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   Future<void> _onSpeedChanged(double value) async {
@@ -396,6 +453,43 @@ class _SettingsPageState extends State<SettingsPage> {
                         }
                       },
                     ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Notifications Settings
+                  Text(
+                    'Notifications',
+                    style: textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+
+                  // Churn Notification Toggle
+                  SwitchListTile(
+                    value: _churnNotificationsEnabled,
+                    onChanged: _updateChurnNotifications,
+                    title: Text(
+                      'settings.churn_notifications_enabled'.tr(),
+                      style: textTheme.bodyMedium?.copyWith(
+                        fontSize: 16,
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'settings.churn_notifications_subtitle'.tr(),
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                        fontSize: 12,
+                      ),
+                    ),
+                    secondary: Icon(
+                      Icons.notifications_active,
+                      color: colorScheme.primary,
+                    ),
+                    activeColor: colorScheme.primary,
                   ),
 
                   const SizedBox(height: 20),

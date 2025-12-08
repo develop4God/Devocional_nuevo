@@ -1,6 +1,7 @@
 // lib/services/churn_prediction_service.dart
 
 import 'dart:developer' as developer;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/spiritual_stats_model.dart';
 import '../services/spiritual_stats_service.dart';
 import '../services/notification_service.dart';
@@ -9,6 +10,7 @@ import '../services/service_locator.dart';
 
 /// Risk levels for user churn prediction
 enum ChurnRiskLevel {
+  unknown, // Insufficient data for prediction
   low, // User is actively engaged
   medium, // User shows signs of decreased engagement
   high, // User is at high risk of churning
@@ -44,11 +46,93 @@ class ChurnPrediction {
   }
 }
 
+/// Validation for minimum data requirements
+class _ChurnValidation {
+  static const int minReadings = 3;
+  static const int minAccountAgeDays = 7;
+
+  static bool hasMinimumData(SpiritualStats stats) {
+    // Check if user has enough data for meaningful prediction
+    if (stats.totalDevocionalesRead < minReadings) {
+      return false;
+    }
+
+    // Check if account is old enough
+    if (stats.lastActivityDate != null) {
+      final accountAge = DateTime.now()
+          .toUtc()
+          .difference(stats.lastActivityDate!.toUtc())
+          .inDays
+          .abs();
+      if (accountAge < minAccountAgeDays &&
+          stats.totalDevocionalesRead < minReadings) {
+        return false;
+      }
+    }
+
+    // Must have last activity date
+    if (stats.lastActivityDate == null && stats.totalDevocionalesRead == 0) {
+      return false;
+    }
+
+    return true;
+  }
+}
+
+/// Internal cache for engagement metrics
+class _MetricsCache {
+  Map<String, dynamic>? _cachedSummary;
+  DateTime? _cacheTimestamp;
+  static const _cacheDuration = Duration(minutes: 5);
+
+  bool get isValid =>
+      _cacheTimestamp != null &&
+      DateTime.now().difference(_cacheTimestamp!) < _cacheDuration;
+
+  void set(Map<String, dynamic> summary) {
+    _cachedSummary = summary;
+    _cacheTimestamp = DateTime.now();
+    developer.log(
+      'Metrics cache SET - valid for ${_cacheDuration.inMinutes} minutes',
+      name: 'ChurnPredictionService',
+    );
+  }
+
+  Map<String, dynamic>? get() {
+    if (isValid && _cachedSummary != null) {
+      developer.log(
+        'Metrics cache HIT',
+        name: 'ChurnPredictionService',
+      );
+      return Map<String, dynamic>.from(_cachedSummary!);
+    }
+    developer.log(
+      'Metrics cache MISS',
+      name: 'ChurnPredictionService',
+    );
+    return null;
+  }
+
+  void invalidate() {
+    _cachedSummary = null;
+    _cacheTimestamp = null;
+    developer.log(
+      'Metrics cache INVALIDATED',
+      name: 'ChurnPredictionService',
+    );
+  }
+}
+
 /// Service for predicting user churn and triggering engagement notifications
 /// This service is NOT a singleton - use dependency injection via ServiceLocator
 class ChurnPredictionService {
   final SpiritualStatsService _statsService;
   final NotificationService _notificationService;
+  final _MetricsCache _cache = _MetricsCache();
+
+  // Shared Preferences key for churn notification setting
+  static const String _prefKeyChurnNotifications =
+      'churn_notifications_enabled';
 
   // Configuration constants
   static const int _inactiveDaysThresholdHigh = 7; // 1 week
@@ -72,12 +156,42 @@ class ChurnPredictionService {
   Future<ChurnPrediction> predictChurnRisk() async {
     try {
       final stats = await _statsService.getStats();
-      final now = DateTime.now();
 
-      // Calculate days since last activity
-      final daysSinceLastActivity = stats.lastActivityDate != null
-          ? now.difference(stats.lastActivityDate!).inDays
-          : 999; // Very high number if never active
+      // GAP-2: Validate minimum data requirements
+      if (!_ChurnValidation.hasMinimumData(stats)) {
+        developer.log(
+          'Insufficient data for churn prediction - returning unknown risk',
+          name: 'ChurnPredictionService',
+        );
+
+        return ChurnPrediction(
+          riskLevel: ChurnRiskLevel.unknown,
+          riskScore: 0.0,
+          daysSinceLastActivity: 0,
+          shouldSendNotification: false,
+          reason: 'Insufficient data for prediction',
+          calculatedAt: DateTime.now().toUtc(),
+        );
+      }
+
+      // GAP-5: UTC normalization for timezone consistency
+      final nowUtc = DateTime.now().toUtc();
+
+      // Calculate days since last activity with UTC normalization
+      int daysSinceLastActivity = 999; // Default for null
+      if (stats.lastActivityDate != null) {
+        final lastActivityUtc = stats.lastActivityDate!.toUtc();
+        daysSinceLastActivity = nowUtc.difference(lastActivityUtc).inDays;
+
+        // Safety check: prevent negative values from date arithmetic
+        if (daysSinceLastActivity < 0) {
+          developer.log(
+            'WARNING: Negative days since last activity detected, using 0',
+            name: 'ChurnPredictionService',
+          );
+          daysSinceLastActivity = 0;
+        }
+      }
 
       // Calculate churn risk score (0.0 to 1.0)
       final riskScore = _calculateRiskScore(stats, daysSinceLastActivity);
@@ -106,25 +220,36 @@ class ChurnPredictionService {
         daysSinceLastActivity: daysSinceLastActivity,
         shouldSendNotification: shouldSendNotification,
         reason: reason,
-        calculatedAt: now,
+        calculatedAt: nowUtc,
       );
 
+      // GAP-4: Basic analytics logging
       developer.log(
-        'Churn prediction calculated: $reason (risk: ${riskLevel.toString()}, score: ${riskScore.toStringAsFixed(2)})',
+        'ChurnAnalytics: prediction_made '
+        'risk=${riskLevel.name} '
+        'score=${riskScore.toStringAsFixed(2)} '
+        'inactive_days=$daysSinceLastActivity',
         name: 'ChurnPredictionService',
       );
 
       return prediction;
-    } catch (e) {
+    } catch (e, stackTrace) {
       developer.log(
         'Error predicting churn risk: $e',
         name: 'ChurnPredictionService',
         error: e,
+        stackTrace: stackTrace,
       );
 
-      // Return safe default
+      // GAP-4: Log analytics for failures
+      developer.log(
+        'ChurnAnalytics: prediction_failed error=$e',
+        name: 'ChurnPredictionService',
+      );
+
+      // Return safe default - unknown risk, no notification
       return ChurnPrediction(
-        riskLevel: ChurnRiskLevel.low,
+        riskLevel: ChurnRiskLevel.unknown,
         riskScore: 0.0,
         daysSinceLastActivity: 0,
         shouldSendNotification: false,
@@ -138,6 +263,15 @@ class ChurnPredictionService {
   double _calculateRiskScore(SpiritualStats stats, int daysSinceLastActivity) {
     double score = 0.0;
 
+    // GAP-2: Safety check for negative or invalid values
+    if (daysSinceLastActivity < 0) {
+      developer.log(
+        'WARNING: Invalid daysSinceLastActivity in score calculation',
+        name: 'ChurnPredictionService',
+      );
+      daysSinceLastActivity = 0;
+    }
+
     // Factor 1: Days since last activity (weight: 40%)
     if (daysSinceLastActivity >= _inactiveDaysThresholdHigh) {
       score += 0.4;
@@ -146,6 +280,7 @@ class ChurnPredictionService {
     }
 
     // Factor 2: Streak decline (weight: 30%)
+    // GAP-2: Prevent division by zero
     if (stats.longestStreak > 0) {
       final streakDeclineRatio =
           1.0 - (stats.currentStreak / stats.longestStreak);
@@ -166,6 +301,7 @@ class ChurnPredictionService {
       score += 0.1;
     }
 
+    // GAP-2: Clamp to valid range
     return score.clamp(0.0, 1.0);
   }
 
@@ -237,6 +373,10 @@ class ChurnPredictionService {
   }
 
   /// Send engagement notification based on churn risk
+  /// @deprecated Use ChurnMonitoringHelper.performDailyCheck() instead
+  /// This method is kept for backward compatibility with existing tests
+  /// GAP-3: Notification logic should be handled by ChurnMonitoringHelper
+  @Deprecated('Use ChurnMonitoringHelper for notification handling')
   Future<void> sendChurnPreventionNotification(
       ChurnPrediction prediction) async {
     if (!prediction.shouldSendNotification) {
@@ -248,6 +388,19 @@ class ChurnPredictionService {
     }
 
     try {
+      // Check if churn notifications are enabled by user
+      final prefs = await SharedPreferences.getInstance();
+      final churnNotificationsEnabled =
+          prefs.getBool(_prefKeyChurnNotifications) ?? true; // Default: ON
+
+      if (!churnNotificationsEnabled) {
+        developer.log(
+          'Churn notifications disabled by user preference - skipping',
+          name: 'ChurnPredictionService',
+        );
+        return;
+      }
+
       final notificationsEnabled =
           await _notificationService.areNotificationsEnabled();
       if (!notificationsEnabled) {
@@ -292,6 +445,8 @@ class ChurnPredictionService {
         return localization.translate('churn_notification.medium_title');
       case ChurnRiskLevel.low:
         return localization.translate('churn_notification.low_title');
+      case ChurnRiskLevel.unknown:
+        return 'Notification'; // Fallback, should not send notification for unknown
     }
   }
 
@@ -309,6 +464,8 @@ class ChurnPredictionService {
         return localization.translate('churn_notification.medium_body');
       case ChurnRiskLevel.low:
         return localization.translate('churn_notification.low_body');
+      case ChurnRiskLevel.unknown:
+        return 'Insufficient data'; // Fallback, should not send notification for unknown
     }
   }
 
@@ -342,10 +499,16 @@ class ChurnPredictionService {
   /// Get user engagement summary
   Future<Map<String, dynamic>> getEngagementSummary() async {
     try {
+      // Check cache first
+      final cached = _cache.get();
+      if (cached != null) {
+        return cached;
+      }
+
       final stats = await _statsService.getStats();
       final prediction = await predictChurnRisk();
 
-      return {
+      final summary = {
         'total_readings': stats.totalDevocionalesRead,
         'current_streak': stats.currentStreak,
         'longest_streak': stats.longestStreak,
@@ -355,6 +518,11 @@ class ChurnPredictionService {
         'engagement_status': _getEngagementStatus(prediction.riskLevel),
         'last_activity_date': stats.lastActivityDate?.toIso8601String(),
       };
+
+      // Cache the result
+      _cache.set(summary);
+
+      return summary;
     } catch (e) {
       developer.log(
         'Error getting engagement summary: $e',
@@ -365,9 +533,32 @@ class ChurnPredictionService {
     }
   }
 
+  /// Invalidate the metrics cache (call when user stats change)
+  void invalidateCache() {
+    _cache.invalidate();
+  }
+
+  /// Check if churn notifications are enabled
+  static Future<bool> areChurnNotificationsEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_prefKeyChurnNotifications) ?? true; // Default: ON
+  }
+
+  /// Set churn notification preference
+  static Future<void> setChurnNotificationsEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_prefKeyChurnNotifications, enabled);
+    developer.log(
+      'Churn notifications ${enabled ? "enabled" : "disabled"}',
+      name: 'ChurnPredictionService',
+    );
+  }
+
   /// Get engagement status text
   String _getEngagementStatus(ChurnRiskLevel riskLevel) {
     switch (riskLevel) {
+      case ChurnRiskLevel.unknown:
+        return 'Insufficient Data';
       case ChurnRiskLevel.low:
         return 'Highly Engaged';
       case ChurnRiskLevel.medium:

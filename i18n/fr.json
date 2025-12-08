@@ -151,7 +151,10 @@
     "paypal_no_app_error": "Impossible d'ouvrir PayPal. Assurez-vous d'avoir un navigateur web ou l'application PayPal installée.",
     "backup_option": "Sauvegarde",
     "backup_subtitle": "Sauvegardez et restaurez vos données en toute sécurité",
-    "voice_sample_text": "Appuyez pour écouter un échantillon audio. Ensuite, enregistrez votre préférence."
+    "voice_sample_text": "Appuyez pour écouter un échantillon audio. Ensuite, enregistrez votre préférence.",
+    "churn_notifications_enabled": "Rappels de Ré-engagement",
+    "churn_notifications_subtitle": "Recevez des notifications lorsque vous êtes absent",
+    "churn_notifications_disabled": "Vous ne recevrez pas de rappels d'inactivité"
   },
   "notifications_config_page": {
     "notifications_config": "Config. des Notifications",

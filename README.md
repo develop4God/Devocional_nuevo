@@ -24,6 +24,7 @@ Multilingual mobile application for reading daily devotionals with advanced audi
 - **🔊 Audio TTS**: Text-to-speech reading of devotionals
 - **⭐ Favorites**: Save your favorite devotionals
 - **📊 Spiritual Tracking**: Reading statistics and progress
+- **🧘 Churn Prediction**: Automatic engagement monitoring with smart re-engagement notifications
 - **🙏 Prayer Management**: Personal prayer tracking
 - **📴 Offline Mode**: Access without internet connection
 - **🔔 Notifications**: Customizable reminders
@@ -32,6 +33,22 @@ Multilingual mobile application for reading daily devotionals with advanced audi
 - **🚀 Smart Onboarding**: Guided initial setup with BLoC architecture
 - **⭐ Smart Review System**: Requests reviews at optimal moments
 - **📱 Android 15 Support**: Compatible with edge-to-edge display and modern APIs
+
+## 🧘 Churn Prediction
+
+Automatic user engagement monitoring with smart re-engagement notifications.
+
+**Features:**
+- Multi-factor risk analysis (activity, streaks, reading patterns)
+- Configurable notifications (Settings → Notifications → Re-engagement Reminders)
+- Multi-language support (5 languages)
+- Privacy-focused (all data stored locally)
+- Performance optimized with 5-minute caching
+
+**How it works:**
+The system analyzes your reading patterns and engagement metrics to identify when you might need a gentle reminder to return. Notifications are sent only when needed, respecting your preferences.
+
+See [docs/CHURN_PREDICTION.md](docs/CHURN_PREDICTION.md) for technical details.
 
 ### 🛠️ Technologies
 

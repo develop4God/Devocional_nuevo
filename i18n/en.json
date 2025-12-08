@@ -151,7 +151,10 @@
     "paypal_no_app_error": "Could not open PayPal. Make sure you have a web browser or PayPal app installed.",
     "backup_option": "Backup",
     "backup_subtitle": "Backup and restore your data securely",
-    "voice_sample_text": "Tap to listen to an audio sample. Then save your preference."
+    "voice_sample_text": "Tap to listen to an audio sample. Then save your preference.",
+    "churn_notifications_enabled": "Re-engagement Reminders",
+    "churn_notifications_subtitle": "Receive notifications when you've been away",
+    "churn_notifications_disabled": "You won't receive inactivity reminders"
   },
   "notifications_config_page": {
     "notifications_config": "Notifications Config",

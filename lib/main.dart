@@ -18,6 +18,7 @@ import 'package:devocional_nuevo/providers/localization_provider.dart';
 import 'package:devocional_nuevo/services/connectivity_service.dart';
 import 'package:devocional_nuevo/services/google_drive_auth_service.dart';
 import 'package:devocional_nuevo/services/google_drive_backup_service.dart';
+import 'package:devocional_nuevo/services/churn_prediction_service.dart';
 import 'package:devocional_nuevo/services/notification_service.dart';
 import 'package:devocional_nuevo/services/onboarding_service.dart';
 import 'package:devocional_nuevo/services/service_locator.dart';
@@ -204,6 +205,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   Future<void> _performDailyChurnCheckIfNeeded() async {
+    // GAP-6: Check if feature is enabled
+    if (!serviceLocator.isRegistered<ChurnPredictionService>()) {
+      return;
+    }
+
     final now = DateTime.now();
 
     // Check if 24 hours have passed since last check
@@ -548,12 +554,20 @@ class _AppInitializerState extends State<AppInitializer> {
     }
 
     // Churn prediction initial check
+    // GAP-6: Check if feature is enabled before calling
     try {
-      await ChurnMonitoringHelper.performDailyCheck();
-      developer.log(
-        'AppInitializer: Initial churn check completed',
-        name: 'MainApp',
-      );
+      if (serviceLocator.isRegistered<ChurnPredictionService>()) {
+        await ChurnMonitoringHelper.performDailyCheck();
+        developer.log(
+          'AppInitializer: Initial churn check completed',
+          name: 'MainApp',
+        );
+      } else {
+        developer.log(
+          'AppInitializer: Churn prediction feature disabled',
+          name: 'MainApp',
+        );
+      }
     } catch (e) {
       developer.log(
         'ERROR: Failed to initialize churn service: $e',

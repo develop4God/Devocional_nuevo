@@ -151,7 +151,10 @@
     "paypal_error": "PayPalを開く際にエラーが発生しました: {error}",
     "paypal_no_app_error": "PayPalを開けませんでした。ウェブブラウザまたはPayPalアプリがインストールされていることを確認してください。",
     "backup_option": "バックアップ",
-    "backup_subtitle": "データを安全にバックアップして復元"
+    "backup_subtitle": "データを安全にバックアップして復元",
+    "churn_notifications_enabled": "再エンゲージメントリマインダー",
+    "churn_notifications_subtitle": "しばらく不在の時に通知を受け取る",
+    "churn_notifications_disabled": "非アクティブリマインダーは受け取りません"
   },
   "notifications_config_page": {
     "notifications_config": "通知設定",
