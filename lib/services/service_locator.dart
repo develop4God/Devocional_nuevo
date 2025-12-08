@@ -132,9 +132,14 @@ void setupServiceLocator() {
   // Each call creates a new instance for better testability and to avoid state issues
   locator.registerFactory<ChurnPredictionService>(
     () => ChurnPredictionService(
-      statsService: SpiritualStatsService(),
+      statsService: locator.get<SpiritualStatsService>(),
       notificationService: NotificationService(),
     ),
+  );
+
+  // Register SpiritualStatsService as a lazy singleton
+  locator.registerLazySingleton<SpiritualStatsService>(
+    () => SpiritualStatsService(),
   );
 
   // Add more service registrations here as needed

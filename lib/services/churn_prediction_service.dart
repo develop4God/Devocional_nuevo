@@ -148,16 +148,12 @@ class ChurnPredictionService {
     // Factor 3: Reading frequency (weight: 20%)
     if (stats.totalDevocionalesRead < _minReadingsForPrediction) {
       score += 0.2; // New users are at risk
-    } else if (daysSinceLastActivity > 0 && stats.lastActivityDate != null) {
-      // Check reading rate decline
-      final totalDays =
-          DateTime.now().difference(stats.lastActivityDate!).inDays;
-      if (totalDays > 0) {
-        final readingRate = stats.totalDevocionalesRead / totalDays;
-        if (readingRate < 0.3) {
-          // Less than 1 reading every 3 days
-          score += 0.2;
-        }
+    } else if (daysSinceLastActivity > 0) {
+      // Check recent reading decline based on days since last activity
+      // A user who was active but stopped is at higher risk
+      if (daysSinceLastActivity > 1) {
+        // Penalize for inactivity period
+        score += 0.2;
       }
     }
 
