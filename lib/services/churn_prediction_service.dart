@@ -1,7 +1,6 @@
 // lib/services/churn_prediction_service.dart
 
 import 'dart:developer' as developer;
-import 'package:flutter/material.dart';
 import '../models/spiritual_stats_model.dart';
 import '../services/spiritual_stats_service.dart';
 import '../services/notification_service.dart';
@@ -54,6 +53,10 @@ class ChurnPredictionService {
   static const int _inactiveDaysThresholdMedium = 3; // 3 days
   static const int _minReadingsForPrediction =
       3; // Minimum readings to analyze patterns
+  
+  // Reading frequency risk constants
+  static const int _inactivityDaysForPenalty = 1; // Days threshold for inactivity penalty
+  static const double _inactivityPenaltyScore = 0.2; // Penalty score for inactive users
 
   ChurnPredictionService({
     required SpiritualStatsService statsService,
@@ -147,14 +150,11 @@ class ChurnPredictionService {
 
     // Factor 3: Reading frequency (weight: 20%)
     if (stats.totalDevocionalesRead < _minReadingsForPrediction) {
-      score += 0.2; // New users are at risk
-    } else if (daysSinceLastActivity > 0) {
+      score += _inactivityPenaltyScore; // New users are at risk
+    } else if (daysSinceLastActivity > _inactivityDaysForPenalty) {
       // Check recent reading decline based on days since last activity
       // A user who was active but stopped is at higher risk
-      if (daysSinceLastActivity > 1) {
-        // Penalize for inactivity period
-        score += 0.2;
-      }
+      score += _inactivityPenaltyScore;
     }
 
     // Factor 4: Zero current streak (weight: 10%)
@@ -315,7 +315,10 @@ class ChurnPredictionService {
         await sendChurnPreventionNotification(prediction);
       }
 
-      debugPrint('Daily churn check completed: ${prediction.reason}');
+      developer.log(
+        'Daily churn check completed: ${prediction.reason}',
+        name: 'ChurnPredictionService',
+      );
     } catch (e) {
       developer.log(
         'Error in daily churn check: $e',

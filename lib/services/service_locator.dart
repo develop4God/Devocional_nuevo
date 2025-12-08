@@ -130,6 +130,7 @@ void setupServiceLocator() {
 
   // Register ChurnPredictionService as a factory (NOT singleton)
   // Each call creates a new instance for better testability and to avoid state issues
+  // Note: NotificationService is a singleton, so we get the same instance
   locator.registerFactory<ChurnPredictionService>(
     () => ChurnPredictionService(
       statsService: locator.get<SpiritualStatsService>(),

@@ -121,7 +121,8 @@ void main() {
 
       // Assert
       expect(prediction.shouldSendNotification, false); // Don't spam new users
-      expect(prediction.daysSinceLastActivity, greaterThan(100)); // Very high
+      // When lastActivityDate is null, service returns 999 days
+      expect(prediction.daysSinceLastActivity, greaterThan(100));
     });
 
     test('handles user with minimal readings', () async {
