@@ -658,5 +658,13 @@
     "no_thanksgivings_description": "Create your first thanksgiving to express your gratitude to God.",
     "days_old_single": "({days} day)",
     "days_old_plural": "({days} days)"
+  },
+  "churn_notification": {
+    "high_title": "We miss you! 🙏",
+    "high_body": "{days} days have passed. Come back and connect with your faith.",
+    "medium_title": "Your devotional is waiting 📖",
+    "medium_body": "Don't lose your streak. Read today's devotional.",
+    "low_title": "Keep it up! 🔥",
+    "low_body": "Your dedication is inspiring!"
   }
 }

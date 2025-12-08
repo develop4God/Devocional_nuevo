@@ -23,6 +23,7 @@ import 'package:devocional_nuevo/services/onboarding_service.dart';
 import 'package:devocional_nuevo/services/service_locator.dart';
 import 'package:devocional_nuevo/services/spiritual_stats_service.dart';
 import 'package:devocional_nuevo/services/tts/i_tts_service.dart';
+import 'package:devocional_nuevo/utils/churn_monitoring_helper.dart';
 import 'package:devocional_nuevo/splash_screen.dart';
 import 'package:devocional_nuevo/utils/constants.dart';
 import 'package:devocional_nuevo/utils/theme_constants.dart';
@@ -178,13 +179,51 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   late Future<bool> _initializationFuture;
+  DateTime? _lastChurnCheck;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _initializationFuture = _initializeApp();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _performDailyChurnCheckIfNeeded();
+    }
+  }
+
+  Future<void> _performDailyChurnCheckIfNeeded() async {
+    final now = DateTime.now();
+
+    // Check if 24 hours have passed since last check
+    if (_lastChurnCheck == null ||
+        now.difference(_lastChurnCheck!).inHours >= 24) {
+      try {
+        await ChurnMonitoringHelper.performDailyCheck();
+        _lastChurnCheck = now;
+        developer.log(
+          'Daily churn check completed',
+          name: 'MainApp',
+        );
+      } catch (e) {
+        developer.log(
+          'Daily churn check failed: $e',
+          name: 'MainApp',
+          error: e,
+        );
+      }
+    }
   }
 
   /// Metodo unificado que inicializa servicios y verifica onboarding
@@ -506,6 +545,22 @@ class _AppInitializerState extends State<AppInitializer> {
         'AppInitializer: Sistema de backup de estadísticas deshabilitado por feature flag',
         name: 'MainApp',
       );
+    }
+
+    // Churn prediction initial check
+    try {
+      await ChurnMonitoringHelper.performDailyCheck();
+      developer.log(
+        'AppInitializer: Initial churn check completed',
+        name: 'MainApp',
+      );
+    } catch (e) {
+      developer.log(
+        'ERROR: Failed to initialize churn service: $e',
+        name: 'MainApp',
+        error: e,
+      );
+      // No es crítico, la app puede continuar funcionando
     }
   }
 

@@ -658,5 +658,13 @@
     "no_thanksgivings_description": "Crie sua primeira ação de graças para expressar sua gratidão a Deus.",
     "days_old_single": "({days} dia)",
     "days_old_plural": "({days} dias)"
+  },
+  "churn_notification": {
+    "high_title": "Sentimos sua falta! 🙏",
+    "high_body": "Já se passaram {days} dias. Volte e conecte-se com sua fé.",
+    "medium_title": "Seu devocional está esperando 📖",
+    "medium_body": "Não perca sua sequência. Leia o devocional de hoje.",
+    "low_title": "Continue assim! 🔥",
+    "low_body": "Sua dedicação é inspiradora!"
   }
 }

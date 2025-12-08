@@ -4,6 +4,8 @@ import 'dart:developer' as developer;
 import '../models/spiritual_stats_model.dart';
 import '../services/spiritual_stats_service.dart';
 import '../services/notification_service.dart';
+import '../services/localization_service.dart';
+import '../services/service_locator.dart';
 
 /// Risk levels for user churn prediction
 enum ChurnRiskLevel {
@@ -53,10 +55,12 @@ class ChurnPredictionService {
   static const int _inactiveDaysThresholdMedium = 3; // 3 days
   static const int _minReadingsForPrediction =
       3; // Minimum readings to analyze patterns
-  
+
   // Reading frequency risk constants
-  static const int _inactivityDaysForPenalty = 1; // Days threshold for inactivity penalty
-  static const double _inactivityPenaltyScore = 0.2; // Penalty score for inactive users
+  static const int _inactivityDaysForPenalty =
+      1; // Days threshold for inactivity penalty
+  static const double _inactivityPenaltyScore =
+      0.2; // Penalty score for inactive users
 
   ChurnPredictionService({
     required SpiritualStatsService statsService,
@@ -279,25 +283,32 @@ class ChurnPredictionService {
 
   /// Get notification title based on risk level
   String _getNotificationTitle(ChurnRiskLevel riskLevel) {
+    final localization = getService<LocalizationService>();
+
     switch (riskLevel) {
       case ChurnRiskLevel.high:
-        return '¡Te extrañamos! 🙏';
+        return localization.translate('churn_notification.high_title');
       case ChurnRiskLevel.medium:
-        return 'Tu devocional te está esperando 📖';
+        return localization.translate('churn_notification.medium_title');
       case ChurnRiskLevel.low:
-        return '¡Continúa tu racha! 🔥';
+        return localization.translate('churn_notification.low_title');
     }
   }
 
   /// Get notification body based on prediction
   String _getNotificationBody(ChurnPrediction prediction) {
+    final localization = getService<LocalizationService>();
+
     switch (prediction.riskLevel) {
       case ChurnRiskLevel.high:
-        return 'Han pasado ${prediction.daysSinceLastActivity} días. Vuelve a conectarte con tu fe.';
+        return localization.translate(
+          'churn_notification.high_body',
+          {'days': prediction.daysSinceLastActivity.toString()},
+        );
       case ChurnRiskLevel.medium:
-        return 'No pierdas tu racha. Lee el devocional de hoy.';
+        return localization.translate('churn_notification.medium_body');
       case ChurnRiskLevel.low:
-        return '¡Sigue así! Tu dedicación es inspiradora.';
+        return localization.translate('churn_notification.low_body');
     }
   }
 

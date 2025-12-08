@@ -2,7 +2,9 @@
 
 import 'package:devocional_nuevo/models/spiritual_stats_model.dart';
 import 'package:devocional_nuevo/services/churn_prediction_service.dart';
+import 'package:devocional_nuevo/services/localization_service.dart';
 import 'package:devocional_nuevo/services/notification_service.dart';
+import 'package:devocional_nuevo/services/service_locator.dart';
 import 'package:devocional_nuevo/services/spiritual_stats_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -12,18 +14,51 @@ class MockSpiritualStatsService extends Mock implements SpiritualStatsService {}
 
 class MockNotificationService extends Mock implements NotificationService {}
 
+class MockLocalizationService extends Mock implements LocalizationService {}
+
 void main() {
   late MockSpiritualStatsService mockStatsService;
   late MockNotificationService mockNotificationService;
+  late MockLocalizationService mockLocalizationService;
   late ChurnPredictionService churnPredictionService;
+  late ServiceLocator serviceLocator;
 
   setUp(() {
+    // Reset and setup service locator
+    serviceLocator = ServiceLocator();
+    serviceLocator.reset();
+
     mockStatsService = MockSpiritualStatsService();
     mockNotificationService = MockNotificationService();
+    mockLocalizationService = MockLocalizationService();
+
+    // Register mocks in service locator
+    serviceLocator.registerFactory<LocalizationService>(
+      () => mockLocalizationService,
+    );
+
+    // Setup default localization responses
+    when(() => mockLocalizationService.translate('churn_notification.high_title'))
+        .thenReturn('We miss you! 🙏');
+    when(() => mockLocalizationService.translate('churn_notification.medium_title'))
+        .thenReturn('Your devotional is waiting 📖');
+    when(() => mockLocalizationService.translate('churn_notification.low_title'))
+        .thenReturn('Keep it up! 🔥');
+    when(() => mockLocalizationService.translate('churn_notification.high_body', any()))
+        .thenReturn('X days have passed. Come back and connect with your faith.');
+    when(() => mockLocalizationService.translate('churn_notification.medium_body'))
+        .thenReturn('Don\'t lose your streak. Read today\'s devotional.');
+    when(() => mockLocalizationService.translate('churn_notification.low_body'))
+        .thenReturn('Your dedication is inspiring!');
+
     churnPredictionService = ChurnPredictionService(
       statsService: mockStatsService,
       notificationService: mockNotificationService,
     );
+  });
+
+  tearDown(() {
+    serviceLocator.reset();
   });
 
   group('ChurnPredictionService - Risk Calculation', () {

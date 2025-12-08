@@ -657,5 +657,13 @@
     "no_thanksgivings_description": "Crea tu primer agradecimiento para expresar tu gratitud a Dios.",
     "days_old_single": "({days} día)",
     "days_old_plural": "({days} días)"
+  },
+  "churn_notification": {
+    "high_title": "¡Te extrañamos! 🙏",
+    "high_body": "Han pasado {days} días. Vuelve a conectarte con tu fe.",
+    "medium_title": "Tu devocional te está esperando 📖",
+    "medium_body": "No pierdas tu racha. Lee el devocional de hoy.",
+    "low_title": "¡Continúa tu racha! 🔥",
+    "low_body": "¡Sigue así! Tu dedicación es inspiradora."
   }
 }

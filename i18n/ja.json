@@ -658,5 +658,13 @@
     "no_thanksgivings_description": "神への感謝を表現するために最初の感謝を作成してください。",
     "days_old_single": "({days}日)",
     "days_old_plural": "({days}日)"
+  },
+  "churn_notification": {
+    "high_title": "お待ちしています！🙏",
+    "high_body": "{days}日が経過しました。信仰とつながりを取り戻しましょう。",
+    "medium_title": "あなたのデボーションが待っています📖",
+    "medium_body": "連続記録を失わないでください。今日のデボーションを読みましょう。",
+    "low_title": "その調子です！🔥",
+    "low_body": "あなたの献身は励みになります！"
   }
 }
