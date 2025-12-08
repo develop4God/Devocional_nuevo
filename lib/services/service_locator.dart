@@ -17,7 +17,10 @@ library;
 import 'package:bible_reader_core/bible_reader_core.dart';
 import 'package:devocional_nuevo/adapters/http_client_adapter.dart';
 import 'package:devocional_nuevo/adapters/storage_adapter.dart';
+import 'package:devocional_nuevo/services/churn_prediction_service.dart';
 import 'package:devocional_nuevo/services/localization_service.dart';
+import 'package:devocional_nuevo/services/notification_service.dart';
+import 'package:devocional_nuevo/services/spiritual_stats_service.dart';
 import 'package:devocional_nuevo/services/tts/i_tts_service.dart';
 import 'package:devocional_nuevo/services/tts/voice_settings_service.dart';
 import 'package:devocional_nuevo/services/tts_service.dart';
@@ -122,6 +125,15 @@ void setupServiceLocator() {
     () => BibleVersionRepository(
       httpClient: locator.get<HttpClient>(),
       storage: locator.get<BibleVersionStorage>(),
+    ),
+  );
+
+  // Register ChurnPredictionService as a factory (NOT singleton)
+  // Each call creates a new instance for better testability and to avoid state issues
+  locator.registerFactory<ChurnPredictionService>(
+    () => ChurnPredictionService(
+      statsService: SpiritualStatsService(),
+      notificationService: NotificationService(),
     ),
   );
 
