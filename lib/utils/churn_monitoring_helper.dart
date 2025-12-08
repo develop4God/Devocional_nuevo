@@ -181,7 +181,7 @@ class ChurnMonitoringHelper {
         title,
         body,
         payload: 'churn_prevention',
-        id: DateTime.now().millisecondsSinceEpoch,
+        id: DateTime.now().toUtc().millisecondsSinceEpoch,
       );
 
       developer.log(

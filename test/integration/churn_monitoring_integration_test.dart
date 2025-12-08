@@ -6,6 +6,7 @@ import 'package:devocional_nuevo/services/localization_service.dart';
 import 'package:devocional_nuevo/services/notification_service.dart';
 import 'package:devocional_nuevo/services/service_locator.dart';
 import 'package:devocional_nuevo/services/spiritual_stats_service.dart';
+import 'package:devocional_nuevo/utils/churn_monitoring_helper.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -82,13 +83,21 @@ void main() {
       final initialStats = await statsService.getStats();
       expect(initialStats.totalDevocionalesRead, equals(0));
 
-      // Act: Perform daily check
-      await churnService.performDailyChurnCheck();
+      // Act: Perform daily check (uses helper which calls predictChurnRisk)
+      await ChurnMonitoringHelper.performDailyCheck();
 
       // Assert: Check completed without errors and risk calculated
       final prediction = await churnService.predictChurnRisk();
-      expect(prediction.riskLevel, isNotNull);
-      expect(prediction.daysSinceLastActivity, greaterThan(0));
+      expect(
+          prediction.riskLevel,
+          isIn([
+            ChurnRiskLevel.unknown,
+            ChurnRiskLevel.low,
+            ChurnRiskLevel.medium,
+            ChurnRiskLevel.high,
+          ]));
+      // New user with no data should return unknown
+      expect(prediction.riskLevel, equals(ChurnRiskLevel.unknown));
     });
 
     test('retrieves engagement summary with correct structure', () async {

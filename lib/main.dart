@@ -40,6 +40,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -182,7 +183,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   late Future<bool> _initializationFuture;
-  DateTime? _lastChurnCheck;
+  // Remove in-memory timestamp - will use SharedPreferences instead
 
   @override
   void initState() {
@@ -210,25 +211,47 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       return;
     }
 
-    final now = DateTime.now();
+    try {
+      // Issue #2: Persist last check timestamp in SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      final lastCheckString = prefs.getString('churn_last_check_timestamp');
+      final now = DateTime.now().toUtc(); // Issue #4: Use UTC
 
-    // Check if 24 hours have passed since last check
-    if (_lastChurnCheck == null ||
-        now.difference(_lastChurnCheck!).inHours >= 24) {
-      try {
+      DateTime? lastCheck;
+      if (lastCheckString != null) {
+        try {
+          lastCheck = DateTime.parse(lastCheckString);
+        } catch (e) {
+          developer.log('Error parsing last check timestamp: $e',
+              name: 'MainApp');
+        }
+      }
+
+      // Check if 24 hours have passed since last check
+      if (lastCheck == null || now.difference(lastCheck).inHours >= 24) {
         await ChurnMonitoringHelper.performDailyCheck();
-        _lastChurnCheck = now;
+
+        // Save timestamp after successful check
+        await prefs.setString(
+            'churn_last_check_timestamp', now.toIso8601String());
+
         developer.log(
           'Daily churn check completed',
           name: 'MainApp',
         );
-      } catch (e) {
+      } else {
+        final hoursSinceLastCheck = now.difference(lastCheck).inHours;
         developer.log(
-          'Daily churn check failed: $e',
+          'Skipping churn check - only $hoursSinceLastCheck hours since last check',
           name: 'MainApp',
-          error: e,
         );
       }
+    } catch (e) {
+      developer.log(
+        'Daily churn check failed: $e',
+        name: 'MainApp',
+        error: e,
+      );
     }
   }
 

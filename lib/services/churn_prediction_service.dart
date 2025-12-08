@@ -87,11 +87,11 @@ class _MetricsCache {
 
   bool get isValid =>
       _cacheTimestamp != null &&
-      DateTime.now().difference(_cacheTimestamp!) < _cacheDuration;
+      DateTime.now().toUtc().difference(_cacheTimestamp!) < _cacheDuration;
 
   void set(Map<String, dynamic> summary) {
     _cachedSummary = summary;
-    _cacheTimestamp = DateTime.now();
+    _cacheTimestamp = DateTime.now().toUtc();
     developer.log(
       'Metrics cache SET - valid for ${_cacheDuration.inMinutes} minutes',
       name: 'ChurnPredictionService',
@@ -254,7 +254,7 @@ class ChurnPredictionService {
         daysSinceLastActivity: 0,
         shouldSendNotification: false,
         reason: 'Error calculating churn risk',
-        calculatedAt: DateTime.now(),
+        calculatedAt: DateTime.now().toUtc(),
       );
     }
   }
@@ -418,7 +418,7 @@ class ChurnPredictionService {
         title,
         body,
         payload: 'churn_prevention',
-        id: DateTime.now().millisecondsSinceEpoch,
+        id: DateTime.now().toUtc().millisecondsSinceEpoch,
       );
 
       developer.log(

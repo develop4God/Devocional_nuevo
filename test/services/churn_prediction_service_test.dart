@@ -8,6 +8,7 @@ import 'package:devocional_nuevo/services/service_locator.dart';
 import 'package:devocional_nuevo/services/spiritual_stats_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Mock classes
 class MockSpiritualStatsService extends Mock implements SpiritualStatsService {}
@@ -23,7 +24,10 @@ void main() {
   late ChurnPredictionService churnPredictionService;
   late ServiceLocator serviceLocator;
 
-  setUp(() {
+  setUp(() async {
+    // Setup SharedPreferences with mock
+    SharedPreferences.setMockInitialValues({});
+
     // Reset and setup service locator
     serviceLocator = ServiceLocator();
     serviceLocator.reset();
@@ -38,15 +42,21 @@ void main() {
     );
 
     // Setup default localization responses
-    when(() => mockLocalizationService.translate('churn_notification.high_title'))
+    when(() =>
+            mockLocalizationService.translate('churn_notification.high_title'))
         .thenReturn('We miss you! 🙏');
-    when(() => mockLocalizationService.translate('churn_notification.medium_title'))
+    when(() => mockLocalizationService
+            .translate('churn_notification.medium_title'))
         .thenReturn('Your devotional is waiting 📖');
-    when(() => mockLocalizationService.translate('churn_notification.low_title'))
+    when(() =>
+            mockLocalizationService.translate('churn_notification.low_title'))
         .thenReturn('Keep it up! 🔥');
-    when(() => mockLocalizationService.translate('churn_notification.high_body', any()))
-        .thenReturn('X days have passed. Come back and connect with your faith.');
-    when(() => mockLocalizationService.translate('churn_notification.medium_body'))
+    when(() => mockLocalizationService.translate(
+            'churn_notification.high_body', any()))
+        .thenReturn(
+            'X days have passed. Come back and connect with your faith.');
+    when(() =>
+            mockLocalizationService.translate('churn_notification.medium_body'))
         .thenReturn('Don\'t lose your streak. Read today\'s devotional.');
     when(() => mockLocalizationService.translate('churn_notification.low_body'))
         .thenReturn('Your dedication is inspiring!');
@@ -155,13 +165,13 @@ void main() {
       final prediction = await churnPredictionService.predictChurnRisk();
 
       // Assert
+      expect(prediction.riskLevel, ChurnRiskLevel.unknown); // Insufficient data
       expect(prediction.shouldSendNotification, false); // Don't spam new users
-      // When lastActivityDate is null, service returns 999 days
-      expect(prediction.daysSinceLastActivity, greaterThan(100));
+      expect(prediction.riskScore, equals(0.0)); // No risk score for unknown
     });
 
     test('handles user with minimal readings', () async {
-      // Arrange: User with only 1 reading
+      // Arrange: User with only 1 reading (insufficient for prediction)
       final stats = SpiritualStats(
         totalDevocionalesRead: 1,
         currentStreak: 1,
@@ -174,8 +184,10 @@ void main() {
       final prediction = await churnPredictionService.predictChurnRisk();
 
       // Assert
-      expect(prediction.riskScore, greaterThan(0.0));
-      expect(prediction.daysSinceLastActivity, equals(2));
+      expect(prediction.riskLevel,
+          ChurnRiskLevel.unknown); // Less than minimum 3 readings
+      expect(prediction.riskScore, equals(0.0));
+      expect(prediction.shouldSendNotification, false);
     });
   });
 
@@ -323,7 +335,8 @@ void main() {
       final prediction = await churnPredictionService.predictChurnRisk();
 
       // Assert
-      expect(prediction.riskLevel, ChurnRiskLevel.low);
+      expect(prediction.riskLevel,
+          ChurnRiskLevel.unknown); // Error case returns unknown
       expect(prediction.riskScore, equals(0.0));
       expect(prediction.shouldSendNotification, false);
       expect(prediction.reason, contains('Error'));
