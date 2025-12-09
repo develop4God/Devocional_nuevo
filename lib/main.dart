@@ -15,17 +15,17 @@ import 'package:devocional_nuevo/pages/settings_page.dart';
 import 'package:devocional_nuevo/providers/bible_selected_version_provider.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:devocional_nuevo/providers/localization_provider.dart';
+import 'package:devocional_nuevo/services/churn_prediction_service.dart';
 import 'package:devocional_nuevo/services/connectivity_service.dart';
 import 'package:devocional_nuevo/services/google_drive_auth_service.dart';
 import 'package:devocional_nuevo/services/google_drive_backup_service.dart';
-import 'package:devocional_nuevo/services/churn_prediction_service.dart';
 import 'package:devocional_nuevo/services/notification_service.dart';
 import 'package:devocional_nuevo/services/onboarding_service.dart';
 import 'package:devocional_nuevo/services/service_locator.dart';
 import 'package:devocional_nuevo/services/spiritual_stats_service.dart';
 import 'package:devocional_nuevo/services/tts/i_tts_service.dart';
-import 'package:devocional_nuevo/utils/churn_monitoring_helper.dart';
 import 'package:devocional_nuevo/splash_screen.dart';
+import 'package:devocional_nuevo/utils/churn_monitoring_helper.dart';
 import 'package:devocional_nuevo/utils/constants.dart';
 import 'package:devocional_nuevo/utils/theme_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -183,6 +183,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   late Future<bool> _initializationFuture;
+
   // Remove in-memory timestamp - will use SharedPreferences instead
 
   @override
@@ -229,6 +230,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
       // Check if 24 hours have passed since last check
       if (lastCheck == null || now.difference(lastCheck).inHours >= 24) {
+        developer.log('🟢 [Logger] main.dart: Llamando a performDailyCheck',
+            name: 'MainApp');
         await ChurnMonitoringHelper.performDailyCheck();
 
         // Save timestamp after successful check
