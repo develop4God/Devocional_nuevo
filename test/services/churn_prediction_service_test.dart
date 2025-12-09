@@ -7,6 +7,7 @@ import 'package:devocional_nuevo/services/notification_service.dart';
 import 'package:devocional_nuevo/services/service_locator.dart';
 import 'package:devocional_nuevo/services/spiritual_stats_service.dart';
 import 'package:devocional_nuevo/utils/time_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -89,6 +90,8 @@ void main() {
 
       // Act
       final prediction = await churnPredictionService.predictChurnRisk();
+      debugPrint(
+          '🧪 [Test] LOW risk: score=${prediction.riskScore}, days=${prediction.daysSinceLastActivity}, shouldNotify=${prediction.shouldSendNotification}, level=${prediction.riskLevel}');
 
       // Assert
       expect(prediction.riskLevel, ChurnRiskLevel.low);
@@ -109,6 +112,8 @@ void main() {
 
       // Act
       final prediction = await churnPredictionService.predictChurnRisk();
+      debugPrint(
+          '🧪 [Test] MEDIUM risk: score=${prediction.riskScore}, days=${prediction.daysSinceLastActivity}, shouldNotify=${prediction.shouldSendNotification}, level=${prediction.riskLevel}');
 
       // Assert
       expect(prediction.riskLevel, ChurnRiskLevel.medium);
@@ -129,6 +134,8 @@ void main() {
 
       // Act
       final prediction = await churnPredictionService.predictChurnRisk();
+      debugPrint(
+          '🧪 [Test] HIGH risk (7+ days): score=${prediction.riskScore}, days=${prediction.daysSinceLastActivity}, shouldNotify=${prediction.shouldSendNotification}, level=${prediction.riskLevel}');
 
       // Assert
       expect(prediction.riskLevel, ChurnRiskLevel.high);
@@ -149,6 +156,8 @@ void main() {
 
       // Act
       final prediction = await churnPredictionService.predictChurnRisk();
+      debugPrint(
+          '🧪 [Test] HIGH risk (lost streak): score=${prediction.riskScore}, days=${prediction.daysSinceLastActivity}, shouldNotify=${prediction.shouldSendNotification}, level=${prediction.riskLevel}');
 
       // Assert
       expect(prediction.riskLevel, ChurnRiskLevel.high);
@@ -168,6 +177,8 @@ void main() {
 
       // Act
       final prediction = await churnPredictionService.predictChurnRisk();
+      debugPrint(
+          '🧪 [Test] NEW user: score=${prediction.riskScore}, days=${prediction.daysSinceLastActivity}, shouldNotify=${prediction.shouldSendNotification}, level=${prediction.riskLevel}');
 
       // Assert
       expect(prediction.riskLevel, ChurnRiskLevel.unknown); // Insufficient data
@@ -187,6 +198,8 @@ void main() {
 
       // Act
       final prediction = await churnPredictionService.predictChurnRisk();
+      debugPrint(
+          '🧪 [Test] MINIMAL readings: score=${prediction.riskScore}, days=${prediction.daysSinceLastActivity}, shouldNotify=${prediction.shouldSendNotification}, level=${prediction.riskLevel}');
 
       // Assert
       expect(prediction.riskLevel,

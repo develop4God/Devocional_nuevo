@@ -218,6 +218,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       final lastCheckString = prefs.getString('churn_last_check_timestamp');
       final now = DateTime.now().toUtc(); // Issue #4: Use UTC
 
+      // Detecta si el tiempo está acelerado
+      const bool useAcceleratedTime =
+          bool.fromEnvironment('TIME_ACCEL', defaultValue: false);
+      final int minHours =
+          useAcceleratedTime ? 1 : 24; // 1 hora virtual en QA, 24 en producción
+
       DateTime? lastCheck;
       if (lastCheckString != null) {
         try {
@@ -228,8 +234,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         }
       }
 
-      // Check if 24 hours have passed since last check
-      if (lastCheck == null || now.difference(lastCheck).inHours >= 24) {
+      // Check si han pasado minHours virtuales desde el último chequeo
+      if (lastCheck == null || now.difference(lastCheck).inHours >= minHours) {
         developer.log('🟢 [Logger] main.dart: Llamando a performDailyCheck',
             name: 'MainApp');
         await ChurnMonitoringHelper.performDailyCheck();
@@ -245,7 +251,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       } else {
         final hoursSinceLastCheck = now.difference(lastCheck).inHours;
         developer.log(
-          'Skipping churn check - only $hoursSinceLastCheck hours since last check',
+          'Skipping churn check - only $hoursSinceLastCheck hours since last check (min required: $minHours)',
           name: 'MainApp',
         );
       }
