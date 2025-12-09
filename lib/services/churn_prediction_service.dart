@@ -9,6 +9,7 @@ import '../services/localization_service.dart';
 import '../services/notification_service.dart';
 import '../services/service_locator.dart';
 import '../services/spiritual_stats_service.dart';
+import '../utils/churn_monitoring_helper.dart';
 import '../utils/time_provider.dart';
 
 /// Risk levels for user churn prediction
@@ -161,6 +162,8 @@ class ChurnPredictionService {
         _notificationService = notificationService,
         _timeProvider = timeProvider ?? SystemTimeProvider(),
         _cache = _MetricsCache(timeProvider ?? SystemTimeProvider());
+
+  TimeProvider get timeProvider => _timeProvider;
 
   /// Analyze user behavior and predict churn risk
   Future<ChurnPrediction> predictChurnRisk() async {
@@ -486,14 +489,11 @@ class ChurnPredictionService {
         name: 'ChurnPredictionService',
       );
 
-      final prediction = await predictChurnRisk();
-
-      if (prediction.shouldSendNotification) {
-        await sendChurnPreventionNotification(prediction);
-      }
+      // Usar el helper recomendado en vez del metodo deprecado
+      await ChurnMonitoringHelper.performDailyCheck();
 
       developer.log(
-        'Daily churn check completed: ${prediction.reason}',
+        'Daily churn check completed',
         name: 'ChurnPredictionService',
       );
     } catch (e) {

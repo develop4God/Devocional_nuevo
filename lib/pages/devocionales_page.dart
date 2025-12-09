@@ -40,6 +40,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../controllers/audio_controller.dart';
 import '../controllers/tts_audio_controller.dart';
+import '../services/churn_prediction_service.dart';
 import '../services/spiritual_stats_service.dart';
 import '../services/tts/bible_text_formatter.dart';
 
@@ -703,10 +704,11 @@ class _DevocionalesPageState extends State<DevocionalesPage>
 
   // Banner de aceleración
   Widget _buildTimeAccelerationBanner() {
-    final timeProvider = getService<ChurnPredictionService>()._timeProvider;
-    if (timeProvider is! AcceleratedTimeProvider)
+    final timeProvider = getService<ChurnPredictionService>().timeProvider;
+    if (timeProvider is! AcceleratedTimeProvider) {
       return const SizedBox.shrink();
-    final accelerated = timeProvider as AcceleratedTimeProvider;
+    }
+    final accelerated = timeProvider;
     return TimeAccelerationBanner(accelerated: accelerated);
   }
 
@@ -1265,72 +1267,6 @@ class _DevocionalesPageState extends State<DevocionalesPage>
             );
           },
         ),
-      ),
-    );
-  }
-}
-
-class _TimeAccelerationBanner extends StatelessWidget {
-  final AcceleratedTimeProvider accelerated;
-
-  const _TimeAccelerationBanner({
-    required this.accelerated,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final TextTheme textTheme = Theme.of(context).textTheme;
-
-    return Container(
-      color: colorScheme.primary,
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.access_time,
-            color: colorScheme.onPrimary,
-            size: 20,
-          ),
-          const SizedBox(width: 8),
-          Text(
-            'devotionals.accelerated_time'.tr({
-              'time':
-                  DateFormat.Hm(Localizations.localeOf(context).languageCode)
-                      .format(accelerated.virtualNow),
-              'factor': '${accelerated.accelerationFactor}x',
-            }),
-            style: textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onPrimary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const Spacer(),
-          IconButton(
-            onPressed: () {
-              // Acción para el botón de pausa/reanudación
-              accelerated.toggle();
-            },
-            icon: Icon(
-              accelerated.isActive ? Icons.pause : Icons.play_arrow,
-              color: colorScheme.onPrimary,
-              size: 20,
-            ),
-          ),
-          const SizedBox(width: 8),
-          IconButton(
-            onPressed: () {
-              // Acción para el botón de detención
-              accelerated.stop();
-            },
-            icon: Icon(
-              Icons.stop,
-              color: colorScheme.onPrimary,
-              size: 20,
-            ),
-          ),
-        ],
       ),
     );
   }
