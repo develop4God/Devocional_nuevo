@@ -28,8 +28,13 @@ class AcceleratedTimeProvider implements TimeProvider {
   AcceleratedTimeProvider({
     DateTime? baseTime,
     this.minutesToDays = 1440, // Default: 1 minuto = 1 día
-  }) : baseTime = baseTime ?? DateTime.now().toUtc() {
+  })  : assert(minutesToDays > 0, 'minutesToDays must be positive'),
+        baseTime = baseTime ?? DateTime.now().toUtc() {
     _realStart = DateTime.now();
+    if (minutesToDays != 1) {
+      print('[AcceleratedTimeProvider] Time acceleration active: '
+          '1 minute = ${minutesToDays / 1440} days');
+    }
   }
 
   @override

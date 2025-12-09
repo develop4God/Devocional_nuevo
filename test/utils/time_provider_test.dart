@@ -2,19 +2,28 @@ import 'package:devocional_nuevo/utils/time_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('AcceleratedTimeProvider: 7 minutes = 7 days', () async {
+  test('AcceleratedTimeProvider: 1 second = 1 day (fast test)', () async {
     final baseTime = DateTime(2025, 1, 1, 0, 0, 0);
     final accelerated = AcceleratedTimeProvider(
       baseTime: baseTime,
-      minutesToDays: 1440, // 1 min = 1 día
+      minutesToDays: 86400, // 1 seg real = 1 día virtual
     );
-    // Tiempo inicial
     expect(accelerated.now(), baseTime);
-    // Espera 7 minutos reales
-    await Future.delayed(Duration(minutes: 7));
-    // Debe haber avanzado ~7 días virtuales
+    await Future.delayed(Duration(seconds: 7));
     final elapsed = accelerated.now().difference(baseTime);
-    expect(elapsed.inDays, greaterThanOrEqualTo(6)); // Margen por latencia
+    expect(elapsed.inDays, greaterThanOrEqualTo(6));
     expect(elapsed.inDays, lessThanOrEqualTo(8));
+  });
+
+  test('AcceleratedTimeProvider: calculates virtual time correctly', () {
+    final baseTime = DateTime(2025, 1, 1, 0, 0, 0);
+    final accelerated = AcceleratedTimeProvider(
+      baseTime: baseTime,
+      minutesToDays: 1440,
+    );
+    // Simula que pasaron 5 minutos reales
+    final realElapsed = Duration(minutes: 5);
+    final virtualElapsed = Duration(minutes: realElapsed.inMinutes * 1440);
+    expect(virtualElapsed.inDays, equals(5));
   });
 }

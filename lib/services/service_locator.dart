@@ -139,13 +139,17 @@ void setupServiceLocator() {
       bool.fromEnvironment('CHURN_ENABLED', defaultValue: true);
 
   if (isChurnFeatureEnabled) {
-    // TimeProvider por defecto: producción
-    final TimeProvider timeProvider = SystemTimeProvider();
-    // Si quieres aceleración, reemplaza manualmente por:
-    // final TimeProvider timeProvider = AcceleratedTimeProvider(
-    //   baseTime: DateTime(2025, 1, 1),
-    //   minutesToDays: 1440,
-    // );
+    // Control via --dart-define=TIME_ACCEL=true
+    const bool useAcceleratedTime = bool.fromEnvironment(
+      'TIME_ACCEL',
+      defaultValue: false,
+    );
+    final TimeProvider timeProvider = useAcceleratedTime
+        ? AcceleratedTimeProvider(
+            baseTime: DateTime(2025, 1, 1),
+            minutesToDays: 1440,
+          )
+        : SystemTimeProvider();
     locator.registerFactory<ChurnPredictionService>(
       () => ChurnPredictionService(
         statsService: locator.get<SpiritualStatsService>(),
