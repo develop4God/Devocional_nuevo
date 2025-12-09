@@ -32,8 +32,9 @@ class AcceleratedTimeProvider implements TimeProvider {
         baseTime = baseTime ?? DateTime.now().toUtc() {
     _realStart = DateTime.now();
     if (minutesToDays != 1) {
-      print('[AcceleratedTimeProvider] Time acceleration active: '
-          '1 minute = ${minutesToDays / 1440} days');
+      print('🚀 [AcceleratedTimeProvider] Time acceleration active: '
+          '1 min real = ${minutesToDays} min virtual | base: '
+          '[32m$baseTime[0m');
     }
   }
 
@@ -43,6 +44,9 @@ class AcceleratedTimeProvider implements TimeProvider {
     final virtualElapsed = Duration(
       minutes: realElapsed.inMinutes * minutesToDays,
     );
-    return baseTime.add(virtualElapsed).toUtc();
+    final virtualNow = baseTime.add(virtualElapsed).toUtc();
+    print(
+        '⏱️ [AcceleratedTimeProvider] realElapsed: ${realElapsed.inMinutes} min | virtualNow: $virtualNow');
+    return virtualNow;
   }
 }

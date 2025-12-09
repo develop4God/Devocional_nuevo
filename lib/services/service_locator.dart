@@ -150,6 +150,9 @@ void setupServiceLocator() {
             minutesToDays: 1440,
           )
         : SystemTimeProvider();
+    print(useAcceleratedTime
+        ? '🚀 [ServiceLocator] AcceleratedTimeProvider ACTIVADO'
+        : '🕒 [ServiceLocator] SystemTimeProvider (tiempo real)');
     locator.registerFactory<ChurnPredictionService>(
       () => ChurnPredictionService(
         statsService: locator.get<SpiritualStatsService>(),
