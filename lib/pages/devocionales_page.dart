@@ -12,11 +12,14 @@ import 'package:devocional_nuevo/pages/bible_reader_page.dart';
 import 'package:devocional_nuevo/pages/prayers_page.dart';
 import 'package:devocional_nuevo/pages/progress_page.dart';
 import 'package:devocional_nuevo/pages/settings_page.dart';
+import 'package:devocional_nuevo/pages/time_acceleration_banner.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:devocional_nuevo/services/devocionales_tracking.dart';
+import 'package:devocional_nuevo/services/service_locator.dart';
 import 'package:devocional_nuevo/services/update_service.dart';
 import 'package:devocional_nuevo/utils/bubble_constants.dart';
 import 'package:devocional_nuevo/utils/copyright_utils.dart';
+import 'package:devocional_nuevo/utils/time_provider.dart';
 import 'package:devocional_nuevo/widgets/add_prayer_modal.dart';
 import 'package:devocional_nuevo/widgets/add_thanksgiving_modal.dart';
 import 'package:devocional_nuevo/widgets/app_bar_constants.dart'
@@ -698,6 +701,15 @@ class _DevocionalesPageState extends State<DevocionalesPage>
     return expansions[version] ?? version;
   }
 
+  // Banner de aceleración
+  Widget _buildTimeAccelerationBanner() {
+    final timeProvider = getService<ChurnPredictionService>()._timeProvider;
+    if (timeProvider is! AcceleratedTimeProvider)
+      return const SizedBox.shrink();
+    final accelerated = timeProvider as AcceleratedTimeProvider;
+    return TimeAccelerationBanner(accelerated: accelerated);
+  }
+
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
@@ -743,6 +755,7 @@ class _DevocionalesPageState extends State<DevocionalesPage>
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         body: Stack(
           children: [
+            _buildTimeAccelerationBanner(),
             Consumer<DevocionalProvider>(
               builder: (context, devocionalProvider, child) {
                 final List<Devocional> devocionales =
@@ -1252,6 +1265,72 @@ class _DevocionalesPageState extends State<DevocionalesPage>
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class _TimeAccelerationBanner extends StatelessWidget {
+  final AcceleratedTimeProvider accelerated;
+
+  const _TimeAccelerationBanner({
+    required this.accelerated,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+
+    return Container(
+      color: colorScheme.primary,
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.access_time,
+            color: colorScheme.onPrimary,
+            size: 20,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            'devotionals.accelerated_time'.tr({
+              'time':
+                  DateFormat.Hm(Localizations.localeOf(context).languageCode)
+                      .format(accelerated.virtualNow),
+              'factor': '${accelerated.accelerationFactor}x',
+            }),
+            style: textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onPrimary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const Spacer(),
+          IconButton(
+            onPressed: () {
+              // Acción para el botón de pausa/reanudación
+              accelerated.toggle();
+            },
+            icon: Icon(
+              accelerated.isActive ? Icons.pause : Icons.play_arrow,
+              color: colorScheme.onPrimary,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 8),
+          IconButton(
+            onPressed: () {
+              // Acción para el botón de detención
+              accelerated.stop();
+            },
+            icon: Icon(
+              Icons.stop,
+              color: colorScheme.onPrimary,
+              size: 20,
+            ),
+          ),
+        ],
       ),
     );
   }

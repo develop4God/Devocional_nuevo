@@ -24,6 +24,7 @@ class AcceleratedTimeProvider implements TimeProvider {
   final DateTime baseTime;
   final int minutesToDays; // 1 = normal, 1440 = 1min=1día
   late final DateTime _realStart;
+  bool _active = true;
 
   AcceleratedTimeProvider({
     DateTime? baseTime,
@@ -40,6 +41,7 @@ class AcceleratedTimeProvider implements TimeProvider {
 
   @override
   DateTime now() {
+    if (!_active) return baseTime;
     final realElapsed = DateTime.now().difference(_realStart);
     final virtualElapsed = Duration(
       minutes: realElapsed.inMinutes * minutesToDays,
@@ -49,4 +51,16 @@ class AcceleratedTimeProvider implements TimeProvider {
         '⏱️ [AcceleratedTimeProvider] realElapsed: ${realElapsed.inMinutes} min | virtualNow: $virtualNow');
     return virtualNow;
   }
+
+  // Propiedades públicas para el banner
+  DateTime get virtualNow => now();
+
+  String get accelerationFactor =>
+      minutesToDays == 1440 ? '1d/min' : '${minutesToDays}x';
+
+  bool get isActive => _active;
+
+  void toggle() => _active = !_active;
+
+  void stop() => _active = false;
 }
