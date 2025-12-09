@@ -221,9 +221,21 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       // Detecta si el tiempo está acelerado
       const bool useAcceleratedTime =
           bool.fromEnvironment('TIME_ACCEL', defaultValue: false);
-      final int minHours =
-          useAcceleratedTime ? 1 : 24; // 1 hora virtual en QA, 24 en producción
 
+      if (useAcceleratedTime) {
+        developer.log(
+            '🟢 [Logger] main.dart: QA: Ignorando timestamp, ejecutando chequeo de churn SIEMPRE',
+            name: 'MainApp');
+        await ChurnMonitoringHelper.performDailyCheck();
+        await prefs.setString(
+            'churn_last_check_timestamp', now.toIso8601String());
+        developer.log('Daily churn check completed (QA/acelerado)',
+            name: 'MainApp');
+        return;
+      }
+
+      // Modo producción: validar tiempo
+      final int minHours = 24;
       DateTime? lastCheck;
       if (lastCheckString != null) {
         try {
@@ -239,15 +251,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         developer.log('🟢 [Logger] main.dart: Llamando a performDailyCheck',
             name: 'MainApp');
         await ChurnMonitoringHelper.performDailyCheck();
-
-        // Save timestamp after successful check
         await prefs.setString(
             'churn_last_check_timestamp', now.toIso8601String());
-
-        developer.log(
-          'Daily churn check completed',
-          name: 'MainApp',
-        );
+        developer.log('Daily churn check completed', name: 'MainApp');
       } else {
         final hoursSinceLastCheck = now.difference(lastCheck).inHours;
         developer.log(
