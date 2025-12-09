@@ -31,6 +31,9 @@ class ChurnMonitoringHelper {
   /// Perform daily churn check with rate limiting and analytics
   /// This should be called once per day via background task or app start
   static Future<void> performDailyCheck() async {
+    developer.log(
+        '🟢 [Logger] performDailyCheck: INICIO | Fecha actual: ${DateTime.now().toUtc()}',
+        name: 'ChurnMonitoringHelper');
     try {
       final prefs = await SharedPreferences.getInstance();
       final churnNotificationsEnabled =
