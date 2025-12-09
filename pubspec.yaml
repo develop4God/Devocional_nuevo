@@ -43,7 +43,7 @@ dependencies:
   timezone: ^0.10.1
   permission_handler: ^12.0.1
   flutter_timezone: ^4.1.1 #para obtener la zona horaria del dispositivo real
-  workmanager: ^0.5.2 # Background task scheduling for proactive churn detection
+  workmanager: ^0.8.0 # Background task scheduling for proactive churn detection
 
   # Firebase dependencies
   firebase_core: 3.6.0

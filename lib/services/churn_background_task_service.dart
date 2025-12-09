@@ -2,12 +2,14 @@
 
 import 'dart:developer' as developer;
 
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
 import '../services/churn_prediction_service.dart';
 import '../services/service_locator.dart';
 import '../utils/churn_monitoring_helper.dart';
+import '../utils/time_provider.dart';
 
 /// Background task service for proactive churn detection
 ///
@@ -50,7 +52,6 @@ class ChurnBackgroundTaskService {
       // Initialize WorkManager
       await Workmanager().initialize(
         callbackDispatcher,
-        isInDebugMode: false, // Set to false in production
       );
 
       // Register periodic task (runs daily at approximately 6:00 AM)
@@ -60,7 +61,7 @@ class ChurnBackgroundTaskService {
         frequency: const Duration(hours: 24),
         initialDelay: _calculateInitialDelay(),
         constraints: Constraints(
-          networkType: NetworkType.not_required,
+          networkType: NetworkType.connected,
           requiresBatteryNotLow: false,
           requiresCharging: false,
           requiresDeviceIdle: false,
@@ -90,19 +91,33 @@ class ChurnBackgroundTaskService {
 
   /// Calculate delay until next 6:00 AM
   static Duration _calculateInitialDelay() {
-    final now = DateTime.now();
+    final now = _timeProvider.now();
     var nextRun = DateTime(now.year, now.month, now.day, 6, 0);
 
-    // If it's past 6 AM today, schedule for 6 AM tomorrow
+    // Si ya pasó las 6 AM, programa para el siguiente día
     if (now.isAfter(nextRun)) {
       nextRun = nextRun.add(const Duration(days: 1));
+      developer.log(
+        '🌅 [BG] Cambio de día detectado, próxima ejecución: $nextRun',
+        name: 'ChurnBackgroundTask',
+      );
+      debugPrint(
+          '🌅 [BG] Cambio de día detectado, próxima ejecución: $nextRun');
+    } else {
+      developer.log(
+        '⏰ [BG] Próxima ejecución hoy a las 6:00 AM: $nextRun',
+        name: 'ChurnBackgroundTask',
+      );
+      debugPrint('⏰ [BG] Próxima ejecución hoy a las 6:00 AM: $nextRun');
     }
 
     final delay = nextRun.difference(now);
     developer.log(
-      'Next churn check scheduled for: $nextRun (in ${delay.inHours}h ${delay.inMinutes % 60}m)',
+      '🕒 [BG] Delay calculado: ${delay.inHours}h ${delay.inMinutes % 60}m',
       name: 'ChurnBackgroundTask',
     );
+    debugPrint(
+        '🕒 [BG] Delay calculado: ${delay.inHours}h ${delay.inMinutes % 60}m');
 
     return delay;
   }
@@ -146,33 +161,36 @@ class ChurnBackgroundTaskService {
 /// This runs in a separate isolate and must be a top-level function
 @pragma('vm:entry-point')
 void callbackDispatcher() {
+  debugPrint('🚦 [BG] callbackDispatcher iniciado');
   Workmanager().executeTask((task, inputData) async {
     try {
+      debugPrint('🚦 [BG] Tarea de background iniciada: $task');
       developer.log(
-        'Background task started: $task',
+        '🚦 [BG] Tarea de background iniciada: $task',
         name: 'ChurnBackgroundTask',
       );
-
       switch (task) {
         case 'churn_daily_check':
+          debugPrint('🔔 [BG] Ejecutando daily churn check');
           await _executeDailyChurnCheck();
           break;
         default:
+          debugPrint('❓ [BG] Tarea desconocida: $task');
           developer.log(
-            'Unknown task: $task',
+            '❓ [BG] Tarea desconocida: $task',
             name: 'ChurnBackgroundTask',
           );
       }
-
+      debugPrint('✅ [BG] Tarea de background completada: $task');
       developer.log(
-        'Background task completed: $task',
+        '✅ [BG] Tarea de background completada: $task',
         name: 'ChurnBackgroundTask',
       );
-
       return Future.value(true);
     } catch (e, stackTrace) {
+      debugPrint('❌ [BG] Error en tarea de background: $task - $e');
       developer.log(
-        'Background task failed: $task - $e',
+        '❌ [BG] Error en tarea de background: $task - $e',
         name: 'ChurnBackgroundTask',
         error: e,
         stackTrace: stackTrace,
@@ -190,6 +208,19 @@ Future<void> _executeDailyChurnCheck() async {
       'Executing daily churn check from background task',
       name: 'ChurnBackgroundTask',
     );
+
+    // Log de próxima ejecución y delay en cada ejecución diaria
+    final delay = ChurnBackgroundTaskService._calculateInitialDelay();
+    debugPrint(
+        '🌅 [BG] (Ejecución diaria) Próxima ejecución: ${_timeProvider.now().add(delay)}');
+    debugPrint(
+        '🕒 [BG] (Ejecución diaria) Delay calculado: ${delay.inHours}h ${delay.inMinutes % 60}m');
+    developer.log(
+        '🌅 [BG] (Ejecución diaria) Próxima ejecución: ${_timeProvider.now().add(delay)}',
+        name: 'ChurnBackgroundTask');
+    developer.log(
+        '🕒 [BG] (Ejecución diaria) Delay calculado: ${delay.inHours}h ${delay.inMinutes % 60}m',
+        name: 'ChurnBackgroundTask');
 
     // Initialize service locator if not already initialized
     if (!serviceLocator.isRegistered<ChurnPredictionService>()) {
@@ -213,4 +244,13 @@ Future<void> _executeDailyChurnCheck() async {
     );
     rethrow;
   }
+}
+
+TimeProvider _timeProvider = SystemTimeProvider();
+
+/// Set a custom time provider
+///
+/// This can be used for testing or to simulate different time zones, etc.
+void setTimeProvider(TimeProvider provider) {
+  _timeProvider = provider;
 }
