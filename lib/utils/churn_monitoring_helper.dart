@@ -1,11 +1,13 @@
 // lib/utils/churn_monitoring_helper.dart
 
 import 'dart:developer' as developer;
-import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:devocional_nuevo/services/churn_prediction_service.dart';
-import 'package:devocional_nuevo/services/notification_service.dart';
 import 'package:devocional_nuevo/services/localization_service.dart';
+import 'package:devocional_nuevo/services/notification_service.dart';
 import 'package:devocional_nuevo/services/service_locator.dart';
+import 'package:devocional_nuevo/utils/time_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Helper class for churn monitoring with rate limiting and analytics
 ///
@@ -17,6 +19,12 @@ class ChurnMonitoringHelper {
   static const int _maxNotificationsPerWeek = 2;
   static const String _prefKeyNotificationHistory = 'churn_notifications_sent';
   static const Duration _rateLimitWindow = Duration(days: 7);
+
+  static TimeProvider? _customTimeProvider;
+
+  static void setTimeProvider(TimeProvider provider) {
+    _customTimeProvider = provider;
+  }
 
   /// Perform daily churn check with rate limiting and analytics
   /// This should be called once per day via background task or app start
@@ -93,7 +101,9 @@ class ChurnMonitoringHelper {
       final history = prefs.getStringList(_prefKeyNotificationHistory) ?? [];
 
       // Parse and filter notifications within the rate limit window
-      final cutoffTime = DateTime.now().toUtc().subtract(_rateLimitWindow);
+      final cutoffTime = (_customTimeProvider ?? SystemTimeProvider())
+          .now()
+          .subtract(_rateLimitWindow);
 
       final recentNotifications = history
           .map((timestamp) {
@@ -124,10 +134,13 @@ class ChurnMonitoringHelper {
       final history = prefs.getStringList(_prefKeyNotificationHistory) ?? [];
 
       // Add current timestamp
-      history.add(DateTime.now().toUtc().toIso8601String());
+      history.add(((_customTimeProvider ?? SystemTimeProvider()).now())
+          .toIso8601String());
 
       // Clean up old entries (older than rate limit window)
-      final cutoffTime = DateTime.now().toUtc().subtract(_rateLimitWindow);
+      final cutoffTime = (_customTimeProvider ?? SystemTimeProvider())
+          .now()
+          .subtract(_rateLimitWindow);
 
       final cleanedHistory = history.where((timestamp) {
         try {
@@ -181,7 +194,9 @@ class ChurnMonitoringHelper {
         title,
         body,
         payload: 'churn_prevention',
-        id: DateTime.now().toUtc().millisecondsSinceEpoch,
+        id: (_customTimeProvider ?? SystemTimeProvider())
+            .now()
+            .millisecondsSinceEpoch,
       );
 
       developer.log(

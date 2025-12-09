@@ -1,12 +1,15 @@
 // lib/services/churn_prediction_service.dart
 
 import 'dart:developer' as developer;
+
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/spiritual_stats_model.dart';
-import '../services/spiritual_stats_service.dart';
-import '../services/notification_service.dart';
 import '../services/localization_service.dart';
+import '../services/notification_service.dart';
 import '../services/service_locator.dart';
+import '../services/spiritual_stats_service.dart';
+import '../utils/time_provider.dart';
 
 /// Risk levels for user churn prediction
 enum ChurnRiskLevel {
@@ -81,17 +84,20 @@ class _ChurnValidation {
 
 /// Internal cache for engagement metrics
 class _MetricsCache {
+  final TimeProvider _timeProvider;
   Map<String, dynamic>? _cachedSummary;
   DateTime? _cacheTimestamp;
   static const _cacheDuration = Duration(minutes: 5);
 
+  _MetricsCache(this._timeProvider);
+
   bool get isValid =>
       _cacheTimestamp != null &&
-      DateTime.now().toUtc().difference(_cacheTimestamp!) < _cacheDuration;
+      _timeProvider.now().difference(_cacheTimestamp!) < _cacheDuration;
 
   void set(Map<String, dynamic> summary) {
     _cachedSummary = summary;
-    _cacheTimestamp = DateTime.now().toUtc();
+    _cacheTimestamp = _timeProvider.now();
     developer.log(
       'Metrics cache SET - valid for ${_cacheDuration.inMinutes} minutes',
       name: 'ChurnPredictionService',
@@ -128,7 +134,8 @@ class _MetricsCache {
 class ChurnPredictionService {
   final SpiritualStatsService _statsService;
   final NotificationService _notificationService;
-  final _MetricsCache _cache = _MetricsCache();
+  final TimeProvider _timeProvider;
+  final _MetricsCache _cache;
 
   // Shared Preferences key for churn notification setting
   static const String _prefKeyChurnNotifications =
@@ -149,8 +156,11 @@ class ChurnPredictionService {
   ChurnPredictionService({
     required SpiritualStatsService statsService,
     required NotificationService notificationService,
+    TimeProvider? timeProvider,
   })  : _statsService = statsService,
-        _notificationService = notificationService;
+        _notificationService = notificationService,
+        _timeProvider = timeProvider ?? SystemTimeProvider(),
+        _cache = _MetricsCache(timeProvider ?? SystemTimeProvider());
 
   /// Analyze user behavior and predict churn risk
   Future<ChurnPrediction> predictChurnRisk() async {
@@ -170,12 +180,12 @@ class ChurnPredictionService {
           daysSinceLastActivity: 0,
           shouldSendNotification: false,
           reason: 'Insufficient data for prediction',
-          calculatedAt: DateTime.now().toUtc(),
+          calculatedAt: _timeProvider.now(),
         );
       }
 
       // GAP-5: UTC normalization for timezone consistency
-      final nowUtc = DateTime.now().toUtc();
+      final nowUtc = _timeProvider.now();
 
       // Calculate days since last activity with UTC normalization
       int daysSinceLastActivity = 999; // Default for null
@@ -254,7 +264,7 @@ class ChurnPredictionService {
         daysSinceLastActivity: 0,
         shouldSendNotification: false,
         reason: 'Error calculating churn risk',
-        calculatedAt: DateTime.now().toUtc(),
+        calculatedAt: _timeProvider.now(),
       );
     }
   }
@@ -386,7 +396,6 @@ class ChurnPredictionService {
       );
       return;
     }
-
     try {
       // Check if churn notifications are enabled by user
       final prefs = await SharedPreferences.getInstance();
@@ -418,7 +427,7 @@ class ChurnPredictionService {
         title,
         body,
         payload: 'churn_prevention',
-        id: DateTime.now().toUtc().millisecondsSinceEpoch,
+        id: _timeProvider.now().millisecondsSinceEpoch,
       );
 
       developer.log(

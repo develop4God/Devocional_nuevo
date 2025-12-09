@@ -6,6 +6,7 @@ import 'package:devocional_nuevo/services/localization_service.dart';
 import 'package:devocional_nuevo/services/notification_service.dart';
 import 'package:devocional_nuevo/services/service_locator.dart';
 import 'package:devocional_nuevo/services/spiritual_stats_service.dart';
+import 'package:devocional_nuevo/utils/time_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +24,7 @@ void main() {
   late MockLocalizationService mockLocalizationService;
   late ChurnPredictionService churnPredictionService;
   late ServiceLocator serviceLocator;
+  late TimeProvider timeProvider;
 
   setUp(() async {
     // Setup SharedPreferences with mock
@@ -61,9 +63,12 @@ void main() {
     when(() => mockLocalizationService.translate('churn_notification.low_body'))
         .thenReturn('Your dedication is inspiring!');
 
+    final fixedTime = DateTime(2025, 1, 15, 12, 0, 0);
+    timeProvider = FixedTimeProvider(fixedTime);
     churnPredictionService = ChurnPredictionService(
       statsService: mockStatsService,
       notificationService: mockNotificationService,
+      timeProvider: timeProvider,
     );
   });
 
@@ -78,7 +83,7 @@ void main() {
         totalDevocionalesRead: 10,
         currentStreak: 5,
         longestStreak: 7,
-        lastActivityDate: DateTime.now().subtract(const Duration(days: 1)),
+        lastActivityDate: DateTime(2025, 1, 14, 12, 0, 0),
       );
       when(() => mockStatsService.getStats()).thenAnswer((_) async => stats);
 
@@ -98,7 +103,7 @@ void main() {
         totalDevocionalesRead: 10,
         currentStreak: 2,
         longestStreak: 5,
-        lastActivityDate: DateTime.now().subtract(const Duration(days: 3)),
+        lastActivityDate: DateTime(2025, 1, 12, 12, 0, 0),
       );
       when(() => mockStatsService.getStats()).thenAnswer((_) async => stats);
 
@@ -118,7 +123,7 @@ void main() {
         totalDevocionalesRead: 8,
         currentStreak: 0,
         longestStreak: 10,
-        lastActivityDate: DateTime.now().subtract(const Duration(days: 7)),
+        lastActivityDate: DateTime(2025, 1, 8, 12, 0, 0),
       );
       when(() => mockStatsService.getStats()).thenAnswer((_) async => stats);
 
@@ -138,7 +143,7 @@ void main() {
         totalDevocionalesRead: 15,
         currentStreak: 0,
         longestStreak: 15,
-        lastActivityDate: DateTime.now().subtract(const Duration(days: 5)),
+        lastActivityDate: DateTime(2025, 1, 10, 12, 0, 0),
       );
       when(() => mockStatsService.getStats()).thenAnswer((_) async => stats);
 

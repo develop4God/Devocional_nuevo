@@ -15,6 +15,7 @@
 library;
 
 import 'dart:developer' as developer;
+
 import 'package:bible_reader_core/bible_reader_core.dart';
 import 'package:devocional_nuevo/adapters/http_client_adapter.dart';
 import 'package:devocional_nuevo/adapters/storage_adapter.dart';
@@ -25,10 +26,13 @@ import 'package:devocional_nuevo/services/spiritual_stats_service.dart';
 import 'package:devocional_nuevo/services/tts/i_tts_service.dart';
 import 'package:devocional_nuevo/services/tts/voice_settings_service.dart';
 import 'package:devocional_nuevo/services/tts_service.dart';
+import 'package:devocional_nuevo/utils/time_provider.dart';
 
 class ServiceLocator {
   static final ServiceLocator _instance = ServiceLocator._internal();
+
   factory ServiceLocator() => _instance;
+
   ServiceLocator._internal();
 
   final Map<Type, dynamic Function()> _factories = {};
@@ -135,13 +139,18 @@ void setupServiceLocator() {
       bool.fromEnvironment('CHURN_ENABLED', defaultValue: true);
 
   if (isChurnFeatureEnabled) {
-    // Register ChurnPredictionService as a factory (NOT singleton)
-    // Each call creates a new instance for better testability and to avoid state issues
-    // Note: NotificationService is a singleton, so we get the same instance
+    // TimeProvider por defecto: producción
+    final TimeProvider timeProvider = SystemTimeProvider();
+    // Si quieres aceleración, reemplaza manualmente por:
+    // final TimeProvider timeProvider = AcceleratedTimeProvider(
+    //   baseTime: DateTime(2025, 1, 1),
+    //   minutesToDays: 1440,
+    // );
     locator.registerFactory<ChurnPredictionService>(
       () => ChurnPredictionService(
         statsService: locator.get<SpiritualStatsService>(),
         notificationService: NotificationService(),
+        timeProvider: timeProvider,
       ),
     );
     developer.log(
