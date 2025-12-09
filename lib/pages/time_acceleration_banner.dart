@@ -49,12 +49,15 @@ class _TimeAccelerationBannerState extends State<TimeAccelerationBanner> {
         children: [
           const Icon(Icons.access_time, color: Colors.white, size: 20),
           const SizedBox(width: 8),
-          Text(
-            '🚀 Tiempo acelerado: ${widget.accelerated.accelerationFactor} | Ahora virtual: '
-            '${DateFormat('yyyy-MM-dd HH:mm').format(_virtualNow)}',
-            style: textTheme.bodyMedium?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+          Expanded(
+            child: Text(
+              '🚀 Tiempo acelerado: ${widget.accelerated.accelerationFactor} | Ahora virtual: '
+              '${DateFormat('yyyy-MM-dd HH:mm').format(_virtualNow)}',
+              style: textTheme.bodyMedium?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
