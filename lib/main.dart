@@ -15,6 +15,7 @@ import 'package:devocional_nuevo/pages/settings_page.dart';
 import 'package:devocional_nuevo/providers/bible_selected_version_provider.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:devocional_nuevo/providers/localization_provider.dart';
+import 'package:devocional_nuevo/services/churn_background_task_service.dart';
 import 'package:devocional_nuevo/services/churn_prediction_service.dart';
 import 'package:devocional_nuevo/services/connectivity_service.dart';
 import 'package:devocional_nuevo/services/google_drive_auth_service.dart';
@@ -25,7 +26,6 @@ import 'package:devocional_nuevo/services/service_locator.dart';
 import 'package:devocional_nuevo/services/spiritual_stats_service.dart';
 import 'package:devocional_nuevo/services/tts/i_tts_service.dart';
 import 'package:devocional_nuevo/splash_screen.dart';
-import 'package:devocional_nuevo/utils/churn_monitoring_helper.dart';
 import 'package:devocional_nuevo/utils/constants.dart';
 import 'package:devocional_nuevo/utils/theme_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -40,7 +40,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -181,93 +180,13 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+class _MyAppState extends State<MyApp> {
   late Future<bool> _initializationFuture;
-
-  // Remove in-memory timestamp - will use SharedPreferences instead
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     _initializationFuture = _initializeApp();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _performDailyChurnCheckIfNeeded();
-    }
-  }
-
-  Future<void> _performDailyChurnCheckIfNeeded() async {
-    // GAP-6: Check if feature is enabled
-    if (!serviceLocator.isRegistered<ChurnPredictionService>()) {
-      return;
-    }
-
-    try {
-      // Issue #2: Persist last check timestamp in SharedPreferences
-      final prefs = await SharedPreferences.getInstance();
-      final lastCheckString = prefs.getString('churn_last_check_timestamp');
-      final now = DateTime.now().toUtc(); // Issue #4: Use UTC
-
-      // Detecta si el tiempo está acelerado
-      const bool useAcceleratedTime =
-          bool.fromEnvironment('TIME_ACCEL', defaultValue: false);
-
-      if (useAcceleratedTime) {
-        developer.log(
-            '🟢 [Logger] main.dart: QA: Ignorando timestamp, ejecutando chequeo de churn SIEMPRE',
-            name: 'MainApp');
-        await ChurnMonitoringHelper.performDailyCheck();
-        await prefs.setString(
-            'churn_last_check_timestamp', now.toIso8601String());
-        developer.log('Daily churn check completed (QA/acelerado)',
-            name: 'MainApp');
-        return;
-      }
-
-      // Modo producción: validar tiempo
-      final int minHours = 24;
-      DateTime? lastCheck;
-      if (lastCheckString != null) {
-        try {
-          lastCheck = DateTime.parse(lastCheckString);
-        } catch (e) {
-          developer.log('Error parsing last check timestamp: $e',
-              name: 'MainApp');
-        }
-      }
-
-      // Check si han pasado minHours virtuales desde el último chequeo
-      if (lastCheck == null || now.difference(lastCheck).inHours >= minHours) {
-        developer.log('🟢 [Logger] main.dart: Llamando a performDailyCheck',
-            name: 'MainApp');
-        await ChurnMonitoringHelper.performDailyCheck();
-        await prefs.setString(
-            'churn_last_check_timestamp', now.toIso8601String());
-        developer.log('Daily churn check completed', name: 'MainApp');
-      } else {
-        final hoursSinceLastCheck = now.difference(lastCheck).inHours;
-        developer.log(
-          'Skipping churn check - only $hoursSinceLastCheck hours since last check (min required: $minHours)',
-          name: 'MainApp',
-        );
-      }
-    } catch (e) {
-      developer.log(
-        'Daily churn check failed: $e',
-        name: 'MainApp',
-        error: e,
-      );
-    }
   }
 
   /// Metodo unificado que inicializa servicios y verifica onboarding
@@ -591,13 +510,14 @@ class _AppInitializerState extends State<AppInitializer> {
       );
     }
 
-    // Churn prediction initial check
+    // Churn prediction background task registration
+    // WorkManager-based proactive detection (runs daily at 6 AM)
     // GAP-6: Check if feature is enabled before calling
     try {
       if (serviceLocator.isRegistered<ChurnPredictionService>()) {
-        await ChurnMonitoringHelper.performDailyCheck();
+        await ChurnBackgroundTaskService.initialize();
         developer.log(
-          'AppInitializer: Initial churn check completed',
+          'AppInitializer: Churn background task registered successfully',
           name: 'MainApp',
         );
       } else {
@@ -608,7 +528,7 @@ class _AppInitializerState extends State<AppInitializer> {
       }
     } catch (e) {
       developer.log(
-        'ERROR: Failed to initialize churn service: $e',
+        'ERROR: Failed to initialize churn background task: $e',
         name: 'MainApp',
         error: e,
       );
