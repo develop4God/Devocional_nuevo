@@ -23,6 +23,8 @@ class ChurnMonitoringHelper {
   static TimeProvider? _customTimeProvider;
 
   static void setTimeProvider(TimeProvider provider) {
+    developer.log('🛠️ [Logger] setTimeProvider: ${provider.runtimeType}',
+        name: 'ChurnMonitoringHelper');
     _customTimeProvider = provider;
   }
 
@@ -30,7 +32,6 @@ class ChurnMonitoringHelper {
   /// This should be called once per day via background task or app start
   static Future<void> performDailyCheck() async {
     try {
-      // Check if churn notifications are enabled by user
       final prefs = await SharedPreferences.getInstance();
       final churnNotificationsEnabled =
           prefs.getBool('churn_notifications_enabled') ?? true;
@@ -43,33 +44,27 @@ class ChurnMonitoringHelper {
         return;
       }
 
-      // Get prediction from service
       final churnService = getService<ChurnPredictionService>();
       final prediction = await churnService.predictChurnRisk();
 
-      // GAP-4: Log prediction event
+      // Log del razonamiento del modelo
       developer.log(
-        'ChurnAnalytics: prediction_made '
-        'risk=${prediction.riskLevel.name} '
-        'score=${prediction.riskScore.toStringAsFixed(2)} '
-        'inactive_days=${prediction.daysSinceLastActivity}',
+        '🔎 [QA] ChurnModel: risk=${prediction.riskLevel.name} score=${prediction.riskScore.toStringAsFixed(2)} inactive_days=${prediction.daysSinceLastActivity} reason=${prediction.reason}',
         name: 'ChurnMonitoringHelper',
       );
 
-      // GAP-3: Handle notification logic here (separated from service)
       if (prediction.shouldSendNotification) {
-        // GAP-7: Check rate limiting before sending
         final canSend = await _canSendNotification();
+        developer.log(
+          '🔔 [QA] Notificación aplica: SÍ | RateLimit: ${canSend ? "OK" : "LIMITADO"}',
+          name: 'ChurnMonitoringHelper',
+        );
         if (canSend) {
           await _sendChurnNotification(prediction);
-
-          // GAP-4: Log notification sent
           developer.log(
             'ChurnAnalytics: notification_sent level=${prediction.riskLevel.name}',
             name: 'ChurnMonitoringHelper',
           );
-
-          // Record notification in history
           await _recordNotificationSent();
         } else {
           developer.log(
@@ -77,14 +72,17 @@ class ChurnMonitoringHelper {
             name: 'ChurnMonitoringHelper',
           );
         }
+      } else {
+        developer.log(
+          '🔔 [QA] Notificación aplica: NO | Motivo: ${prediction.reason}',
+          name: 'ChurnMonitoringHelper',
+        );
       }
-
       developer.log(
         'Daily churn monitoring check completed',
         name: 'ChurnMonitoringHelper',
       );
     } catch (e, stackTrace) {
-      // GAP-4: Log errors
       developer.log(
         'ChurnAnalytics: check_failed error=$e',
         name: 'ChurnMonitoringHelper',
@@ -96,15 +94,15 @@ class ChurnMonitoringHelper {
 
   /// GAP-7: Check if notification can be sent (rate limiting)
   static Future<bool> _canSendNotification() async {
+    developer.log(
+        '🔎 [Logger] _canSendNotification: Iniciando verificación de rate limit',
+        name: 'ChurnMonitoringHelper');
     try {
       final prefs = await SharedPreferences.getInstance();
       final history = prefs.getStringList(_prefKeyNotificationHistory) ?? [];
-
-      // Parse and filter notifications within the rate limit window
       final cutoffTime = (_customTimeProvider ?? SystemTimeProvider())
           .now()
           .subtract(_rateLimitWindow);
-
       final recentNotifications = history
           .map((timestamp) {
             try {
@@ -115,33 +113,30 @@ class ChurnMonitoringHelper {
           })
           .where((date) => date != null && date.isAfter(cutoffTime))
           .length;
-
+      developer.log(
+          '🔎 [Logger] _canSendNotification: Notificaciones recientes en ventana: $recentNotifications',
+          name: 'ChurnMonitoringHelper');
       return recentNotifications < _maxNotificationsPerWeek;
     } catch (e) {
-      developer.log(
-        'Error checking notification rate limit: $e',
-        name: 'ChurnMonitoringHelper',
-      );
-      // On error, allow sending (fail open)
+      developer.log('❌ [Logger] _canSendNotification: Error $e',
+          name: 'ChurnMonitoringHelper');
       return true;
     }
   }
 
   /// GAP-7: Record that a notification was sent
   static Future<void> _recordNotificationSent() async {
+    developer.log(
+        '📝 [Logger] _recordNotificationSent: Registrando notificación enviada',
+        name: 'ChurnMonitoringHelper');
     try {
       final prefs = await SharedPreferences.getInstance();
       final history = prefs.getStringList(_prefKeyNotificationHistory) ?? [];
-
-      // Add current timestamp
       history.add(((_customTimeProvider ?? SystemTimeProvider()).now())
           .toIso8601String());
-
-      // Clean up old entries (older than rate limit window)
       final cutoffTime = (_customTimeProvider ?? SystemTimeProvider())
           .now()
           .subtract(_rateLimitWindow);
-
       final cleanedHistory = history.where((timestamp) {
         try {
           final date = DateTime.parse(timestamp);
@@ -150,34 +145,32 @@ class ChurnMonitoringHelper {
           return false;
         }
       }).toList();
-
       await prefs.setStringList(_prefKeyNotificationHistory, cleanedHistory);
-    } catch (e) {
       developer.log(
-        'Error recording notification history: $e',
-        name: 'ChurnMonitoringHelper',
-      );
+          '📝 [Logger] _recordNotificationSent: Historial actualizado: ${cleanedHistory.length} registros',
+          name: 'ChurnMonitoringHelper');
+    } catch (e) {
+      developer.log('❌ [Logger] _recordNotificationSent: Error $e',
+          name: 'ChurnMonitoringHelper');
     }
   }
 
   /// GAP-3: Send churn notification (notification logic separated from service)
   static Future<void> _sendChurnNotification(ChurnPrediction prediction) async {
+    developer.log(
+        '🚀 [Logger] _sendChurnNotification: Enviando notificación. Nivel: ${prediction.riskLevel.name}',
+        name: 'ChurnMonitoringHelper');
     try {
       final notificationService = NotificationService();
       final localizationService = getService<LocalizationService>();
-
-      // Get localized notification content
       String title;
       String body;
-
       switch (prediction.riskLevel) {
         case ChurnRiskLevel.high:
           title =
               localizationService.translate('churn_notification.high_title');
-          body = localizationService.translate(
-            'churn_notification.high_body',
-            {'days': prediction.daysSinceLastActivity.toString()},
-          );
+          body = localizationService.translate('churn_notification.high_body',
+              {'days': prediction.daysSinceLastActivity.toString()});
           break;
         case ChurnRiskLevel.medium:
           title =
@@ -186,10 +179,11 @@ class ChurnMonitoringHelper {
               localizationService.translate('churn_notification.medium_body');
           break;
         default:
-          // Don't send notification for low or unknown risk
+          developer.log(
+              '🚫 [Logger] _sendChurnNotification: No aplica notificación para nivel ${prediction.riskLevel.name}',
+              name: 'ChurnMonitoringHelper');
           return;
       }
-
       await notificationService.showImmediateNotification(
         title,
         body,
@@ -198,88 +192,82 @@ class ChurnMonitoringHelper {
             .now()
             .millisecondsSinceEpoch,
       );
-
       developer.log(
-        'Churn notification sent: $title',
-        name: 'ChurnMonitoringHelper',
-      );
+          '✅ [Logger] _sendChurnNotification: Notificación enviada: $title',
+          name: 'ChurnMonitoringHelper');
     } catch (e) {
-      developer.log(
-        'Error sending churn notification: $e',
-        name: 'ChurnMonitoringHelper',
-        error: e,
-      );
+      developer.log('❌ [Logger] _sendChurnNotification: Error $e',
+          name: 'ChurnMonitoringHelper');
     }
   }
 
   /// Get current engagement summary for the user
   static Future<Map<String, dynamic>> getEngagementSummary() async {
+    developer.log(
+        '📊 [Logger] getEngagementSummary: Obteniendo resumen de engagement',
+        name: 'ChurnMonitoringHelper');
     try {
       final churnService = getService<ChurnPredictionService>();
       return await churnService.getEngagementSummary();
     } catch (e) {
-      developer.log(
-        'Error getting engagement summary: $e',
-        name: 'ChurnMonitoringHelper',
-        error: e,
-      );
+      developer.log('❌ [Logger] getEngagementSummary: Error $e',
+          name: 'ChurnMonitoringHelper');
       return {};
     }
   }
 
   /// Check if user is at risk and return risk level
   static Future<ChurnRiskLevel> checkUserRisk() async {
+    developer.log('🔎 [Logger] checkUserRisk: Verificando nivel de riesgo',
+        name: 'ChurnMonitoringHelper');
     try {
       final churnService = getService<ChurnPredictionService>();
       final prediction = await churnService.predictChurnRisk();
+      developer.log(
+          '🔎 [Logger] checkUserRisk: Nivel de riesgo: ${prediction.riskLevel.name}',
+          name: 'ChurnMonitoringHelper');
       return prediction.riskLevel;
     } catch (e) {
-      developer.log(
-        'Error checking user risk: $e',
-        name: 'ChurnMonitoringHelper',
-        error: e,
-      );
+      developer.log('❌ [Logger] checkUserRisk: Error $e',
+          name: 'ChurnMonitoringHelper');
       return ChurnRiskLevel.unknown;
     }
   }
 
   /// Manually trigger a churn prevention notification (for testing)
   static Future<void> sendChurnPreventionNotification() async {
+    developer.log(
+        '🚦 [Logger] sendChurnPreventionNotification: Forzando notificación manual',
+        name: 'ChurnMonitoringHelper');
     try {
       final churnService = getService<ChurnPredictionService>();
       final prediction = await churnService.predictChurnRisk();
-
       if (prediction.shouldSendNotification) {
-        // Bypass rate limiting for manual sends
         await _sendChurnNotification(prediction);
         developer.log(
-          'Churn prevention notification sent manually',
-          name: 'ChurnMonitoringHelper',
-        );
+            '✅ [Logger] sendChurnPreventionNotification: Notificación enviada manualmente',
+            name: 'ChurnMonitoringHelper');
       } else {
         developer.log(
-          'Notification not needed for current risk level',
-          name: 'ChurnMonitoringHelper',
-        );
+            '🚫 [Logger] sendChurnPreventionNotification: No aplica notificación para el nivel actual',
+            name: 'ChurnMonitoringHelper');
       }
     } catch (e) {
-      developer.log(
-        'Error sending churn prevention notification: $e',
-        name: 'ChurnMonitoringHelper',
-        error: e,
-      );
+      developer.log('❌ [Logger] sendChurnPreventionNotification: Error $e',
+          name: 'ChurnMonitoringHelper');
     }
   }
 
   /// Get notification history count (for debugging)
   static Future<int> getNotificationHistoryCount() async {
+    developer.log(
+        '📋 [Logger] getNotificationHistoryCount: Consultando historial de notificaciones',
+        name: 'ChurnMonitoringHelper');
     try {
       final prefs = await SharedPreferences.getInstance();
       final history = prefs.getStringList(_prefKeyNotificationHistory) ?? [];
-
       final cutoffTime = DateTime.now().toUtc().subtract(_rateLimitWindow);
-
-      return history
+      final count = history
           .map((timestamp) {
             try {
               return DateTime.parse(timestamp);
@@ -289,7 +277,13 @@ class ChurnMonitoringHelper {
           })
           .where((date) => date != null && date.isAfter(cutoffTime))
           .length;
+      developer.log(
+          '📋 [Logger] getNotificationHistoryCount: Total en ventana: $count',
+          name: 'ChurnMonitoringHelper');
+      return count;
     } catch (e) {
+      developer.log('❌ [Logger] getNotificationHistoryCount: Error $e',
+          name: 'ChurnMonitoringHelper');
       return 0;
     }
   }
