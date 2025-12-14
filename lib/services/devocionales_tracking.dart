@@ -74,6 +74,9 @@ class DevocionalesTracking {
       scrollController: scrollController,
     );
 
+    // Start criteria check timer when tracking begins
+    startCriteriaCheckTimer();
+
     debugPrint('📖 Started tracking for devotional: $devocionalId');
 
     debugPrint(
@@ -131,26 +134,53 @@ class DevocionalesTracking {
     }
   }
 
+  /// Registra la interacción (lectura o escucha) de un devocional y verifica milestone para review
+  Future<void> recordDevocionalInteraction({
+    required String devocionalId,
+    int readingTimeSeconds = 0,
+    double scrollPercentage = 0.0,
+    double listenedPercentage = 0.0,
+    int? favoritesCount,
+    String source = 'unknown', // 'read' o 'heard'
+  }) async {
+    if (_context == null) return;
+    try {
+      // Actualizar stats usando el metodo unificado
+      final stats = await SpiritualStatsService().recordDevocionalCompletado(
+        devocionalId: devocionalId,
+        readingTimeSeconds: readingTimeSeconds,
+        scrollPercentage: scrollPercentage,
+        listenedPercentage: listenedPercentage,
+        favoritesCount: favoritesCount,
+        source: source,
+      );
+      debugPrint(
+          '📊 [TRACKING] Stats actualizados para $devocionalId (source: $source)');
+      // Verificar milestone para review
+      if (_context?.mounted == true) {
+        await InAppReviewService.checkAndShow(stats, _context!);
+      }
+    } catch (e) {
+      debugPrint('❌ Error en recordDevocionalInteraction: $e');
+    }
+  }
+
   /// Actualiza estadísticas inmediatamente cuando se cumplen los criterios
   void _updateReadingStats(String devocionalId) async {
     if (_context == null || !_context!.mounted) return;
-
     final devocionalProvider = Provider.of<DevocionalProvider>(
       _context!,
       listen: false,
     );
-
-    // Marcar como auto-completado para evitar evaluaciones repetidas
     _autoCompletedDevocionals.add(devocionalId);
-
-    // Registrar la lectura inmediatamente
-    devocionalProvider.recordDevocionalRead(devocionalId);
-    developer.log('[TRACKING] Devocional leído registrado: $devocionalId',
-        name: 'DevocionalesTracking');
-
-    // FORZAR ACTUALIZACIÓN INMEDIATA DE LA UI
+    // Usar el metodo unificado para registrar lectura y verificar milestone
+    await recordDevocionalInteraction(
+      devocionalId: devocionalId,
+      readingTimeSeconds: devocionalProvider.currentReadingSeconds,
+      scrollPercentage: devocionalProvider.currentScrollPercentage,
+      source: 'read',
+    );
     devocionalProvider.forceUIUpdate();
-
     debugPrint('📊 Stats updated automatically for: $devocionalId');
     debugPrint('🔄 UI update forced via provider notification');
 
@@ -170,6 +200,37 @@ class DevocionalesTracking {
       debugPrint('❌ Error checking in-app review (auto-completion): $e');
       // Fail silently - review errors should not affect devotional recording
     }
+  }
+
+  /// Registra manualmente la lectura de un devocional
+  void recordDevocionalRead(String devocionalId) async {
+    if (_context == null) return;
+    final devocionalProvider = Provider.of<DevocionalProvider>(
+      _context!,
+      listen: false,
+    );
+    // Usar el metodo unificado para registrar lectura y verificar milestone
+    await recordDevocionalInteraction(
+      devocionalId: devocionalId,
+      readingTimeSeconds: devocionalProvider.currentReadingSeconds,
+      scrollPercentage: devocionalProvider.currentScrollPercentage,
+      source: 'read',
+    );
+    debugPrint('📊 Manual reading recorded for: $devocionalId');
+  }
+
+  /// Nuevo: Registra manualmente la escucha de un devocional (TTS/audio)
+  Future<void> recordDevocionalHeard(
+      String devocionalId, double listenedPercentage) async {
+    if (_context == null) return;
+    // Usar el metodo unificado para registrar escucha y verificar milestone
+    await recordDevocionalInteraction(
+      devocionalId: devocionalId,
+      listenedPercentage: listenedPercentage,
+      source: 'heard',
+    );
+    debugPrint(
+        '📊 Manual heard recorded for: $devocionalId ($listenedPercentage)');
   }
 
   /// Limpia el set de auto-completados para permitir nueva evaluación
@@ -222,42 +283,6 @@ class DevocionalesTracking {
     debugPrint('▶️ Tracking resumed');
     debugPrint(
         '[TRACKING] Después de resume: trackedId=${devocionalProvider.currentTrackedDevocionalId}, segundos=${devocionalProvider.currentReadingSeconds}');
-  }
-
-  /// Registra manualmente la lectura de un devocional
-  void recordDevocionalRead(String devocionalId) async {
-    if (_context == null) return;
-
-    final devocionalProvider = Provider.of<DevocionalProvider>(
-      _context!,
-      listen: false,
-    );
-
-    // Registrar la lectura inmediatamente
-    devocionalProvider.recordDevocionalRead(devocionalId);
-    debugPrint('📊 Manual reading recorded for: $devocionalId');
-
-    // Check for in-app review opportunity - MANUAL COMPLETION PATH
-    try {
-      // Add delay to ensure stats are persisted before checking
-      await Future.delayed(const Duration(milliseconds: 100));
-
-      final stats = await SpiritualStatsService().getStats();
-      debugPrint(
-          '🎯 Manual completion review check: ${stats.totalDevocionalesRead} devotionals');
-
-      if (_context?.mounted == true) {
-        await InAppReviewService.checkAndShow(stats, _context!);
-      }
-    } catch (e) {
-      debugPrint('❌ Error checking in-app review (manual completion): $e');
-      // Fail silently - review errors should not affect devotional recording
-    }
-  }
-
-  /// Verifica si un devocional fue auto-completado
-  bool isAutoCompleted(String devocionalId) {
-    return _autoCompletedDevocionals.contains(devocionalId);
   }
 
   /// Limpia recursos al destruir el servicio
