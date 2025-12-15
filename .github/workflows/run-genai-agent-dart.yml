@@ -30,6 +30,7 @@ jobs:
 
       - name: Run GenAI test generator (Python)
         env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GENAI_MODEL: 'gemini-2.0-flash-lite'
           GENAI_MAX_TOKENS: '4096'
