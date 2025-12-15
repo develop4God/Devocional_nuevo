@@ -1,0 +1,35 @@
+
+✅ test/integration/tts_di_integration_test.dart: TTS DI Integration Tests ServiceLocator provides ITtsService instance
+✅ test/integration/tts_di_integration_test.dart: TTS DI Integration Tests ServiceLocator returns same singleton instance on multiple calls
+::group::✅ test/integration/tts_di_integration_test.dart: TTS DI Integration Tests AudioController works with injected ITtsService
+AudioController: Initializing reactive proxy...
+AudioController: Reactive proxy initialized
+AudioController: Disposing reactive proxy...
+⏹️ TTS: Stop requested (current state: TtsState.idle) at 2025-12-15 21:04:49.501074
+AudioController: Reactive proxy disposed
+✅ TTS: Stop completed at 2025-12-15 21:04:49.505705
+🧹 TTS: Service disposed at 2025-12-15 21:04:49.506876
+::endgroup::
+::group::✅ test/integration/thanksgiving_integration_test.dart: Thanksgiving Integration Tests - Real User Scenarios User creates multiple thanksgivings and they persist
+Error backing up thanksgivings to file: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Error backing up thanksgivings to file: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Error backing up thanksgivings to file: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+::endgroup::
+::group::✅ test/integration/thanksgiving_integration_test.dart: Thanksgiving Integration Tests - Real User Scenarios User edits a thanksgiving after creating it
+Error backing up thanksgivings to file: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Error backing up thanksgivings to file: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+::endgroup::
+::group::✅ test/integration/thanksgiving_integration_test.dart: Thanksgiving Integration Tests - Real User Scenarios User deletes an old thanksgiving
+Error backing up thanksgivings to file: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Error backing up thanksgivings to file: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Error backing up thanksgivings to file: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Error backing up thanksgivings to file: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+::endgroup::
+✅ test/integration/thanksgiving_integration_test.dart: Thanksgiving Integration Tests - Real User Scenarios User tries to create empty thanksgiving and sees error
+::group::✅ test/integration/thanksgiving_integration_test.dart: Thanksgiving Integration Tests - Real User Scenarios User refreshes their thanksgiving list
+Error backing up thanksgivings to file: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Error backing up thanksgivings to file: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+::endgroup::
+::group::✅ test/integration/thanksgiving_integration_test.dart: Thanksgiving Integration Tests - Real User Scenarios User journey: create, view, edit, then delete
+Error backing up thanksgivings to file: MissingPluginException(No implementation found for method getApplicationDocumentsDirectory on channel plugins.flutter.io/path_provider)
+Error backing up thanksgivings to file: MissingPluginException(No implement
