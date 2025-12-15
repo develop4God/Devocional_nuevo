@@ -113,11 +113,35 @@ def analyze_source_code(source: str, file_path: str) -> SourceAnalysis:
     )
 
 def build_enhanced_prompt(file_path: str, source: str, analysis: SourceAnalysis) -> str:
-    # (código igual que tu versión anterior, sin cambios)
-    # ... [Redúcido aquí por brevedad, conservar igual]
-    # return prompt
-    # (copiar la versión de tu script original aquí)
-    pass
+    return f"""Generate behavioral (end-to-end) tests for my Flutter app, following Clean Architecture and testing best practices. Simulate a real user flow including navigation across multiple screens with dynamic data, form validation, error handling, and system visual feedback.
+
+When the user enters invalid credentials, the test should assert that a proper error message is displayed, the app state updates accordingly, and dependencies (such as authentication services and repositories) are mocked. The tests must include:
+
+- Success and failure scenarios.
+- Mocks for external services and repositories.
+- Test groups for full flows (input, navigation, validation, error, success).
+- Modular test code structure according to Clean Architecture (presentation, domain, data separation).
+- Parameterized tests covering different inputs and results.
+- Recommendations for integration with CI/CD.
+
+Generate the code using `flutter_test` and `mockito`/`mocktail`, focus on user flow quality and real coverage (not just line coverage), and briefly explain the motivation of each generated test.
+
+Community best practices for your prompt:
+- Encourage the use of test groups to simulate complete screen flows.
+- Use mocks and fixtures to improve decoupling, robustness, and repeatability.
+- Include tests for navigation, input data, negative validation, and error recovery (not only happy path).
+- Adapt test architecture to Clean Architecture for improved maintainability and scalability.
+- Add tips for pipeline (CI/CD) integration and code coverage metrics.
+
+File to test: {file_path}
+Class under test: {analysis.class_name}
+Detected dependencies to mock: {', '.join(analysis.dependencies) if analysis.dependencies else 'None'}
+Async methods: {', '.join(analysis.async_methods) if analysis.async_methods else 'None'}
+
+SOURCE CODE TO ANALYZE:
+
+{source}
+"""
 
 def extract_dart_code(text: str) -> str:
     code_block_pattern = r"```(?:dart)?\s*([\s\S]*?)```"
@@ -166,8 +190,33 @@ def call_deepseek_api(prompt: str) -> str:
     return extract_dart_code(data["choices"][0]["message"]["content"])
 
 def validate_generated_test(content: str, analysis: SourceAnalysis) -> Tuple[bool, List[str]]:
-    # (igual que en tu función original)
-    pass
+    issues = []
+    required_imports = [
+        (r'import.*flutter_test', "Missing flutter_test import"),
+        (r'void main\(\)', "Missing main() function"),
+        (r'test\(', "No test cases found"),
+        (r'expect\(', "No assertions found"),
+    ]
+    for pattern, error in required_imports:
+        if not re.search(pattern, content):
+            issues.append(error)
+    if analysis.dependencies and not re.search(r'@GenerateMocks', content):
+        issues.append("Missing @GenerateMocks annotation for dependencies")
+    if analysis.platform_channels and not re.search(r'setMockMethodCallHandler', content):
+        issues.append("Missing platform channel mocks")
+    if analysis.async_methods and not re.search(r'await Future\.delayed', content):
+        issues.append("Async methods tested without state propagation delay")
+    if not re.search(r'setUp\(', content):
+        issues.append("Missing setUp() for test initialization")
+    if not re.search(r'tearDown\(', content):
+        issues.append("Missing tearDown() for cleanup")
+    if 'MissingPluginException' in content:
+        issues.append("Generated test contains MissingPluginException - platform channels not mocked")
+    if re.search(r'expect\([^,]+,\s*true\)', content):
+        count = len(re.findall(r'expect\([^,]+,\s*true\)', content))
+        if count > 5:
+            issues.append(f"Too many trivial boolean assertions ({count}) - needs more meaningful checks")
+    return len(issues) == 0, issues
 
 def write_test_file(src_path: str, content: str) -> str:
     rel = src_path.replace("lib/", "").replace("/", "_").replace(".dart", "")
