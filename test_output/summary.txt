@@ -1,0 +1,41 @@
+00:00 +0: loading /home/runner/work/Devocional_nuevo/Devocional_nuevo/test/behavioral/bloc_backup_behavioral_test.dart
+test/behavioral/bloc_backup_behavioral_test.dart:14:22: Error: Required named parameter 'backupService' must be provided.
+    bloc = BackupBloc();
+                     ^
+lib/blocs/backup_bloc.dart:15:3: Context: Found this candidate, but the arguments don't match.
+  BackupBloc({
+  ^^^^^^^^^^
+test/behavioral/bloc_backup_behavioral_test.dart:46:43: Error: Too few positional arguments: 1 required, 0 given.
+    act: (bloc) => bloc.add(ToggleWifiOnly()),
+                                          ^
+lib/blocs/backup_event.dart:41:9: Context: Found this candidate, but the arguments don't match.
+  const ToggleWifiOnly(this.enabled);
+        ^^^^^^^^^^^^^^
+test/behavioral/bloc_backup_behavioral_test.dart:55:45: Error: Too few positional arguments: 1 required, 0 given.
+    act: (bloc) => bloc.add(ToggleAutoBackup()),
+                                            ^
+lib/blocs/backup_event.dart:21:9: Context: Found this candidate, but the arguments don't match.
+  const ToggleAutoBackup(this.enabled);
+        ^^^^^^^^^^^^^^^^
+00:00 +0 -1: loading /home/runner/work/Devocional_nuevo/Devocional_nuevo/test/behavioral/bloc_backup_behavioral_test.dart [E]
+  Failed to load "/home/runner/work/Devocional_nuevo/Devocional_nuevo/test/behavioral/bloc_backup_behavioral_test.dart":
+  Compilation failed for testPath=/home/runner/work/Devocional_nuevo/Devocional_nuevo/test/behavioral/bloc_backup_behavioral_test.dart: test/behavioral/bloc_backup_behavioral_test.dart:14:22: Error: Required named parameter 'backupService' must be provided.
+      bloc = BackupBloc();
+                       ^
+  lib/blocs/backup_bloc.dart:15:3: Context: Found this candidate, but the arguments don't match.
+    BackupBloc({
+    ^^^^^^^^^^
+  test/behavioral/bloc_backup_behavioral_test.dart:46:43: Error: Too few positional arguments: 1 required, 0 given.
+      act: (bloc) => bloc.add(ToggleWifiOnly()),
+                                            ^
+  lib/blocs/backup_event.dart:41:9: Context: Found this candidate, but the arguments don't match.
+    const ToggleWifiOnly(this.enabled);
+          ^^^^^^^^^^^^^^
+  test/behavioral/bloc_backup_behavioral_test.dart:55:45: Error: Too few positional arguments: 1 required, 0 given.
+      act: (bloc) => bloc.add(ToggleAutoBackup()),
+                                              ^
+  lib/blocs/backup_event.dart:21:9: Context: Found this candidate, but the arguments don't match.
+    const ToggleAutoBackup(this.enabled);
+          ^^^^^^^^^^^^^^^^
+  .
+00:00 +0 -1: Some tests failed.
