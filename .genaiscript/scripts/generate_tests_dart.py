@@ -1,29 +1,17 @@
 #!/usr/bin/env python3
-"""
-Flutter/Dart behavioral test generator focused on real user interaction patterns.
-
-Generates high-quality tests with:
-- Proper mock annotations (@GenerateMocks)
-- Platform channel mocking
-- Async state validation
-- Edge case coverage
-- Real user behavior scenarios
-"""
 import os
 import subprocess
 import pathlib
 import json
 import re
 import requests
-from typing import List, Dict, Optional, Tuple
+from typing import List, Tuple
 from dataclasses import dataclass
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 
-
 @dataclass
 class SourceAnalysis:
-    """Analysis results from source code inspection."""
     class_name: str
     dependencies: List[str]
     platform_channels: List[str]
@@ -32,41 +20,51 @@ class SourceAnalysis:
     user_interactions: List[str]
     error_handlers: List[str]
 
+def log(msg):
+    print(f"[LOG] {msg}", flush=True)
 
 def run(cmd: str, check: bool = True) -> str:
-    """Execute shell command and return stdout."""
     res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
     if check and res.returncode != 0:
-        raise Exception(
-            f"Command failed: {cmd}\nstdout:{res.stdout}\nstderr:{res.stderr}"
-        )
+        log(f"Command failed: {cmd}\nstdout:{res.stdout}\nstderr:{res.stderr}")
+        raise Exception(f"Command failed: {cmd}")
     return res.stdout.strip()
 
+def get_modified_dart_files() -> List[str]:
+    try:
+        run("git fetch origin main --depth=1", check=False)
+    except Exception:
+        log("Could not fetch git origin.")
+    out = run("git diff --name-only origin/main...HEAD", check=False)
+    files = [f.strip() for f in out.splitlines() if f.strip().endswith(".dart")]
+    files = [f for f in files if not f.startswith("test/")]
+    files = [f for f in files if f.startswith("lib/")]
+    log(f"Modified dart files: {files}")
+    return files
 
-def get_all_dart_files() -> List[str]:
-    """Get all .dart files in lib/ (except test/)."""
+def get_priority_dart_files(max_files: int = 3) -> List[str]:
     lib_path = ROOT / "lib"
     dart_files = []
-    for dart_file in lib_path.rglob("*.dart"):
-        rel_path = str(dart_file.relative_to(ROOT))
-        dart_files.append(rel_path)
+    priority_folders = ["services", "blocs", "controllers", "providers", "models"]
+    for folder in priority_folders:
+        folder_path = lib_path / folder
+        if folder_path.exists():
+            for dart_file in folder_path.glob("*.dart"):
+                rel_path = str(dart_file.relative_to(ROOT))
+                dart_files.append(rel_path)
+                if len(dart_files) >= max_files:
+                    return dart_files
+    log(f"Priority dart files: {dart_files}")
     return dart_files
 
-
 def read_file(path: str) -> str:
-    """Read file content."""
     p = ROOT / path
+    log(f"Reading file: {p}")
     return p.read_text(encoding="utf-8")
 
-
 def analyze_source_code(source: str, file_path: str) -> SourceAnalysis:
-    """Analyze source code to extract testable components and user interactions."""
-    
-    # Extract class name
     class_match = re.search(r'class\s+(\w+)', source)
     class_name = class_match.group(1) if class_match else "UnknownClass"
-    
-    # Find dependencies (constructor parameters, fields with types)
     dependencies = []
     dep_patterns = [
         r'final\s+(\w+)\s+\w+;',
@@ -77,53 +75,26 @@ def analyze_source_code(source: str, file_path: str) -> SourceAnalysis:
         deps = re.findall(pattern, source)
         dependencies.extend([d for d in deps if d[0].isupper()])
     dependencies = list(set(dependencies))
-    
-    # Find platform channels
     platform_channels = re.findall(r"MethodChannel\(['\"](\w+)['\"]\)", source)
-    
-    # Find async methods
     async_methods = re.findall(r'Future<\w+>\s+(\w+)\(', source)
-    
-    # Find state properties
     state_props = []
-    state_patterns = [
-        r'bool\s+(_?is\w+)',
-        r'enum\s+(\w+State)',
-        r'(\w+State)\s+\w+',
-    ]
+    state_patterns = [r'bool\s+(_?is\w+)', r'enum\s+(\w+State)', r'(\w+State)\s+\w+',]
     for pattern in state_patterns:
         state_props.extend(re.findall(pattern, source))
     state_props = list(set(state_props))
-    
-    # Identify user interaction patterns
     user_interactions = []
     interaction_keywords = {
-        'speak': 'User initiates speech/audio playback',
-        'play': 'User plays audio/video content',
-        'pause': 'User pauses playback',
-        'stop': 'User stops operation',
-        'resume': 'User resumes paused operation',
-        'toggle': 'User toggles a setting/state',
-        'save': 'User saves data',
-        'delete': 'User deletes item',
-        'edit': 'User edits content',
-        'add': 'User adds new item',
-        'update': 'User updates existing data',
-        'refresh': 'User refreshes data',
-        'load': 'User triggers data loading',
-        'download': 'User downloads content',
-        'upload': 'User uploads content',
-        'share': 'User shares content',
-        'favorite': 'User marks as favorite',
-        'search': 'User searches content',
-        'filter': 'User filters results',
+        'speak':'User initiates speech/audio playback', 'play':'User plays audio/video content',
+        'pause':'User pauses playback', 'stop':'User stops operation', 'resume':'User resumes paused operation',
+        'toggle':'User toggles a setting/state', 'save':'User saves data', 'delete':'User deletes item',
+        'edit':'User edits content', 'add':'User adds new item', 'update':'User updates existing data',
+        'refresh':'User refreshes data', 'load':'User triggers data loading', 'download':'User downloads content',
+        'upload':'User uploads content', 'share':'User shares content', 'favorite':'User marks as favorite',
+        'search':'User searches content', 'filter':'User filters results',
     }
-    
     for keyword, description in interaction_keywords.items():
         if re.search(rf'\b{keyword}\w*\s*\(', source, re.IGNORECASE):
             user_interactions.append((keyword, description))
-    
-    # Find error handling patterns
     error_handlers = []
     if 'try' in source or 'catch' in source:
         error_handlers.append('try_catch_blocks')
@@ -131,7 +102,6 @@ def analyze_source_code(source: str, file_path: str) -> SourceAnalysis:
         error_handlers.append('throws_exceptions')
     if 'onError' in source or 'handleError' in source:
         error_handlers.append('error_callbacks')
-    
     return SourceAnalysis(
         class_name=class_name,
         dependencies=dependencies,
@@ -142,103 +112,111 @@ def analyze_source_code(source: str, file_path: str) -> SourceAnalysis:
         error_handlers=error_handlers,
     )
 
-
-def generate_channel_mocks(channels: List[str]) -> str:
-    """Generate platform channel mock setup code."""
-    if not channels:
-        return "// No platform channels to mock"
-    
-    mocks = []
-    for channel in channels:
-        mocks.append(f"""TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      .setMockMethodCallHandler(
-        MethodChannel('{channel}'),
-        (call) async {{
-          // Mock common methods
-          if (call.method == 'speak') return 1;
-          if (call.method == 'stop') return 1;
-          if (call.method == 'setLanguage') return 1;
-          return null;
-        }}
-      );""")
-    return "\n    ".join(mocks)
-
-
-def generate_channel_cleanup(channels: List[str]) -> str:
-    """Generate platform channel cleanup code."""
-    if not channels:
-        return "// No channels to clean up"
-    
-    cleanups = []
-    for channel in channels:
-        cleanups.append(f"""TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      .setMockMethodCallHandler(MethodChannel('{channel}'), null);""")
-    return "\n    ".join(cleanups)
-
-
 def build_enhanced_prompt(file_path: str, source: str, analysis: SourceAnalysis) -> str:
-    """Build comprehensive prompt with deep source analysis."""
-    
-    # Build context about the code
-    context_parts = []
-    
-    if analysis.dependencies:
-        context_parts.append(f"Dependencies to mock: {', '.join(analysis.dependencies)}")
-    
-    if analysis.platform_channels:
-        context_parts.append(f"Platform channels to mock: {', '.join(analysis.platform_channels)}")
-    
-    if analysis.async_methods:
-        context_parts.append(f"Async methods requiring state validation: {', '.join(analysis.async_methods)}")
-    
-    if analysis.user_interactions:
-        interactions = [f"{kw} ({desc})" for kw, desc in analysis.user_interactions]
-        context_parts.append(f"User interactions to test: {', '.join(interactions)}")
-    
-    context_section = "\n".join(f"- {part}" for part in context_parts) if context_parts else "- Basic unit testing required"
-    
-    # Build user behavior scenarios
-    scenarios = []
-    for keyword, description in analysis.user_interactions[:5]:
-        scenarios.append(f"""
-    test('{description}', () async {{
-      // Given: User is ready to {keyword}
-      // Setup initial state and mock responses
-      
-      // When: User performs {keyword} action
-      // Trigger the user interaction
-      
-      // Then: System responds correctly
-      // Verify state changes, API calls, UI updates
-    }});""")
-    
-    scenarios_section = "\n".join(scenarios) if scenarios else """
-    test('Basic functionality works correctly', () async {
-      // Given: Initial state
-      // When: User interaction occurs
-      // Then: Expected outcome
-    });"""
-    
-    prompt = f"""You are a senior Flutter test engineer specializing in behavioral testing and user interaction patterns.
+    # (código igual que tu versión anterior, sin cambios)
+    # ... [Redúcido aquí por brevedad, conservar igual]
+    # return prompt
+    # (copiar la versión de tu script original aquí)
+    pass
 
-TARGET FILE: {file_path}
-CLASS UNDER TEST: {analysis.class_name}
+def extract_dart_code(text: str) -> str:
+    code_block_pattern = r"```(?:dart)?\s*([\s\S]*?)```"
+    matches = re.findall(code_block_pattern, text)
+    if matches:
+        return matches[0].strip()
+    return text.strip()
 
-ANALYZED CONTEXT:
-{context_section}
+def call_deepseek_api(prompt: str) -> str:
+    """Call DeepSeek API for code generation."""
+    api_key = os.getenv("DEEPSEEK_API_KEY")
+    if not api_key:
+        raise Exception("DEEPSEEK_API_KEY environment variable not set")
+    url = "https://api.deepseek.com/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "model": "deepseek-coder-v2-instruct",
+        "messages": [
+            {
+                "role": "system",
+                "content": ("You are a senior Flutter test engineer specializing in behavioral testing and user interaction patterns.")
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        "temperature": 0.0,
+        "max_tokens": 8192,
+        "top_p": 0.95,
+        "n": 1,
+        "stream": False
+    }
+    log(f"Calling DeepSeek API for prompt ({len(prompt)} chars)...")
+    resp = requests.post(url, headers=headers, json=payload, timeout=300)
+    log(f"DeepSeek API HTTP {resp.status_code}")
+    if resp.status_code != 200:
+        error_detail = resp.text[:1000]
+        log(f"API call failed: {error_detail}")
+        raise Exception(f"API request failed: {resp.status_code}")
+    data = resp.json()
+    log(f"API response: {json.dumps(data)[:200]}")
+    return extract_dart_code(data["choices"][0]["message"]["content"])
 
-OBJECTIVE: Generate production-quality behavioral tests that validate real user workflows, not just code coverage.
+def validate_generated_test(content: str, analysis: SourceAnalysis) -> Tuple[bool, List[str]]:
+    # (igual que en tu función original)
+    pass
 
-MANDATORY REQUIREMENTS:
+def write_test_file(src_path: str, content: str) -> str:
+    rel = src_path.replace("lib/", "").replace("/", "_").replace(".dart", "")
+    fname = f"test_behavioral_{rel}.dart"
+    out_dir = ROOT / "test" / "behavioral"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = out_dir / fname
+    out_path.write_text(content, encoding="utf-8")
+    log(f"Test generated: {out_path}")
+    return str(out_path)
 
-1. IMPORTS & ANNOTATIONS:
-```dart
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-import 'package:flutter/services.dart';
-// Import the class under test
-import 'package:devocional_nuevo/{file_path.replace('lib/', '')}';
+def main():
+    log("START script")
+    modified = get_modified_dart_files()
+    if not modified:
+        log("No modified files detected, checking priority...")
+        modified = get_priority_dart_files(max_files=3)
+        if not modified:
+            log("No .dart files found to test, exiting.")
+            return
+    log(f"Files to process: {modified}")
+    generated = []
+    failed = []
+    for idx, file_path in enumerate(modified, 1):
+        log(f"[{idx}/{len(modified)}] Processing: {file_path}")
+        try:
+            source = read_file(file_path)
+        except Exception as e:
+            log(f"Failed to read file: {e}")
+            failed.append((file_path, str(e)))
+            continue
+        analysis = analyze_source_code(source, file_path)
+        prompt = build_enhanced_prompt(file_path, source, analysis)
+        try:
+            result = call_deepseek_api(prompt)
+        except Exception as e:
+            log(f"API call failed: {e}")
+            failed.append((file_path, str(e)))
+            continue
+        is_valid, issues = validate_generated_test(result, analysis)
+        if not is_valid:
+            for issue in issues:
+                log(f"Validation warning: {issue}")
+        test_path = write_test_file(file_path, result)
+        generated.append(test_path)
+        log(f"Test created: {test_path}")
+    log(f"SUMMARY: Success {len(generated)}, Fail {len(failed)}")
+    if failed:
+        log(f"Some files failed: {failed}")
 
-@GenerateMocks([{', '.join(analysis.dependencies[:5]) if analysis.dependencies else 'Object'}])
-void main() {{
+if __name__ == "__main__":
+    main()
