@@ -1,0 +1,85 @@
+00:00 +0: loading /home/runner/work/Devocional_nuevo/Devocional_nuevo/test/behavioral/bloc_backup_behavioral_test.dart
+test/behavioral/bloc_backup_behavioral_test.dart:12:22: Error: Required named parameter 'backupService' must be provided.
+    bloc = BackupBloc();
+                     ^
+lib/blocs/backup_bloc.dart:15:3: Context: Found this candidate, but the arguments don't match.
+  BackupBloc({
+  ^^^^^^^^^^
+test/behavioral/bloc_backup_behavioral_test.dart:18:24: Error: Method not found: 'BackupInitial'.
+    expect(bloc.state, BackupInitial());
+                       ^^^^^^^^^^^^^
+test/behavioral/bloc_backup_behavioral_test.dart:21:24: Error: 'BackupState' isn't a type.
+  blocTest<BackupBloc, BackupState>(
+                       ^^^^^^^^^^^
+test/behavioral/bloc_backup_behavioral_test.dart:24:29: Error: Method not found: 'CreateManualBackup'.
+    act: (bloc) => bloc.add(CreateManualBackup()),
+                            ^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_backup_behavioral_test.dart:26:7: Error: Method not found: 'BackupCreating'.
+      BackupCreating(),
+      ^^^^^^^^^^^^^^
+test/behavioral/bloc_backup_behavioral_test.dart:27:7: Error: Method not found: 'BackupCreated'.
+      BackupCreated(),
+      ^^^^^^^^^^^^^
+test/behavioral/bloc_backup_behavioral_test.dart:31:24: Error: 'BackupState' isn't a type.
+  blocTest<BackupBloc, BackupState>(
+                       ^^^^^^^^^^^
+test/behavioral/bloc_backup_behavioral_test.dart:34:29: Error: Method not found: 'RestoreFromBackup'.
+    act: (bloc) => bloc.add(RestoreFromBackup()),
+                            ^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_backup_behavioral_test.dart:36:7: Error: Method not found: 'BackupCreating'.
+      BackupCreating(),
+      ^^^^^^^^^^^^^^
+test/behavioral/bloc_backup_behavioral_test.dart:37:7: Error: Method not found: 'BackupRestoring'.
+      BackupRestoring(),
+      ^^^^^^^^^^^^^^^
+test/behavioral/bloc_backup_behavioral_test.dart:41:24: Error: 'BackupState' isn't a type.
+  blocTest<BackupBloc, BackupState>(
+                       ^^^^^^^^^^^
+test/behavioral/bloc_backup_behavioral_test.dart:44:29: Error: Method not found: 'RefreshBackupStatus'.
+    act: (bloc) => bloc.add(RefreshBackupStatus()),
+                            ^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_backup_behavioral_test.dart:46:7: Error: Method not found: 'BackupLoaded'.
+      BackupLoaded(),
+      ^^^^^^^^^^^^
+test/behavioral/bloc_backup_behavioral_test.dart:50:24: Error: 'BackupState' isn't a type.
+  blocTest<BackupBloc, BackupState>(
+                       ^^^^^^^^^^^
+test/behavioral/bloc_backup_behavioral_test.dart:53:29: Error: Method not found: 'SignInToGoogleDrive'.
+    act: (bloc) => bloc.add(SignInToGoogleDrive()),
+                            ^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_backup_behavioral_test.dart:55:7: Error: Method not found: 'BackupCreating'.
+      BackupCreating(),
+      ^^^^^^^^^^^^^^
+test/behavioral/bloc_backup_behavioral_test.dart:56:7: Error: Method not found: 'BackupCreated'.
+      BackupCreated(),
+      ^^^^^^^^^^^^^
+00:00 +0 -1: loading /home/runner/work/Devocional_nuevo/Devocional_nuevo/test/behavioral/bloc_backup_behavioral_test.dart [E]
+  Failed to load "/home/runner/work/Devocional_nuevo/Devocional_nuevo/test/behavioral/bloc_backup_behavioral_test.dart":
+  Compilation failed for testPath=/home/runner/work/Devocional_nuevo/Devocional_nuevo/test/behavioral/bloc_backup_behavioral_test.dart: test/behavioral/bloc_backup_behavioral_test.dart:12:22: Error: Required named parameter 'backupService' must be provided.
+      bloc = BackupBloc();
+                       ^
+  lib/blocs/backup_bloc.dart:15:3: Context: Found this candidate, but the arguments don't match.
+    BackupBloc({
+    ^^^^^^^^^^
+  test/behavioral/bloc_backup_behavioral_test.dart:18:24: Error: Method not found: 'BackupInitial'.
+      expect(bloc.state, BackupInitial());
+                         ^^^^^^^^^^^^^
+  test/behavioral/bloc_backup_behavioral_test.dart:21:24: Error: 'BackupState' isn't a type.
+    blocTest<BackupBloc, BackupState>(
+                         ^^^^^^^^^^^
+  test/behavioral/bloc_backup_behavioral_test.dart:24:29: Error: Method not found: 'CreateManualBackup'.
+      act: (bloc) => bloc.add(CreateManualBackup()),
+                              ^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_backup_behavioral_test.dart:26:7: Error: Method not found: 'BackupCreating'.
+        BackupCreating(),
+        ^^^^^^^^^^^^^^
+  test/behavioral/bloc_backup_behavioral_test.dart:27:7: Error: Method not found: 'BackupCreated'.
+        BackupCreated(),
+        ^^^^^^^^^^^^^
+  test/behavioral/bloc_backup_behavioral_test.dart:31:24: Error: 'BackupState' isn't a type.
+    blocTest<BackupBloc, BackupState>(
+                         ^^^^^^^^^^^
+  test/behavioral/bloc_backup_behavioral_test.dart:34:29: Error: Method not found: 'RestoreFromBackup'.
+      act: (bloc) => bloc.add(RestoreFromBackup()),
+                              ^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_backup_behavioral_test.dar
