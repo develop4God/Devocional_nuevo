@@ -1,0 +1,708 @@
+00:00 +0: loading /home/runner/work/Devocional_nuevo/Devocional_nuevo/test/behavioral/bloc_for_test.dart
+test/behavioral/bloc_for_test.dart:29:31: Error: Method not found: 'ThanksgivingLoadEvent'.
+      act: (bloc) => bloc.add(ThanksgivingLoadEvent()),
+                              ^^^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_for_test.dart:47:20: Error: Method not found: 'ThanksgivingLoadEvent'.
+          bloc.add(ThanksgivingLoadEvent());
+                   ^^^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_for_test.dart:48:20: Error: Method not found: 'ThanksgivingErrorEvent'.
+          bloc.add(ThanksgivingErrorEvent(message: 'Simulated error'));
+                   ^^^^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_for_test.dart:64:31: Error: Method not found: 'ThanksgivingRefreshEvent'.
+      act: (bloc) => bloc.add(ThanksgivingRefreshEvent()),
+                              ^^^^^^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_for_test.dart:82:20: Error: Method not found: 'ThanksgivingRefreshEvent'.
+          bloc.add(ThanksgivingRefreshEvent());
+                   ^^^^^^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_for_test.dart:83:20: Error: Method not found: 'ThanksgivingErrorEvent'.
+          bloc.add(ThanksgivingErrorEvent(message: 'Simulated refresh error'));
+                   ^^^^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_for_test.dart:99:31: Error: Method not found: 'ThanksgivingLoadEvent'.
+      act: (bloc) => bloc.add(ThanksgivingLoadEvent()),
+                              ^^^^^^^^^^^^^^^^^^^^^
+00:00 +0 -1: loading /home/runner/work/Devocional_nuevo/Devocional_nuevo/test/behavioral/bloc_for_test.dart [E]
+  Failed to load "/home/runner/work/Devocional_nuevo/Devocional_nuevo/test/behavioral/bloc_for_test.dart":
+  Compilation failed for testPath=/home/runner/work/Devocional_nuevo/Devocional_nuevo/test/behavioral/bloc_for_test.dart: test/behavioral/bloc_for_test.dart:29:31: Error: Method not found: 'ThanksgivingLoadEvent'.
+        act: (bloc) => bloc.add(ThanksgivingLoadEvent()),
+                                ^^^^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_for_test.dart:47:20: Error: Method not found: 'ThanksgivingLoadEvent'.
+            bloc.add(ThanksgivingLoadEvent());
+                     ^^^^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_for_test.dart:48:20: Error: Method not found: 'ThanksgivingErrorEvent'.
+            bloc.add(ThanksgivingErrorEvent(message: 'Simulated error'));
+                     ^^^^^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_for_test.dart:64:31: Error: Method not found: 'ThanksgivingRefreshEvent'.
+        act: (bloc) => bloc.add(ThanksgivingRefreshEvent()),
+                                ^^^^^^^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_for_test.dart:82:20: Error: Method not found: 'ThanksgivingRefreshEvent'.
+            bloc.add(ThanksgivingRefreshEvent());
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_for_test.dart:83:20: Error: Method not found: 'ThanksgivingErrorEvent'.
+            bloc.add(ThanksgivingErrorEvent(message: 'Simulated refresh error'));
+                     ^^^^^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_for_test.dart:99:31: Error: Method not found: 'ThanksgivingLoadEvent'.
+        act: (bloc) => bloc.add(ThanksgivingLoadEvent()),
+                                ^^^^^^^^^^^^^^^^^^^^^
+  .
+  Error: the Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 907:11    DefaultResidentCompiler._compile.<fn>
+  dart:async/zone.dart 1538:47                     _rootRunUnary
+  dart:async/zone.dart 1429:19                     _CustomZone.runUnary
+  dart:async/future_impl.dart 951:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 980:13               Future._propagateToListeners
+  dart:async/future_impl.dart 865:9                Future._propagateToListeners
+  dart:async/future_impl.dart 723:5                Future._completeWithValue
+  dart:async/future_impl.dart 807:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone.dart 1525:13                     _rootRun
+  dart:async/zone.dart 1422:19                     _CustomZone.run
+  dart:async/zone.dart 1321:7                      _CustomZone.runGuarded
+  dart:async/zone.dart 1362:23                     _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:21         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 194:5      _RawReceivePort._handleMessage
+  
+test/behavioral/bloc_thanksgivingevent_test.dart:13:14: Error: The class 'ThanksgivingEvent' is abstract and can't be instantiated.
+      bloc = ThanksgivingEvent();
+             ^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:21:30: Error: 'ThanksgivingInitial' isn't a type.
+      expect(bloc.state, isA<ThanksgivingInitial>());
+                             ^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:24:33: Error: 'ThanksgivingState' isn't a type.
+    blocTest<ThanksgivingEvent, ThanksgivingState>(
+                                ^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:27:31: Error: Method not found: 'LoadThanksgivingData'.
+      act: (bloc) => bloc.add(LoadThanksgivingData()),
+                              ^^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:29:13: Error: 'ThanksgivingLoading' isn't a type.
+        isA<ThanksgivingLoading>(),
+            ^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:30:13: Error: 'ThanksgivingLoaded' isn't a type.
+        isA<ThanksgivingLoaded>(),
+            ^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:33:37: Error: 'ThanksgivingLoaded' isn't a type.
+        final state = bloc.state as ThanksgivingLoaded;
+                                    ^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:38:33: Error: 'ThanksgivingState' isn't a type.
+    blocTest<ThanksgivingEvent, ThanksgivingState>(
+                                ^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:41:31: Error: Method not found: 'RefreshThanksgivingData'.
+      act: (bloc) => bloc.add(RefreshThanksgivingData()),
+                              ^^^^^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:43:13: Error: 'ThanksgivingLoading' isn't a type.
+        isA<ThanksgivingLoading>(),
+            ^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:44:13: Error: 'ThanksgivingLoaded' isn't a type.
+        isA<ThanksgivingLoaded>(),
+            ^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:47:37: Error: 'ThanksgivingLoaded' isn't a type.
+        final state = bloc.state as ThanksgivingLoaded;
+                                    ^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:52:33: Error: 'ThanksgivingState' isn't a type.
+    blocTest<ThanksgivingEvent, ThanksgivingState>(
+                                ^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:63:18: Error: Method not found: 'LoadThanksgivingData'.
+        bloc.add(LoadThanksgivingData());
+                 ^^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:66:13: Error: 'ThanksgivingLoading' isn't a type.
+        isA<ThanksgivingLoading>(),
+            ^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:67:13: Error: 'ThanksgivingError' isn't a type.
+        isA<ThanksgivingError>(),
+            ^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:76:33: Error: 'ThanksgivingState' isn't a type.
+    blocTest<ThanksgivingEvent, ThanksgivingState>(
+                                ^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:79:31: Error: Method not found: 'LoadThanksgivingData'.
+      act: (bloc) => bloc.add(LoadThanksgivingData()),
+                              ^^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:81:13: Error: 'ThanksgivingLoading' isn't a type.
+        isA<ThanksgivingLoading>(),
+            ^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:82:13: Error: 'ThanksgivingLoaded' isn't a type.
+        isA<ThanksgivingLoaded>(),
+            ^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:85:37: Error: 'ThanksgivingLoaded' isn't a type.
+        final state = bloc.state as ThanksgivingLoaded;
+                                    ^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:92:33: Error: 'ThanksgivingState' isn't a type.
+    blocTest<ThanksgivingEvent, ThanksgivingState>(
+                                ^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:96:18: Error: Method not found: 'LoadThanksgivingData'.
+        bloc.add(LoadThanksgivingData()); // Start loading
+                 ^^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:97:18: Error: Method not found: 'RefreshThanksgivingData'.
+        bloc.add(RefreshThanksgivingData()); // Try to refresh while loading
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:100:13: Error: 'ThanksgivingLoading' isn't a type.
+        isA<ThanksgivingLoading>(),
+            ^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:101:13: Error: 'ThanksgivingLoaded' isn't a type.
+        isA<ThanksgivingLoaded>(),
+            ^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:17:12: Error: The method 'close' isn't defined for the class 'ThanksgivingEvent'.
+ - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'close'.
+      bloc.close();
+           ^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:21:19: Error: The getter 'state' isn't defined for the class 'ThanksgivingEvent'.
+ - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'state'.
+      expect(bloc.state, isA<ThanksgivingInitial>());
+                  ^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:27:27: Error: The method 'add' isn't defined for the class 'ThanksgivingEvent'.
+ - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'add'.
+      act: (bloc) => bloc.add(LoadThanksgivingData()),
+                          ^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:33:28: Error: The getter 'state' isn't defined for the class 'ThanksgivingEvent'.
+ - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'state'.
+        final state = bloc.state as ThanksgivingLoaded;
+                           ^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:24:5: Error: Type argument 'ThanksgivingEvent' doesn't conform to the bound 'EmittableStateStreamableSource<State>' of the type variable 'B' on 'blocTest'.
+ - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+ - 'EmittableStateStreamableSource' is from 'package:bloc/src/bloc.dart' ('../../../.pub-cache/hosted/pub.dev/bloc-9.1.0/lib/src/bloc.dart').
+Try changing type arguments so that they conform to the bounds.
+    blocTest<ThanksgivingEvent, ThanksgivingState>(
+    ^
+../../../.pub-cache/hosted/pub.dev/bloc_test-10.0.0/lib/src/bloc_test.dart:139:15: Context: This is the type variable whose bound isn't conformed to.
+void blocTest<B extends EmittableStateStreamableSource<State>, State>(
+              ^
+test/behavioral/bloc_thanksgivingevent_test.dart:41:27: Error: The method 'add' isn't defined for the class 'ThanksgivingEvent'.
+ - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'add'.
+      act: (bloc) => bloc.add(RefreshThanksgivingData()),
+                          ^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:47:28: Error: The getter 'state' isn't defined for the class 'ThanksgivingEvent'.
+ - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'state'.
+        final state = bloc.state as ThanksgivingLoaded;
+                           ^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:38:5: Error: Type argument 'ThanksgivingEvent' doesn't conform to the bound 'EmittableStateStreamableSource<State>' of the type variable 'B' on 'blocTest'.
+ - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+ - 'EmittableStateStreamableSource' is from 'package:bloc/src/bloc.dart' ('../../../.pub-cache/hosted/pub.dev/bloc-9.1.0/lib/src/bloc.dart').
+Try changing type arguments so that they conform to the bounds.
+    blocTest<ThanksgivingEvent, ThanksgivingState>(
+    ^
+../../../.pub-cache/hosted/pub.dev/bloc_test-10.0.0/lib/src/bloc_test.dart:139:15: Context: This is the type variable whose bound isn't conformed to.
+void blocTest<B extends EmittableStateStreamableSource<State>, State>(
+              ^
+test/behavioral/bloc_thanksgivingevent_test.dart:63:14: Error: The method 'add' isn't defined for the class 'ThanksgivingEvent'.
+ - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'add'.
+        bloc.add(LoadThanksgivingData());
+             ^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:52:5: Error: Type argument 'ThanksgivingEvent' doesn't conform to the bound 'EmittableStateStreamableSource<State>' of the type variable 'B' on 'blocTest'.
+ - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+ - 'EmittableStateStreamableSource' is from 'package:bloc/src/bloc.dart' ('../../../.pub-cache/hosted/pub.dev/bloc-9.1.0/lib/src/bloc.dart').
+Try changing type arguments so that they conform to the bounds.
+    blocTest<ThanksgivingEvent, ThanksgivingState>(
+    ^
+../../../.pub-cache/hosted/pub.dev/bloc_test-10.0.0/lib/src/bloc_test.dart:139:15: Context: This is the type variable whose bound isn't conformed to.
+void blocTest<B extends EmittableStateStreamableSource<State>, State>(
+              ^
+test/behavioral/bloc_thanksgivingevent_test.dart:79:27: Error: The method 'add' isn't defined for the class 'ThanksgivingEvent'.
+ - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'add'.
+      act: (bloc) => bloc.add(LoadThanksgivingData()),
+                          ^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:85:28: Error: The getter 'state' isn't defined for the class 'ThanksgivingEvent'.
+ - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'state'.
+        final state = bloc.state as ThanksgivingLoaded;
+                           ^^^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:76:5: Error: Type argument 'ThanksgivingEvent' doesn't conform to the bound 'EmittableStateStreamableSource<State>' of the type variable 'B' on 'blocTest'.
+ - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+ - 'EmittableStateStreamableSource' is from 'package:bloc/src/bloc.dart' ('../../../.pub-cache/hosted/pub.dev/bloc-9.1.0/lib/src/bloc.dart').
+Try changing type arguments so that they conform to the bounds.
+    blocTest<ThanksgivingEvent, ThanksgivingState>(
+    ^
+../../../.pub-cache/hosted/pub.dev/bloc_test-10.0.0/lib/src/bloc_test.dart:139:15: Context: This is the type variable whose bound isn't conformed to.
+void blocTest<B extends EmittableStateStreamableSource<State>, State>(
+              ^
+test/behavioral/bloc_thanksgivingevent_test.dart:96:14: Error: The method 'add' isn't defined for the class 'ThanksgivingEvent'.
+ - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'add'.
+        bloc.add(LoadThanksgivingData()); // Start loading
+             ^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:97:14: Error: The method 'add' isn't defined for the class 'ThanksgivingEvent'.
+ - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'add'.
+        bloc.add(RefreshThanksgivingData()); // Try to refresh while loading
+             ^^^
+test/behavioral/bloc_thanksgivingevent_test.dart:92:5: Error: Type argument 'ThanksgivingEvent' doesn't conform to the bound 'EmittableStateStreamableSource<State>' of the type variable 'B' on 'blocTest'.
+ - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+ - 'EmittableStateStreamableSource' is from 'package:bloc/src/bloc.dart' ('../../../.pub-cache/hosted/pub.dev/bloc-9.1.0/lib/src/bloc.dart').
+Try changing type arguments so that they conform to the bounds.
+    blocTest<ThanksgivingEvent, ThanksgivingState>(
+    ^
+../../../.pub-cache/hosted/pub.dev/bloc_test-10.0.0/lib/src/bloc_test.dart:139:15: Context: This is the type variable whose bound isn't conformed to.
+void blocTest<B extends EmittableStateStreamableSource<State>, State>(
+              ^
+00:00 +0 -2: loading /home/runner/work/Devocional_nuevo/Devocional_nuevo/test/behavioral/bloc_thanksgivingevent_test.dart [E]
+  Failed to load "/home/runner/work/Devocional_nuevo/Devocional_nuevo/test/behavioral/bloc_thanksgivingevent_test.dart":
+  Compilation failed for testPath=/home/runner/work/Devocional_nuevo/Devocional_nuevo/test/behavioral/bloc_thanksgivingevent_test.dart: test/behavioral/bloc_thanksgivingevent_test.dart:13:14: Error: The class 'ThanksgivingEvent' is abstract and can't be instantiated.
+        bloc = ThanksgivingEvent();
+               ^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:21:30: Error: 'ThanksgivingInitial' isn't a type.
+        expect(bloc.state, isA<ThanksgivingInitial>());
+                               ^^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:24:33: Error: 'ThanksgivingState' isn't a type.
+      blocTest<ThanksgivingEvent, ThanksgivingState>(
+                                  ^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:27:31: Error: Method not found: 'LoadThanksgivingData'.
+        act: (bloc) => bloc.add(LoadThanksgivingData()),
+                                ^^^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:29:13: Error: 'ThanksgivingLoading' isn't a type.
+          isA<ThanksgivingLoading>(),
+              ^^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:30:13: Error: 'ThanksgivingLoaded' isn't a type.
+          isA<ThanksgivingLoaded>(),
+              ^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:33:37: Error: 'ThanksgivingLoaded' isn't a type.
+          final state = bloc.state as ThanksgivingLoaded;
+                                      ^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:38:33: Error: 'ThanksgivingState' isn't a type.
+      blocTest<ThanksgivingEvent, ThanksgivingState>(
+                                  ^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:41:31: Error: Method not found: 'RefreshThanksgivingData'.
+        act: (bloc) => bloc.add(RefreshThanksgivingData()),
+                                ^^^^^^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:43:13: Error: 'ThanksgivingLoading' isn't a type.
+          isA<ThanksgivingLoading>(),
+              ^^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:44:13: Error: 'ThanksgivingLoaded' isn't a type.
+          isA<ThanksgivingLoaded>(),
+              ^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:47:37: Error: 'ThanksgivingLoaded' isn't a type.
+          final state = bloc.state as ThanksgivingLoaded;
+                                      ^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:52:33: Error: 'ThanksgivingState' isn't a type.
+      blocTest<ThanksgivingEvent, ThanksgivingState>(
+                                  ^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:63:18: Error: Method not found: 'LoadThanksgivingData'.
+          bloc.add(LoadThanksgivingData());
+                   ^^^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:66:13: Error: 'ThanksgivingLoading' isn't a type.
+          isA<ThanksgivingLoading>(),
+              ^^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:67:13: Error: 'ThanksgivingError' isn't a type.
+          isA<ThanksgivingError>(),
+              ^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:76:33: Error: 'ThanksgivingState' isn't a type.
+      blocTest<ThanksgivingEvent, ThanksgivingState>(
+                                  ^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:79:31: Error: Method not found: 'LoadThanksgivingData'.
+        act: (bloc) => bloc.add(LoadThanksgivingData()),
+                                ^^^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:81:13: Error: 'ThanksgivingLoading' isn't a type.
+          isA<ThanksgivingLoading>(),
+              ^^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:82:13: Error: 'ThanksgivingLoaded' isn't a type.
+          isA<ThanksgivingLoaded>(),
+              ^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:85:37: Error: 'ThanksgivingLoaded' isn't a type.
+          final state = bloc.state as ThanksgivingLoaded;
+                                      ^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:92:33: Error: 'ThanksgivingState' isn't a type.
+      blocTest<ThanksgivingEvent, ThanksgivingState>(
+                                  ^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:96:18: Error: Method not found: 'LoadThanksgivingData'.
+          bloc.add(LoadThanksgivingData()); // Start loading
+                   ^^^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:97:18: Error: Method not found: 'RefreshThanksgivingData'.
+          bloc.add(RefreshThanksgivingData()); // Try to refresh while loading
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:100:13: Error: 'ThanksgivingLoading' isn't a type.
+          isA<ThanksgivingLoading>(),
+              ^^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:101:13: Error: 'ThanksgivingLoaded' isn't a type.
+          isA<ThanksgivingLoaded>(),
+              ^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:17:12: Error: The method 'close' isn't defined for the class 'ThanksgivingEvent'.
+   - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+  Try correcting the name to the name of an existing method, or defining a method named 'close'.
+        bloc.close();
+             ^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:21:19: Error: The getter 'state' isn't defined for the class 'ThanksgivingEvent'.
+   - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'state'.
+        expect(bloc.state, isA<ThanksgivingInitial>());
+                    ^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:27:27: Error: The method 'add' isn't defined for the class 'ThanksgivingEvent'.
+   - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+  Try correcting the name to the name of an existing method, or defining a method named 'add'.
+        act: (bloc) => bloc.add(LoadThanksgivingData()),
+                            ^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:33:28: Error: The getter 'state' isn't defined for the class 'ThanksgivingEvent'.
+   - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'state'.
+          final state = bloc.state as ThanksgivingLoaded;
+                             ^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:24:5: Error: Type argument 'ThanksgivingEvent' doesn't conform to the bound 'EmittableStateStreamableSource<State>' of the type variable 'B' on 'blocTest'.
+   - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+   - 'EmittableStateStreamableSource' is from 'package:bloc/src/bloc.dart' ('../../../.pub-cache/hosted/pub.dev/bloc-9.1.0/lib/src/bloc.dart').
+  Try changing type arguments so that they conform to the bounds.
+      blocTest<ThanksgivingEvent, ThanksgivingState>(
+      ^
+  ../../../.pub-cache/hosted/pub.dev/bloc_test-10.0.0/lib/src/bloc_test.dart:139:15: Context: This is the type variable whose bound isn't conformed to.
+  void blocTest<B extends EmittableStateStreamableSource<State>, State>(
+                ^
+  test/behavioral/bloc_thanksgivingevent_test.dart:41:27: Error: The method 'add' isn't defined for the class 'ThanksgivingEvent'.
+   - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+  Try correcting the name to the name of an existing method, or defining a method named 'add'.
+        act: (bloc) => bloc.add(RefreshThanksgivingData()),
+                            ^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:47:28: Error: The getter 'state' isn't defined for the class 'ThanksgivingEvent'.
+   - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'state'.
+          final state = bloc.state as ThanksgivingLoaded;
+                             ^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:38:5: Error: Type argument 'ThanksgivingEvent' doesn't conform to the bound 'EmittableStateStreamableSource<State>' of the type variable 'B' on 'blocTest'.
+   - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+   - 'EmittableStateStreamableSource' is from 'package:bloc/src/bloc.dart' ('../../../.pub-cache/hosted/pub.dev/bloc-9.1.0/lib/src/bloc.dart').
+  Try changing type arguments so that they conform to the bounds.
+      blocTest<ThanksgivingEvent, ThanksgivingState>(
+      ^
+  ../../../.pub-cache/hosted/pub.dev/bloc_test-10.0.0/lib/src/bloc_test.dart:139:15: Context: This is the type variable whose bound isn't conformed to.
+  void blocTest<B extends EmittableStateStreamableSource<State>, State>(
+                ^
+  test/behavioral/bloc_thanksgivingevent_test.dart:63:14: Error: The method 'add' isn't defined for the class 'ThanksgivingEvent'.
+   - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+  Try correcting the name to the name of an existing method, or defining a method named 'add'.
+          bloc.add(LoadThanksgivingData());
+               ^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:52:5: Error: Type argument 'ThanksgivingEvent' doesn't conform to the bound 'EmittableStateStreamableSource<State>' of the type variable 'B' on 'blocTest'.
+   - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+   - 'EmittableStateStreamableSource' is from 'package:bloc/src/bloc.dart' ('../../../.pub-cache/hosted/pub.dev/bloc-9.1.0/lib/src/bloc.dart').
+  Try changing type arguments so that they conform to the bounds.
+      blocTest<ThanksgivingEvent, ThanksgivingState>(
+      ^
+  ../../../.pub-cache/hosted/pub.dev/bloc_test-10.0.0/lib/src/bloc_test.dart:139:15: Context: This is the type variable whose bound isn't conformed to.
+  void blocTest<B extends EmittableStateStreamableSource<State>, State>(
+                ^
+  test/behavioral/bloc_thanksgivingevent_test.dart:79:27: Error: The method 'add' isn't defined for the class 'ThanksgivingEvent'.
+   - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+  Try correcting the name to the name of an existing method, or defining a method named 'add'.
+        act: (bloc) => bloc.add(LoadThanksgivingData()),
+                            ^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:85:28: Error: The getter 'state' isn't defined for the class 'ThanksgivingEvent'.
+   - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+  Try correcting the name to the name of an existing getter, or defining a getter or field named 'state'.
+          final state = bloc.state as ThanksgivingLoaded;
+                             ^^^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:76:5: Error: Type argument 'ThanksgivingEvent' doesn't conform to the bound 'EmittableStateStreamableSource<State>' of the type variable 'B' on 'blocTest'.
+   - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+   - 'EmittableStateStreamableSource' is from 'package:bloc/src/bloc.dart' ('../../../.pub-cache/hosted/pub.dev/bloc-9.1.0/lib/src/bloc.dart').
+  Try changing type arguments so that they conform to the bounds.
+      blocTest<ThanksgivingEvent, ThanksgivingState>(
+      ^
+  ../../../.pub-cache/hosted/pub.dev/bloc_test-10.0.0/lib/src/bloc_test.dart:139:15: Context: This is the type variable whose bound isn't conformed to.
+  void blocTest<B extends EmittableStateStreamableSource<State>, State>(
+                ^
+  test/behavioral/bloc_thanksgivingevent_test.dart:96:14: Error: The method 'add' isn't defined for the class 'ThanksgivingEvent'.
+   - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+  Try correcting the name to the name of an existing method, or defining a method named 'add'.
+          bloc.add(LoadThanksgivingData()); // Start loading
+               ^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:97:14: Error: The method 'add' isn't defined for the class 'ThanksgivingEvent'.
+   - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+  Try correcting the name to the name of an existing method, or defining a method named 'add'.
+          bloc.add(RefreshThanksgivingData()); // Try to refresh while loading
+               ^^^
+  test/behavioral/bloc_thanksgivingevent_test.dart:92:5: Error: Type argument 'ThanksgivingEvent' doesn't conform to the bound 'EmittableStateStreamableSource<State>' of the type variable 'B' on 'blocTest'.
+   - 'ThanksgivingEvent' is from 'package:devocional_nuevo/blocs/thanksgiving_event.dart' ('lib/blocs/thanksgiving_event.dart').
+   - 'EmittableStateStreamableSource' is from 'package:bloc/src/bloc.dart' ('../../../.pub-cache/hosted/pub.dev/bloc-9.1.0/lib/src/bloc.dart').
+  Try changing type arguments so that they conform to the bounds.
+      blocTest<ThanksgivingEvent, ThanksgivingState>(
+      ^
+  ../../../.pub-cache/hosted/pub.dev/bloc_test-10.0.0/lib/src/bloc_test.dart:139:15: Context: This is the type variable whose bound isn't conformed to.
+  void blocTest<B extends EmittableStateStreamableSource<State>, State>(
+                ^
+  .
+00:00 +0 -2: loading /home/runner/work/Devocional_nuevo/Devocional_nuevo/test/behavioral/bloc_for_test.dart [E]
+  Error: the Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 907:11    DefaultResidentCompiler._compile.<fn>
+  dart:async/zone.dart 1538:47                     _rootRunUnary
+  dart:async/zone.dart 1429:19                     _CustomZone.runUnary
+  dart:async/future_impl.dart 951:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 980:13               Future._propagateToListeners
+  dart:async/future_impl.dart 865:9                Future._propagateToListeners
+  dart:async/future_impl.dart 723:5                Future._completeWithValue
+  dart:async/future_impl.dart 807:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone.dart 1525:13                     _rootRun
+  dart:async/zone.dart 1422:19                     _CustomZone.run
+  dart:async/zone.dart 1321:7                      _CustomZone.runGuarded
+  dart:async/zone.dart 1362:23                     _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:21         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 194:5      _RawReceivePort._handleMessage
+  
+test/behavioral/bloc_backupbloc_test.dart:7:60: Error: Type 'GoogleDriveBackupService' not found.
+class MockGoogleDriveBackupService extends Mock implements GoogleDriveBackupService {}
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:17:29: Error: No named parameter with the name 'googleDriveBackupService'.
+    backupBloc = BackupBloc(googleDriveBackupService: mockGoogleDriveBackupService);
+                            ^^^^^^^^^^^^^^^^^^^^^^^^
+lib/blocs/backup_bloc.dart:15:3: Context: Found this candidate, but the arguments don't match.
+  BackupBloc({
+  ^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:25:34: Error: 'BackupInitial' isn't a type.
+    expect(backupBloc.state, isA<BackupInitial>());
+                                 ^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:28:24: Error: 'BackupState' isn't a type.
+  blocTest<BackupBloc, BackupState>(
+                       ^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:34:29: Error: Method not found: 'BackupInitiated'.
+    act: (bloc) => bloc.add(BackupInitiated()),
+                            ^^^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:36:11: Error: 'BackupLoading' isn't a type.
+      isA<BackupLoading>(),
+          ^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:37:11: Error: 'BackupSuccess' isn't a type.
+      isA<BackupSuccess>(),
+          ^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:44:24: Error: 'BackupState' isn't a type.
+  blocTest<BackupBloc, BackupState>(
+                       ^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:50:29: Error: Method not found: 'RestoreInitiated'.
+    act: (bloc) => bloc.add(RestoreInitiated()),
+                            ^^^^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:52:11: Error: 'BackupLoading' isn't a type.
+      isA<BackupLoading>(),
+          ^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:53:11: Error: 'RestoreSuccess' isn't a type.
+      isA<RestoreSuccess>(),
+          ^^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:60:24: Error: 'BackupState' isn't a type.
+  blocTest<BackupBloc, BackupState>(
+                       ^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:66:29: Error: Method not found: 'BackupInitiated'.
+    act: (bloc) => bloc.add(BackupInitiated()),
+                            ^^^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:68:11: Error: 'BackupLoading' isn't a type.
+      isA<BackupLoading>(),
+          ^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:69:11: Error: 'BackupFailure' isn't a type.
+      isA<BackupFailure>(),
+          ^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:73:25: Error: 'BackupFailure' isn't a type.
+      expect(state, isA<BackupFailure>());
+                        ^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:74:24: Error: 'BackupFailure' isn't a type.
+      expect((state as BackupFailure).error, 'Exception: Backup failed');
+                       ^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:79:24: Error: 'BackupState' isn't a type.
+  blocTest<BackupBloc, BackupState>(
+                       ^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:85:29: Error: Method not found: 'RestoreInitiated'.
+    act: (bloc) => bloc.add(RestoreInitiated()),
+                            ^^^^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:87:11: Error: 'BackupLoading' isn't a type.
+      isA<BackupLoading>(),
+          ^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:88:11: Error: 'RestoreFailure' isn't a type.
+      isA<RestoreFailure>(),
+          ^^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:92:25: Error: 'RestoreFailure' isn't a type.
+      expect(state, isA<RestoreFailure>());
+                        ^^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:93:24: Error: 'RestoreFailure' isn't a type.
+      expect((state as RestoreFailure).error, 'Exception: Restore failed');
+                       ^^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:98:24: Error: 'BackupState' isn't a type.
+  blocTest<BackupBloc, BackupState>(
+                       ^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:102:17: Error: Method not found: 'BackupLoading'.
+      bloc.emit(BackupLoading());
+                ^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:103:16: Error: Method not found: 'BackupInitiated'.
+      bloc.add(BackupInitiated());
+               ^^^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:108:24: Error: 'BackupState' isn't a type.
+  blocTest<BackupBloc, BackupState>(
+                       ^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:112:17: Error: Method not found: 'BackupLoading'.
+      bloc.emit(BackupLoading());
+                ^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:113:16: Error: Method not found: 'RestoreInitiated'.
+      bloc.add(RestoreInitiated());
+               ^^^^^^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:31:47: Error: The method 'backupData' isn't defined for the class 'MockGoogleDriveBackupService'.
+ - 'MockGoogleDriveBackupService' is from 'test/behavioral/bloc_backupbloc_test.dart'.
+Try correcting the name to the name of an existing method, or defining a method named 'backupData'.
+      when(() => mockGoogleDriveBackupService.backupData()).thenAnswer((_) async => true);
+                                              ^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:40:49: Error: The method 'backupData' isn't defined for the class 'MockGoogleDriveBackupService'.
+ - 'MockGoogleDriveBackupService' is from 'test/behavioral/bloc_backupbloc_test.dart'.
+Try correcting the name to the name of an existing method, or defining a method named 'backupData'.
+      verify(() => mockGoogleDriveBackupService.backupData()).called(1);
+                                                ^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:47:47: Error: The method 'restoreData' isn't defined for the class 'MockGoogleDriveBackupService'.
+ - 'MockGoogleDriveBackupService' is from 'test/behavioral/bloc_backupbloc_test.dart'.
+Try correcting the name to the name of an existing method, or defining a method named 'restoreData'.
+      when(() => mockGoogleDriveBackupService.restoreData()).thenAnswer((_) async => true);
+                                              ^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:56:49: Error: The method 'restoreData' isn't defined for the class 'MockGoogleDriveBackupService'.
+ - 'MockGoogleDriveBackupService' is from 'test/behavioral/bloc_backupbloc_test.dart'.
+Try correcting the name to the name of an existing method, or defining a method named 'restoreData'.
+      verify(() => mockGoogleDriveBackupService.restoreData()).called(1);
+                                                ^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:63:47: Error: The method 'backupData' isn't defined for the class 'MockGoogleDriveBackupService'.
+ - 'MockGoogleDriveBackupService' is from 'test/behavioral/bloc_backupbloc_test.dart'.
+Try correcting the name to the name of an existing method, or defining a method named 'backupData'.
+      when(() => mockGoogleDriveBackupService.backupData()).thenThrow(Exception('Backup failed'));
+                                              ^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:75:49: Error: The method 'backupData' isn't defined for the class 'MockGoogleDriveBackupService'.
+ - 'MockGoogleDriveBackupService' is from 'test/behavioral/bloc_backupbloc_test.dart'.
+Try correcting the name to the name of an existing method, or defining a method named 'backupData'.
+      verify(() => mockGoogleDriveBackupService.backupData()).called(1);
+                                                ^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:82:47: Error: The method 'restoreData' isn't defined for the class 'MockGoogleDriveBackupService'.
+ - 'MockGoogleDriveBackupService' is from 'test/behavioral/bloc_backupbloc_test.dart'.
+Try correcting the name to the name of an existing method, or defining a method named 'restoreData'.
+      when(() => mockGoogleDriveBackupService.restoreData()).thenThrow(Exception('Restore failed'));
+                                              ^^^^^^^^^^^
+test/behavioral/bloc_backupbloc_test.dart:94:49: Error: The method 'restoreData' isn't defined for the class 'MockGoogleDriveBackupService'.
+ - 'MockGoogleDriveBackupService' is from 'test/behavioral/bloc_backupbloc_test.dart'.
+Try correcting the name to the name of an existing method, or defining a method named 'restoreData'.
+      verify(() => mockGoogleDriveBackupService.restoreData()).called(1);
+                                                ^^^^^^^^^^^
+00:00 +0 -3: loading /home/runner/work/Devocional_nuevo/Devocional_nuevo/test/behavioral/bloc_backupbloc_test.dart [E]
+  Failed to load "/home/runner/work/Devocional_nuevo/Devocional_nuevo/test/behavioral/bloc_backupbloc_test.dart":
+  Compilation failed for testPath=/home/runner/work/Devocional_nuevo/Devocional_nuevo/test/behavioral/bloc_backupbloc_test.dart: test/behavioral/bloc_backupbloc_test.dart:7:60: Error: Type 'GoogleDriveBackupService' not found.
+  class MockGoogleDriveBackupService extends Mock implements GoogleDriveBackupService {}
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:17:29: Error: No named parameter with the name 'googleDriveBackupService'.
+      backupBloc = BackupBloc(googleDriveBackupService: mockGoogleDriveBackupService);
+                              ^^^^^^^^^^^^^^^^^^^^^^^^
+  lib/blocs/backup_bloc.dart:15:3: Context: Found this candidate, but the arguments don't match.
+    BackupBloc({
+    ^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:25:34: Error: 'BackupInitial' isn't a type.
+      expect(backupBloc.state, isA<BackupInitial>());
+                                   ^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:28:24: Error: 'BackupState' isn't a type.
+    blocTest<BackupBloc, BackupState>(
+                         ^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:34:29: Error: Method not found: 'BackupInitiated'.
+      act: (bloc) => bloc.add(BackupInitiated()),
+                              ^^^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:36:11: Error: 'BackupLoading' isn't a type.
+        isA<BackupLoading>(),
+            ^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:37:11: Error: 'BackupSuccess' isn't a type.
+        isA<BackupSuccess>(),
+            ^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:44:24: Error: 'BackupState' isn't a type.
+    blocTest<BackupBloc, BackupState>(
+                         ^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:50:29: Error: Method not found: 'RestoreInitiated'.
+      act: (bloc) => bloc.add(RestoreInitiated()),
+                              ^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:52:11: Error: 'BackupLoading' isn't a type.
+        isA<BackupLoading>(),
+            ^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:53:11: Error: 'RestoreSuccess' isn't a type.
+        isA<RestoreSuccess>(),
+            ^^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:60:24: Error: 'BackupState' isn't a type.
+    blocTest<BackupBloc, BackupState>(
+                         ^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:66:29: Error: Method not found: 'BackupInitiated'.
+      act: (bloc) => bloc.add(BackupInitiated()),
+                              ^^^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:68:11: Error: 'BackupLoading' isn't a type.
+        isA<BackupLoading>(),
+            ^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:69:11: Error: 'BackupFailure' isn't a type.
+        isA<BackupFailure>(),
+            ^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:73:25: Error: 'BackupFailure' isn't a type.
+        expect(state, isA<BackupFailure>());
+                          ^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:74:24: Error: 'BackupFailure' isn't a type.
+        expect((state as BackupFailure).error, 'Exception: Backup failed');
+                         ^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:79:24: Error: 'BackupState' isn't a type.
+    blocTest<BackupBloc, BackupState>(
+                         ^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:85:29: Error: Method not found: 'RestoreInitiated'.
+      act: (bloc) => bloc.add(RestoreInitiated()),
+                              ^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:87:11: Error: 'BackupLoading' isn't a type.
+        isA<BackupLoading>(),
+            ^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:88:11: Error: 'RestoreFailure' isn't a type.
+        isA<RestoreFailure>(),
+            ^^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:92:25: Error: 'RestoreFailure' isn't a type.
+        expect(state, isA<RestoreFailure>());
+                          ^^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:93:24: Error: 'RestoreFailure' isn't a type.
+        expect((state as RestoreFailure).error, 'Exception: Restore failed');
+                         ^^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:98:24: Error: 'BackupState' isn't a type.
+    blocTest<BackupBloc, BackupState>(
+                         ^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:102:17: Error: Method not found: 'BackupLoading'.
+        bloc.emit(BackupLoading());
+                  ^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:103:16: Error: Method not found: 'BackupInitiated'.
+        bloc.add(BackupInitiated());
+                 ^^^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:108:24: Error: 'BackupState' isn't a type.
+    blocTest<BackupBloc, BackupState>(
+                         ^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:112:17: Error: Method not found: 'BackupLoading'.
+        bloc.emit(BackupLoading());
+                  ^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:113:16: Error: Method not found: 'RestoreInitiated'.
+        bloc.add(RestoreInitiated());
+                 ^^^^^^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:31:47: Error: The method 'backupData' isn't defined for the class 'MockGoogleDriveBackupService'.
+   - 'MockGoogleDriveBackupService' is from 'test/behavioral/bloc_backupbloc_test.dart'.
+  Try correcting the name to the name of an existing method, or defining a method named 'backupData'.
+        when(() => mockGoogleDriveBackupService.backupData()).thenAnswer((_) async => true);
+                                                ^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:40:49: Error: The method 'backupData' isn't defined for the class 'MockGoogleDriveBackupService'.
+   - 'MockGoogleDriveBackupService' is from 'test/behavioral/bloc_backupbloc_test.dart'.
+  Try correcting the name to the name of an existing method, or defining a method named 'backupData'.
+        verify(() => mockGoogleDriveBackupService.backupData()).called(1);
+                                                  ^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:47:47: Error: The method 'restoreData' isn't defined for the class 'MockGoogleDriveBackupService'.
+   - 'MockGoogleDriveBackupService' is from 'test/behavioral/bloc_backupbloc_test.dart'.
+  Try correcting the name to the name of an existing method, or defining a method named 'restoreData'.
+        when(() => mockGoogleDriveBackupService.restoreData()).thenAnswer((_) async => true);
+                                                ^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:56:49: Error: The method 'restoreData' isn't defined for the class 'MockGoogleDriveBackupService'.
+   - 'MockGoogleDriveBackupService' is from 'test/behavioral/bloc_backupbloc_test.dart'.
+  Try correcting the name to the name of an existing method, or defining a method named 'restoreData'.
+        verify(() => mockGoogleDriveBackupService.restoreData()).called(1);
+                                                  ^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:63:47: Error: The method 'backupData' isn't defined for the class 'MockGoogleDriveBackupService'.
+   - 'MockGoogleDriveBackupService' is from 'test/behavioral/bloc_backupbloc_test.dart'.
+  Try correcting the name to the name of an existing method, or defining a method named 'backupData'.
+        when(() => mockGoogleDriveBackupService.backupData()).thenThrow(Exception('Backup failed'));
+                                                ^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:75:49: Error: The method 'backupData' isn't defined for the class 'MockGoogleDriveBackupService'.
+   - 'MockGoogleDriveBackupService' is from 'test/behavioral/bloc_backupbloc_test.dart'.
+  Try correcting the name to the name of an existing method, or defining a method named 'backupData'.
+        verify(() => mockGoogleDriveBackupService.backupData()).called(1);
+                                                  ^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:82:47: Error: The method 'restoreData' isn't defined for the class 'MockGoogleDriveBackupService'.
+   - 'MockGoogleDriveBackupService' is from 'test/behavioral/bloc_backupbloc_test.dart'.
+  Try correcting the name to the name of an existing method, or defining a method named 'restoreData'.
+        when(() => mockGoogleDriveBackupService.restoreData()).thenThrow(Exception('Restore failed'));
+                                                ^^^^^^^^^^^
+  test/behavioral/bloc_backupbloc_test.dart:94:49: Error: The method 'restoreData' isn't defined for the class 'MockGoogleDriveBackupService'.
+   - 'MockGoogleDriveBackupService' is from 'test/behavioral/bloc_backupbloc_test.dart'.
+  Try correcting the name to the name of an existing method, or defining a method named 'restoreData'.
+        verify(() => mockGoogleDriveBackupService.restoreData()).called(1);
+                                                  ^^^^^^^^^^^
+  .
+00:00 +0 -3: Some tests failed.
