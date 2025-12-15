@@ -2,8 +2,8 @@ name: auto-tests-dart-agent
 description: "Generates behavioral Flutter/Dart tests based on real user interaction patterns"
 entrypoint: .genaiscript/scripts/generate_tests_dart.py
 llm:
-  provider: "gemini"
-  model: "gemini-2.0-flash-exp"
+  provider: "deepseek"
+  model: "deepseek-coder-v2-instruct"
   temperature: 0.0
   max_tokens: 8192
   top_p: 0.95
