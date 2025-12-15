@@ -43,36 +43,13 @@ def run(cmd: str, check: bool = True) -> str:
     return res.stdout.strip()
 
 
-def get_modified_dart_files() -> List[str]:
-    """Get list of modified .dart files in lib/ compared to origin/main."""
-    try:
-        run("git fetch origin main --depth=1", check=False)
-    except Exception:
-        pass
-    out = run("git diff --name-only origin/main...HEAD", check=False)
-    files = [f.strip() for f in out.splitlines() if f.strip().endswith(".dart")]
-    files = [f for f in files if not f.startswith("test/")]
-    files = [f for f in files if f.startswith("lib/")]
-    return files
-
-
-def get_priority_dart_files(max_files: int = 3) -> List[str]:
-    """Get high-priority .dart files for test generation."""
+def get_all_dart_files() -> List[str]:
+    """Get all .dart files in lib/ (except test/)."""
     lib_path = ROOT / "lib"
     dart_files = []
-    
-    # Priority: services > blocs > controllers > providers > models
-    priority_folders = ["services", "blocs", "controllers", "providers", "models"]
-    
-    for folder in priority_folders:
-        folder_path = lib_path / folder
-        if folder_path.exists():
-            for dart_file in folder_path.glob("*.dart"):
-                rel_path = str(dart_file.relative_to(ROOT))
-                dart_files.append(rel_path)
-                if len(dart_files) >= max_files:
-                    return dart_files
-    
+    for dart_file in lib_path.rglob("*.dart"):
+        rel_path = str(dart_file.relative_to(ROOT))
+        dart_files.append(rel_path)
     return dart_files
 
 
