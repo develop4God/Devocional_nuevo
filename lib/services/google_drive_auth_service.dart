@@ -1,4 +1,5 @@
 // lib/services/google_drive_auth_service.dart
+import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
@@ -23,9 +24,7 @@ class GoogleDriveAuthService {
   // Private constructor for singleton
   GoogleDriveAuthService._internal() {
     debugPrint('🔧 [DEBUG] GoogleDriveAuthService constructor iniciado');
-    _googleSignIn = GoogleSignIn(scopes: _scopes);
-    debugPrint('🔧 [DEBUG] GoogleSignIn inicializado con scopes: $_scopes');
-    debugPrint('🔧 [DEBUG] GoogleSignIn clientId: ${_googleSignIn?.clientId}');
+    _initializeGoogleSignIn();
   }
 
   static const List<String> _scopes = [
@@ -36,10 +35,25 @@ class GoogleDriveAuthService {
   static const String _isSignedInKey = 'google_drive_signed_in';
   static const String _userEmailKey = 'google_drive_user_email';
 
-  GoogleSignIn? _googleSignIn;
+  late GoogleSignIn _googleSignIn;
   GoogleSignInAccount? _currentUser;
   http.Client? _authClient;
   bool _isRecreatingAuthClient = false;
+  bool _initialized = false;
+
+  void _initializeGoogleSignIn() {
+    _googleSignIn = GoogleSignIn.instance;
+    debugPrint('🔧 [DEBUG] GoogleSignIn instance obtained');
+  }
+
+  Future<void> _ensureInitialized() async {
+    if (!_initialized) {
+      debugPrint('🔧 [DEBUG] Initializing GoogleSignIn...');
+      await _googleSignIn.initialize();
+      _initialized = true;
+      debugPrint('🔧 [DEBUG] GoogleSignIn initialized successfully');
+    }
+  }
 
   /// Check if user is currently signed in to Google Drive
   Future<bool> isSignedIn() async {
@@ -54,19 +68,13 @@ class GoogleDriveAuthService {
   /// Sign in to Google Drive
   Future<bool?> signIn() async {
     debugPrint('🔑 [DEBUG] ===== INICIANDO SIGN IN =====');
-    debugPrint('🔑 [DEBUG] GoogleSignIn es null: ${_googleSignIn == null}');
     try {
-      if (_googleSignIn == null) {
-        debugPrint('❌ [DEBUG] GoogleSignIn no inicializado');
-        throw Exception('Google Sign-In not initialized');
-      }
+      await _ensureInitialized();
 
-      debugPrint('🔑 [DEBUG] Llamando a _googleSignIn.signIn()...');
-      debugPrint('🔑 [DEBUG] Scopes configurados: ${_googleSignIn!.scopes}');
-      debugPrint('🔑 [DEBUG] ClientId: ${_googleSignIn!.clientId}');
+      debugPrint('🔑 [DEBUG] Llamando a _googleSignIn.authenticate()...');
 
-      _currentUser = await _googleSignIn!.signIn();
-      debugPrint('🔑 [DEBUG] _googleSignIn.signIn() completado');
+      _currentUser = await _googleSignIn.authenticate();
+      debugPrint('🔑 [DEBUG] _googleSignIn.authenticate() completado');
       debugPrint('🔑 [DEBUG] _currentUser: ${_currentUser?.email}');
       debugPrint('🔑 [DEBUG] _currentUser ID: ${_currentUser?.id}');
       debugPrint(
@@ -77,8 +85,12 @@ class GoogleDriveAuthService {
         debugPrint(
             '🔑 [DEBUG] Usuario obtenido, creando authenticated client...');
 
-        // Use the extension method on GoogleSignIn to get authenticated client
-        _authClient = await _googleSignIn!.authenticatedClient();
+        // Get authorization client and request scopes
+        final authClient = _currentUser!.authorizationClient;
+        final authorization = await authClient.authorizeScopes(_scopes);
+        
+        // Use the extension method to get authenticated HTTP client
+        _authClient = authorization.authClient(scopes: _scopes);
 
         if (_authClient == null) {
           debugPrint(
@@ -146,11 +158,10 @@ class GoogleDriveAuthService {
   Future<void> signOut() async {
     debugPrint('🔓 [DEBUG] Iniciando sign out...');
     try {
-      if (_googleSignIn != null) {
-        debugPrint('🔓 [DEBUG] Llamando _googleSignIn.signOut()...');
-        await _googleSignIn!.signOut();
-        debugPrint('🔓 [DEBUG] _googleSignIn.signOut() completado');
-      }
+      await _ensureInitialized();
+      debugPrint('🔓 [DEBUG] Llamando _googleSignIn.signOut()...');
+      await _googleSignIn.signOut();
+      debugPrint('🔓 [DEBUG] _googleSignIn.signOut() completado');
 
       _currentUser = null;
       _authClient?.close();
@@ -205,33 +216,37 @@ class GoogleDriveAuthService {
       );
 
       try {
-        // Try to sign in silently to recreate the auth client
-        if (_googleSignIn == null) {
-          debugPrint('❌ [DEBUG] GoogleSignIn no inicializado para recreación');
-          await _clearSignInState();
-          return null;
-        }
-
+        await _ensureInitialized();
+        
+        // Try lightweight authentication to recreate the auth client
         final GoogleSignInAccount? googleUser =
-            await _googleSignIn!.signInSilently();
+            await _googleSignIn.attemptLightweightAuthentication();
 
         if (googleUser != null) {
-          debugPrint('🔄 [DEBUG] signInSilently exitoso: ${googleUser.email}');
+          debugPrint('🔄 [DEBUG] attemptLightweightAuthentication exitoso: ${googleUser.email}');
           _currentUser = googleUser;
 
-          // Use the extension method on GoogleSignIn to get authenticated client
-          _authClient = await _googleSignIn!.authenticatedClient();
+          // Get authorization client and request scopes
+          final authClient = _currentUser!.authorizationClient;
+          final authorization = await authClient.authorizationForScopes(_scopes);
+          
+          if (authorization != null) {
+            // Use the extension method to get authenticated HTTP client
+            _authClient = authorization.authClient(scopes: _scopes);
 
-          if (_authClient != null) {
-            debugPrint(
-                '✅ [DEBUG] AuthClient recreado exitosamente usando extension');
-            return _authClient;
+            if (_authClient != null) {
+              debugPrint(
+                  '✅ [DEBUG] AuthClient recreado exitosamente usando extension');
+              return _authClient;
+            } else {
+              debugPrint(
+                  '❌ [DEBUG] No se pudo crear authenticated client en recreación');
+            }
           } else {
-            debugPrint(
-                '❌ [DEBUG] No se pudo crear authenticated client en recreación');
+            debugPrint('❌ [DEBUG] No se pudo obtener authorization - necesita interacción de usuario');
           }
         } else {
-          debugPrint('❌ [DEBUG] signInSilently falló - usuario no disponible');
+          debugPrint('❌ [DEBUG] attemptLightweightAuthentication falló - usuario no disponible');
         }
       } catch (e) {
         debugPrint('❌ [DEBUG] Error recreando AuthClient: $e');

@@ -53,10 +53,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   tzdata.initializeTimeZones();
   try {
-    final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(currentTimeZone));
+    final timezoneInfo = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(timezoneInfo.identifier));
     developer.log(
-      'BackgroundServiceCallback: Zona horaria re-inicializada a: $currentTimeZone',
+      'BackgroundServiceCallback: Zona horaria re-inicializada a: ${timezoneInfo.identifier}',
       name: 'BackgroundServiceCallback',
     );
   } catch (e) {

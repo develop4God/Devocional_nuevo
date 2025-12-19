@@ -158,7 +158,7 @@ class _TtsPlayerWidgetState extends State<TtsPlayerWidget>
     final voiceService = getService<VoiceSettingsService>();
     final hasSaved = await voiceService.hasUserSavedVoice(language);
 
-    if (!mounted) return;
+    if (!context.mounted) return;
 
     if (!hasSaved) {
       await showModalBottomSheet(

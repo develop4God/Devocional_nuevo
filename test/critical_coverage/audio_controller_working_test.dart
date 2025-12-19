@@ -16,7 +16,7 @@ void main() {
       TestWidgetsFlutterBinding.ensureInitialized();
     });
 
-    setUp(() {
+    setUp(() async {
       SharedPreferences.setMockInitialValues({});
 
       // Mock solo los platform channels (infraestructura externa)
@@ -49,7 +49,7 @@ void main() {
       );
 
       controller = AudioController(TtsService());
-      controller.initialize();
+      await controller.initialize();
     });
 
     tearDown(() {

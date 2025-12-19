@@ -32,6 +32,10 @@ void main() {
       // Reset service locator for each test
       ServiceLocator().reset();
       SharedPreferences.setMockInitialValues({});
+      
+      // Register required services
+      ServiceLocator().registerLazySingleton<VoiceSettingsService>(
+          () => VoiceSettingsService());
 
       // Mock flutter_tts platform channel
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
