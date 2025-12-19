@@ -1,11 +1,22 @@
 import 'package:devocional_nuevo/models/prayer_model.dart';
+import 'package:devocional_nuevo/services/localization_service.dart';
+import 'package:devocional_nuevo/services/service_locator.dart';
 import 'package:devocional_nuevo/widgets/answer_prayer_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:devocional_nuevo/blocs/prayer_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  setUp(() {
+    // Reset and register required services
+    ServiceLocator().reset();
+    ServiceLocator().registerLazySingleton<LocalizationService>(
+        () => LocalizationService());
+    SharedPreferences.setMockInitialValues({});
+  });
+
   testWidgets('AnswerPrayerModal allows up to 400 characters',
       (WidgetTester tester) async {
     final prayer = Prayer(

@@ -1,5 +1,7 @@
 import 'package:devocional_nuevo/blocs/thanksgiving_bloc.dart';
 import 'package:devocional_nuevo/models/thanksgiving_model.dart';
+import 'package:devocional_nuevo/services/localization_service.dart';
+import 'package:devocional_nuevo/services/service_locator.dart';
 import 'package:devocional_nuevo/widgets/add_thanksgiving_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +13,11 @@ void main() {
     late ThanksgivingBloc bloc;
 
     setUp(() {
+      // Reset and register required services
+      ServiceLocator().reset();
+      ServiceLocator().registerLazySingleton<LocalizationService>(
+          () => LocalizationService());
+      
       SharedPreferences.setMockInitialValues({});
       bloc = ThanksgivingBloc();
     });

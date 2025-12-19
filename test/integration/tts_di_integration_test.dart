@@ -229,8 +229,8 @@ void main() {
       expect(
         () => getService<ITtsService>(),
         throwsA(
-          isA<Exception>().having(
-            (e) => e.toString(),
+          isA<StateError>().having(
+            (e) => e.message,
             'message',
             contains('not registered'),
           ),

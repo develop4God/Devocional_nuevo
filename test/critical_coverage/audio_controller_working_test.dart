@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:devocional_nuevo/controllers/audio_controller.dart';
 import 'package:devocional_nuevo/services/tts_service.dart';
 import 'package:devocional_nuevo/models/devocional_model.dart';
+import 'package:devocional_nuevo/services/service_locator.dart';
+import 'package:devocional_nuevo/services/tts/voice_settings_service.dart';
 
 void main() {
   group('AudioController - Peripheral Behavior Tests', () {
@@ -16,7 +18,12 @@ void main() {
       TestWidgetsFlutterBinding.ensureInitialized();
     });
 
-    setUp(() async {
+    setUp(() {
+      // Reset service locator and register required services
+      ServiceLocator().reset();
+      ServiceLocator().registerLazySingleton<VoiceSettingsService>(
+          () => VoiceSettingsService());
+      
       SharedPreferences.setMockInitialValues({});
 
       // Mock solo los platform channels (infraestructura externa)
@@ -49,7 +56,7 @@ void main() {
       );
 
       controller = AudioController(TtsService());
-      await controller.initialize();
+      controller.initialize();
     });
 
     tearDown(() {

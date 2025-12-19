@@ -1,5 +1,6 @@
 import 'package:devocional_nuevo/controllers/tts_audio_controller.dart';
 import 'package:devocional_nuevo/models/devocional_model.dart';
+import 'package:devocional_nuevo/services/localization_service.dart';
 import 'package:devocional_nuevo/services/service_locator.dart';
 import 'package:devocional_nuevo/services/tts/voice_settings_service.dart';
 import 'package:devocional_nuevo/widgets/tts_player_widget.dart';
@@ -87,9 +88,11 @@ void main() {
       controller = TtsAudioController(flutterTts: mockTts);
       voiceSettingsService = VoiceSettingsService();
 
-      // Register the VoiceSettingsService
+      // Register the required services
       ServiceLocator()
           .registerSingleton<VoiceSettingsService>(voiceSettingsService);
+      ServiceLocator().registerLazySingleton<LocalizationService>(
+          () => LocalizationService());
     });
 
     tearDown(() {
