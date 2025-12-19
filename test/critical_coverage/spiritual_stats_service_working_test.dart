@@ -1,5 +1,7 @@
 // test/critical_coverage/spiritual_stats_service_working_test.dart
 
+import 'package:devocional_nuevo/services/localization_service.dart';
+import 'package:devocional_nuevo/services/service_locator.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +17,11 @@ void main() {
     });
 
     setUp(() {
+      // Reset and register required services
+      ServiceLocator().reset();
+      ServiceLocator().registerLazySingleton<LocalizationService>(
+          () => LocalizationService());
+      
       // Reset SharedPreferences for each test
       SharedPreferences.setMockInitialValues({});
 
