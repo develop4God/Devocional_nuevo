@@ -1,6 +1,8 @@
 import 'package:devocional_nuevo/models/devocional_model.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
+import 'package:devocional_nuevo/services/localization_service.dart';
 import 'package:devocional_nuevo/services/service_locator.dart';
+import 'package:devocional_nuevo/services/tts/voice_settings_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -67,6 +69,10 @@ void main() {
 
     // Setup service locator for DI
     ServiceLocator().reset();
+    ServiceLocator().registerLazySingleton<LocalizationService>(
+        () => LocalizationService());
+    ServiceLocator().registerLazySingleton<VoiceSettingsService>(
+        () => VoiceSettingsService());
     setupServiceLocator();
 
     provider = DevocionalProvider();
