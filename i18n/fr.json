@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "Dévotionnels Chrétiens",
+    "title": "Méditations Chrétiennes",
     "loading": "Chargement...",
     "preparing": "Préparation de votre espace avec Dieu...",
     "error": "Erreur",
@@ -65,7 +65,7 @@
     "already_prayed": "Déjà fait 🙏\nNe plus afficher",
     "prayer_time": "Temps de prière",
     "praying": "En prière...",
-    "my_prayers": "Prières et remerciements",
+    "my_prayers": "Prières et actions de grâce",
     "active": "Actives",
     "answered_prayers": "Répondues",
     "retry": "Réessayer",
@@ -176,7 +176,7 @@
     "language_section": "Langue",
     "bible_version_section": "Version de la Bible",
     "saved_favorites": "Favoris sauvegardés",
-    "my_prayers": "Prières et remerciements",
+    "my_prayers": "Prières et actions de grâce",
     "light_mode": "Lumière forte (mode clair)",
     "dark_mode": "Lumière faible (mode sombre)",
     "notifications_config": "Paramètres de notification",
