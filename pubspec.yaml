@@ -56,6 +56,9 @@ dependencies:
   flutter_tts: ^4.1.0
   synchronized: ^3.1.0+1  # For thread safety and mutex protection
 
+  # UI dependencies
+  shimmer: ^3.0.0  # For loading skeleton animations
+
   # Google Drive Backup dependencies
   googleapis: ^15.0.0
   google_sign_in: ^6.2.1

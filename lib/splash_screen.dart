@@ -2,9 +2,13 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:devocional_nuevo/extensions/string_extensions.dart';
-import 'package:devocional_nuevo/pages/devocionales_page.dart'; // CAMBIADO: Importar página principal
+import 'package:devocional_nuevo/pages/devocionales_page.dart';
+import 'package:devocional_nuevo/pages/devotional_discovery_page.dart';
+import 'package:devocional_nuevo/pages/experience_selection/experience_selection_fullscreen.dart';
+import 'package:devocional_nuevo/utils/devotional_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -65,21 +69,48 @@ class _SplashScreenState extends State<SplashScreen>
   Future<void> _navigateToNextScreen() async {
     await Future.delayed(const Duration(milliseconds: 9000));
 
-    if (mounted) {
+    // Check if user has already selected an experience mode
+    final prefs = await SharedPreferences.getInstance();
+    final selectedMode =
+        prefs.getString(DevotionalConstants.prefExperienceMode);
+    debugPrint('[SplashScreen] selectedMode: $selectedMode');
+
+    if (!mounted) return;
+
+    // If no mode selected, show the experience selection page
+    if (selectedMode == null) {
+      debugPrint(
+          '[SplashScreen] No experience mode seleccionado, mostrando selector');
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
           transitionDuration: const Duration(milliseconds: 800),
           pageBuilder: (context, animation, secondaryAnimation) =>
-              const DevocionalesPage(),
-          // Added fade transition as requested
+              const ExperienceSelectionFullscreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            // Fade transition from splash to devotionals
             return FadeTransition(
               opacity: animation,
               child: child,
             );
           },
+        ),
+      );
+    } else if (selectedMode == 'discovery') {
+      debugPrint(
+          '[SplashScreen] Modo discovery seleccionado, navegando a Discovery');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DevotionalDiscoveryPage(),
+        ),
+      );
+    } else {
+      debugPrint(
+          '[SplashScreen] Modo clásico seleccionado, navegando a DevocionalesPage');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DevocionalesPage(),
         ),
       );
     }

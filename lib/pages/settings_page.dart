@@ -7,10 +7,13 @@ import 'package:devocional_nuevo/extensions/string_extensions.dart';
 import 'package:devocional_nuevo/pages/about_page.dart';
 import 'package:devocional_nuevo/pages/application_language_page.dart';
 import 'package:devocional_nuevo/pages/contact_page.dart';
+import 'package:devocional_nuevo/pages/devocionales_page.dart';
+import 'package:devocional_nuevo/pages/devotional_discovery_page.dart';
+import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:devocional_nuevo/providers/localization_provider.dart';
-import 'package:devocional_nuevo/services/service_locator.dart';
 import 'package:devocional_nuevo/services/tts/voice_settings_service.dart';
 import 'package:devocional_nuevo/utils/constants.dart';
+import 'package:devocional_nuevo/utils/devotional_constants.dart';
 import 'package:devocional_nuevo/widgets/app_bar_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,9 +29,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  // Get VoiceSettingsService instance from the Service Locator
-  late final VoiceSettingsService _voiceSettingsService =
-      getService<VoiceSettingsService>();
+  double _ttsSpeed = 0.4;
+  final VoiceSettingsService _voiceSettingsService = VoiceSettingsService();
 
   // Feature flag state - simple and direct
   String _donationMode = 'paypal'; // Hardcoded to PayPal
@@ -40,7 +42,6 @@ class _SettingsPageState extends State<SettingsPage> {
     super.initState();
     _loadTtsSettings();
     _loadFeatureFlags();
-    _loadSavedVoices();
   }
 
   Future<void> _loadTtsSettings() async {
@@ -52,6 +53,15 @@ class _SettingsPageState extends State<SettingsPage> {
     try {
       final currentLanguage = localizationProvider.currentLocale.languageCode;
       await _voiceSettingsService.autoAssignDefaultVoice(currentLanguage);
+
+      final prefs = await SharedPreferences.getInstance();
+      final savedRate = prefs.getDouble('tts_rate') ?? 0.5;
+
+      if (mounted) {
+        setState(() {
+          _ttsSpeed = savedRate;
+        });
+      }
     } catch (e) {
       developer.log('Error loading TTS settings: $e');
       if (mounted) {
@@ -76,13 +86,19 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  Future<void> _loadSavedVoices() async {
-    final localizationProvider =
-        Provider.of<LocalizationProvider>(context, listen: false);
-    final language = localizationProvider.currentLocale.languageCode;
-    final prefs = await SharedPreferences.getInstance();
-    // Load saved voice name for the current language (used by VoiceSelectorDialog)
-    prefs.getString('tts_voice_name_$language');
+  Future<void> _onSpeedChanged(double value) async {
+    try {
+      final devocionalProvider = Provider.of<DevocionalProvider>(
+        context,
+        listen: false,
+      );
+      await devocionalProvider.setTtsSpeechRate(value);
+    } catch (e) {
+      developer.log('Error setting TTS speed: $e');
+      if (mounted) {
+        _showErrorSnackBar('Error setting speech rate: $e');
+      }
+    }
   }
 
   // Original PayPal method - preserved exactly
@@ -121,6 +137,94 @@ class _SettingsPageState extends State<SettingsPage> {
     await _launchPaypal();
   }
 
+  Future<ExperienceMode> _getCurrentExperience() async {
+    final prefs = await SharedPreferences.getInstance();
+    return ExperienceMode.fromStorageString(
+      prefs.getString('discovery_experienceMode'),
+    );
+  }
+
+  Future<void> _showExperienceDialog() async {
+    final currentExperience = await _getCurrentExperience();
+
+    if (!mounted) return;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Choose Experience Mode'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // ignore: deprecated_member_use
+              RadioListTile<ExperienceMode>(
+                title: const Text('Discovery'),
+                subtitle: const Text('Modern, visual interface with search'),
+                value: ExperienceMode.discovery,
+                // ignore: deprecated_member_use
+                groupValue: currentExperience,
+                // ignore: deprecated_member_use
+                onChanged: (value) async {
+                  if (value != null) {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setString(
+                      'discovery_experienceMode',
+                      value.toStorageString(),
+                    );
+                    if (context.mounted) {
+                      debugPrint(
+                          '[DEBUG] Cambio a modo Discovery, navegando a DevotionalDiscoveryPage');
+                      Navigator.pop(context);
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const DevotionalDiscoveryPage()),
+                        (route) => false,
+                      );
+                    }
+                  }
+                },
+              ),
+              // ignore: deprecated_member_use
+              RadioListTile<ExperienceMode>(
+                title: const Text('Traditional'),
+                subtitle: const Text('Classic daily devotional interface'),
+                value: ExperienceMode.traditional,
+                // ignore: deprecated_member_use
+                groupValue: currentExperience,
+                // ignore: deprecated_member_use
+                onChanged: (value) async {
+                  if (value != null) {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setString(
+                      'discovery_experienceMode',
+                      value.toStorageString(),
+                    );
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => const DevocionalesPage()),
+                        (route) => false,
+                      );
+                    }
+                  }
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _showErrorSnackBar(String message) {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -148,160 +252,322 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           body: Padding(
             padding: const EdgeInsets.all(24.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Support/Donation Button (PayPal always)
-                  SizedBox(
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: OutlinedButton.icon(
-                        onPressed: _handleDonateAction,
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: colorScheme.onSurface,
-                          side: BorderSide(
-                              color: colorScheme.primary, width: 2.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Support/Donation Button (PayPal always)
+                SizedBox(
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: OutlinedButton.icon(
+                      onPressed: _handleDonateAction,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: colorScheme.onSurface,
+                        side:
+                            BorderSide(color: colorScheme.primary, width: 2.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
-                        label: Text(
-                          'settings.donate'.tr(),
-                          style: textTheme.bodyMedium?.copyWith(
-                            color: colorScheme.onSurface,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
+                      ),
+                      label: Text(
+                        'settings.donate'.tr(),
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurface,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                ),
+                const SizedBox(height: 20),
 
-                  // Language Selection
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ApplicationLanguagePage(),
-                        ),
-                      );
-                    },
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 4,
+                // Language Selection
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ApplicationLanguagePage(),
                       ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.language, color: colorScheme.primary),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'settings.language'.tr(),
-                                  style: textTheme.bodyMedium?.copyWith(
-                                    fontSize: 16,
-                                    color: colorScheme.onSurface,
-                                  ),
+                    );
+                  },
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 4,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.language, color: colorScheme.primary),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'settings.language'.tr(),
+                                style: textTheme.bodyMedium?.copyWith(
+                                  fontSize: 16,
+                                  color: colorScheme.onSurface,
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  Constants.supportedLanguages[
-                                          localizationProvider
-                                              .currentLocale.languageCode] ??
-                                      localizationProvider
-                                          .currentLocale.languageCode,
-                                  style: textTheme.bodySmall?.copyWith(
-                                    color: colorScheme.onSurfaceVariant,
-                                    fontSize: 12,
-                                  ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                Constants.supportedLanguages[
+                                        localizationProvider
+                                            .currentLocale.languageCode] ??
+                                    localizationProvider
+                                        .currentLocale.languageCode,
+                                style: textTheme.bodySmall?.copyWith(
+                                  color: colorScheme.onSurfaceVariant,
+                                  fontSize: 12,
                                 ),
-                                // Mostrar solo el idioma, sin versión bíblica
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Contact
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ContactPage()),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Row(
-                        children: [
-                          Icon(Icons.contact_mail, color: colorScheme.primary),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              'settings.contact_us'.tr(),
-                              style: textTheme.bodyMedium?.copyWith(
-                                fontSize: 16,
-                                color: colorScheme.onSurface,
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                              // Mostrar solo el idioma, sin versión bíblica
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 20),
+                ),
 
-                  // About
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AboutPage()),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.perm_device_info_outlined,
-                            color: colorScheme.primary,
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              'settings.about_app'.tr(),
-                              style: textTheme.bodyMedium?.copyWith(
-                                fontSize: 16,
-                                color: colorScheme.onSurface,
+                const SizedBox(height: 20),
+
+                // Experience Selection
+                InkWell(
+                  onTap: () => _showExperienceDialog(),
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 4,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.explore, color: colorScheme.primary),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Experience Mode',
+                                style: textTheme.bodyMedium?.copyWith(
+                                  fontSize: 16,
+                                  color: colorScheme.onSurface,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                              const SizedBox(height: 4),
+                              FutureBuilder<ExperienceMode>(
+                                future: _getCurrentExperience(),
+                                builder: (context, snapshot) {
+                                  return Text(
+                                    snapshot.data == ExperienceMode.discovery
+                                        ? 'Discovery (Modern)'
+                                        : 'Traditional (Classic)',
+                                    style: textTheme.bodySmall?.copyWith(
+                                      color: colorScheme.onSurface
+                                          .withValues(alpha: 0.7),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 16,
+                          color: colorScheme.onSurface.withValues(alpha: 0.5),
+                        ),
+                      ],
                     ),
                   ),
+                ),
 
-                  const SizedBox(height: 20),
-                ],
-              ),
+                const SizedBox(height: 20),
+
+                // Audio Settings
+                Text(
+                  'settings.audio_settings'.tr(),
+                  style: textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(height: 15),
+
+                Row(
+                  children: [
+                    Icon(Icons.speed, color: colorScheme.primary),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'settings.tts_speed'.tr(),
+                        style: textTheme.bodyMedium?.copyWith(
+                          fontSize: 16,
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Slider(
+                  value: _ttsSpeed,
+                  min: 0.1,
+                  max: 1.0,
+                  divisions: 9,
+                  label: '${(_ttsSpeed * 100).round()}%',
+                  onChanged: (double value) {
+                    setState(() {
+                      _ttsSpeed = value;
+                    });
+                  },
+                  onChangeEnd: _onSpeedChanged,
+                ),
+
+                const SizedBox(height: 20),
+
+                // Backup Settings - conditional display (ahora habilitado)
+                // if (_showBackupSection) ...[
+                //   InkWell(
+                //     onTap: () async {
+                //       developer.log('[DEBUG] Settings: Backup row tapped.',
+                //           name: 'SettingsPage');
+                //       final bubbleId = 'settings_backup_option';
+                //       developer.log(
+                //           '[DEBUG] Settings: Calling BubbleUtils.markAsShown for bubbleId=bubbleId',
+                //           name: 'SettingsPage');
+                //       await BubbleUtils.markAsShown(bubbleId);
+                //       developer.log(
+                //           '[DEBUG] Settings: markAsShown completed for bubbleId=bubbleId',
+                //           name: 'SettingsPage');
+                //       if (!context.mounted) {
+                //         developer.log(
+                //             '[DEBUG] Settings: Context not mounted after await. Navigation skipped.',
+                //             name: 'SettingsPage');
+                //         return;
+                //       }
+                //       developer.log(
+                //           '[DEBUG] Settings: Navigating to BackupSettingsPage',
+                //           name: 'SettingsPage');
+                //       Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //           builder: (context) => const BackupSettingsPage(),
+                //         ),
+                //       );
+                //     },
+                //     borderRadius: BorderRadius.circular(8.0),
+                //     child: Container(
+                //       padding: const EdgeInsets.symmetric(
+                //         vertical: 12,
+                //         horizontal: 4,
+                //       ),
+                //       child: Row(
+                //         children: [
+                //           Icon(Icons.add_to_drive_rounded,
+                //               color: colorScheme.primary),
+                //           const SizedBox(width: 10),
+                //           Expanded(
+                //             child: Column(
+                //               crossAxisAlignment: CrossAxisAlignment.start,
+                //               children: [
+                //                 Text(
+                //                   'settings.backup_option'.tr(),
+                //                   style: textTheme.bodyMedium?.copyWith(
+                //                     fontSize: 16,
+                //                     color: colorScheme.onSurface,
+                //                   ),
+                //                 ),
+                //                 const SizedBox(height: 4),
+                //                 Text(
+                //                   'settings.backup_subtitle'.tr(),
+                //                   style: textTheme.bodySmall?.copyWith(
+                //                     color: colorScheme.onSurfaceVariant,
+                //                     fontSize: 12,
+                //                   ),
+                //                 ),
+                //               ],
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                //   const SizedBox(height: 20),
+                // ],
+
+                // Contact
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ContactPage()),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      children: [
+                        Icon(Icons.contact_mail, color: colorScheme.primary),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            'settings.contact_us'.tr(),
+                            style: textTheme.bodyMedium?.copyWith(
+                              fontSize: 16,
+                              color: colorScheme.onSurface,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // About
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AboutPage()),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.perm_device_info_outlined,
+                          color: colorScheme.primary,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            'settings.about_app'.tr(),
+                            style: textTheme.bodyMedium?.copyWith(
+                              fontSize: 16,
+                              color: colorScheme.onSurface,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ));
