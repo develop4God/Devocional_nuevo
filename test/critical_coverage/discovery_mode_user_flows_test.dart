@@ -44,42 +44,42 @@ void main() {
 
       // Page should be visible
       expect(find.byType(ExperienceSelectionPage), findsOneWidget);
-      
+
       // No exceptions should occur
       expect(tester.takeException(), isNull);
     });
 
     test('User can save discovery mode preference', () async {
       final prefs = await SharedPreferences.getInstance();
-      
+
       // Simulate user selecting discovery mode
       await prefs.setString('experience_mode', 'discovery');
-      
+
       // Verify preference was saved
       expect(prefs.getString('experience_mode'), equals('discovery'));
     });
 
     test('User can save traditional mode preference', () async {
       final prefs = await SharedPreferences.getInstance();
-      
+
       // Simulate user selecting traditional mode
       await prefs.setString('experience_mode', 'traditional');
-      
+
       // Verify preference was saved
       expect(prefs.getString('experience_mode'), equals('traditional'));
     });
 
     test('User can switch between experience modes', () async {
       final prefs = await SharedPreferences.getInstance();
-      
+
       // Start with discovery mode
       await prefs.setString('experience_mode', 'discovery');
       expect(prefs.getString('experience_mode'), equals('discovery'));
-      
+
       // Switch to traditional
       await prefs.setString('experience_mode', 'traditional');
       expect(prefs.getString('experience_mode'), equals('traditional'));
-      
+
       // Switch back to discovery
       await prefs.setString('experience_mode', 'discovery');
       expect(prefs.getString('experience_mode'), equals('discovery'));
@@ -87,13 +87,13 @@ void main() {
 
     test('Experience mode preference persists across sessions', () async {
       final prefs = await SharedPreferences.getInstance();
-      
+
       // Set preference
       await prefs.setString('experience_mode', 'discovery');
-      
+
       // Simulate app restart by getting preference again
       final savedMode = prefs.getString('experience_mode');
-      
+
       // Should still be discovery
       expect(savedMode, equals('discovery'));
     });
@@ -142,7 +142,7 @@ void main() {
 
       // The nav bar should have navigation items
       expect(find.byType(DiscoveryBottomNavBar), findsOneWidget);
-      
+
       // Should have buttons/icons for navigation
       expect(find.byType(IconButton), findsWidgets);
     });
@@ -150,18 +150,15 @@ void main() {
     testWidgets('Discovery bottom nav bar callbacks work',
         (WidgetTester tester) async {
       bool prayersTapped = false;
-      bool bibleTapped = false;
-      bool progressTapped = false;
-      bool settingsTapped = false;
 
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             bottomNavigationBar: DiscoveryBottomNavBar(
               onPrayers: () => prayersTapped = true,
-              onBible: () => bibleTapped = true,
-              onProgress: () => progressTapped = true,
-              onSettings: () => settingsTapped = true,
+              onBible: () {},
+              onProgress: () {},
+              onSettings: () {},
             ),
           ),
         ),
@@ -169,7 +166,8 @@ void main() {
       await tester.pump();
 
       // Find and tap the prayers button
-      final prayersButtons = find.widgetWithIcon(IconButton, Icons.favorite_border);
+      final prayersButtons =
+          find.widgetWithIcon(IconButton, Icons.favorite_border);
       if (prayersButtons.evaluate().isNotEmpty) {
         await tester.tap(prayersButtons.first);
         await tester.pump();
@@ -221,18 +219,19 @@ void main() {
       registerTestServices();
     });
 
-    test('Complete user flow: First time user selects discovery mode', () async {
+    test('Complete user flow: First time user selects discovery mode',
+        () async {
       final prefs = await SharedPreferences.getInstance();
-      
+
       // User opens app for the first time (no preference saved)
       expect(prefs.getString('experience_mode'), isNull);
-      
+
       // User sees experience selection and chooses discovery
       await prefs.setString('experience_mode', 'discovery');
-      
+
       // Preference is saved
       expect(prefs.getString('experience_mode'), equals('discovery'));
-      
+
       // User can now use discovery mode features
       final mode = prefs.getString('experience_mode');
       expect(mode, equals('discovery'));
@@ -240,28 +239,28 @@ void main() {
 
     test('User switches from traditional to discovery mode', () async {
       final prefs = await SharedPreferences.getInstance();
-      
+
       // User was using traditional mode
       await prefs.setString('experience_mode', 'traditional');
       expect(prefs.getString('experience_mode'), equals('traditional'));
-      
+
       // User switches to discovery mode from settings
       await prefs.setString('experience_mode', 'discovery');
-      
+
       // Discovery mode is now active
       expect(prefs.getString('experience_mode'), equals('discovery'));
     });
 
     test('Discovery mode preference persists after app restart', () async {
       final prefs = await SharedPreferences.getInstance();
-      
+
       // User selects discovery mode
       await prefs.setString('experience_mode', 'discovery');
-      
+
       // Simulate app restart (preference should still be there)
       final persistedMode = prefs.getString('experience_mode');
       expect(persistedMode, equals('discovery'));
-      
+
       // User can continue using discovery mode
       expect(persistedMode, isNotNull);
     });
@@ -293,13 +292,13 @@ void main() {
 
     test('Invalid experience mode value is handled', () async {
       final prefs = await SharedPreferences.getInstance();
-      
+
       // Set an invalid value
       await prefs.setString('experience_mode', 'invalid_mode');
-      
+
       // The invalid value should still be stored (app decides how to handle)
       expect(prefs.getString('experience_mode'), equals('invalid_mode'));
-      
+
       // App can fallback to default or show selection again
       // This tests that SharedPreferences accepts any string
     });
