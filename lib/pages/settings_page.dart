@@ -149,9 +149,12 @@ class _SettingsPageState extends State<SettingsPage> {
 
     if (!mounted) return;
 
+    // Capture navigator before dialog to avoid context issues
+    final navigator = Navigator.of(context);
+
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Choose Experience Mode'),
           content: Column(
@@ -172,11 +175,15 @@ class _SettingsPageState extends State<SettingsPage> {
                       'discovery_experienceMode',
                       value.toStorageString(),
                     );
-                    if (context.mounted) {
+                    // Use dialogContext for closing dialog
+                    if (dialogContext.mounted) {
+                      Navigator.pop(dialogContext);
+                    }
+                    // Use captured navigator for navigation
+                    if (mounted) {
                       debugPrint(
                           '[DEBUG] Cambio a modo Discovery, navegando a DevotionalDiscoveryPage');
-                      Navigator.pop(context);
-                      Navigator.of(context).pushAndRemoveUntil(
+                      navigator.pushAndRemoveUntil(
                         MaterialPageRoute(
                             builder: (context) =>
                                 const DevotionalDiscoveryPage()),
@@ -201,9 +208,13 @@ class _SettingsPageState extends State<SettingsPage> {
                       'discovery_experienceMode',
                       value.toStorageString(),
                     );
-                    if (context.mounted) {
-                      Navigator.pop(context);
-                      Navigator.of(context).pushAndRemoveUntil(
+                    // Use dialogContext for closing dialog
+                    if (dialogContext.mounted) {
+                      Navigator.pop(dialogContext);
+                    }
+                    // Use captured navigator for navigation
+                    if (mounted) {
+                      navigator.pushAndRemoveUntil(
                         MaterialPageRoute(
                             builder: (context) => const DevocionalesPage()),
                         (route) => false,

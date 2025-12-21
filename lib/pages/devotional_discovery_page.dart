@@ -54,6 +54,8 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
   // Local search state (view-specific, not provider)
   String _searchTerm = '';
   List<Devocional> _searchResults = [];
+  String? _currentLanguage;
+  String? _currentBibleVersion;
 
   @override
   bool get wantKeepAlive => true;
@@ -65,11 +67,51 @@ class _DevotionalDiscoveryPageState extends State<DevotionalDiscoveryPage>
     // Initialize devotionals on first load using DevocionalProvider
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final provider = context.read<DevocionalProvider>();
+      // Store current language and bible version for change detection
+      _currentLanguage = provider.selectedLanguage;
+      _currentBibleVersion = provider.selectedVersion;
       // Initialize search results with all devotionals
       _searchResults = provider.devocionales;
       setState(() {});
       _loadStreak();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Listen for language or bible version changes
+    final provider = context.watch<DevocionalProvider>();
+
+    // Check if language changed
+    if (_currentLanguage != null &&
+        _currentLanguage != provider.selectedLanguage) {
+      debugPrint(
+          '[DEBUG] [Discovery] Language changed from $_currentLanguage to ${provider.selectedLanguage}, reloading...');
+      _currentLanguage = provider.selectedLanguage;
+      // Reload devotionals
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _searchResults = provider.devocionales;
+          setState(() {});
+        }
+      });
+    }
+
+    // Check if bible version changed
+    if (_currentBibleVersion != null &&
+        _currentBibleVersion != provider.selectedVersion) {
+      debugPrint(
+          '[DEBUG] [Discovery] Bible version changed from $_currentBibleVersion to ${provider.selectedVersion}, reloading...');
+      _currentBibleVersion = provider.selectedVersion;
+      // Reload devotionals
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _searchResults = provider.devocionales;
+          setState(() {});
+        }
+      });
+    }
   }
 
   Future<void> _loadImageOfDay() async {

@@ -441,15 +441,34 @@ class _DevocionalModernViewState extends State<DevocionalModernView> {
                             ),
                           ],
                         ),
-                        title: Text(
-                          devocionalActual.versiculo,
-                          style: textTheme.titleMedium?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                        title: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.6),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            devocionalActual.versiculo,
+                            style: GoogleFonts.lora(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              height: 1.4,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black.withValues(alpha: 0.8),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            textAlign: TextAlign.center,
+                            // Remove maxLines to show full verse
+                            overflow: TextOverflow.visible,
+                          ),
                         ),
                         centerTitle: true,
                       ),
