@@ -43,6 +43,9 @@ import '../services/spiritual_stats_service.dart';
 import '../services/tts/bible_text_formatter.dart';
 import '../widgets/voice_selector_dialog.dart';
 import '../widgets/animated_fab_with_text.dart';
+import '../widgets/salvation_invitation_dialog.dart';
+import '../widgets/prayer_thanksgiving_choice_sheet.dart';
+import '../widgets/streak_badge.dart';
 
 class DevocionalesPage extends StatefulWidget {
   final String? initialDevocionalId;
@@ -446,95 +449,11 @@ class _DevocionalesPageState extends State<DevocionalesPage>
       listen: false,
     );
 
-    bool doNotShowAgainChecked = !devocionalProvider.showInvitationDialog;
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final TextTheme textTheme = Theme.of(context).textTheme;
-
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
-          key: const Key('salvation_prayer_dialog'),
-          backgroundColor: colorScheme.surface,
-          title: Text(
-            "devotionals.salvation_prayer_title".tr(),
-            textAlign: TextAlign.center,
-            style: textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: colorScheme.onSurface,
-            ),
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "devotionals.salvation_prayer_intro".tr(),
-                  textAlign: TextAlign.justify,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-                Text(
-                  "devotionals.salvation_prayer".tr(),
-                  textAlign: TextAlign.justify,
-                  style: textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-                Text(
-                  "devotionals.salvation_promise".tr(),
-                  textAlign: TextAlign.justify,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            Row(
-              children: [
-                Checkbox(
-                  value: doNotShowAgainChecked,
-                  onChanged: (val) {
-                    setDialogState(() {
-                      doNotShowAgainChecked = val ?? false;
-                    });
-                  },
-                  activeColor: colorScheme.primary,
-                ),
-                Expanded(
-                  child: Text(
-                    'prayer.already_prayed'.tr(),
-                    style: textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onSurface,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: TextButton(
-                key: const Key('salvation_prayer_continue_button'),
-                onPressed: () {
-                  devocionalProvider.setInvitationDialogVisibility(
-                    !doNotShowAgainChecked,
-                  );
-                  Navigator.of(dialogContext).pop();
-                },
-                child: Text(
-                  "devotionals.continue".tr(),
-                  style: TextStyle(color: colorScheme.primary),
-                ),
-              ),
-            ),
-          ],
-        ),
+      builder: (dialogContext) => SalvationInvitationDialog(
+        devocionalProvider: devocionalProvider,
       ),
     );
   }
@@ -564,79 +483,6 @@ class _DevocionalesPageState extends State<DevocionalesPage>
       default:
         return DateFormat('EEEE, MMMM d', 'en');
     }
-  }
-
-  Widget _buildStreakBadge(bool isDark, int streak) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textColor = colorScheme.onSurface;
-    // Slight background for the whole badge using theme surfaceContainerHighest
-    final backgroundColor =
-        colorScheme.surfaceContainerHighest.withValues(alpha: 0.06);
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(20),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const ProgressPage()),
-          );
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: backgroundColor,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: colorScheme.primary.withValues(alpha: 0.18),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Lottie with themed circular background
-              Padding(
-                padding: const EdgeInsets.only(bottom: 6),
-                child: Container(
-                  width: 28,
-                  height: 28,
-                  decoration: BoxDecoration(
-                    color: colorScheme.primary.withValues(alpha: 0.12),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: SizedBox(
-                      width: 40,
-                      height: 40,
-                      child: Lottie.asset(
-                        'assets/lottie/fire.json',
-                        repeat: true,
-                        animate: true,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                '${'progress.streak'.tr()} $streak',
-                style: TextStyle(
-                  color: textColor,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 
   Future<void> _shareAsText(Devocional devocional) async {
@@ -707,100 +553,15 @@ class _DevocionalesPageState extends State<DevocionalesPage>
   }
 
   void _showAddPrayerOrThanksgivingChoice() {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final TextTheme textTheme = Theme.of(context).textTheme;
-
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'devotionals.choose_option'.tr(),
-                style: textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                        _showAddPrayerModal();
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: colorScheme.outline),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          children: [
-                            const Text('🙏', style: TextStyle(fontSize: 48)),
-                            const SizedBox(height: 12),
-                            Text(
-                              'prayer.prayer'.tr(),
-                              style: textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                        _showAddThanksgivingModal();
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: colorScheme.outline),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          children: [
-                            const Text('☺️', style: TextStyle(fontSize: 48)),
-                            const SizedBox(height: 12),
-                            Text(
-                              'thanksgiving.thanksgiving'.tr(),
-                              style: textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-            ],
-          ),
+        return PrayerThanksgivingChoiceSheet(
+          onPrayerSelected: _showAddPrayerModal,
+          onThanksgivingSelected: _showAddThanksgivingModal,
         );
       },
     );
@@ -989,13 +750,7 @@ class _DevocionalesPageState extends State<DevocionalesPage>
                                           if (streak <= 0) {
                                             return const SizedBox.shrink();
                                           }
-                                          final isDark =
-                                              Theme.of(context).brightness ==
-                                                  Brightness.dark;
-                                          return _buildStreakBadge(
-                                            isDark,
-                                            streak,
-                                          );
+                                          return StreakBadge(streak: streak);
                                         },
                                       ),
                                     ],
