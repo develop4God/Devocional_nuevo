@@ -1026,8 +1026,8 @@ class _DevocionalesPageState extends State<DevocionalesPage>
                 : false;
 
             final Color appBarBackgroundColor = Theme.of(
-              context,
-            ).appBarTheme.backgroundColor ??
+                  context,
+                ).appBarTheme.backgroundColor ??
                 colorScheme.primary;
 
             return Column(
