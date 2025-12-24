@@ -10,12 +10,9 @@ import 'package:devocional_nuevo/main.dart';
 import 'package:devocional_nuevo/models/devocional_model.dart';
 import 'package:devocional_nuevo/pages/bible_reader_page.dart';
 import 'package:devocional_nuevo/pages/prayers_page.dart';
-import 'package:devocional_nuevo/pages/progress_page.dart';
-import 'package:devocional_nuevo/pages/settings_page.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:devocional_nuevo/services/devocionales_tracking.dart';
 import 'package:devocional_nuevo/services/update_service.dart';
-import 'package:devocional_nuevo/utils/bubble_constants.dart';
 import 'package:devocional_nuevo/utils/copyright_utils.dart';
 import 'package:devocional_nuevo/widgets/add_prayer_modal.dart';
 import 'package:devocional_nuevo/widgets/add_thanksgiving_modal.dart';
@@ -23,7 +20,6 @@ import 'package:devocional_nuevo/widgets/app_bar_constants.dart';
 import 'package:devocional_nuevo/widgets/devocionales_page_drawer.dart';
 import 'package:devocional_nuevo/widgets/floating_font_control_buttons.dart';
 import 'package:devocional_nuevo/widgets/tts_miniplayer_modal.dart';
-import 'package:devocional_nuevo/widgets/tts_player_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -46,6 +42,8 @@ import '../widgets/animated_fab_with_text.dart';
 import '../widgets/salvation_invitation_dialog.dart';
 import '../widgets/prayer_thanksgiving_choice_sheet.dart';
 import '../widgets/streak_badge.dart';
+import '../widgets/devocionales_bottom_app_bar.dart';
+import '../widgets/devocionales_navigation_buttons.dart';
 
 class DevocionalesPage extends StatefulWidget {
   final String? initialDevocionalId;
@@ -1027,9 +1025,10 @@ class _DevocionalesPageState extends State<DevocionalesPage>
                 ? devocionalProvider.isFavorite(currentDevocional)
                 : false;
 
-            final Color? appBarBackgroundColor = Theme.of(
+            final Color appBarBackgroundColor = Theme.of(
               context,
-            ).appBarTheme.backgroundColor;
+            ).appBarTheme.backgroundColor ??
+                colorScheme.primary;
 
             return Column(
               mainAxisSize: MainAxisSize.min,
@@ -1055,269 +1054,26 @@ class _DevocionalesPageState extends State<DevocionalesPage>
                           );
                         },
                       ),
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: SizedBox(
-                              height: 45,
-                              child: OutlinedButton.icon(
-                                key: const Key('bottom_nav_previous_button'),
-                                onPressed: _currentDevocionalIndex > 0
-                                    ? _goToPreviousDevocional
-                                    : null,
-                                icon: Icon(
-                                  Icons.arrow_back_ios,
-                                  size: 16,
-                                  color: colorScheme.primary,
-                                ),
-                                label: Text(
-                                  'devotionals.previous'.tr(),
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: colorScheme.primary,
-                                  ),
-                                ),
-                                style: OutlinedButton.styleFrom(
-                                  side: BorderSide(
-                                    color: colorScheme.primary,
-                                    width: 1.5,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(22),
-                                  ),
-                                  foregroundColor: colorScheme.primary,
-                                  overlayColor: colorScheme.primary.withAlpha(
-                                      (0.1 * 255).round()), // Added feedback
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Center(
-                              child: currentDevocional != null
-                                  ? Builder(
-                                      builder: (context) {
-                                        return Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            // Original TtsPlayerWidget (unchanged)
-                                            TtsPlayerWidget(
-                                              key: const Key(
-                                                'bottom_nav_tts_player',
-                                              ),
-                                              devocional: currentDevocional,
-                                              audioController:
-                                                  _ttsAudioController,
-                                              onCompleted: () {
-                                                final provider = Provider.of<
-                                                        DevocionalProvider>(
-                                                    context,
-                                                    listen: false);
-                                                if (provider
-                                                    .showInvitationDialog) {
-                                                  _showInvitation(context);
-                                                }
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    )
-                                  : const SizedBox(width: 56, height: 56),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: SizedBox(
-                              height: 45,
-                              child: OutlinedButton(
-                                key: const Key('bottom_nav_next_button'),
-                                onPressed: _currentDevocionalIndex <
-                                        devocionales.length - 1
-                                    ? _goToNextDevocional
-                                    : null,
-                                style: OutlinedButton.styleFrom(
-                                  side: BorderSide(
-                                    color: colorScheme.primary,
-                                    width: 1.5,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(22),
-                                  ),
-                                  foregroundColor: colorScheme.primary,
-                                  overlayColor: colorScheme.primary.withAlpha(
-                                      (0.1 * 255).round()), // Added feedback
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'devotionals.next'.tr(),
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        color: colorScheme.primary,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Icon(
-                                      Icons.arrow_forward_ios,
-                                      size: 16,
-                                      color: colorScheme.primary,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                      DevocionalesNavigationButtons(
+                        currentDevocionalIndex: _currentDevocionalIndex,
+                        devocionalesLength: devocionales.length,
+                        currentDevocional: currentDevocional,
+                        audioController: _ttsAudioController,
+                        onPrevious: _goToPreviousDevocional,
+                        onNext: _goToNextDevocional,
+                        onShowInvitation: _showInvitation,
                       ),
                     ],
                   ),
                 ),
-                SafeArea(
-                  top: false,
-                  child: BottomAppBar(
-                    height: 60,
-                    color: appBarBackgroundColor,
-                    padding: EdgeInsets.zero,
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          IconButton(
-                            key: const Key('bottom_appbar_favorite_icon'),
-                            tooltip: isFavorite
-                                ? 'devotionals.remove_from_favorites_short'.tr()
-                                : 'devotionals.save_as_favorite'.tr(),
-                            onPressed: currentDevocional != null
-                                ? () => devocionalProvider.toggleFavorite(
-                                      currentDevocional,
-                                      context,
-                                    )
-                                : null,
-                            icon: Icon(
-                              isFavorite ? Icons.star : Icons.favorite_border,
-                              color: isFavorite ? Colors.amber : Colors.white,
-                              size: 32,
-                            ),
-                          ),
-                          IconButton(
-                            key: const Key('bottom_appbar_prayers_icon'),
-                            tooltip: 'tooltips.my_prayers'.tr(),
-                            onPressed: () async {
-                              HapticFeedback
-                                  .mediumImpact(); // Added haptic feedback
-                              await BubbleUtils.markAsShown(
-                                BubbleUtils.getIconBubbleId(
-                                  Icons.local_fire_department_outlined,
-                                  'new',
-                                ),
-                              );
-                              _goToPrayers();
-                            },
-                            icon: const Icon(
-                              Icons.local_fire_department_outlined,
-                              color: Colors.white,
-                              size: 35,
-                            ),
-                          ),
-                          IconButton(
-                            key: const Key('bottom_appbar_bible_icon'),
-                            tooltip: 'tooltips.bible'.tr(),
-                            onPressed: () async {
-                              await BubbleUtils.markAsShown(
-                                BubbleUtils.getIconBubbleId(
-                                  Icons.auto_stories_outlined,
-                                  'new',
-                                ),
-                              );
-                              _goToBible();
-                            },
-                            icon: Icon(
-                              Icons.auto_stories_outlined,
-                              color: Colors.white,
-                              size: 32,
-                            ),
-                          ),
-                          IconButton(
-                            key: const Key('bottom_appbar_share_icon'),
-                            tooltip: 'devotionals.share_devotional'.tr(),
-                            onPressed: currentDevocional != null
-                                ? () => _shareAsText(currentDevocional)
-                                : null,
-                            icon: Icon(
-                              Icons.share_outlined,
-                              color: colorScheme.onPrimary,
-                              size: 30,
-                            ),
-                          ),
-                          IconButton(
-                            key: const Key('bottom_appbar_progress_icon'),
-                            tooltip: 'tooltips.progress'.tr(),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder: (context, animation,
-                                          secondaryAnimation) =>
-                                      const ProgressPage(),
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    return FadeTransition(
-                                        opacity: animation, child: child);
-                                  },
-                                  transitionDuration:
-                                      const Duration(milliseconds: 250),
-                                ),
-                              );
-                            },
-                            icon: Icon(
-                              Icons.emoji_events_outlined,
-                              color: colorScheme.onPrimary,
-                              size: 30,
-                            ),
-                          ),
-                          IconButton(
-                            key: const Key('bottom_appbar_settings_icon'),
-                            tooltip: 'tooltips.settings'.tr(),
-                            onPressed: () async {
-                              await BubbleUtils.markAsShown(
-                                BubbleUtils.getIconBubbleId(
-                                  Icons.app_settings_alt_outlined,
-                                  'new',
-                                ),
-                              );
-                              if (!context.mounted) return;
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder: (context, animation,
-                                          secondaryAnimation) =>
-                                      const SettingsPage(),
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    return FadeTransition(
-                                        opacity: animation, child: child);
-                                  },
-                                  transitionDuration:
-                                      const Duration(milliseconds: 250),
-                                ),
-                              );
-                            },
-                            icon: Icon(
-                              Icons.app_settings_alt_outlined,
-                              color: colorScheme.onPrimary,
-                              size: 30,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                DevocionalesBottomAppBar(
+                  appBarBackgroundColor: appBarBackgroundColor,
+                  isFavorite: isFavorite,
+                  currentDevocional: currentDevocional,
+                  devocionalProvider: devocionalProvider,
+                  onPrayersPressed: _goToPrayers,
+                  onBiblePressed: _goToBible,
+                  onSharePressed: _shareAsText,
                 ),
               ],
             );
