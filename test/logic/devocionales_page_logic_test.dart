@@ -1,25 +1,8 @@
-import 'package:devocional_nuevo/logic/devocionales_page_logic.dart';
 import 'package:devocional_nuevo/models/devocional_model.dart';
-import 'package:devocional_nuevo/providers/devocional_provider.dart';
-import 'package:devocional_nuevo/services/devocionales_tracking.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-
-import 'devocionales_page_logic_test.mocks.dart';
-
-@GenerateMocks([
-  DevocionalProvider,
-  DevocionalesTracking,
-])
 void main() {
   group('DevocionalesPageLogic Tests', () {
     test('1. getCurrentDevocional should return null when list is empty', () {
-      // Manually create minimal logic instance for unit testing
-      // We can test pure methods without full context
-      final mockProvider = MockDevocionalProvider();
-      final mockTracking = MockDevocionalesTracking();
-
       // Test the logic directly by calling getCurrentDevocional
       // Since the logic class needs a full context to initialize,
       // we'll test the concept through devotional list manipulation
@@ -164,12 +147,12 @@ void main() {
       ];
 
       // Test valid index
-      expect(0 >= 0 && 0 < devotionals.length, isTrue);
+      expect(0 < devotionals.length, isTrue);
 
       // Test invalid indices
-      expect(-1 >= 0 && -1 < devotionals.length, isFalse);
-      expect(1 >= 0 && 1 < devotionals.length, isFalse);
-      expect(100 >= 0 && 100 < devotionals.length, isFalse);
+      expect(-1 < 0, isTrue);  // negative index is invalid
+      expect(1 < devotionals.length, isFalse);  // 1 is out of bounds for single item
+      expect(100 < devotionals.length, isFalse);  // 100 is clearly out of bounds
     });
 
     test('9. Devotional model field validation', () {
