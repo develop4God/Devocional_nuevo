@@ -408,12 +408,22 @@ class DevocionalProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      // Load devotionals sequentially: 2025 first, then 2026
-      // This ensures users always see 2025 devotionals before 2026
+      // Load devotionals sequentially: previous year + current year
+      // This ensures users always see all available content in chronological order
       final List<Devocional> allDevocionales = [];
 
-      // Start with 2025
-      final yearsToLoad = [2025, 2026];
+      // Calculate years to load dynamically
+      final int currentYear = DateTime.now().year;
+      const int startYear = 2025; // First year with content
+
+      // Always load previous year + current year (or start from 2025 if earlier)
+      // Special case: if currentYear == startYear, load [startYear, startYear + 1]
+      final yearsToLoad = <int>[
+        currentYear > startYear ? currentYear - 1 : startYear,
+        currentYear > startYear ? currentYear : startYear + 1,
+      ];
+
+      debugPrint('📅 Loading devotionals for years: $yearsToLoad');
 
       for (final year in yearsToLoad) {
         // Try local storage first
@@ -844,22 +854,32 @@ class DevocionalProvider with ChangeNotifier {
   }
 
   Future<bool> downloadCurrentYearDevocionales() async {
-    // Download both 2025 and 2026 to ensure sequential coverage
-    bool success2025 = await downloadAndStoreDevocionales(2025);
-    bool success2026 = await downloadAndStoreDevocionales(2026);
+    // Download previous year + current year to ensure sequential coverage
+    final int currentYear = DateTime.now().year;
+    const int startYear = 2025; // First year with content
 
-    // If 2025 fails, try fallback logic for missing versions
-    if (!success2025) {
-      success2025 = await _tryVersionFallback(2025);
+    // Calculate which years to download dynamically
+    // Special case: if currentYear == startYear, load [startYear, startYear + 1]
+    final int prevYear = currentYear > startYear ? currentYear - 1 : startYear;
+    final int currYear = currentYear > startYear ? currentYear : startYear + 1;
+
+    debugPrint('📥 Downloading devotionals for years: [$prevYear, $currYear]');
+
+    bool successPrev = await downloadAndStoreDevocionales(prevYear);
+    bool successCurr = await downloadAndStoreDevocionales(currYear);
+
+    // If previous year fails, try fallback logic for missing versions
+    if (!successPrev) {
+      successPrev = await _tryVersionFallback(prevYear);
     }
 
-    // If 2026 fails, try fallback logic for missing versions
-    if (!success2026) {
-      success2026 = await _tryVersionFallback(2026);
+    // If current year fails, try fallback logic for missing versions
+    if (!successCurr) {
+      successCurr = await _tryVersionFallback(currYear);
     }
 
     // Return true if at least one year was successfully downloaded
-    return success2025 || success2026;
+    return successPrev || successCurr;
   }
 
   Future<bool> _tryVersionFallback(int year) async {
@@ -945,12 +965,18 @@ class DevocionalProvider with ChangeNotifier {
   }
 
   Future<bool> hasRequiredYearsLocalData() async {
-    // Check if both 2025 and 2026 are available locally
-    final bool has2025 =
-        await hasLocalFile(2025, _selectedLanguage, _selectedVersion);
-    final bool has2026 =
-        await hasLocalFile(2026, _selectedLanguage, _selectedVersion);
-    return has2025 && has2026;
+    // Check if required years are available locally (dynamically calculated)
+    final int currentYear = DateTime.now().year;
+    const int startYear = 2025; // First year with content
+
+    final int prevYear = currentYear > startYear ? currentYear - 1 : startYear;
+    final int currYear = currentYear > startYear ? currentYear : startYear + 1;
+
+    final bool hasPrev =
+        await hasLocalFile(prevYear, _selectedLanguage, _selectedVersion);
+    final bool hasCurr =
+        await hasLocalFile(currYear, _selectedLanguage, _selectedVersion);
+    return hasPrev && hasCurr;
   }
 
   Future<bool> hasTargetYearsLocalData() async {

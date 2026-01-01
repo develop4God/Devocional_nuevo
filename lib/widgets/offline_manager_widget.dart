@@ -182,8 +182,8 @@ class OfflineManagerWidget extends StatelessWidget {
                   if (snapshot.hasData) {
                     return Text(
                       snapshot.data!
-                          ? 'Tienes contenido offline disponible para 2025 y 2026'
-                          : 'No hay contenido offline para el año actual',
+                          ? 'Tienes contenido offline disponible'
+                          : 'No hay contenido offline disponible',
                       style: textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                         fontStyle: FontStyle.italic,
