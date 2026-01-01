@@ -6,6 +6,7 @@ import 'dart:developer' as developer;
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:devocional_nuevo/config/devotional_config.dart';
 import 'package:devocional_nuevo/controllers/audio_controller.dart'; // NEW
 import 'package:devocional_nuevo/extensions/string_extensions.dart';
 import 'package:devocional_nuevo/models/devocional_model.dart';
@@ -408,17 +409,19 @@ class DevocionalProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final int currentYear = DateTime.now().year;
+      // Always load base year (2025) first, regardless of current date
+      // This ensures users installing in 2026+ still get 2025 content
+      final int baseYear = DevotionalConfig.BASE_YEAR;
 
       // Try local storage first
       Map<String, dynamic>? localData = await _loadFromLocalStorage(
-        currentYear,
+        baseYear,
         _selectedLanguage,
         _selectedVersion,
       );
 
       if (localData != null) {
-        debugPrint('Loading from local storage');
+        debugPrint('Loading base year ($baseYear) from local storage');
         _isOfflineMode = true;
         await _processDevocionalData(localData);
         return;
@@ -426,10 +429,10 @@ class DevocionalProvider with ChangeNotifier {
 
       // Load from API with language and version
       debugPrint(
-        'Loading from API for language: $_selectedLanguage, version: $_selectedVersion',
+        'Loading base year ($baseYear) from API for language: $_selectedLanguage, version: $_selectedVersion',
       );
       final String url = Constants.getDevocionalesApiUrlMultilingual(
-        currentYear,
+        baseYear,
         _selectedLanguage,
         _selectedVersion,
       );
@@ -828,16 +831,30 @@ class DevocionalProvider with ChangeNotifier {
 
   Future<bool> downloadCurrentYearDevocionales() async {
     final int currentYear = DateTime.now().year;
+    final int baseYear = DevotionalConfig.BASE_YEAR;
 
-    // Try current year first
-    bool success = await downloadAndStoreDevocionales(currentYear);
+    // Always download base year first
+    bool baseSuccess = await downloadAndStoreDevocionales(baseYear);
 
-    // If current year fails, try fallback logic for missing versions
-    if (!success) {
-      success = await _tryVersionFallback(currentYear);
+    // If current year is different from base year, download it too
+    if (currentYear != baseYear) {
+      bool currentSuccess = await downloadAndStoreDevocionales(currentYear);
+
+      // If current year fails, try fallback logic for missing versions
+      if (!currentSuccess) {
+        currentSuccess = await _tryVersionFallback(currentYear);
+      }
+
+      // Return true only if both downloads succeeded
+      return baseSuccess && currentSuccess;
     }
 
-    return success;
+    // If base year fails, try fallback logic
+    if (!baseSuccess) {
+      baseSuccess = await _tryVersionFallback(baseYear);
+    }
+
+    return baseSuccess;
   }
 
   Future<bool> _tryVersionFallback(int year) async {
@@ -923,8 +940,9 @@ class DevocionalProvider with ChangeNotifier {
   }
 
   Future<bool> hasCurrentYearLocalData() async {
-    final int currentYear = DateTime.now().year;
-    return await hasLocalFile(currentYear, _selectedLanguage, _selectedVersion);
+    // Check for base year data (the year that's always loaded)
+    final int baseYear = DevotionalConfig.BASE_YEAR;
+    return await hasLocalFile(baseYear, _selectedLanguage, _selectedVersion);
   }
 
   Future<bool> hasTargetYearsLocalData() async {

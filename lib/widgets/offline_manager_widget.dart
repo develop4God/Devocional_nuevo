@@ -123,25 +123,15 @@ class OfflineManagerWidget extends StatelessWidget {
             // Botones de acción - layout diferente para vista compacta
             if (showCompactView)
               // Vista compacta: solo botón principal
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: devocionalProvider.isDownloading
-                      ? null
-                      : () =>
-                          _downloadDevocionales(context, devocionalProvider),
-                  icon: const Icon(Icons.download),
-                  label: const Text('Descargar año actual'),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                  ),
-                ),
-              )
-            else
-              // Vista completa: ambos botones
-              Row(
-                children: [
-                  Expanded(
+              Builder(
+                builder: (context) {
+                  final baseYear = 2025; // DevotionalConfig.BASE_YEAR
+                  final currentYear = DateTime.now().year;
+                  final yearText = currentYear == baseYear
+                      ? 'año base ($baseYear)'
+                      : 'año base ($baseYear) + actual ($currentYear)';
+                  return SizedBox(
+                    width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: devocionalProvider.isDownloading
                           ? null
@@ -150,10 +140,40 @@ class OfflineManagerWidget extends StatelessWidget {
                                 devocionalProvider,
                               ),
                       icon: const Icon(Icons.download),
-                      label: const Text('Descargar año actual'),
+                      label: Text('Descargar $yearText'),
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
                       ),
+                    ),
+                  );
+                },
+              )
+            else
+              // Vista completa: ambos botones
+              Row(
+                children: [
+                  Expanded(
+                    child: Builder(
+                      builder: (context) {
+                        final baseYear = 2025; // DevotionalConfig.BASE_YEAR
+                        final currentYear = DateTime.now().year;
+                        final yearText = currentYear == baseYear
+                            ? 'año base ($baseYear)'
+                            : 'año base ($baseYear) + actual ($currentYear)';
+                        return ElevatedButton.icon(
+                          onPressed: devocionalProvider.isDownloading
+                              ? null
+                              : () => _downloadDevocionales(
+                                    context,
+                                    devocionalProvider,
+                                  ),
+                          icon: const Icon(Icons.download),
+                          label: Text('Descargar $yearText'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -180,10 +200,11 @@ class OfflineManagerWidget extends StatelessWidget {
                 future: devocionalProvider.hasCurrentYearLocalData(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
+                    final baseYear = 2025; // DevotionalConfig.BASE_YEAR
                     return Text(
                       snapshot.data!
-                          ? 'Tienes contenido offline disponible para el año actual'
-                          : 'No hay contenido offline para el año actual',
+                          ? 'Tienes contenido offline disponible para el año base ($baseYear)'
+                          : 'No hay contenido offline para el año base ($baseYear)',
                       style: textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                         fontStyle: FontStyle.italic,
