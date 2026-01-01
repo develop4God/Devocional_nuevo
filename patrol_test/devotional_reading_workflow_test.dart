@@ -1,6 +1,5 @@
 import 'package:devocional_nuevo/services/spiritual_stats_service.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:patrol/patrol.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../test/helpers/test_helpers.dart';

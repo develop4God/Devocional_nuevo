@@ -177,12 +177,12 @@ class OfflineManagerWidget extends StatelessWidget {
             // Información adicional - solo en vista completa
             if (!showCompactView)
               FutureBuilder<bool>(
-                future: devocionalProvider.hasCurrentYearLocalData(),
+                future: devocionalProvider.hasRequiredYearsLocalData(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Text(
                       snapshot.data!
-                          ? 'Tienes contenido offline disponible para el año actual'
+                          ? 'Tienes contenido offline disponible para 2025 y 2026'
                           : 'No hay contenido offline para el año actual',
                       style: textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,

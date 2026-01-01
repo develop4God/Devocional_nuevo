@@ -4,7 +4,6 @@ import 'package:devocional_nuevo/services/tts/voice_settings_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:patrol/patrol.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Patrol-based integration tests for complete TTS user workflows

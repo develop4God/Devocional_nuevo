@@ -334,7 +334,7 @@ void main() {
       bool downloaded = await provider.downloadCurrentYearDevocionales();
       expect(downloaded, isFalse);
 
-      bool hasLocal = await provider.hasCurrentYearLocalData();
+      bool hasLocal = await provider.hasRequiredYearsLocalData();
       expect(hasLocal, isFalse);
 
       // Download for specific year - will also fail
@@ -346,7 +346,7 @@ void main() {
       // Clear local files test
       await provider.clearOldLocalFiles();
 
-      bool hasAfterClear = await provider.hasCurrentYearLocalData();
+      bool hasAfterClear = await provider.hasRequiredYearsLocalData();
       expect(hasAfterClear, isFalse);
     });
 

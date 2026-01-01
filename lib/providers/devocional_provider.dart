@@ -426,8 +426,7 @@ class DevocionalProvider with ChangeNotifier {
         if (localData != null) {
           debugPrint('Loading year $year from local storage');
           _isOfflineMode = true;
-          final yearDevocionales =
-              await _extractDevocionalesFromData(localData);
+          final yearDevocionales = _extractDevocionalesFromData(localData);
           allDevocionales.addAll(yearDevocionales);
           continue;
         }
@@ -448,7 +447,7 @@ class DevocionalProvider with ChangeNotifier {
           if (response.statusCode == 200) {
             final String responseBody = response.body;
             final Map<String, dynamic> data = json.decode(responseBody);
-            final yearDevocionales = await _extractDevocionalesFromData(data);
+            final yearDevocionales = _extractDevocionalesFromData(data);
             allDevocionales.addAll(yearDevocionales);
           } else {
             debugPrint('Failed to load year $year: ${response.statusCode}');
@@ -481,9 +480,9 @@ class DevocionalProvider with ChangeNotifier {
   }
 
   /// Extract devotionals from JSON data without processing state
-  Future<List<Devocional>> _extractDevocionalesFromData(
+  List<Devocional> _extractDevocionalesFromData(
     Map<String, dynamic> data,
-  ) async {
+  ) {
     final Map<String, dynamic>? languageRoot =
         data['data'] as Map<String, dynamic>?;
     final Map<String, dynamic>? languageData =
@@ -945,7 +944,7 @@ class DevocionalProvider with ChangeNotifier {
     return allSuccess;
   }
 
-  Future<bool> hasCurrentYearLocalData() async {
+  Future<bool> hasRequiredYearsLocalData() async {
     // Check if both 2025 and 2026 are available locally
     final bool has2025 =
         await hasLocalFile(2025, _selectedLanguage, _selectedVersion);
