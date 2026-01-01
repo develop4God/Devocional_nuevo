@@ -845,17 +845,22 @@ class DevocionalProvider with ChangeNotifier {
   }
 
   Future<bool> downloadCurrentYearDevocionales() async {
-    final int currentYear = DateTime.now().year;
+    // Download both 2025 and 2026 to ensure sequential coverage
+    bool success2025 = await downloadAndStoreDevocionales(2025);
+    bool success2026 = await downloadAndStoreDevocionales(2026);
 
-    // Try current year first
-    bool success = await downloadAndStoreDevocionales(currentYear);
-
-    // If current year fails, try fallback logic for missing versions
-    if (!success) {
-      success = await _tryVersionFallback(currentYear);
+    // If 2025 fails, try fallback logic for missing versions
+    if (!success2025) {
+      success2025 = await _tryVersionFallback(2025);
     }
 
-    return success;
+    // If 2026 fails, try fallback logic for missing versions
+    if (!success2026) {
+      success2026 = await _tryVersionFallback(2026);
+    }
+
+    // Return true if at least one year was successfully downloaded
+    return success2025 || success2026;
   }
 
   Future<bool> _tryVersionFallback(int year) async {
@@ -941,8 +946,12 @@ class DevocionalProvider with ChangeNotifier {
   }
 
   Future<bool> hasCurrentYearLocalData() async {
-    final int currentYear = DateTime.now().year;
-    return await hasLocalFile(currentYear, _selectedLanguage, _selectedVersion);
+    // Check if both 2025 and 2026 are available locally
+    final bool has2025 =
+        await hasLocalFile(2025, _selectedLanguage, _selectedVersion);
+    final bool has2026 =
+        await hasLocalFile(2026, _selectedLanguage, _selectedVersion);
+    return has2025 && has2026;
   }
 
   Future<bool> hasTargetYearsLocalData() async {
