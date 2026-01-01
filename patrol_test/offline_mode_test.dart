@@ -13,7 +13,7 @@ import '../test/helpers/test_helpers.dart';
 
 /// Integration tests for Offline Mode functionality (Patrol migration in progress)
 /// Tests drawer offline download feature and user interactions
-/// 
+///
 /// MIGRATION NOTES:
 /// - Migrated from integration_test/drawer_offline_integration_test.dart to patrol_test/
 /// - Currently using standard testWidgets/WidgetTester

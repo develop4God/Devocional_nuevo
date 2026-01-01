@@ -408,41 +408,67 @@ class DevocionalProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final int currentYear = DateTime.now().year;
+      // Load devotionals sequentially: 2025 first, then 2026
+      // This ensures users always see 2025 devotionals before 2026
+      final List<Devocional> allDevocionales = [];
 
-      // Try local storage first
-      Map<String, dynamic>? localData = await _loadFromLocalStorage(
-        currentYear,
-        _selectedLanguage,
-        _selectedVersion,
-      );
+      // Start with 2025
+      final yearsToLoad = [2025, 2026];
 
-      if (localData != null) {
-        debugPrint('Loading from local storage');
-        _isOfflineMode = true;
-        await _processDevocionalData(localData);
-        return;
+      for (final year in yearsToLoad) {
+        // Try local storage first
+        Map<String, dynamic>? localData = await _loadFromLocalStorage(
+          year,
+          _selectedLanguage,
+          _selectedVersion,
+        );
+
+        if (localData != null) {
+          debugPrint('Loading year $year from local storage');
+          _isOfflineMode = true;
+          final yearDevocionales =
+              await _extractDevocionalesFromData(localData);
+          allDevocionales.addAll(yearDevocionales);
+          continue;
+        }
+
+        // If not in cache, try to load from API
+        try {
+          debugPrint(
+            'Loading year $year from API for language: $_selectedLanguage, version: $_selectedVersion',
+          );
+          final String url = Constants.getDevocionalesApiUrlMultilingual(
+            year,
+            _selectedLanguage,
+            _selectedVersion,
+          );
+          debugPrint('🔍 Requesting URL: $url');
+          final response = await http.get(Uri.parse(url));
+
+          if (response.statusCode == 200) {
+            final String responseBody = response.body;
+            final Map<String, dynamic> data = json.decode(responseBody);
+            final yearDevocionales = await _extractDevocionalesFromData(data);
+            allDevocionales.addAll(yearDevocionales);
+          } else {
+            debugPrint('Failed to load year $year: ${response.statusCode}');
+            // Continue to next year instead of failing completely
+          }
+        } catch (e) {
+          debugPrint('Error loading year $year: $e');
+          // Continue to next year
+        }
       }
 
-      // Load from API with language and version
-      debugPrint(
-        'Loading from API for language: $_selectedLanguage, version: $_selectedVersion',
-      );
-      final String url = Constants.getDevocionalesApiUrlMultilingual(
-        currentYear,
-        _selectedLanguage,
-        _selectedVersion,
-      );
-      debugPrint('🔍 Requesting URL: $url');
-      final response = await http.get(Uri.parse(url));
-
-      if (response.statusCode != 200) {
-        throw Exception('Failed to load from API: ${response.statusCode}');
+      if (allDevocionales.isEmpty) {
+        throw Exception('No devotionals could be loaded for any year');
       }
 
-      final String responseBody = response.body;
-      final Map<String, dynamic> data = json.decode(responseBody);
-      await _processDevocionalData(data);
+      // Sort all devotionals by date to ensure sequential order
+      allDevocionales.sort((a, b) => a.date.compareTo(b.date));
+      _allDevocionalesForCurrentLanguage = allDevocionales;
+      _errorMessage = null;
+      _filterDevocionalesByVersion();
     } catch (e) {
       _errorMessage = 'Error al cargar los devocionales: $e';
       _allDevocionalesForCurrentLanguage = [];
@@ -454,7 +480,10 @@ class DevocionalProvider with ChangeNotifier {
     }
   }
 
-  Future<void> _processDevocionalData(Map<String, dynamic> data) async {
+  /// Extract devotionals from JSON data without processing state
+  Future<List<Devocional>> _extractDevocionalesFromData(
+    Map<String, dynamic> data,
+  ) async {
     final Map<String, dynamic>? languageRoot =
         data['data'] as Map<String, dynamic>?;
     final Map<String, dynamic>? languageData =
@@ -465,25 +494,17 @@ class DevocionalProvider with ChangeNotifier {
         final Map<String, dynamic>? fallbackData =
             languageRoot?[_fallbackLanguage] as Map<String, dynamic>?;
         if (fallbackData != null) {
-          _selectedLanguage = _fallbackLanguage;
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString('selectedLanguage', _fallbackLanguage);
-          await _processLanguageData(fallbackData);
-          return;
+          return _parseDevocionales(fallbackData);
         }
       }
-
-      debugPrint('No data found for any supported language');
-      _allDevocionalesForCurrentLanguage = [];
-      _filteredDevocionales = [];
-      _errorMessage = 'No se encontraron datos disponibles en la API.';
-      return;
+      return [];
     }
 
-    await _processLanguageData(languageData);
+    return _parseDevocionales(languageData);
   }
 
-  Future<void> _processLanguageData(Map<String, dynamic> languageData) async {
+  /// Parse devotionals from language data
+  List<Devocional> _parseDevocionales(Map<String, dynamic> languageData) {
     final List<Devocional> loadedDevocionales = [];
 
     languageData.forEach((dateKey, dateValue) {
@@ -500,10 +521,7 @@ class DevocionalProvider with ChangeNotifier {
       }
     });
 
-    loadedDevocionales.sort((a, b) => a.date.compareTo(b.date));
-    _allDevocionalesForCurrentLanguage = loadedDevocionales;
-    _errorMessage = null;
-    _filterDevocionalesByVersion();
+    return loadedDevocionales;
   }
 
   void _filterDevocionalesByVersion() {

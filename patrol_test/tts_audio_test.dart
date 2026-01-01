@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 /// Patrol-based integration tests for complete TTS user workflows
 /// Covers: devotional reading, audio playback, speed adjustments, progress tracking
-/// 
+///
 /// MIGRATION NOTES:
 /// - Migrated from integration_test/tts_complete_user_flow_test.dart
 /// - Replaced flutter_test with patrol
@@ -18,7 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// - Could add native permission requests for audio in future ($.native.grantPermissionWhenInUse())
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  
+
   group('TTS Complete User Flow - Integration Tests', () {
     late FlutterTts mockTts;
     late TtsAudioController controller;
@@ -271,8 +271,7 @@ void main() {
     });
 
     group('Scenario 4: Multi-Devotional Session', () {
-      test('User listens to multiple devotionals in one session',
-          () async {
+      test('User listens to multiple devotionals in one session', () async {
         // GIVEN: User finishes first devotional
         controller.setText('Primera reflexión del día.');
         await controller.play();
