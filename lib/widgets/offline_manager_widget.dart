@@ -1,3 +1,4 @@
+import 'package:devocional_nuevo/config/devotional_config.dart';
 import 'package:devocional_nuevo/providers/devocional_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -125,7 +126,7 @@ class OfflineManagerWidget extends StatelessWidget {
               // Vista compacta: solo botón principal
               Builder(
                 builder: (context) {
-                  final baseYear = 2025; // DevotionalConfig.BASE_YEAR
+                  final baseYear = DevotionalConfig.BASE_YEAR;
                   final currentYear = DateTime.now().year;
                   final yearText = currentYear == baseYear
                       ? 'año base ($baseYear)'
@@ -155,7 +156,7 @@ class OfflineManagerWidget extends StatelessWidget {
                   Expanded(
                     child: Builder(
                       builder: (context) {
-                        final baseYear = 2025; // DevotionalConfig.BASE_YEAR
+                        final baseYear = DevotionalConfig.BASE_YEAR;
                         final currentYear = DateTime.now().year;
                         final yearText = currentYear == baseYear
                             ? 'año base ($baseYear)'
@@ -200,7 +201,7 @@ class OfflineManagerWidget extends StatelessWidget {
                 future: devocionalProvider.hasCurrentYearLocalData(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    final baseYear = 2025; // DevotionalConfig.BASE_YEAR
+                    final baseYear = DevotionalConfig.BASE_YEAR;
                     return Text(
                       snapshot.data!
                           ? 'Tienes contenido offline disponible para el año base ($baseYear)'
