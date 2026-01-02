@@ -48,6 +48,10 @@ class DevocionalProvider with ChangeNotifier {
   String? _downloadStatus;
   bool _isOfflineMode = false;
 
+  // ========== MULTI-YEAR MANAGEMENT ==========
+  final Set<int> _loadedYears = {}; // Track which years have been loaded
+  bool _isLoadingAdditionalYear = false;
+
   // ========== READING TRACKER ==========
   final ReadingTracker _readingTracker = ReadingTracker();
 
@@ -424,6 +428,7 @@ class DevocionalProvider with ChangeNotifier {
         debugPrint('Loading base year ($baseYear) from local storage');
         _isOfflineMode = true;
         await _processDevocionalData(localData);
+        _loadedYears.add(baseYear); // Track loaded year
         return;
       }
 
@@ -446,6 +451,7 @@ class DevocionalProvider with ChangeNotifier {
       final String responseBody = response.body;
       final Map<String, dynamic> data = json.decode(responseBody);
       await _processDevocionalData(data);
+      _loadedYears.add(baseYear); // Track loaded year
     } catch (e) {
       _errorMessage = 'Error al cargar los devocionales: $e';
       _allDevocionalesForCurrentLanguage = [];
@@ -525,6 +531,116 @@ class DevocionalProvider with ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  /// Load additional year on-demand when needed
+  /// This method loads a specific year's devotionals and appends them to existing data
+  Future<bool> _loadAdditionalYearIfNeeded(int year) async {
+    // Don't load if already loaded or currently loading
+    if (_loadedYears.contains(year) || _isLoadingAdditionalYear) {
+      debugPrint('⏭️ Year $year already loaded or loading in progress');
+      return false;
+    }
+
+    _isLoadingAdditionalYear = true;
+    debugPrint('📥 Loading additional year: $year');
+
+    try {
+      // Try local storage first
+      Map<String, dynamic>? localData = await _loadFromLocalStorage(
+        year,
+        _selectedLanguage,
+        _selectedVersion,
+      );
+
+      Map<String, dynamic>? data;
+      bool fromOffline = false;
+
+      if (localData != null) {
+        debugPrint('📂 Loading year $year from local storage');
+        data = localData;
+        fromOffline = true;
+      } else {
+        // Load from API
+        debugPrint('🌐 Loading year $year from API');
+        final String url = Constants.getDevocionalesApiUrlMultilingual(
+          year,
+          _selectedLanguage,
+          _selectedVersion,
+        );
+        debugPrint('🔍 Requesting URL: $url');
+
+        final response = await http.get(Uri.parse(url));
+
+        if (response.statusCode != 200) {
+          debugPrint('❌ Failed to load year $year: ${response.statusCode}');
+          return false;
+        }
+
+        data = json.decode(response.body);
+      }
+
+      // Process the additional year data (ensure data is not null)
+      if (data != null) {
+        await _processAdditionalYearData(data, year);
+        _loadedYears.add(year);
+
+        debugPrint(
+          '✅ Year $year loaded successfully (${fromOffline ? "offline" : "online"})',
+        );
+        return true;
+      } else {
+        debugPrint('❌ No data loaded for year $year');
+        return false;
+      }
+    } catch (e) {
+      debugPrint('❌ Error loading year $year: $e');
+      return false;
+    } finally {
+      _isLoadingAdditionalYear = false;
+    }
+  }
+
+  /// Process additional year data and merge with existing devotionals
+  Future<void> _processAdditionalYearData(
+    Map<String, dynamic> data,
+    int year,
+  ) async {
+    final Map<String, dynamic>? languageRoot =
+        data['data'] as Map<String, dynamic>?;
+    final Map<String, dynamic>? languageData =
+        languageRoot?[_selectedLanguage] as Map<String, dynamic>?;
+
+    if (languageData == null) {
+      debugPrint('No data found for $_selectedLanguage in year $year');
+      return;
+    }
+
+    final List<Devocional> newDevocionales = [];
+
+    languageData.forEach((dateKey, dateValue) {
+      if (dateValue is List) {
+        for (var devocionalJson in dateValue) {
+          try {
+            newDevocionales.add(
+              Devocional.fromJson(devocionalJson as Map<String, dynamic>),
+            );
+          } catch (e) {
+            debugPrint('Error parsing devotional for $dateKey: $e');
+          }
+        }
+      }
+    });
+
+    // Merge new devotionals with existing ones and sort
+    _allDevocionalesForCurrentLanguage.addAll(newDevocionales);
+    _allDevocionalesForCurrentLanguage.sort((a, b) => a.date.compareTo(b.date));
+
+    // Re-filter by version
+    _filterDevocionalesByVersion();
+
+    debugPrint(
+        '📚 Total devotionals now: ${_allDevocionalesForCurrentLanguage.length}');
   }
 
   // ========== LANGUAGE & VERSION SETTINGS ==========
@@ -1009,7 +1125,30 @@ class DevocionalProvider with ChangeNotifier {
     } else {
       debugPrint('🎉 [COMPLETADO] ¡No hay devocionales pendientes!');
     }
+
+    // Check if we need to load next year on-demand
+    await _checkAndLoadNextYearIfNeeded(noLeidos.length);
+
     return noLeidos;
+  }
+
+  /// Check if we should load the next year based on remaining unread devotionals
+  Future<void> _checkAndLoadNextYearIfNeeded(int unreadCount) async {
+    // If we have fewer unread devotionals than threshold, try loading next year
+    if (unreadCount < DevotionalConfig.ON_DEMAND_THRESHOLD) {
+      debugPrint(
+        '⚠️ Only $unreadCount unread devotionals remaining (threshold: ${DevotionalConfig.ON_DEMAND_THRESHOLD})',
+      );
+
+      // Determine what the next year should be
+      final maxLoadedYear = _loadedYears.isEmpty
+          ? DevotionalConfig.BASE_YEAR
+          : _loadedYears.reduce((a, b) => a > b ? a : b);
+      final nextYear = maxLoadedYear + 1;
+
+      debugPrint('🔄 Attempting to load next year: $nextYear');
+      await _loadAdditionalYearIfNeeded(nextYear);
+    }
   }
 }
 
