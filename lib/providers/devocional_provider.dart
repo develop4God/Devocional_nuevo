@@ -50,6 +50,8 @@ class DevocionalProvider with ChangeNotifier {
 
   // ========== MULTI-YEAR MANAGEMENT ==========
   final Set<int> _loadedYears = {}; // Track which years have been loaded
+  int _maxLoadedYear =
+      DevotionalConfig.BASE_YEAR; // Track max year for efficiency
   bool _isLoadingAdditionalYear = false;
 
   // ========== READING TRACKER ==========
@@ -429,6 +431,7 @@ class DevocionalProvider with ChangeNotifier {
         _isOfflineMode = true;
         await _processDevocionalData(localData);
         _loadedYears.add(baseYear); // Track loaded year
+        if (baseYear > _maxLoadedYear) _maxLoadedYear = baseYear;
         return;
       }
 
@@ -452,6 +455,7 @@ class DevocionalProvider with ChangeNotifier {
       final Map<String, dynamic> data = json.decode(responseBody);
       await _processDevocionalData(data);
       _loadedYears.add(baseYear); // Track loaded year
+      if (baseYear > _maxLoadedYear) _maxLoadedYear = baseYear;
     } catch (e) {
       _errorMessage = 'Error al cargar los devocionales: $e';
       _allDevocionalesForCurrentLanguage = [];
@@ -584,6 +588,7 @@ class DevocionalProvider with ChangeNotifier {
       if (data != null) {
         await _processAdditionalYearData(data, year);
         _loadedYears.add(year);
+        if (year > _maxLoadedYear) _maxLoadedYear = year;
 
         debugPrint(
           '✅ Year $year loaded successfully (${fromOffline ? "offline" : "online"})',
@@ -1140,11 +1145,8 @@ class DevocionalProvider with ChangeNotifier {
         '⚠️ Only $unreadCount unread devotionals remaining (threshold: ${DevotionalConfig.ON_DEMAND_THRESHOLD})',
       );
 
-      // Determine what the next year should be
-      final maxLoadedYear = _loadedYears.isEmpty
-          ? DevotionalConfig.BASE_YEAR
-          : _loadedYears.reduce((a, b) => a > b ? a : b);
-      final nextYear = maxLoadedYear + 1;
+      // Use cached max year for efficiency
+      final nextYear = _maxLoadedYear + 1;
 
       debugPrint('🔄 Attempting to load next year: $nextYear');
       await _loadAdditionalYearIfNeeded(nextYear);
