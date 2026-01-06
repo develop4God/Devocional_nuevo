@@ -158,6 +158,12 @@ void main() {
       expect(expansions['TOB'], 'Traduction Oecuménique de la Bible');
     });
 
+    test('Japanese versions expand correctly', () {
+      final expansions = BibleTextFormatter.getBibleVersionExpansions('ja');
+      expect(expansions['新改訳2003'], '新改訳二千三年版');
+      expect(expansions['リビングバイブル'], 'リビングバイブル');
+    });
+
     test('Chinese versions expand correctly', () {
       final expansions = BibleTextFormatter.getBibleVersionExpansions('zh');
       expect(expansions['和合本1919'], '和合本一九一九');

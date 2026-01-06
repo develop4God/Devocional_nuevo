@@ -1,3 +1,4 @@
+import 'package:bible_reader_core/bible_reader_core.dart';
 import 'package:flutter/foundation.dart';
 
 /// Bible text formatting utilities for TTS
@@ -124,16 +125,46 @@ class BibleTextFormatter {
     });
   }
 
-  /// Formato para libros bíblicos en japonés (sin ordinales, solo limpieza básica)
+  /// Formato para libros bíblicos en japonés
+  /// Convierte numerales árabes 1/2/3 a sus equivalentes japoneses 一/二/三
   static String _formatBibleBookJapanese(String reference) {
-    // En japonés, los libros bíblicos no usan ordinales, solo se devuelve el texto tal cual
-    return reference.trim();
+    // In Japanese Bible texts, numbered books use Chinese numerals at the end
+    // e.g., "ヨハネの手紙一" (1 John), "ヨハネの手紙二" (2 John), "ヨハネの手紙三" (3 John)
+    // If Arabic numerals appear (e.g., "1 ヨハネ"), convert them
+    final exp =
+        RegExp(r'(?:^|\s)([123])\s+([ぁ-んァ-ン一-龯]+)', caseSensitive: false);
+    final ordinals = {'1': '一', '2': '二', '3': '三'};
+
+    return reference.replaceAllMapped(exp, (match) {
+      final matchText = match.group(0)!;
+      final prefix = _startsWithWhitespace(matchText) ? ' ' : '';
+      final number = match.group(1)!;
+      final bookName = match.group(2)!;
+      final ordinal = ordinals[number] ?? number;
+      // In Japanese, ordinal comes after the book name
+      return '$prefix$bookName$ordinal';
+    }).trim();
   }
 
-  /// Formato para libros bíblicos en chino (sin ordinales, solo limpieza básica)
+  /// Formato para libros bíblicos en chino
+  /// Convierte numerales árabes 1/2/3 a sus equivalentes chinos 一/二/三
   static String _formatBibleBookChinese(String reference) {
-    // En chino, los libros bíblicos no usan ordinales, solo se devuelve el texto tal cual
-    return reference.trim();
+    // In Chinese Bible texts, numbered books typically use:
+    // - 前书 (first epistle) / 后书 (second epistle) for longer books
+    // - 一书/二书/三书 for John's epistles
+    // If Arabic numerals appear (e.g., "1 约翰"), convert them
+    final exp = RegExp(r'(?:^|\s)([123])\s+([一-龯]+)', caseSensitive: false);
+    final ordinals = {'1': '一', '2': '二', '3': '三'};
+
+    return reference.replaceAllMapped(exp, (match) {
+      final matchText = match.group(0)!;
+      final prefix = _startsWithWhitespace(matchText) ? ' ' : '';
+      final number = match.group(1)!;
+      final bookName = match.group(2)!;
+      final ordinal = ordinals[number] ?? number;
+      // In Chinese, ordinal comes after the book name
+      return '$prefix$bookName$ordinal';
+    }).trim();
   }
 
   /// Get Bible version expansions based on language
@@ -159,6 +190,11 @@ class BibleTextFormatter {
           'LSG1910': 'Louis Segond mille neuf cent dix',
           'TOB': 'Traduction Oecuménique de la Bible',
         };
+      case 'ja':
+        return {
+          '新改訳2003': '新改訳二千三年版',
+          'リビングバイブル': 'リビングバイブル',
+        };
       case 'zh':
         return {'和合本1919': '和合本一九一九', '新译本': '新译本'};
       default:
@@ -172,8 +208,9 @@ class BibleTextFormatter {
     String language, [
     String? version,
   ]) {
-    String normalized = text;
-    // 1. Formatear libros bíblicos PRIMERO (con RegExp corregido)
+    // 0. FIRST: Clean HTML tags and bracketed references (applies to ALL languages)
+    String normalized = BibleTextNormalizer.clean(text);
+    // 1. Formatear libros bíblicos (con RegExp corregido)
     normalized = formatBibleBook(normalized, language);
     // 2. Expandir versiones bíblicas
     final bibleVersions = getBibleVersionExpansions(language);
