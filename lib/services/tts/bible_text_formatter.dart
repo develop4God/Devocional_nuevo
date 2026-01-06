@@ -125,8 +125,8 @@ class BibleTextFormatter {
     });
   }
 
-  /// Formato para libros bíblicos en japonés
-  /// Convierte numerales árabes 1/2/3 a sus equivalentes japoneses 一/二/三
+  /// Format Japanese Bible books
+  /// Converts Arabic numerals 1/2/3 to Japanese equivalents 一/二/三
   static String _formatBibleBookJapanese(String reference) {
     // In Japanese Bible texts, numbered books use Chinese numerals at the end
     // e.g., "ヨハネの手紙一" (1 John), "ヨハネの手紙二" (2 John), "ヨハネの手紙三" (3 John)
@@ -146,8 +146,8 @@ class BibleTextFormatter {
     }).trim();
   }
 
-  /// Formato para libros bíblicos en chino
-  /// Convierte numerales árabes 1/2/3 a sus equivalentes chinos 一/二/三
+  /// Format Chinese Bible books
+  /// Converts Arabic numerals 1/2/3 to Chinese equivalents 一/二/三
   static String _formatBibleBookChinese(String reference) {
     // In Chinese Bible texts, numbered books typically use:
     // - 前书 (first epistle) / 后书 (second epistle) for longer books
@@ -202,7 +202,7 @@ class BibleTextFormatter {
     }
   }
 
-  /// Normaliza y arma el texto para TTS (capítulo, versículo, ordinales, versión bíblica)
+  /// Normalize and prepare text for TTS (chapter, verse, ordinals, Bible version)
   static String normalizeTtsText(
     String text,
     String language, [
@@ -210,22 +210,22 @@ class BibleTextFormatter {
   ]) {
     // 0. FIRST: Clean HTML tags and bracketed references (applies to ALL languages)
     String normalized = BibleTextNormalizer.clean(text);
-    // 1. Formatear libros bíblicos (con RegExp corregido)
+    // 1. Format Bible books with ordinals (if applicable)
     normalized = formatBibleBook(normalized, language);
-    // 2. Expandir versiones bíblicas
+    // 2. Expand Bible versions
     final bibleVersions = getBibleVersionExpansions(language);
     bibleVersions.forEach((versionKey, expansion) {
       if (normalized.contains(versionKey)) {
         normalized = normalized.replaceAll(versionKey, expansion);
       }
     });
-    // 3. Formatear referencias bíblicas básicas (capítulo:versículo)
+    // 3. Format basic Bible references (chapter:verse)
     normalized = formatBibleReferences(normalized, language);
     // Clean up whitespace
     return normalized.replaceAll(RegExp(r'\s+'), ' ').trim();
   }
 
-  /// Formatea referencias bíblicas básicas (capítulo:versículo)
+  /// Format basic Bible references (chapter:verse)
   static String formatBibleReferences(String text, String language) {
     final Map<String, String> referenceWords = {
       'es': 'capítulo|versículo',
