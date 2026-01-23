@@ -1,32 +1,34 @@
-// lib/widgets/add_thanksgiving_modal.dart
+// lib/widgets/add_testimony_modal.dart
 
-import 'package:devocional_nuevo/blocs/thanksgiving_bloc.dart';
-import 'package:devocional_nuevo/blocs/thanksgiving_event.dart';
+import 'package:devocional_nuevo/blocs/testimony_bloc.dart';
+import 'package:devocional_nuevo/blocs/testimony_event.dart';
 import 'package:devocional_nuevo/extensions/string_extensions.dart';
-import 'package:devocional_nuevo/models/thanksgiving_model.dart';
+import 'package:devocional_nuevo/models/testimony_model.dart';
+import 'package:devocional_nuevo/services/localization_service.dart';
+import 'package:devocional_nuevo/services/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AddThanksgivingModal extends StatefulWidget {
-  final Thanksgiving? thanksgivingToEdit;
+class AddTestimonyModal extends StatefulWidget {
+  final Testimony? testimonyToEdit;
 
-  const AddThanksgivingModal({super.key, this.thanksgivingToEdit});
+  const AddTestimonyModal({super.key, this.testimonyToEdit});
 
   /// Static method to show the modal in a clean way
-  static Future<void> show(BuildContext context, {Thanksgiving? thanksgivingToEdit}) {
+  static Future<void> show(BuildContext context, {Testimony? testimonyToEdit}) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => AddThanksgivingModal(thanksgivingToEdit: thanksgivingToEdit),
+      builder: (context) => AddTestimonyModal(testimonyToEdit: testimonyToEdit),
     );
   }
 
   @override
-  State<AddThanksgivingModal> createState() => _AddThanksgivingModalState();
+  State<AddTestimonyModal> createState() => _AddTestimonyModalState();
 }
 
-class _AddThanksgivingModalState extends State<AddThanksgivingModal> {
+class _AddTestimonyModalState extends State<AddTestimonyModal> {
   final TextEditingController _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   bool _isLoading = false;
@@ -35,8 +37,8 @@ class _AddThanksgivingModalState extends State<AddThanksgivingModal> {
   @override
   void initState() {
     super.initState();
-    if (widget.thanksgivingToEdit != null) {
-      _textController.text = widget.thanksgivingToEdit!.text;
+    if (widget.testimonyToEdit != null) {
+      _textController.text = widget.testimonyToEdit!.text;
     }
     // Auto focus en el campo de texto
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -51,7 +53,7 @@ class _AddThanksgivingModalState extends State<AddThanksgivingModal> {
     super.dispose();
   }
 
-  bool get _isEditing => widget.thanksgivingToEdit != null;
+  bool get _isEditing => widget.testimonyToEdit != null;
 
   @override
   Widget build(BuildContext context) {
@@ -86,8 +88,8 @@ class _AddThanksgivingModalState extends State<AddThanksgivingModal> {
               Expanded(
                 child: Text(
                   _isEditing
-                      ? 'thanksgiving.edit_thanksgiving'.tr()
-                      : '${'thanksgiving.new_thanksgiving'.tr()} ☺️',
+                      ? 'testimony.edit_testimony'.tr()
+                      : '${'testimony.new_testimony'.tr()} ✨',
                   style: textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: colorScheme.onSurface,
@@ -123,8 +125,8 @@ class _AddThanksgivingModalState extends State<AddThanksgivingModal> {
                 Expanded(
                   child: Text(
                     _isEditing
-                        ? 'thanksgiving.edit_thanksgiving_description'.tr()
-                        : 'thanksgiving.new_thanksgiving_description'.tr(),
+                        ? 'testimony.edit_testimony_description'.tr()
+                        : 'testimony.new_testimony_description'.tr(),
                     style: textTheme.bodySmall?.copyWith(
                       color: colorScheme.primary,
                     ),
@@ -135,7 +137,7 @@ class _AddThanksgivingModalState extends State<AddThanksgivingModal> {
           ),
           const SizedBox(height: 20),
 
-          // Campo de texto para el agradecimiento
+          // Campo de texto para el testimonio
           TextField(
             controller: _textController,
             focusNode: _focusNode,
@@ -148,8 +150,8 @@ class _AddThanksgivingModalState extends State<AddThanksgivingModal> {
             ),
             decoration: InputDecoration(
               hintText: _isEditing
-                  ? 'thanksgiving.edit_placeholder'.tr()
-                  : 'thanksgiving.new_placeholder'.tr(),
+                  ? 'testimony.edit_placeholder'.tr()
+                  : 'testimony.new_placeholder'.tr(),
               hintStyle: textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurface.withValues(alpha: 0.5),
                 height: 1.4,
@@ -220,7 +222,7 @@ class _AddThanksgivingModalState extends State<AddThanksgivingModal> {
                     ),
                   ),
                   child: Text(
-                    'thanksgiving.cancel'.tr(),
+                    'testimony.cancel'.tr(),
                     style: textTheme.labelLarge?.copyWith(
                       color: colorScheme.onSurface,
                     ),
@@ -230,7 +232,7 @@ class _AddThanksgivingModalState extends State<AddThanksgivingModal> {
               const SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : _saveThanksgiving,
+                  onPressed: _isLoading ? null : _saveTestimony,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: colorScheme.primary,
                     foregroundColor: colorScheme.onPrimary,
@@ -250,8 +252,8 @@ class _AddThanksgivingModalState extends State<AddThanksgivingModal> {
                         )
                       : Text(
                           _isEditing
-                              ? 'thanksgiving.update_thanksgiving'.tr()
-                              : 'thanksgiving.create_thanksgiving'.tr(),
+                              ? 'testimony.update_testimony'.tr()
+                              : 'testimony.create_testimony'.tr(),
                           style: textTheme.labelLarge?.copyWith(
                             color: colorScheme.onPrimary,
                             fontWeight: FontWeight.w600,
@@ -269,7 +271,7 @@ class _AddThanksgivingModalState extends State<AddThanksgivingModal> {
     );
   }
 
-  Future<void> _saveThanksgiving() async {
+  Future<void> _saveTestimony() async {
     final text = _textController.text.trim();
 
     // Limpiar error previo
@@ -279,14 +281,14 @@ class _AddThanksgivingModalState extends State<AddThanksgivingModal> {
 
     if (text.isEmpty) {
       setState(() {
-        _errorMessage = 'thanksgiving.enter_thanksgiving_text_error'.tr();
+        _errorMessage = 'testimony.enter_testimony_text_error'.tr();
       });
       return;
     }
 
     if (text.length < 10) {
       setState(() {
-        _errorMessage = 'thanksgiving.thanksgiving_min_length_error'.tr();
+        _errorMessage = 'testimony.testimony_min_length_error'.tr();
       });
       return;
     }
@@ -297,22 +299,26 @@ class _AddThanksgivingModalState extends State<AddThanksgivingModal> {
 
     try {
       if (_isEditing) {
-        context.read<ThanksgivingBloc>().add(
-              EditThanksgiving(widget.thanksgivingToEdit!.id, text),
+        context.read<TestimonyBloc>().add(
+              EditTestimony(widget.testimonyToEdit!.id, text),
             );
-        _showSuccessSnackBar('thanksgiving.thanksgiving_updated'.tr());
+        _showSuccessSnackBar('testimony.testimony_updated'.tr());
       } else {
-        context.read<ThanksgivingBloc>().add(AddThanksgiving(text));
-        _showSuccessSnackBar('thanksgiving.thanksgiving_created'.tr());
+        context.read<TestimonyBloc>().add(AddTestimony(text));
+        _showSuccessSnackBar('testimony.testimony_created'.tr());
       }
 
       if (mounted) {
         Navigator.of(context).pop();
       }
     } catch (e) {
+      final errorAction = _isEditing ? 'update' : 'create';
+      final errorMessage = getService<LocalizationService>().translate(
+        'errors.testimony_save_error',
+        {'action': errorAction},
+      );
       setState(() {
-        _errorMessage =
-            'Error al ${_isEditing ? 'actualizar' : 'crear'} el agradecimiento';
+        _errorMessage = errorMessage;
       });
     } finally {
       if (mounted) {
